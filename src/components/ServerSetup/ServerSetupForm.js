@@ -9,6 +9,9 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
     const [selectedCar,setSelectedCar] = useState(0);
     const [selectedTrack,setSelectedTrack] = useState(0);
     const [botLevel,setBotLevel] = useState(85);
+    const [practiceLength,setPracticeLength] = useState(0);
+    const [qualiLength,setQualiLength] = useState(0);
+    const [plusOneLap,setPlusOneLap] = useState(false);
 
     function setupServer(e){
         console.log('Setup server with name:',serverName,'car:',selectedCar,'track:',selectedTrack,'sel:',selectedCarClass,selectedCarClassName);
@@ -20,7 +23,10 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                 session_VehicleClassId: selectedCarClass,
                 session_VehicleModelId: selectedCar,
                 session_TrackId: selectedTrack,
-                session_OpponentDifficulty: botLevel
+                session_OpponentDifficulty: botLevel,
+                session_PracticeLength: practiceLength,
+                session_QualifyLength: qualiLength, 
+               // session_RaceExtraLap: plusOneLap
             }
         ).then((res) => {
             window.alert('session settings sent');
@@ -52,7 +58,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                         }
                     </select>
                 </label>
-                <br/>
+                {/* <br/>
                 <label>
                     Car Options:
                     <select onChange={e => setSelectedCar(e.target.value)} value={selectedCar}>
@@ -62,7 +68,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                             ))
                         }
                     </select>
-                </label>
+                </label> */}
                 <br/>
                 <label>
                     Track Options: 
@@ -83,6 +89,22 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                         ))}
                     </select>
                 </label>
+                <br/>
+                <label>
+                    Practice Length:
+                    <input type="number" id="practiceLength" value={practiceLength} onChange={e=> setPracticeLength(e.target.value)}></input>
+                </label>  
+                <br/>
+                <label>
+                    Quali Length:
+                    <input type="number" id="qualiLength" value={qualiLength} onChange={e=> setQualiLength(e.target.value)}></input>
+                </label>     
+                <br/>
+                {/* <label>
+                    Plus One Lap?
+                    <input type="radio" id="plusOneTrue" name="plusOneFalse" value={"true"} onSelect={e=> setPlusOneLap(e.target.value)}>True</input>
+                    <input type="radio" id="plusOneFalse" name="plusOneFalse" value={"false"} onSelect={e=> setPlusOneLap(e.target.value)}>False</input>
+                </label> */}
                 <br/>
                 <button type='button' onClick={setupServer}>Set Server</button>
             </form>
