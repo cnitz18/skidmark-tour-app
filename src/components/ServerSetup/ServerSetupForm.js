@@ -8,6 +8,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
     const [selectedCarClassName,setSelectedCarClassName] = useState('')
     const [selectedCar,setSelectedCar] = useState(0);
     const [selectedTrack,setSelectedTrack] = useState(0);
+    const [botLevel,setBotLevel] = useState(85);
 
     function setupServer(e){
         console.log('Setup server with name:',serverName,'car:',selectedCar,'track:',selectedTrack,'sel:',selectedCarClass,selectedCarClassName);
@@ -18,7 +19,8 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                 //session_Name: serverName,
                 session_VehicleClassId: selectedCarClass,
                 session_VehicleModelId: selectedCar,
-                session_TrackId: selectedTrack
+                session_TrackId: selectedTrack,
+                session_OpponentDifficulty: botLevel
             }
         ).then((res) => {
             window.alert('session settings sent');
@@ -44,7 +46,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                     Car Classes:
                     <select onChange={e => {let spl = e.target.value.split(',');setSelectedCarClass(spl[0]); setSelectedCarClassName(spl[1]); }}>
                         {
-                            carClasses.map((cls) => (
+                            carClasses.sort((a,b)=>a.name.localeCompare(b.name)).map((cls) => (
                                 <option value={`${cls.value},${cls.name}`} id={cls.value} name={cls.name}>{cls.name}</option>
                             ))
                         }
@@ -55,7 +57,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                     Car Options:
                     <select onChange={e => setSelectedCar(e.target.value)} value={selectedCar}>
                         {
-                            cars.filter(car => car.class === selectedCarClassName).map((car) => (
+                            cars.filter(car => car.class === selectedCarClassName).sort((a,b)=>a.name.localeCompare(b.name)).map((car) => (
                                 <option value={car.id} key={car.id}>{car.name} ({car.class})</option>
                             ))
                         }
@@ -67,6 +69,17 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses }) => {
                     <select onChange={e => setSelectedTrack(e.target.value) } value={selectedTrack}>
                         {tracks.map((track) => (
                             <option value={track.id} key={track.id}>{track.name}</option>
+                        ))}
+                    </select>
+                </label>
+                <br/>
+                <label>
+                    AI Level:
+                            {console.log('arr:',([...Array(30).keys()].map(i=> (i + 70).toString())))}
+                    <select onChange={e => setBotLevel(e.target.value)} value={botLevel}>
+                        
+                        {([...Array(31).keys()].map(i=> i + 70)).map((num) =>(
+                            <option value={num} key={num}>{num.toString()}</option>
                         ))}
                     </select>
                 </label>
