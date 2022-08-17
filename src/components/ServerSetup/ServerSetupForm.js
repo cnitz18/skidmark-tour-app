@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import postAPIData from '../../utils/postAPIData';
+import getAPIData from '../../utils/getAPIData';
 import Button from 'react-bootstrap/Button';
+import ServerSetupField from './ServerSetupField';
+import ConvertFieldToInput from '../../utils/ConvertFieldToInput';
+import ServerStatusField from './ServerStatusField';
 
 const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enums }) => {
     const [serverState,setServerState] = useState('');
@@ -15,9 +19,30 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
     const [qualiLength,setQualiLength] = useState(0);
     const [plusOneLap,setPlusOneLap] = useState(false);
     const [raceLength,setRaceLength] = useState(5);
+    const [damageType,setDamageType] = useState(0);
+    const [tireWearType,setTireWearType] = useState(0);
+    const [fuelUsageType,setFuelUsageType] = useState(0);
+    const [penalty,setPenalty] = useState(0);
+    const [allowedViews,setAllowedViews] = useState(0);
+    const [gridPos,setGridPos] = useState(0);
+    const [pitControl,setPitControl] = useState(0);
 
+    const [state,setState] = useState({});
+    const [writableAttributes,setWritableAttributes] = useState([]);
+    const [readOnlyAttributes,setReadOnlyAttributes] = useState([]);
+    const [attrInputInfo,setAttrInputInfo] = useState([]);
+
+    function updateState( fieldName, val ){
+        setState((prevState)=>{
+            let updState = Object.assign({},prevState);
+            updState[fieldName] = val;
+            console.log('updState:',updState);
+            return { ...updState };
+        });
+        console.log('state now:',state);
+    }
     function setCarClassById( classId ){
-        console.log('setCarClassById:',classId,'classes:',carClasses.length)
+        console.log('setCarClassById:',classId,'classes:',carClasses.length);
         setSelectedCarClass(classId); 
         let curClass = carClasses.find(cls => cls.value === classId);
         if( curClass ){
@@ -25,45 +50,30 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
         }
 
     }
-    function translateEnum( key, enumName ){
-        switch(enumName){
-            case 'damage':
-
-            case 'tire_wear':
-
-            case 'fuel_usage':
-
-            case 'penalties':
-
-            case 'allowed_view':
-
-            case 'grid_positions':
-
-            case 'pit_control':
-
-            case 'livetrack_preset':
-
-            case 'weather':
-
-        }
-    }
     async function loadServerSetup(){
         let status = await postAPIData('/api/session/status',{ attributes : true },true);
-        let attr = status.attributes;
-        // console.log('loadServerSetup!!!!:',attr);
         setServerState(status.state);
-        setSelectedTrack(attr.TrackId);
-        setCarClassById(attr.VehicleClassId);
-        setBotLevel(attr.OpponentDifficulty);
-        setRaceLength(attr.RaceLength);
-        setQualiLength(attr.QualifyLength);
-        setPracticeLength(attr.PracticeLength);
-
-        //Set from matching enumerations
-
-        console.log('enums:::',enums)  
-        for( let e in enums ){
-            console.log('e:',e);
+        let attrList = await getAPIData('/api/list/attributes/session');
+        // setWritableAttributes(() => [...attrList.list]);
+        // console.log('state:',serverState,'attrs:',writableAttributes.length,attrList.list.length)
+        //let readOnlyAttrList = attrList.filter(a => a.access = 'ReadOnly');
+        // console.log('readOnly:',readOnlyAttrList)
+        console.log('attrList:',attrList)
+        if( attrList.list ){
+            let inputInfo = [];
+            setState({ ...status.attributes })
+            attrList.list.forEach(a => {
+                //updateState(a.name,status.attributes[a.name]);
+                //console.log('a:',a)
+                inputInfo.push(
+                    ConvertFieldToInput(a)
+                );
+            });
+            inputInfo.sort((a,b) => a.disabled)
+            setAttrInputInfo([...inputInfo]);
+            console.log('inputInfo:',inputInfo);
+            setWritableAttributes([...attrList.list.filter(a => a.access === "ReadWrite")]);
+            setReadOnlyAttributes([...attrList.list.filter(a => a.access === "ReadOnly")]);
 
         }
     }
@@ -99,128 +109,73 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
 
     return (
         <p>
-            <h3>Basic Server Setup</h3>
-            <span>Status:       </span>
-            {
-                serverState === 'Running' ?
-                <Button variant="outline-success" disabled>Running</Button> :
-                (
-                    serverState === 'Idle' ?
-                    <Button variant="outline-warning" disabled>Idle</Button> :
-                    <Button variant="outline-danger" disabled>Server Status Unexpected!</Button>
-                )
-            }
-            <form onSubmit={ sendServerSetup }>
-                <div className="setup">
-                    <label>
-                        Server Name:
-                        <input disabled id='inpServerName' name='inpServerName' type='text' onInput={(e) => setServerName(e.target.value)} value={serverName}></input>
-                    </label>
-                    <br/>
-                    <label>
-                        Car Classes:
-                        <select onChange={e => { setCarClassById(e.target.value)}} value={selectedCarClass}>
-                            {
-                                carClasses.sort((a,b)=>a.name.localeCompare(b.name)).map((cls) => (
-                                    <option value={cls.value} key={cls.value}>{cls.name}</option>
-                                ))
-                            }
-                        </select>
-                    </label>
-                    {/* <br/>
-                    <label>
-                        Car Options:
-                        <select onChange={e => setSelectedCar(e.target.value)} value={selectedCar}>
-                            {
-                                cars.filter(car => car.class === selectedCarClassName).sort((a,b)=>a.name.localeCompare(b.name)).map((car) => (
-                                    <option value={car.id} key={car.id}>{car.name} ({car.class})</option>
-                                ))
-                            }
-                        </select>
-                    </label> */}
-                    <br/>
-                    <label>
-                        Track Options: 
-                        <select onChange={e => setSelectedTrack(e.target.value) } value={selectedTrack}>
-                            {tracks.map((track) => (
-                                <option value={track.id} key={track.id}>{track.name}</option>
-                            ))}
-                        </select>
-                    </label>
-                    <br/>
-                    <label>
-                        AI Level:
-                        <input type="number" id="botLevel" value={botLevel} onChange={e=> setBotLevel(e.target.value)} min="50" max="100"></input>
-                    </label>
-                    <br/>
-                    <label>
-                        Practice Length (minutes):
-                        <input type="number" id="practiceLength" value={practiceLength} onChange={e=> setPracticeLength(e.target.value)}></input>
-                    </label>  
-                    <br/>
-                    <label>
-                        Quali Length (minutes):
-                        <input type="number" id="qualiLength" value={qualiLength} onChange={e=> setQualiLength(e.target.value)}></input>
-                    </label>    
-                    <br/> 
-                    <label>
-                        Race Length (laps):
-                        <input type="number" id="raceLength" value={raceLength} onChange={e=> setRaceLength(e.target.value)}></input>
-                    </label>
-                    <br/>
-                    {/* <label>
-                        Plus One Lap?
-                        <input type="radio" id="plusOneTrue" name="plusOneFalse" value={"true"} onSelect={e=> setPlusOneLap(e.target.value)}>True</input>
-                        <input type="radio" id="plusOneFalse" name="plusOneFalse" value={"false"} onSelect={e=> setPlusOneLap(e.target.value)}>False</input>
-                    </label> */}
-                    <label>
-                        Flags:<br/>
-                        <input type="checkbox"></input>
-                    </label>
-                    <br/>
-                </div>
-                    <h1>Enums:</h1>
-                    {
-                        Object.keys(enums).map((e) => {
-                            let displayName = '';
-                            switch(e){
-                                case 'damage':
-                                    displayName = 'DamageType'
-                                case 'tire_wear':
-                                    displayName = 'TireWearType'
-                                case 'fuel_usage':
-                                    displayName = 'FuelUsageType'
-                                case 'penalties':
-                                    displayName = 'PenaltiesType'
-                                case 'allowed_view':
-                                    displayName = 'AllowedViews'
-                                case 'grid_positions':
-                                    displayName = 'GridLayout'
-                                case 'pit_control':
-                                    displayName = 'ManualPitStops'
-                                case 'livetrack_preset':
-                                    displayName = 'LiveTrackPresets'
-                                case 'weather':
-                                    displayName = 'WeatherEnums'
-                            }
-                            (<p>display name: displayName</p>)
-
-                        })
+            <div className='setup'>
+                <h3>Basic Server Setup</h3>
+                <span>Status:       </span>
+                {
+                    serverState === 'Running' ?
+                    <Button variant="outline-success" disabled>Running</Button> :
+                    (
+                        serverState === 'Idle' ?
+                        <Button variant="outline-warning" disabled>Idle</Button> :
+                        <Button variant="outline-danger" disabled>Server Status Unexpected!</Button>
+                        )
                     }
+            </div>
+            <form onSubmit={ sendServerSetup }>
+                <div>
+                    <div className="setup">
+                        <h4>Practice Settings:</h4>
+                        {
+                            attrInputInfo.filter(x => x.name.startsWith('Practice')).map((attr) => (
+                                <>{attr.readableName}<br/></>
+                            ))
+                        }
+                    </div>
+                    <div className="setup">
+                        <h4>Qualifying Settings:</h4>
+                        {
+                            attrInputInfo.filter(x => x.name.startsWith('Qualify')).map((attr) => (
+                                <>{attr.readableName}<br/></>
+                            ))
+                        }
+                    </div>
+                    <div className="setup">
+                        <h4>Race Settings:</h4>
+                        {
+                            attrInputInfo.filter(x => x.name.startsWith('Race')).map((attr) => (
+                                <>{attr.readableName} ({state[attr.name].value})<br/></>
+                            ))
+                        }
+                    </div>
+
+                    {/* {console.log('writable:',writableAttributes)}
+                    {
+                        writableAttributes ?
+                        writableAttributes.map((attr) => (
+                            <ServerSetupField attr={attr} field={attr.name} setField={(x) => updateState(x,attr.name)} enums={enums}/>
+                        )) :
+                        <>Writeable Attributes not found</>
+                    }
+                    {
+                        
+                    } */}
+                </div>
             </form>
             <button className="command" type='button' onClick={sendServerSetup}>Set Server</button>
-            <br/><br/><br/>
-            {/* <h3>All Editable Field Information:</h3>
-            {editableFields.map((field) => (
-                <p className='field-entry'>
-                    <b>Name:</b> {field.name} 
-                    <br/>
-                    <b>Type:</b> {field.type}
-                    <br/>
-                    <b>Description:  </b>
-                    <small>{field.description}</small>
-                </p>
-            ))} */}
+            <br/>
+            <h3> Read-Only Fields </h3>
+            <div className="setup">
+                Read Only Fields:
+                {
+                    attrInputInfo.filter(x => x.access==="ReadOnly").map((attr) =>(
+                        <ServerStatusField statusField={attr} state={state[attr.name]}/>
+                    ))
+                }
+                {/* {readOnlyAttributes.forEach((r) => {
+                    ConvertFieldToInput(r.name,state[r.name],readOnlyAttributes)
+                })} */}
+            </div>
             <label>
                 Send a Message!
                 <input type='text' onInput={(e) => setServerMessage(e.target.value)}></input>

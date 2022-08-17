@@ -15,6 +15,7 @@ const App = () => {
   const [editableFields,setEditableFields] = useState([]);
   const [flags,setFlags] = useState([]);
   const [enums,setEnums] = useState({});
+  const [lists,setLists] = useState({});
 
   useEffect(() => {
     async function getEditableFields(){
@@ -44,6 +45,19 @@ const App = () => {
       setEnums({ ... enumResponse });
       console.log('enumss??',enums)
     }
+    async function getLists(){
+      let trackResponse = await getAPIData('/api/list/tracks');      
+      let carClassResponse = await getAPIData('/api/list/vehicle_classes');
+      let carResponse = await getAPIData('/api/list/vehicles');
+      let flagResponse = await getAPIData('/api/list/flags');
+      let curLists = {
+        tracks: trackResponse,
+        vehicle_classes: carClassResponse,
+        vehicles: carResponse,
+        flags: flagResponse
+      }
+      setLists(curLists);
+    }
 
     getEditableFields();
     getTracks();
@@ -51,6 +65,7 @@ const App = () => {
     getCars();
     getFlags();
     getEnums();
+    getLists();
   },[])
 
   return ( 
@@ -76,7 +91,7 @@ const App = () => {
           <Tab eventKey="serverSetup" title="Server Setup">
             <>  
             <div>
-              <ServerSetupForm editableFields={editableFields} carClasses={carClasses} cars={cars} tracks={tracks} flags={flags} enums={enums}/>
+              <ServerSetupForm editableFields={editableFields} carClasses={carClasses} cars={cars} tracks={tracks} flags={flags} enums={enums} lists={lists}/>
             </div>
             </>
           </Tab>
