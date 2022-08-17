@@ -1,9 +1,9 @@
 import AMS2API from './AMS2API';
 
 async function postAPIData(subpath, options,convertToJson=false){
-    console.log('postAPIData api path:',AMS2API + subpath);
+    //console.log('postAPIData api path:',AMS2API + subpath);
     function checkResponse(res){
-        console.log('postAPIData res:',res);
+       // console.log('postAPIData res:',res);
       if( !res.ok ){
         const message = `An error occurred when posting Dedicated Server data: ${res.statusText}`;
         window.alert(message);

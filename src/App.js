@@ -3,7 +3,6 @@ import logo from './assets/skidmark-placeholder.png'
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import ServerSetupForm from './components/ServerSetup/ServerSetupForm';
-import ServerStatus from './components/ServerSetup/ServerStatus';
 import getAPIData from './utils/getAPIData';
 import postAPIData from './utils/postAPIData';
 
@@ -13,16 +12,11 @@ const App = () => {
   const [tracks,setTracks] = useState([]);
   const [formData,setFormData] = useState([]);
   const [apiData,setapiData] = useState([]);
-  const [serverStatus,setServerStatus] = useState({});
   const [editableFields,setEditableFields] = useState([]);
+  const [flags,setFlags] = useState([]);
+  const [enums,setEnums] = useState({});
 
   useEffect(() => {
-
-    async function getServerStatus(){
-      let status = await postAPIData('/api/session/status',{ attributes : true },true);
-      console.log('status!!!!:',status);
-      setServerStatus(status);
-    }
     async function getEditableFields(){
       let fieldObject = await getAPIData('/api/list/attributes/session');
       setEditableFields(fieldObject.list)
@@ -40,12 +34,23 @@ const App = () => {
       //console.log('carRes:',carResponse,'carss:',cars)
       setCars(carResponse.list)
     } 
+    async function getFlags(){
+      let flagResponse = await getAPIData('/api/list/flags');
+      setFlags(flagResponse.list);
+    }
+    async function getEnums(){
+      let enumResponse = await getAPIData('/api/list/enums');
+      console.log('enumsssss:',enumResponse)
+      setEnums({ ... enumResponse });
+      console.log('enumss??',enums)
+    }
 
-    getServerStatus();
     getEditableFields();
     getTracks();
     getCarClasses();
     getCars();
+    getFlags();
+    getEnums();
   },[])
 
   return ( 
@@ -71,8 +76,7 @@ const App = () => {
           <Tab eventKey="serverSetup" title="Server Setup">
             <>  
             <div>
-              <ServerSetupForm editableFields={editableFields} carClasses={carClasses} cars={cars} tracks={tracks}/>
-              <ServerStatus serverStatus={serverStatus} />
+              <ServerSetupForm editableFields={editableFields} carClasses={carClasses} cars={cars} tracks={tracks} flags={flags} enums={enums}/>
             </div>
             </>
           </Tab>
