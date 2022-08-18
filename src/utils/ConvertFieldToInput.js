@@ -33,10 +33,11 @@ function listTypeListName( f ){
 //     return [];
 // }
 // Intakes a field name and value, converts it if need be and outputs an object { field: '', value: '', type: ''}
-function ConvertFieldToInput( field ){
+function ConvertFieldToInput( field, curState ){
     let curField = { ...field };
     curField.disabled = field.access === 'ReadOnly';
     curField.isEnum = isEnumField(field.name);
+    curField.state = curState[field.name];
     if( curField.isEnum )
         curField.enumListName = enumListName(field.name);
     curField.readableName = readableName(field.name);

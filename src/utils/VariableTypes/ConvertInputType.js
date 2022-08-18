@@ -59,7 +59,7 @@ function ConvertInputType( field ){
             return 'flags';
         default: 
             if( fieldName ){
-                console.log('fieldName:',fieldName)
+                //console.log('fieldName:',fieldName)
                 if( fieldName.includes('WeatherSlot') || fieldName.includes('LiveTrackPreset')) //if is a weather field but doesn't define the number of slots
                     return 'enum';
                 if( fieldName.includes('MultiClassSlot') )

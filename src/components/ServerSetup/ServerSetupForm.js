@@ -2,36 +2,24 @@ import { useState, useEffect } from 'react';
 import postAPIData from '../../utils/postAPIData';
 import getAPIData from '../../utils/getAPIData';
 import Button from 'react-bootstrap/Button';
-import ServerSetupField from './ServerSetupField';
+import ServerSessionSetup from './ServerSessionSetup';
 import ConvertFieldToInput from '../../utils/ConvertFieldToInput';
 import ServerStatusField from './ServerStatusField';
+import SlotsDropdown from './SlotsDropdown';
+import ServerSetupField from './ServerSetupField';
 
 const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enums }) => {
     const [serverState,setServerState] = useState('');
-    const [serverName,setServerName] = useState('Skidmark Tour Official Server');
     const [serverMessage,setServerMessage] = useState('');
-    const [selectedCarClass,setSelectedCarClass] = useState(0);
-    const [selectedCarClassName,setSelectedCarClassName] = useState('')
-    const [selectedCar,setSelectedCar] = useState(0);
-    const [selectedTrack,setSelectedTrack] = useState(0);
-    const [botLevel,setBotLevel] = useState(85);
-    const [practiceLength,setPracticeLength] = useState(0);
-    const [qualiLength,setQualiLength] = useState(0);
-    const [plusOneLap,setPlusOneLap] = useState(false);
-    const [raceLength,setRaceLength] = useState(5);
-    const [damageType,setDamageType] = useState(0);
-    const [tireWearType,setTireWearType] = useState(0);
-    const [fuelUsageType,setFuelUsageType] = useState(0);
-    const [penalty,setPenalty] = useState(0);
-    const [allowedViews,setAllowedViews] = useState(0);
-    const [gridPos,setGridPos] = useState(0);
-    const [pitControl,setPitControl] = useState(0);
+
 
     const [state,setState] = useState({});
-    const [writableAttributes,setWritableAttributes] = useState([]);
-    const [readOnlyAttributes,setReadOnlyAttributes] = useState([]);
     const [attrInputInfo,setAttrInputInfo] = useState([]);
-
+    const [practiceSettings,setPracticeSettings] = useState([]);
+    const [qualiSettings,setQualiSettings] = useState([]);
+    const [raceSettings,setRaceSettings] = useState([]);
+    const [multiClassNumSlots,setMultiClassNumSlots] = useState({});
+    const [multiClassSlotsAttrs,setMultiClassSlotsAttrs] = useState({});
     function updateState( fieldName, val ){
         setState((prevState)=>{
             let updState = Object.assign({},prevState);
@@ -41,24 +29,11 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
         });
         console.log('state now:',state);
     }
-    function setCarClassById( classId ){
-        console.log('setCarClassById:',classId,'classes:',carClasses.length);
-        setSelectedCarClass(classId); 
-        let curClass = carClasses.find(cls => cls.value === classId);
-        if( curClass ){
-            setSelectedCarClassName(curClass.name);
-        }
-
-    }
     async function loadServerSetup(){
         let status = await postAPIData('/api/session/status',{ attributes : true },true);
         setServerState(status.state);
         let attrList = await getAPIData('/api/list/attributes/session');
-        // setWritableAttributes(() => [...attrList.list]);
-        // console.log('state:',serverState,'attrs:',writableAttributes.length,attrList.list.length)
-        //let readOnlyAttrList = attrList.filter(a => a.access = 'ReadOnly');
-        // console.log('readOnly:',readOnlyAttrList)
-        console.log('attrList:',attrList)
+        // console.log('attrList:',attrList)
         if( attrList.list ){
             let inputInfo = [];
             setState({ ...status.attributes })
@@ -66,36 +41,42 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                 //updateState(a.name,status.attributes[a.name]);
                 //console.log('a:',a)
                 inputInfo.push(
-                    ConvertFieldToInput(a)
+                    ConvertFieldToInput(a,state)
                 );
             });
             inputInfo.sort((a,b) => a.disabled)
-            setAttrInputInfo([...inputInfo]);
             console.log('inputInfo:',inputInfo);
-            setWritableAttributes([...attrList.list.filter(a => a.access === "ReadWrite")]);
-            setReadOnlyAttributes([...attrList.list.filter(a => a.access === "ReadOnly")]);
-
+            setPracticeSettings([ ...inputInfo.filter(x => x.name.startsWith('Practice'))]);
+            setQualiSettings([ ...inputInfo.filter(x => x.name.startsWith('Qualify'))]);
+            setRaceSettings([...inputInfo.filter(x => x.name.startsWith('Race'))]);
+            setMultiClassNumSlots({ ...inputInfo.find(x => x.name === "MultiClassSlots")});
+            setMultiClassSlotsAttrs([ ...inputInfo.filter( x => x.name.startsWith('MultiClassSlot') && x.name !== "MultiClassSlots")]);
+            console.log('num',multiClassNumSlots);
+            console.log('attr',multiClassSlotsAttrs);
+            setAttrInputInfo([...inputInfo]);
         }
     }
     function sendServerSetup(e){
-        console.log('Setup server with name:',serverName,'car:',selectedCar,'track:',selectedTrack,'sel:',selectedCarClass,selectedCarClassName);
+        // console.log('Setup server with name:',serverName,'car:',selectedCar,'track:',selectedTrack,'sel:',selectedCarClass,selectedCarClassName);
         e.preventDefault();
-        postAPIData(
-            '/api/session/set_attributes',
-            {
-                //session_Name: serverName,
-                session_VehicleClassId: selectedCarClass,
-                session_VehicleModelId: selectedCar,
-                session_TrackId: selectedTrack,
-                session_OpponentDifficulty: botLevel,
-                session_PracticeLength: practiceLength,
-                session_QualifyLength: qualiLength, 
-                session_RaceLength: raceLength
-            }
-        ).then((res) => {
-            window.alert('session settings sent');
-            console.log(res);
-        })
+        console.log('sendServerSEtup called:::')
+        console.log(state);
+        // postAPIData(
+        //     '/api/session/set_attributes',
+        //     {
+        //         //session_Name: serverName,
+        //         session_VehicleClassId: selectedCarClass,
+        //         session_VehicleModelId: selectedCar,
+        //         session_TrackId: selectedTrack,
+        //         session_OpponentDifficulty: botLevel,
+        //         session_PracticeLength: practiceLength,
+        //         session_QualifyLength: qualiLength, 
+        //         session_RaceLength: raceLength
+        //     }
+        // ).then((res) => {
+        //     window.alert('session settings sent');
+        //     console.log(res);
+        // })
     }
     function sendServerMessage(){
         console.log('Sending message:',serverMessage)
@@ -105,7 +86,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
     }
     useEffect(() => {
         loadServerSetup();
-    },[carClasses])
+    },[])
 
     return (
         <p>
@@ -125,17 +106,47 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
             <form onSubmit={ sendServerSetup }>
                 <div>
                     <div className="setup">
-                        <h4>Practice Settings:</h4>
+                        <h4>General Settings</h4>
                         {
-                            attrInputInfo.filter(x => x.name.startsWith('Practice')).map((attr) => (
-                                <>{attr.readableName}<br/></>
+                            attrInputInfo.filter(x => {
+                                return !x.name.startsWith('Race') && !x.name.startsWith('Practice') && !x.name.startsWith('Qualify') && x.inputType !== 'none' && !x.name.includes('MultiClass')
+                            }).map(attr =>(
+                                <ServerSetupField attr={attr} state={state} enums={enums} updateState={updateState}/>
                             ))
                         }
                     </div>
-                    <div className="setup">
+                    {
+                        multiClassSlotsAttrs.length ?
+                        <SlotsDropdown 
+                            numSlotsAttr={multiClassNumSlots} 
+                            slotsAttrs={multiClassSlotsAttrs}
+                            state={state}
+                            updateState={updateState}
+                            enums={enums}/>  : <></>
+                    }
+                    <ServerSessionSetup 
+                        fieldList={practiceSettings} 
+                        state={state} 
+                        header="Practice Settings:" 
+                        enums={enums} 
+                        updateState={updateState}/>
+                    <ServerSessionSetup 
+                        fieldList={qualiSettings} 
+                        state={state} 
+                        header="Qualifying Settings:" 
+                        enums={enums} 
+                        updateState={updateState}/>
+                    <ServerSessionSetup 
+                        fieldList={raceSettings} 
+                        state={state} 
+                        header="Race Settings:" 
+                        enums={enums} 
+                        updateState={updateState}/>
+
+                    {/* <div className="setup">
                         <h4>Qualifying Settings:</h4>
                         {
-                            attrInputInfo.filter(x => x.name.startsWith('Qualify')).map((attr) => (
+                            qualiSettings.map((attr) => (
                                 <>{attr.readableName}<br/></>
                             ))
                         }
@@ -143,12 +154,18 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                     <div className="setup">
                         <h4>Race Settings:</h4>
                         {
-                            attrInputInfo.filter(x => x.name.startsWith('Race')).map((attr) => (
+                            raceSettings.map((attr) => (
                                 <>{attr.readableName} ({state[attr.name].value})<br/></>
                             ))
                         }
+                    </div> */}
+                    <div className="setup">
+                        <h4>Unsupported fields</h4>
+                        {attrInputInfo.filter(x => x.inputType === 'none').map(attr =>(
+                                    <>{attr.readableName}<br/></>
+                                ))
+                        }
                     </div>
-
                     {/* {console.log('writable:',writableAttributes)}
                     {
                         writableAttributes ?
@@ -172,9 +189,6 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                         <ServerStatusField statusField={attr} state={state[attr.name]}/>
                     ))
                 }
-                {/* {readOnlyAttributes.forEach((r) => {
-                    ConvertFieldToInput(r.name,state[r.name],readOnlyAttributes)
-                })} */}
             </div>
             <label>
                 Send a Message!
