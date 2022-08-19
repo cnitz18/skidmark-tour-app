@@ -37,7 +37,17 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                                 checked={state[attr.name] === 1}
                                 onChange={e => { updateState(attr.name,e.target.checked ? 1 : 0) }}
                             />:
-                            <></>
+                            (
+                                attr.inputType === "flags" ? 
+                                <div>
+                                    <input 
+                                        type="number"
+                                        value={state[attr.name]} 
+                                        onChange={e => updateState(attr.name,e.target.value)}></input>
+                                    <a href="https://docs.google.com/spreadsheets/d/1dSst7oaWrwbzhZCRZnfBlfdM-ob2htHyvS4i0g3M-Qw/edit#gid=0" target="_blank">Flags Calculator</a>
+                                    </div>:
+                                <></>
+                            )
                         )
                     )
                 )
