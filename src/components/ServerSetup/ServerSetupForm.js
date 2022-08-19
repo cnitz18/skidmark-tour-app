@@ -85,7 +85,7 @@ const ServerSetupForm = ({ enums, lists }) => {
             postState
         ).then((res) => {
             window.alert('Session settings sent.');
-            //console.log(res);
+            console.log("post response:",res);
         })
     }
     function sendServerMessage(){
@@ -174,7 +174,7 @@ const ServerSetupForm = ({ enums, lists }) => {
                     <div className="setup">
                         <h4>Unsupported fields</h4>
                         {attrInputInfo.filter(x => x.inputType === 'none').map(attr =>(
-                                    <>{attr.readableName}<br/></>
+                                    <>{attr.readableName + ": (Current Value: " +  + " )"}<br/></>
                                 ))
                         }
                     </div>

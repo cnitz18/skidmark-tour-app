@@ -15,7 +15,7 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                         {   
                             enums.length ? 
                             enums.map(e => (
-                                <option value={e.value} id={e.id} key={e.id}>{e.name}</option>
+                                <option value={e.value} id={e.id} key={e.value}>{e.name}</option>
                             )) : <></>
                         }
                     </select>:
@@ -25,7 +25,7 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                             {
                                 list.length ? 
                                 list.map(l => (
-                                    <option value={l.id??l.value} id={l.value} key={l.value}>{l.name}</option>
+                                    <option value={l.id??l.value} id={l.value} key={l.id??l.value}>{l.name}</option>
                                 )) : <></>
                             }                            
                         </select>:

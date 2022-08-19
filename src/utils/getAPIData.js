@@ -12,20 +12,12 @@ async function getAPIData(subpath){
         return;
       }
     }
-    const requestOptions = {
-      // method: 'POST',
-      headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Referrer-Policy':''
-      },
-  }
-  let response = await fetch(AMS2API + subpath,{referrerPolicy: "no-referrer"});
-    //let response = await fetch(AMS2API + subpath);
-    checkResponse(response);
-    let jsonRes = await response.json();
-    //console.log('jsonres:',subpath,jsonRes)
-    return jsonRes.response;
+    let response = await fetch(AMS2API + subpath,{referrerPolicy: "no-referrer"});
+      //let response = await fetch(AMS2API + subpath);
+      checkResponse(response);
+      let jsonRes = await response.json();
+      //console.log('jsonres:',subpath,jsonRes)
+      return jsonRes.response;
   }catch(err){
     console.error('getAPIData error:',err);
     throw err;
