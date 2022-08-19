@@ -13,7 +13,6 @@ function ConvertInputType( field ){
             return 'enum';
         case 'TrackId':
         case 'VehicleClassId':
-        case 'VehicleModelId':
             return 'list';
         case "ServerControlsSetup":
         case "ServerControlsTrack":

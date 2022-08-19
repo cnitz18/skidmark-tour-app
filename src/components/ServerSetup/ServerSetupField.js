@@ -25,7 +25,7 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                             {
                                 list.length ? 
                                 list.map(l => (
-                                    <option value={l.value} id={l.value} key={l.value}>{l.name}</option>
+                                    <option value={l.id??l.value} id={l.value} key={l.value}>{l.name}</option>
                                 )) : <></>
                             }                            
                         </select>:
@@ -35,7 +35,7 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                                 type="switch"
                                 id={attr.name}
                                 checked={state[attr.name] === 1}
-                                onChange={e => { console.log('val:',e.target.value,'checked:',e.target.checked); updateState(attr.name,e.target.checked ? 1 : 0) }}
+                                onChange={e => { updateState(attr.name,e.target.checked ? 1 : 0) }}
                             />:
                             <></>
                         )

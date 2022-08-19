@@ -120,7 +120,9 @@ const ServerSetupForm = ({ enums, lists }) => {
                         {
                             attrInputInfo.length && Object.keys(enums).length && Object.keys(lists).length ?
                             attrInputInfo.filter(x => {
-                                return !x.name.startsWith('Race') && !x.name.startsWith('Practice') && !x.name.startsWith('Qualify') && x.inputType !== 'none' && !x.name.includes('MultiClass')
+                                return !x.name.startsWith('Race') && !x.name.startsWith('Practice') 
+                                && !x.name.startsWith('Qualify') && x.inputType !== 'none' && !x.name.includes('MultiClass')
+                                && x.access !== "ReadOnly"
                             }).map(attr =>(
                                 <ServerSetupField 
                                     attr={attr} 
