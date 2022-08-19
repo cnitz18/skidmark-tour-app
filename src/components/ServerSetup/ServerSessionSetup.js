@@ -22,6 +22,7 @@ const ServerSessionSetup = ({ fieldList, state, header, enums, updateState }) =>
     },[fieldList])
     return (
         <>
+            <br/>
             <h4>{header}</h4>
             <div className="setup">
                 {otherSettings.map(attr => (

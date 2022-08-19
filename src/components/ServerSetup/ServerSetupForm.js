@@ -8,12 +8,13 @@ import ServerStatusField from './ServerStatusField';
 import SlotsDropdown from './SlotsDropdown';
 import ServerSetupField from './ServerSetupField';
 
-const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enums }) => {
+const ServerSetupForm = ({ enums, lists }) => {
     const [serverState,setServerState] = useState('');
     const [serverMessage,setServerMessage] = useState('');
 
 
     const [state,setState] = useState({});
+    const [stateUpdated,setStateUpdated] = useState({});
     const [attrInputInfo,setAttrInputInfo] = useState([]);
     const [practiceSettings,setPracticeSettings] = useState([]);
     const [qualiSettings,setQualiSettings] = useState([]);
@@ -21,62 +22,71 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
     const [multiClassNumSlots,setMultiClassNumSlots] = useState({});
     const [multiClassSlotsAttrs,setMultiClassSlotsAttrs] = useState({});
     function updateState( fieldName, val ){
+        //console.log(`setting sttate(${fieldName},${val})...`)
         setState((prevState)=>{
             let updState = Object.assign({},prevState);
             updState[fieldName] = val;
-            console.log('updState:',updState);
+            //console.log('updState:',updState);
             return { ...updState };
         });
-        console.log('state now:',state);
+        setStateUpdated((prevState) =>{
+            let updState = Object.assign({},prevState);
+            updState[fieldName] = true;
+            //console.log('updState:',updState);
+            return { ...updState };
+        })
+        console.log('state now:',state[fieldName]);
+        console.log('stateUpdated now:',stateUpdated[fieldName])
     }
     async function loadServerSetup(){
         let status = await postAPIData('/api/session/status',{ attributes : true },true);
         setServerState(status.state);
         let attrList = await getAPIData('/api/list/attributes/session');
-        // console.log('attrList:',attrList)
         if( attrList.list ){
             let inputInfo = [];
             setState({ ...status.attributes })
+            let obj = {};
+            Object.keys(status.attributes).forEach(a => obj[a] = false);
+            setStateUpdated({ ...obj })
             attrList.list.forEach(a => {
-                //updateState(a.name,status.attributes[a.name]);
-                //console.log('a:',a)
                 inputInfo.push(
                     ConvertFieldToInput(a,state)
                 );
             });
-            inputInfo.sort((a,b) => a.disabled)
-            console.log('inputInfo:',inputInfo);
+            inputInfo.sort((a,b) => a.disabled);
+
             setPracticeSettings([ ...inputInfo.filter(x => x.name.startsWith('Practice'))]);
             setQualiSettings([ ...inputInfo.filter(x => x.name.startsWith('Qualify'))]);
             setRaceSettings([...inputInfo.filter(x => x.name.startsWith('Race'))]);
             setMultiClassNumSlots({ ...inputInfo.find(x => x.name === "MultiClassSlots")});
             setMultiClassSlotsAttrs([ ...inputInfo.filter( x => x.name.startsWith('MultiClassSlot') && x.name !== "MultiClassSlots")]);
-            console.log('num',multiClassNumSlots);
-            console.log('attr',multiClassSlotsAttrs);
-            setAttrInputInfo([...inputInfo]);
+            setAttrInputInfo([...inputInfo]); 
         }
     }
     function sendServerSetup(e){
-        // console.log('Setup server with name:',serverName,'car:',selectedCar,'track:',selectedTrack,'sel:',selectedCarClass,selectedCarClassName);
         e.preventDefault();
-        console.log('sendServerSEtup called:::')
-        console.log(state);
-        // postAPIData(
-        //     '/api/session/set_attributes',
-        //     {
-        //         //session_Name: serverName,
-        //         session_VehicleClassId: selectedCarClass,
-        //         session_VehicleModelId: selectedCar,
-        //         session_TrackId: selectedTrack,
-        //         session_OpponentDifficulty: botLevel,
-        //         session_PracticeLength: practiceLength,
-        //         session_QualifyLength: qualiLength, 
-        //         session_RaceLength: raceLength
-        //     }
-        // ).then((res) => {
-        //     window.alert('session settings sent');
-        //     console.log(res);
-        // })
+        //console.log('sendServerSEtup called:::')
+        //console.log(state);
+
+        let newStateUpdated = { ...stateUpdated };
+        let postState = {};
+        for( let field in stateUpdated ){
+            if( stateUpdated[field] ){
+                postState['session_'+field] = state[field];
+                newStateUpdated[field] = false;
+            }
+        }
+        //console.log("postState:'",postState);
+        setStateUpdated(() =>{
+            return { ...newStateUpdated };
+        })
+        postAPIData(
+            '/api/session/set_attributes',
+            postState
+        ).then((res) => {
+            window.alert('session settings sent');
+            console.log(res);
+        })
     }
     function sendServerMessage(){
         console.log('Sending message:',serverMessage)
@@ -108,22 +118,38 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                     <div className="setup">
                         <h4>General Settings</h4>
                         {
+                            attrInputInfo.length && Object.keys(enums).length && Object.keys(lists).length ?
                             attrInputInfo.filter(x => {
                                 return !x.name.startsWith('Race') && !x.name.startsWith('Practice') && !x.name.startsWith('Qualify') && x.inputType !== 'none' && !x.name.includes('MultiClass')
                             }).map(attr =>(
-                                <ServerSetupField attr={attr} state={state} enums={enums} updateState={updateState}/>
-                            ))
+                                <ServerSetupField 
+                                    attr={attr} 
+                                    state={state} 
+                                    enums={
+                                        attr.inputType === 'enum' ? 
+                                        enums[attr.enumListName].list :
+                                        []
+                                    } 
+                                    updateState={updateState} 
+                                    list={ 
+                                        attr.inputType==='list' ? 
+                                        lists[attr.typeListName].list : 
+                                        []
+                                    }/>
+                            )) :
+                            <></>
                         }
                     </div>
                     {
-                        multiClassSlotsAttrs.length ?
+                        multiClassSlotsAttrs.length && lists['vehicle_classes'] ?
                         <SlotsDropdown 
                             numSlotsAttr={multiClassNumSlots} 
                             slotsAttrs={multiClassSlotsAttrs}
                             state={state}
                             updateState={updateState}
-                            enums={enums}/>  : <></>
+                            list={lists['vehicle_classes'].list}/>  : <></>
                     }
+
                     <ServerSessionSetup 
                         fieldList={practiceSettings} 
                         state={state} 
@@ -134,7 +160,7 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                         fieldList={qualiSettings} 
                         state={state} 
                         header="Qualifying Settings:" 
-                        enums={enums} 
+                        enums={enums}
                         updateState={updateState}/>
                     <ServerSessionSetup 
                         fieldList={raceSettings} 
@@ -143,22 +169,6 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                         enums={enums} 
                         updateState={updateState}/>
 
-                    {/* <div className="setup">
-                        <h4>Qualifying Settings:</h4>
-                        {
-                            qualiSettings.map((attr) => (
-                                <>{attr.readableName}<br/></>
-                            ))
-                        }
-                    </div>
-                    <div className="setup">
-                        <h4>Race Settings:</h4>
-                        {
-                            raceSettings.map((attr) => (
-                                <>{attr.readableName} ({state[attr.name].value})<br/></>
-                            ))
-                        }
-                    </div> */}
                     <div className="setup">
                         <h4>Unsupported fields</h4>
                         {attrInputInfo.filter(x => x.inputType === 'none').map(attr =>(
@@ -166,27 +176,17 @@ const ServerSetupForm = ({ editableFields, cars, tracks, carClasses, flags, enum
                                 ))
                         }
                     </div>
-                    {/* {console.log('writable:',writableAttributes)}
-                    {
-                        writableAttributes ?
-                        writableAttributes.map((attr) => (
-                            <ServerSetupField attr={attr} field={attr.name} setField={(x) => updateState(x,attr.name)} enums={enums}/>
-                        )) :
-                        <>Writeable Attributes not found</>
-                    }
-                    {
-                        
-                    } */}
                 </div>
             </form>
             <button className="command" type='button' onClick={sendServerSetup}>Set Server</button>
             <br/>
             <h3> Read-Only Fields </h3>
             <div className="setup">
-                Read Only Fields:
                 {
                     attrInputInfo.filter(x => x.access==="ReadOnly").map((attr) =>(
-                        <ServerStatusField statusField={attr} state={state[attr.name]}/>
+                        <ServerStatusField 
+                            statusField={attr} 
+                            state={state[attr.name]}/>
                     ))
                 }
             </div>

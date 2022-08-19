@@ -26,12 +26,8 @@ function enumListName( f ){
 function listTypeListName( f ){
     return ListTypeToListName.default[f];
 }
-// function getEnumList( f ){
-//     let name = enumListName(f);
-//     if( enums[name] )
-//         return enums[name].list
-//     return [];
-// }
+
+
 // Intakes a field name and value, converts it if need be and outputs an object { field: '', value: '', type: ''}
 function ConvertFieldToInput( field, curState ){
     let curField = { ...field };

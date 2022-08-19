@@ -41,9 +41,9 @@ const App = () => {
     }
     async function getEnums(){
       let enumResponse = await getAPIData('/api/list/enums');
-      console.log('enumsssss:',enumResponse)
+      //console.log('enumsssss:',enumResponse)
       setEnums({ ... enumResponse });
-      console.log('enumss??',enums)
+      //console.log('enumss??',enums)
     }
     async function getLists(){
       let trackResponse = await getAPIData('/api/list/tracks');      
@@ -56,7 +56,8 @@ const App = () => {
         vehicles: carResponse,
         flags: flagResponse
       }
-      setLists(curLists);
+      setLists({...curLists});
+      //console.log('curLists:',curLists)
     }
 
     getEditableFields();
@@ -69,7 +70,6 @@ const App = () => {
   },[])
 
   return ( 
-    
       <div className="container">
         <img src={logo} alt='The Skidmarks'/>
         <Tabs defaultActiveKey="serverSetup" className='mb-3' id='tabs'>
@@ -88,10 +88,11 @@ const App = () => {
                 Race Results Under Construction
             </>
           </Tab>
+
           <Tab eventKey="serverSetup" title="Server Setup">
             <>  
             <div>
-              <ServerSetupForm editableFields={editableFields} carClasses={carClasses} cars={cars} tracks={tracks} flags={flags} enums={enums} lists={lists}/>
+              <ServerSetupForm enums={enums} lists={lists}/>
             </div>
             </>
           </Tab>
