@@ -100,8 +100,8 @@ const ServerSetupForm = ({ enums, lists }) => {
 
     return (
         <p>
-            <div className='setup'>
                 <h3>Basic Server Setup</h3>
+            <div className='setup'>
                 <span>Status:       </span>
                 {
                     serverState === 'Running' ?
