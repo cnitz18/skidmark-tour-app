@@ -5,8 +5,9 @@ async function getAPIData(subpath){
   try{
 
     function checkResponse(res){
+      //console.log('checkResponse:',res)
       if( !res.ok ){
-        console.error(res);
+        //console.error(res);
         const message = `An error occurred when getting Dedicated Server data: ${res.statusText}`;
         window.alert(message);
         return;
@@ -17,7 +18,7 @@ async function getAPIData(subpath){
       checkResponse(response);
       let jsonRes = await response.json();
       //console.log('jsonres:',subpath,jsonRes)
-      return jsonRes.response;
+      return jsonRes.response ?? jsonRes;
   }catch(err){
     console.error('getAPIData error:',err);
     throw err;

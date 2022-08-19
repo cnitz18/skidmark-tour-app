@@ -7,6 +7,7 @@ import ConvertFieldToInput from '../../utils/ConvertFieldToInput';
 import ServerStatusField from './ServerStatusField';
 import SlotsDropdown from './SlotsDropdown';
 import ServerSetupField from './ServerSetupField';
+import ServerSetupWarning from './ServerSetupWarning';
 
 const ServerSetupForm = ({ enums, lists }) => {
     const [serverState,setServerState] = useState('');
@@ -84,7 +85,7 @@ const ServerSetupForm = ({ enums, lists }) => {
             '/api/session/set_attributes',
             postState
         ).then((res) => {
-            window.alert('Session settings sent.');
+            window.alert('Session settings sent, received response:',res.status);
             console.log("post response:",res);
         })
     }
@@ -94,13 +95,23 @@ const ServerSetupForm = ({ enums, lists }) => {
             window.alert('Message Sent');
         })
     }
+    function advanceSession(){
+        getAPIData('/api/session/advance')
+        .then((res) => {
+            window.alert("Session advance command sent, response:  '" + (res ? res.result : '') +"'")
+        })
+    }
     useEffect(() => {
         loadServerSetup();
     },[])
 
     return (
         <div>
-            <h3>Basic Server Setup</h3>
+            <ServerSetupWarning show={true}/>
+            <div className="setup">
+                <h3>Basic Server Setup</h3>
+                <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button>
+            </div>
             <div className='setup'>
                 <span>Status:       </span>
                 {

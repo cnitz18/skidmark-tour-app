@@ -2,7 +2,7 @@ let EnumToListName = {
     "DamageType" : 'damage',
     "TireWearType": 'tire_wear',
     "FuelUsageType": 'fuel_usage',
-    "Penalties": 'penalties',
+    "PenaltiesType": 'penalties',
     "AllowedViews": 'allowed_view',
     "GridLayout": 'grid_positions',
     "ManualPitStops": 'pit_control',

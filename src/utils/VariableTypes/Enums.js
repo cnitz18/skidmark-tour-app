@@ -2,7 +2,7 @@ let Enums = [
     "DamageType",
     "TireWearType",
     "FuelUsageType",
-    "Penalties",
+    "PenaltiesType",
     "AllowedViews",
     "GridLayout",
     "PitControl",

@@ -4,7 +4,7 @@ function ConvertInputType( field ){
         case "DamageType":
         case "TireWearType":
         case "FuelUsageType":
-        case "Penalties":
+        case "PenaltiesType":
         case "AllowedViews":
         case "GridLayout":
         case "PitControl":
