@@ -99,8 +99,8 @@ const ServerSetupForm = ({ enums, lists }) => {
     },[])
 
     return (
-        <p>
-                <h3>Basic Server Setup</h3>
+        <div>
+            <h3>Basic Server Setup</h3>
             <div className='setup'>
                 <span>Status:       </span>
                 {
@@ -113,6 +113,12 @@ const ServerSetupForm = ({ enums, lists }) => {
                         )
                     }
             </div>
+            <label>
+                Send a Message!
+                <input type='text' onInput={(e) => setServerMessage(e.target.value)}></input>
+                <button type='button' onClick={sendServerMessage} className="command">Send</button>
+            </label>
+            <br/>
             <form onSubmit={ sendServerSetup }>
                 <div>
                     <div className="setup">
@@ -172,9 +178,9 @@ const ServerSetupForm = ({ enums, lists }) => {
                         updateState={updateState}/>
 
                     <div className="setup">
-                        <h4>Unsupported fields</h4>
+                        <h4>Unsupported Fields(WIP): </h4>
                         {attrInputInfo.filter(x => x.inputType === 'none').map(attr =>(
-                                    <>{attr.readableName + ": (Current Value: " +  + " )"}<br/></>
+                                    <>{attr.readableName + ": (Current Value: " + state[attr.name] + " )"}<br/></>
                                 ))
                         }
                     </div>
@@ -192,13 +198,9 @@ const ServerSetupForm = ({ enums, lists }) => {
                     ))
                 }
             </div>
-            <label>
-                Send a Message!
-                <input type='text' onInput={(e) => setServerMessage(e.target.value)}></input>
-                <button type='button' onClick={sendServerMessage} className="command">Send</button>
-            </label>
+
             <br/> <br/> <br/>
-        </p>
+        </div>
     );
 };
 export default ServerSetupForm;
