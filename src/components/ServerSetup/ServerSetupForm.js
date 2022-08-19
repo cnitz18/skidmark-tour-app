@@ -35,8 +35,8 @@ const ServerSetupForm = ({ enums, lists }) => {
             //console.log('updState:',updState);
             return { ...updState };
         })
-        console.log('state now:',state[fieldName]);
-        console.log('stateUpdated now:',stateUpdated[fieldName])
+        //console.log('state now:',state[fieldName]);
+        //console.log('stateUpdated now:',stateUpdated[fieldName])
     }
     async function loadServerSetup(){
         let status = await postAPIData('/api/session/status',{ attributes : true },true);
@@ -76,7 +76,7 @@ const ServerSetupForm = ({ enums, lists }) => {
                 newStateUpdated[field] = false;
             }
         }
-        //console.log("postState:'",postState);
+        console.log("postState:'",postState);
         setStateUpdated(() =>{
             return { ...newStateUpdated };
         })
@@ -84,12 +84,12 @@ const ServerSetupForm = ({ enums, lists }) => {
             '/api/session/set_attributes',
             postState
         ).then((res) => {
-            window.alert('session settings sent');
-            console.log(res);
+            window.alert('Session settings sent.');
+            //console.log(res);
         })
     }
     function sendServerMessage(){
-        console.log('Sending message:',serverMessage)
+        //console.log('Sending message:',serverMessage)
         postAPIData('/api/session/send_chat',{ message: serverMessage }).then((res) => {
             window.alert('Message Sent');
         })

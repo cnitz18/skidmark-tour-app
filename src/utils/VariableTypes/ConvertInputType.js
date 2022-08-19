@@ -20,7 +20,6 @@ function ConvertInputType( field ){
         case "ServerControlsVehicle":
         case "PitWhiteLinePenalty":
         case "DriveThroughPenalty":
-        case "AllowedCutsBeforePenalty":
         case "ManualPitStops":
         case "ManualRollingStarts":
         case "RaceExtraLap":
@@ -49,6 +48,7 @@ function ConvertInputType( field ){
         case "RaceDateMonth":
         case "RaceDateDay":
         case "RaceDateHour":
+        case "AllowedCutsBeforePenalty":
             return 'number'
         case "SessionState":
         case "SessionStage":

@@ -2,7 +2,7 @@
 import AMS2API from "../../utils/AMS2API";
 const ServerStatus = ({ serverStatus, editableFields }) => {
     let handleSubmit = (event) => {
-        console.log('submitted:',event);
+        //console.log('submitted:',event);
         event.preventDefault();
     }
     let capitalizeFirstLetter = function(str){

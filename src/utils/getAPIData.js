@@ -24,7 +24,7 @@ async function getAPIData(subpath){
     //let response = await fetch(AMS2API + subpath);
     checkResponse(response);
     let jsonRes = await response.json();
-    console.log('jsonres:',subpath,jsonRes)
+    //console.log('jsonres:',subpath,jsonRes)
     return jsonRes.response;
   }catch(err){
     console.error('getAPIData error:',err);
