@@ -17,21 +17,6 @@ const PlayerStatsEntry = ({ player, lists }) =>{
         }
         return sumPosition ? (sumPosition / numRaces).toFixed(2) : 0;
     };
-
-    let getFavoriteCar = () => {
-        let curMax = 0;
-        let curFavorite = 0;
-        for( let id in player.counts.vehicle_distances ){
-            let dist = player.counts.vehicle_distances[id];
-            if( dist > curMax ){
-                curFavorite = id;
-                curMax = dist;
-            }
-        }
-        console.log(player.name,'fav ccar::',curFavorite,lists['vehicles'].list.find(v => v.id === curFavorite))
-        return curFavorite;
-    }
-
     let getFavorites = () => {
         ['track_distances','vehicle_distances'].forEach((type) =>{
             let curMax = 0;
@@ -60,7 +45,6 @@ const PlayerStatsEntry = ({ player, lists }) =>{
                         <h5>{player.name}</h5>
                     </div>
                     <div>
-
                     </div>
                     <div>
                         <span>Last Joined: </span>
