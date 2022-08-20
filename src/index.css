@@ -35,6 +35,17 @@ body {
   display: grid;
 }
 
+.history-entry {
+  background: #f4f4f4;
+  margin: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: grid;
+}
+.history-entry-data {
+  display:grid; 
+  grid-template-columns: 2fr 2fr 2fr 1fr;
+}
 
 .nav-link {
   color: steelblue;
