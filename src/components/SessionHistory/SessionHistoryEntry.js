@@ -50,7 +50,6 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
                         Details:    
                     </Accordion.Header>   
                     <Accordion.Body>
-                        {console.log('lists:',lists)}
                         {/* 
                          add some more details about the server/race here
                         */}

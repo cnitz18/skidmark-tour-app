@@ -5,6 +5,7 @@ import Tab from 'react-bootstrap/Tab';
 import ServerSetupForm from './components/ServerSetup/ServerSetupForm';
 import getAPIData from './utils/getAPIData';
 import SessionHistory from './components/SessionHistory/SessionHistory'
+import PlayerStats from './components/PlayerStats/PlayerStats';
 
 const App = () => {
   const [enums,setEnums] = useState({});
@@ -49,7 +50,6 @@ const App = () => {
           </Tab>
           <Tab eventKey="history" title="Session History">
             <>
-                [Under Construction]
                 <SessionHistory enums={enums} lists={lists}/>
             </>
           </Tab>
@@ -62,7 +62,7 @@ const App = () => {
           </Tab>
           <Tab eventKey="playerStats" title="Player Statistics">
             <>
-            
+              <PlayerStats lists={lists}/>
             </>
           </Tab>
           <Tab eventKey="serverStats" title="Server Statistics">

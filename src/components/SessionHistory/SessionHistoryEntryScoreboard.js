@@ -13,13 +13,12 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
         if( str === '0' )
             return '(N/A)'
         let outputString = `${minutes}:${(seconds / 10) < 1 ? '0'+seconds:seconds}:${decimals}`;
-        console.log('num:',num,'outputString:',outputString)
+        //console.log('num:',num,'outputString:',outputString)
         return outputString;
     }
 
     return (
         <Table striped bordered hover>
-            {console.log(race)}
             <thead>
                 <tr>
                     <th>Finish Position</th>
