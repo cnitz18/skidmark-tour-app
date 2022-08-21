@@ -6,6 +6,7 @@ import ServerSetupForm from './components/ServerSetup/ServerSetupForm';
 import getAPIData from './utils/getAPIData';
 import SessionHistory from './components/SessionHistory/SessionHistory'
 import PlayerStats from './components/PlayerStats/PlayerStats';
+import ServerStats from './components/ServerStats/ServerStats';
 
 const App = () => {
   const [enums,setEnums] = useState({});
@@ -66,7 +67,7 @@ const App = () => {
             </>
           </Tab>
           <Tab eventKey="serverStats" title="Server Statistics">
-
+            <ServerStats lists={lists}/>
           </Tab>
         </Tabs>
         <footer>

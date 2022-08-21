@@ -9,7 +9,7 @@ const SessionHistory = ({ enums, lists }) => {
         getAPIData('/sms_stats_data/stats/history')
         .then((res) => {
             if( res ){
-                console.log('setting history!')
+                //console.log('setting history!')
                 setHistory([ ...res ]);
             }
         })

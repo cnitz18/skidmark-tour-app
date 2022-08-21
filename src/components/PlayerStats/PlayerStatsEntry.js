@@ -28,7 +28,7 @@ const PlayerStatsEntry = ({ player, lists }) =>{
                     curMax = dist;
                 }
             }
-            console.log('setting fav:',type,curFavorite)
+            //console.log('setting fav:',type,curFavorite)
             if( type === 'track_distances' )
                 setFavTrack(curFavorite);
             else setFavCar(curFavorite);
@@ -36,7 +36,9 @@ const PlayerStatsEntry = ({ player, lists }) =>{
     }
     useEffect(() => {
         getFavorites();
-    },[])
+        setRaceWins(player.counts?.race?.positions[1] ?? 0);
+        setPolePositions(player.counts?.qualify?.positions[1] ?? 0);
+    },[player])
     return (
         <Accordion>
             <div className="history-entry">

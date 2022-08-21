@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Accordion } from "react-bootstrap";
 import PlayerStatsEntry from "./PlayerStatsEntry";
 import getAPIData from "../../utils/getAPIData";
 
@@ -10,7 +9,7 @@ const PlayerStats = ({ lists}) => {
         getAPIData('/sms_stats_data/stats/players')
         .then((res) => {
             if( res ){
-                console.log('setting player stats!')
+                //console.log('setting player stats!')
                 setStats({ ...res });
             }
         })
