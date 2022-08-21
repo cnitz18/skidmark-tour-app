@@ -13,7 +13,7 @@ const SessionHistory = ({ enums, lists }) => {
                 setHistory([ ...res ]);
             }
         })
-    },[]);
+    },[lists]);
 
     return (
         <>
