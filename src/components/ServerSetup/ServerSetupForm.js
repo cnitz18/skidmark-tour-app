@@ -135,7 +135,7 @@ const ServerSetupForm = ({ enums, lists }) => {
             <form onSubmit={ sendServerSetup }>
                 <div>
                     <h4>General Settings</h4>
-                    <div className="setup-3" style={{ textAlign: 'center'}}>
+                    <div className="setup-3">
                         {
                             attrInputInfo.length && Object.keys(enums).length && Object.keys(lists).length ?
                             attrInputInfo.filter(x => {
