@@ -22,6 +22,7 @@ const ServerSetupForm = ({ enums, lists }) => {
     const [raceSettings,setRaceSettings] = useState([]);
     const [multiClassNumSlots,setMultiClassNumSlots] = useState({});
     const [multiClassSlotsAttrs,setMultiClassSlotsAttrs] = useState({});
+    const [sortedVehicleList,setSortedVehicleList] = useState([]);
     function updateState( fieldName, val ){
         //console.log(`setting sttate(${fieldName},${val})...`)
         setState((prevState)=>{
@@ -62,6 +63,11 @@ const ServerSetupForm = ({ enums, lists }) => {
             setMultiClassNumSlots({ ...inputInfo.find(x => x.name === "MultiClassSlots")});
             setMultiClassSlotsAttrs([ ...inputInfo.filter( x => x.name.startsWith('MultiClassSlot') && x.name !== "MultiClassSlots")]);
             setAttrInputInfo([...inputInfo]); 
+            if( lists && Object.keys(lists).length ){
+                let curList = [ ...lists['vehicle_classes'].list ];
+                let sortedList = curList.sort((a,b) => a.name.localeCompare(b.name));
+                setSortedVehicleList([ ...sortedList ])
+            }
         }
     }
     function sendServerSetup(e){
@@ -103,37 +109,33 @@ const ServerSetupForm = ({ enums, lists }) => {
     }
     useEffect(() => {
         loadServerSetup();
-    },[])
+    },[lists])
 
     return (
         <div>
-            <ServerSetupWarning show={true}/>
-            <div className="setup">
-                <h3>Basic Server Setup</h3>
+            <ServerSetupWarning show={false}/>
+            <div className="setup-3">
+                <h1>Basic Server Setup</h1>
+                <div className='setup'>
+                    <span>Status:       </span>
+                    {
+                        serverState === 'Running' ?
+                        <Button variant="outline-success" disabled>Running</Button> :
+                        (
+                            serverState === 'Idle' ?
+                            <Button variant="outline-warning" disabled>Idle</Button> :
+                            <Button variant="outline-danger" disabled>Server Status Unexpected!</Button>
+                            )
+                        }
+                </div>
                 <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button>
             </div>
-            <div className='setup'>
-                <span>Status:       </span>
-                {
-                    serverState === 'Running' ?
-                    <Button variant="outline-success" disabled>Running</Button> :
-                    (
-                        serverState === 'Idle' ?
-                        <Button variant="outline-warning" disabled>Idle</Button> :
-                        <Button variant="outline-danger" disabled>Server Status Unexpected!</Button>
-                        )
-                    }
-            </div>
-            <label>
-                Send a Message!
-                <input type='text' onInput={(e) => setServerMessage(e.target.value)}></input>
-                <button type='button' onClick={sendServerMessage} className="command">Send</button>
-            </label>
+            <hr/>
             <br/>
             <form onSubmit={ sendServerSetup }>
                 <div>
-                    <div className="setup">
-                        <h4>General Settings</h4>
+                    <h4>General Settings</h4>
+                    <div className="setup-3" style={{ textAlign: 'center'}}>
                         {
                             attrInputInfo.length && Object.keys(enums).length && Object.keys(lists).length ?
                             attrInputInfo.filter(x => {
@@ -160,27 +162,28 @@ const ServerSetupForm = ({ enums, lists }) => {
                         }
                     </div>
                     {
-                        multiClassSlotsAttrs.length && lists['vehicle_classes'] ?
+                        multiClassSlotsAttrs.length && sortedVehicleList && sortedVehicleList.length ?
                         <SlotsDropdown 
                             numSlotsAttr={multiClassNumSlots} 
                             slotsAttrs={multiClassSlotsAttrs}
                             state={state}
                             updateState={updateState}
-                            list={lists['vehicle_classes'].list}/>  : <></>
+                            list={sortedVehicleList}/>  : <></>
                     }
-
-                    <ServerSessionSetup 
-                        fieldList={practiceSettings} 
-                        state={state} 
-                        header="Practice Settings:" 
-                        enums={enums} 
-                        updateState={updateState}/>
-                    <ServerSessionSetup 
-                        fieldList={qualiSettings} 
-                        state={state} 
-                        header="Qualifying Settings:" 
-                        enums={enums}
-                        updateState={updateState}/>
+                    <div className='session-section'>
+                        <ServerSessionSetup 
+                            fieldList={practiceSettings} 
+                            state={state} 
+                            header="Practice Settings:" 
+                            enums={enums} 
+                            updateState={updateState}/>
+                        <ServerSessionSetup 
+                            fieldList={qualiSettings} 
+                            state={state} 
+                            header="Qualifying Settings:" 
+                            enums={enums}
+                            updateState={updateState}/>
+                    </div>
                     <ServerSessionSetup 
                         fieldList={raceSettings} 
                         state={state} 
@@ -199,6 +202,11 @@ const ServerSetupForm = ({ enums, lists }) => {
             </form>
             <button className="command" type='button' onClick={sendServerSetup}>Set Server</button>
             <br/>
+            <label>
+                Send a Message!
+                <input type='text' onInput={(e) => setServerMessage(e.target.value)}></input>
+                <button type='button' onClick={sendServerMessage} className="command">Send</button>
+            </label>
             <h3> Read-Only Fields </h3>
             <div className="setup">
                 {

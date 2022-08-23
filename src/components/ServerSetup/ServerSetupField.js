@@ -46,7 +46,7 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                         <select value={state[attr.name]} onChange={e => updateState(attr.name,e.target.value)}>
                             {
                                 list.length ? 
-                                list.map(l => (
+                                list.sort((a,b) =>  a.name.localeCompare(b.name)).map(l => (
                                     <option value={l.id??l.value} id={l.value} key={l.id??l.value}>{l.name}</option>
                                 )) : <></>
                             }                            

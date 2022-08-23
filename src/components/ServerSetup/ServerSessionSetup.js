@@ -17,10 +17,10 @@ const ServerSessionSetup = ({ fieldList, state, header, enums, updateState }) =>
         }
     },[fieldList])
     return (
-        <>
+        <div className="bordered column">
             <br/>
             <h4>{header}</h4>
-            <div className="setup">
+            <div className="setup-3">
                 {otherSettings.map(attr => (
                     <ServerSetupField 
                         attr={attr} 
@@ -35,7 +35,7 @@ const ServerSessionSetup = ({ fieldList, state, header, enums, updateState }) =>
                 state={state} 
                 updateState={updateState} 
                 enums={enums}/>
-        </>
+        </div>
     )
 };
 export default ServerSessionSetup;

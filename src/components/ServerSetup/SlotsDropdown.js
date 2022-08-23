@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import ServerSetupField from './ServerSetupField';
 import Accordion from 'react-bootstrap/Accordion';
 
-const SlotsDropdown = ({ numSlotsAttr, slotsAttrs, state, updateState, enums, list }) => {
+const SlotsDropdown = ({ numSlotsAttr, slotsAttrs, state, updateState, enums, list, bodyClass }) => {
     return(
         <Accordion>
             <Accordion.Item eventKey="0">
@@ -13,7 +13,7 @@ const SlotsDropdown = ({ numSlotsAttr, slotsAttrs, state, updateState, enums, li
                         updateState={updateState} 
                         list={list}/>
                 </Accordion.Header>
-                <Accordion.Body>
+                <Accordion.Body className="setup">
                     {slotsAttrs.sort().map(attr => (
                         <ServerSetupField 
                             attr={attr} 

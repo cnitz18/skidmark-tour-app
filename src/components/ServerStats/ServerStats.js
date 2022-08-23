@@ -77,7 +77,7 @@ const ServerStats = ({ lists }) => {
             <Card>
                 <Card.Header as="h4">Server Statistics:</Card.Header>
                 <Card.Body>
-                    <div class="setup">
+                    <div className="setup">
                         <div>
                             <h5>Top Tracks:</h5>
                             <Table striped bordered hover>
@@ -121,7 +121,7 @@ const ServerStats = ({ lists }) => {
                             </Table>
                         </div>
                     </div>
-                    <div class="setup">
+                    <div className="setup">
                         <div>
                             {
                                 sessionStats && sessionStats.counts ? 

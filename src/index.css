@@ -100,3 +100,21 @@ div {
 .setup{
   column-count: 2;
 }
+.setup-3{
+  column-count: 3;
+}
+
+.bordered{
+  border: 1px solid;
+  border-radius: 10px;
+  border-color: #bbb;
+  padding: 14px 20px;
+}
+
+.session-section{
+  grid-template-columns: auto auto;
+}
+
+.column{
+  grid-column: 1/2;
+}
