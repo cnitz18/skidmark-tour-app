@@ -27,6 +27,8 @@ function ConvertInputType( field ){
         case "RaceMandatoryPitStops":
         case "RaceFormationLap":
         case "DisablePitstopRefuelling":
+        case "FullCourseYellows":
+        case "DamageRandomFailures":
             return 'boolean';
         case "PracticeWeatherSlots":
         case "QualifyWeatherSlots":

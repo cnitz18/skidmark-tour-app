@@ -61,11 +61,11 @@ const App = () => {
             </div>
             </>
           </Tab>
-          <Tab eventKey="playerStats" title="Player Statistics">
+          {/* <Tab eventKey="playerStats" title="Player Statistics">
             <>
               <PlayerStats lists={lists}/>
             </>
-          </Tab>
+          </Tab> */}
           <Tab eventKey="serverStats" title="Server Statistics">
             <ServerStats lists={lists}/>
           </Tab>
