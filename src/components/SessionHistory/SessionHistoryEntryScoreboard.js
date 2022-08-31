@@ -16,7 +16,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
         //console.log('num:',num,'outputString:',outputString)
         return outputString;
     }
-
+    useEffect(() => {},[race]);
     return (
         <Table striped bordered hover>
             <thead>
@@ -30,7 +30,8 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
             </thead>
             <tbody>
                 {
-                    race?.results?.map(res => (
+                    race && race.results && race.results.length ?
+                    race.results.map(res => (
                         <tr>
                             <td>{res.attributes.RacePosition}</td>
                             <td>{res.name}</td>
@@ -38,7 +39,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
                             <td>{convertTimeNumber(res.attributes.TotalTime)}</td>
                             <td>{convertTimeNumber(res.attributes.FastestLapTime)}</td>
                         </tr>
-                    ))
+                    )) : <></>
                 }
 
             </tbody>
