@@ -30,7 +30,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
             </thead>
             <tbody>
                 {
-                    race.results.map(res => (
+                    race?.results?.map(res => (
                         <tr>
                             <td>{res.attributes.RacePosition}</td>
                             <td>{res.name}</td>
