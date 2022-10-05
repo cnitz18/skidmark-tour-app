@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import postAPIData from '../../utils/postAPIData';
 import getAPIData from '../../utils/getAPIData';
-import Button from 'react-bootstrap/Button';
+import { Accordion, Button, Modal } from 'react-bootstrap';
 import ServerSessionSetup from './ServerSessionSetup';
 import ConvertFieldToInput from '../../utils/ConvertFieldToInput';
 import ServerStatusField from './ServerStatusField';
 import SlotsDropdown from './SlotsDropdown';
 import ServerSetupField from './ServerSetupField';
 import ServerSetupWarning from './ServerSetupWarning';
+import { wait } from '@testing-library/user-event/dist/utils';
 
 const ServerSetupForm = ({ enums, lists }) => {
     const [serverState,setServerState] = useState('');
     const [serverMessage,setServerMessage] = useState('');
-
 
     const [state,setState] = useState({});
     const [stateUpdated,setStateUpdated] = useState({});
@@ -23,6 +23,20 @@ const ServerSetupForm = ({ enums, lists }) => {
     const [multiClassNumSlots,setMultiClassNumSlots] = useState({});
     const [multiClassSlotsAttrs,setMultiClassSlotsAttrs] = useState({});
     const [sortedVehicleList,setSortedVehicleList] = useState([]);
+
+    //Modal definitions
+    const [PresetList,setPresetList] = useState([]);
+    const [PresetName,setPresetName] = useState('');
+    const [showSave, setShowSave] = useState(false);
+
+    const handleCloseSave = () => setShowSave(false);
+    const handleShowSave = () => setShowSave(true);
+
+    const [showLoad, setShowLoad] = useState(false);
+
+    const handleCloseLoad = () => setShowLoad(false);
+    const handleShowLoad = () => loadPresetList().then(() => setShowLoad(true));
+
     function updateState( fieldName, val ){
         //console.log(`setting sttate(${fieldName},${val})...`)
         setState((prevState)=>{
@@ -70,6 +84,14 @@ const ServerSetupForm = ({ enums, lists }) => {
             }
         }
     }
+    async function loadPresetList(){
+        let list = await getAPIData('/db/presets');
+        setPresetList([...list]);
+        console.log('list length:',list.length);
+    }
+    function getUpdatedState(){
+        //refactor here
+    }
     function sendServerSetup(e){
         e.preventDefault();
         //console.log('sendServerSEtup called:::')
@@ -95,6 +117,47 @@ const ServerSetupForm = ({ enums, lists }) => {
             console.log("post response:",res);
         })
     }
+    function saveServerSetup(e){
+        e.preventDefault();
+        //console.log('saveServerSetup called:::')
+        //console.log(state);
+
+        let newStateUpdated = { ...stateUpdated };
+        let postState = {};
+        for( let field in stateUpdated ){
+            if( stateUpdated[field] ){
+                postState['session_'+field] = state[field];
+                newStateUpdated[field] = false;
+            }
+        }
+        console.log("postState:'",postState);
+        setStateUpdated(() =>{
+            return { ...newStateUpdated };
+        })
+        postAPIData(
+            '/db/presets/add',
+            { PresetName, ...stateUpdated }
+        ).then((res) => {
+            handleCloseSave();
+            setPresetName('');
+            window.alert('Session settings saved as preset, received response:',res.status);
+            console.log("post response:",res);
+        })
+    }
+    function handleLoadPreset(preset,e){
+        console.log('handleLoadPreset')
+        console.log(preset);
+        setStateUpdated(() =>{
+            return { ...preset };
+        })        
+        console.log('waiting...')
+        setTimeout(() => {
+            sendServerSetup(e)
+            console.log('sent!!!!',preset.PresetName);
+            handleCloseLoad();
+        },1000);
+
+    }
     function sendServerMessage(){
         //console.log('Sending message:',serverMessage)
         postAPIData('/api/session/send_chat',{ message: serverMessage }).then((res) => {
@@ -109,8 +172,9 @@ const ServerSetupForm = ({ enums, lists }) => {
     }
     useEffect(() => {
         loadServerSetup();
+        loadPresetList();
     },[lists])
-
+    
     return (
         <div>
             <ServerSetupWarning show={false}/>
@@ -130,11 +194,18 @@ const ServerSetupForm = ({ enums, lists }) => {
                 </div>
                 <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button>
             </div>
-            <hr/>
+            <br/>
             <br/>
             <form onSubmit={ sendServerSetup }>
                 <div>
-                    <h4>General Settings</h4>
+                    <div className="setup-3">
+                        <h4>General Settings</h4>
+                        <div><button className="command" type='button' onClick={sendServerSetup}>Set Server</button></div>
+                        <div>
+                            <Button variant='outline-success' onClick={handleShowSave}>Save as Preset</Button>
+                            <Button variant='outline-primary' onClick={handleShowLoad}>Load Existing Preset</Button>
+                        </div>
+                    </div>
                     <div className="setup-3">
                         {
                             attrInputInfo.length && Object.keys(enums).length && Object.keys(lists).length ?
@@ -150,11 +221,11 @@ const ServerSetupForm = ({ enums, lists }) => {
                                         attr.inputType === 'enum' ? 
                                         enums[attr.enumListName].list :
                                         []
-                                    } 
+                                    }
                                     updateState={updateState} 
                                     list={ 
-                                        attr.inputType==='list' ? 
-                                        lists[attr.typeListName].list : 
+                                        attr.inputType==='list' || attr.inputType==='flags'? 
+                                        lists[attr.typeListName] : 
                                         []
                                     }/>
                             )) :
@@ -190,24 +261,24 @@ const ServerSetupForm = ({ enums, lists }) => {
                         header="Race Settings:" 
                         enums={enums} 
                         updateState={updateState}/>
-
-                    <div className="setup">
-                        <h4>Unsupported Fields(WIP): </h4>
-                        {attrInputInfo.filter(x => x.inputType === 'none').map(attr =>(
-                                    <>{attr.readableName + ": (Current Value: " + state[attr.name] + " )"}<br/></>
-                                ))
-                        }
-                    </div>
                 </div>
             </form>
-            <button className="command" type='button' onClick={sendServerSetup}>Set Server</button>
-            <br/>
+            <br/><br/>
             <label>
                 Send a Message!
                 <input type='text' onInput={(e) => setServerMessage(e.target.value)}></input>
                 <button type='button' onClick={sendServerMessage} className="command">Send</button>
             </label>
-            <h3> Read-Only Fields </h3>
+            <br/><br/>
+            <div className="setup">
+                <h4>Unsupported Fields(WIP): </h4>
+                {
+                    attrInputInfo.filter(x => x.inputType === 'none').map(attr =>(
+                        <>{attr.readableName + ": (Current Value: " + state[attr.name] + " )"}<br/></>
+                    ))
+                }
+            </div>
+            {/* <h3> Read-Only Fields </h3>
             <div className="setup">
                 {
                     attrInputInfo.filter(x => x.access==="ReadOnly").map((attr) =>(
@@ -216,9 +287,59 @@ const ServerSetupForm = ({ enums, lists }) => {
                             state={state[attr.name]}/>
                     ))
                 }
-            </div>
+            </div> */}
+            <Modal show={showSave} onHide={handleCloseSave} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Saving Race Preset</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <label>
+                        Enter Name for Preset:
+                        <input type='text' onInput={(e) => setPresetName(e.target.value)} value={PresetName}></input>
+                    </label>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseSave}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveServerSetup}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
+            <Modal show={showLoad} onHide={handleCloseLoad} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Load Race Preset</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        PresetList.map((preset,i) => (
+                            <Accordion.Item eventKey={i}>
+                                <Accordion.Header>
+                                    { preset.PresetName ? preset.PresetName : '<unnamed>' }
+                                    <Button style={{float: 'right'}}onClick={(e) => handleLoadPreset(preset,e)}>Load</Button>
+                                </Accordion.Header>   
+                            <Accordion.Body>
+                                {/* 
+                                 add some more details about the server/race here
+                                */}
+                            </Accordion.Body>
+                            </Accordion.Item>
+                        ))
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseLoad}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={loadServerSetup}>
+                        Load
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <br/> <br/> <br/>
+            <div></div>
         </div>
     );
 };

@@ -22,6 +22,7 @@ const App = () => {
       let carClassResponse = await getAPIData('/api/list/vehicle_classes');
       let carResponse = await getAPIData('/api/list/vehicles');
       let flagResponse = await getAPIData('/api/list/flags');
+      console.log('flagsResponse:',flagResponse)
       let curLists = {
         tracks: trackResponse,
         vehicle_classes: carClassResponse,

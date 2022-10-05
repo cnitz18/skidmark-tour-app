@@ -38,7 +38,7 @@ function ConvertFieldToInput( field, curState ){
         curField.enumListName = enumListName(field.name);
     curField.readableName = readableName(field.name);
     curField.inputType = ConvertInputType(field);
-    if( curField.inputType === 'list' )
+    if( curField.inputType === 'list' || curField.inputType === 'flags' )
         curField.typeListName = listTypeListName(field.name);
     //console.log('converted:',curField);
     return curField;

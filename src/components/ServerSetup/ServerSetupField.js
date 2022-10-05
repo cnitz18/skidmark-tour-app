@@ -2,7 +2,9 @@ import {Form} from 'react-bootstrap';
 import {Image} from 'react-bootstrap';
 import { Tooltip } from 'react-bootstrap';
 import { OverlayTrigger } from 'react-bootstrap';
+import ServerSetupFlags from './ServerSetupFlags';
 import { Button } from 'react-bootstrap';
+import { useEffect } from 'react';
 
 const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
     const tooltip = (desc) => (
@@ -10,6 +12,7 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
             <span>{desc}</span>
         </Tooltip>
     );
+
     return (
         <div>
         <label>
@@ -45,8 +48,8 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                         attr.inputType === "list" ? 
                         <select value={state[attr.name]} onChange={e => updateState(attr.name,e.target.value)}>
                             {
-                                list.length ? 
-                                list.sort((a,b) =>  a.name.localeCompare(b.name)).map(l => (
+                                list.list && list.list.length ? 
+                                list.list.sort((a,b) =>  a.name.localeCompare(b.name)).map(l => (
                                     <option value={l.id??l.value} id={l.value} key={l.id??l.value}>{l.name}</option>
                                 )) : <></>
                             }                            
@@ -67,7 +70,8 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
                                         value={state[attr.name]} 
                                         onChange={e => updateState(attr.name,e.target.value)}></input>
                                     <a href="https://docs.google.com/spreadsheets/d/1dSst7oaWrwbzhZCRZnfBlfdM-ob2htHyvS4i0g3M-Qw/edit#gid=0" target="_blank">Flags Calculator</a>
-                                    </div>:
+                                    <ServerSetupFlags flags={list} flagsVal={state[attr.name]} updateState={updateState}/>
+                                </div>:
                                 <></>
                             )
                         )
