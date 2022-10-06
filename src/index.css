@@ -73,7 +73,9 @@ input[type=text], input[type=number], select {
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
+}
+label { 
+  width: 75%;
 }
 
 .command {
@@ -102,6 +104,9 @@ div {
 }
 .setup-3{
   column-count: 3;
+}
+.setup-4{
+  column-count: 4;
 }
 
 .bordered{

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import postAPIData from '../../utils/postAPIData';
 import getAPIData from '../../utils/getAPIData';
-import { Accordion, Button, Modal } from 'react-bootstrap';
+import { Accordion, Button, Modal, ButtonGroup } from 'react-bootstrap';
 import ServerSessionSetup from './ServerSessionSetup';
 import ConvertFieldToInput from '../../utils/ConvertFieldToInput';
 import ServerStatusField from './ServerStatusField';
 import SlotsDropdown from './SlotsDropdown';
 import ServerSetupField from './ServerSetupField';
 import ServerSetupWarning from './ServerSetupWarning';
-import { wait } from '@testing-library/user-event/dist/utils';
 
 const ServerSetupForm = ({ enums, lists }) => {
     const [serverState,setServerState] = useState('');
@@ -42,7 +41,7 @@ const ServerSetupForm = ({ enums, lists }) => {
         setState((prevState)=>{
             let updState = Object.assign({},prevState);
             updState[fieldName] = val;
-            //console.log('updState:',updState);
+            //console.log('updState:',fieldName,val);
             return { ...updState };
         });
         setStateUpdated((prevState) =>{
@@ -87,7 +86,7 @@ const ServerSetupForm = ({ enums, lists }) => {
     async function loadPresetList(){
         let list = await getAPIData('/db/presets');
         setPresetList([...list]);
-        console.log('list length:',list.length);
+        console.log('list length:',list.length,list);
     }
     function getUpdatedState(){
         //refactor here
@@ -121,22 +120,18 @@ const ServerSetupForm = ({ enums, lists }) => {
         e.preventDefault();
         //console.log('saveServerSetup called:::')
         //console.log(state);
-
-        let newStateUpdated = { ...stateUpdated };
         let postState = {};
-        for( let field in stateUpdated ){
-            if( stateUpdated[field] ){
-                postState['session_'+field] = state[field];
-                newStateUpdated[field] = false;
-            }
+        console.log('state objs:',Object.keys(state).length)
+        for( let field in state ){
+            postState[field] = state[field];
         }
-        console.log("postState:'",postState);
-        setStateUpdated(() =>{
-            return { ...newStateUpdated };
-        })
+        console.log("postState:'",JSON.stringify(postState));
+        // setStateUpdated(() =>{
+        //     return { ...newStateUpdated };
+        // })
         postAPIData(
             '/db/presets/add',
-            { PresetName, ...stateUpdated }
+            { PresetName, ...postState }
         ).then((res) => {
             handleCloseSave();
             setPresetName('');
@@ -147,16 +142,24 @@ const ServerSetupForm = ({ enums, lists }) => {
     function handleLoadPreset(preset,e){
         console.log('handleLoadPreset')
         console.log(preset);
-        setStateUpdated(() =>{
-            return { ...preset };
-        })        
-        console.log('waiting...')
-        setTimeout(() => {
-            sendServerSetup(e)
-            console.log('sent!!!!',preset.PresetName);
-            handleCloseLoad();
-        },1000);
-
+        // setStateUpdated(() =>{
+        //     return { ...preset };
+        // })
+        let newStateUpdated = {};  
+        for( let key in preset ){
+            //updateState(key,preset[key]);
+            newStateUpdated[key] = true;
+        }
+        setState({ ...preset },() => {
+            setStateUpdated({ ...newStateUpdated },() => {
+                console.log('sending...')
+                console.log('STATE:',JSON.stringify(state))
+                sendServerSetup(e)
+                console.log('sent!!!!',preset.PresetName);
+                handleCloseLoad();
+            })
+        })
+            
     }
     function sendServerMessage(){
         //console.log('Sending message:',serverMessage)
@@ -181,7 +184,7 @@ const ServerSetupForm = ({ enums, lists }) => {
             <div className="setup-3">
                 <h1>Basic Server Setup</h1>
                 <div className='setup'>
-                    <span>Status:       </span>
+                    <span>Current Status:       </span>
                     {
                         serverState === 'Running' ?
                         <Button variant="outline-success" disabled>Running</Button> :
@@ -192,20 +195,25 @@ const ServerSetupForm = ({ enums, lists }) => {
                             )
                         }
                 </div>
-                <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button>
+                <ButtonGroup style={{ float: 'right'}} aria-label="Basic example">
+                    <Button variant='success' onClick={sendServerSetup}>Send Settings To Server</Button>
+                    <Button variant="outline-success" onClick={handleShowSave}>Save Settings As Preset</Button>
+                    <Button variant="outline-primary" onClick={handleShowLoad}>Load Existing Preset</Button>
+                    <Button variant='danger' onClick={advanceSession}>Advance Session</Button>
+                </ButtonGroup>
+                {/* <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button> */}
             </div>
             <br/>
             <br/>
             <form onSubmit={ sendServerSetup }>
                 <div>
-                    <div className="setup-3">
-                        <h4>General Settings</h4>
+                    {/* <div className="setup-3">
                         <div><button className="command" type='button' onClick={sendServerSetup}>Set Server</button></div>
                         <div>
                             <Button variant='outline-success' onClick={handleShowSave}>Save as Preset</Button>
                             <Button variant='outline-primary' onClick={handleShowLoad}>Load Existing Preset</Button>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="setup-3">
                         {
                             attrInputInfo.length && Object.keys(enums).length && Object.keys(lists).length ?
@@ -213,7 +221,7 @@ const ServerSetupForm = ({ enums, lists }) => {
                                 return !x.name.startsWith('Race') && !x.name.startsWith('Practice') 
                                 && !x.name.startsWith('Qualify') && x.inputType !== 'none' && !x.name.includes('MultiClass')
                                 && x.access !== "ReadOnly"
-                            }).map(attr =>(
+                            }).sort((a,b) => b.inputType.localeCompare(a.inputType)).map(attr =>(
                                 <ServerSetupField 
                                     attr={attr} 
                                     state={state} 
@@ -317,14 +325,12 @@ const ServerSetupForm = ({ enums, lists }) => {
                         PresetList.map((preset,i) => (
                             <Accordion.Item eventKey={i}>
                                 <Accordion.Header>
+                                    <label>
+
                                     { preset.PresetName ? preset.PresetName : '<unnamed>' }
                                     <Button style={{float: 'right'}}onClick={(e) => handleLoadPreset(preset,e)}>Load</Button>
-                                </Accordion.Header>   
-                            <Accordion.Body>
-                                {/* 
-                                 add some more details about the server/race here
-                                */}
-                            </Accordion.Body>
+                                    </label>
+                                </Accordion.Header>
                             </Accordion.Item>
                         ))
                     }

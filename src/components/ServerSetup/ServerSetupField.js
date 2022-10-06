@@ -16,20 +16,22 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
     return (
         <div>
         <label>
-            <span style={{ position: 'relative', right: '10px' }}>{attr.readableName}</span>
-            <OverlayTrigger placement="right" overlay={tooltip(attr.description)}>
-                <Image src="info-icon.png" width="15px"/>
-            </OverlayTrigger>
-            {
-                attr.name === 'GridSize' ?
-                <OverlayTrigger 
-                placement="right" 
-                overlay={tooltip("WARNING: this setting is known to lead to server performance issues with increased Grid Size, and has a maximum value of 32.\nThis hasn't been tested too in-depth, but 20 tends to be a safe number, and 32 causes significant performance issues")}
-                >
-                    <Image src="info-icon-red.png" width="15px" style={{ position: 'relative', left: '5px' }}/>
-                </OverlayTrigger> :
-                <></>
-            }
+            <div>
+                <span style={{ position: 'relative', right: '10px' }}>{attr.readableName}</span>
+                <OverlayTrigger placement="right" overlay={tooltip(attr.description)}>
+                    <Image src="info-icon.png" width="15px"/>
+                </OverlayTrigger>
+                {
+                    attr.name === 'GridSize' ?
+                    <OverlayTrigger 
+                        placement="right" 
+                        overlay={tooltip("WARNING: this setting is known to lead to server performance issues with increased Grid Size, and has a maximum value of 32.\nThis hasn't been tested too in-depth, but 20 tends to be a safe number, and 32 causes significant performance issues")}
+                    >
+                        <Image src="info-icon-red.png" width="15px" style={{ position: 'relative', left: '5px' }}/>
+                    </OverlayTrigger> :
+                    <></>
+                }
+            </div>
             {
                 attr.inputType === "number" ?
                 <input type="number" value={state[attr.name]} onChange={e => updateState(attr.name,e.target.value)}></input> 
