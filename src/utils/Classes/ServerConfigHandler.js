@@ -4,7 +4,7 @@ class ServerConfigHandler {
     for (let key in validatedData) {
       //console.log('key:',key.split('_')[1])
       if (fieldList.indexOf(key.split("_")[1]) === -1) {
-        console.log("Trimming unexpected field in setServerState(): " + key);
+        //console.log("Trimming unexpected field in setServerState(): " + key);
         delete validatedData[key];
       }
     }

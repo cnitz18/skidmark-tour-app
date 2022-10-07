@@ -30,6 +30,7 @@ const ServerSetupForm = ({ enums, lists }) => {
   const [multiClassNumSlots, setMultiClassNumSlots] = useState({});
   const [multiClassSlotsAttrs, setMultiClassSlotsAttrs] = useState({});
   const [sortedVehicleList, setSortedVehicleList] = useState([]);
+  const [difficultyError, setDifficultyError] = useState(false);
 
   //Modal definitions
   const [PresetList, setPresetList] = useState([]);
@@ -97,6 +98,7 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
 
   function updateState(fieldName, val) {
+    //console.log("updateState:", fieldName, val);
     setState((prevState) => {
       let updState = Object.assign({}, prevState);
       updState[fieldName] = val;
@@ -123,8 +125,16 @@ const ServerSetupForm = ({ enums, lists }) => {
       postState,
       serverFieldList
     ).then((res) => {
-      window.alert("Session settings sent, response: " + res.statusText);
-      console.log("post response:", res);
+      if (res.status === 200) {
+        setDifficultyError(false);
+        window.alert("Session settings sent, response: " + res.statusText);
+      } else {
+        setDifficultyError(true);
+        window.alert(
+          `Session setting load failed with code "${res.status}" and reason: "${res.statusText}"`
+        );
+        console.error(res);
+      }
     });
   }
   function handleLoadPreset(preset, e) {
@@ -145,8 +155,13 @@ const ServerSetupForm = ({ enums, lists }) => {
       postState,
       serverFieldList
     ).then((res) => {
-      window.alert("Preset loaded, response: " + res.statusText);
-      console.log("post response:", res);
+      if (res.status === 200)
+        window.alert("Preset loaded, response: " + res.statusText);
+      else
+        window.alert(
+          `Preset load failed with code ${res.status} and reason ${res.statusText}`
+        );
+      //console.log("post response:", res);
       handleCloseLoad();
     });
   }
@@ -154,17 +169,17 @@ const ServerSetupForm = ({ enums, lists }) => {
     e.preventDefault();
 
     let postState = {};
-    console.log("state objs:", Object.keys(state).length);
+    //console.log("state objs:", Object.keys(state).length);
     for (let field in state) {
       postState[field] = state[field];
     }
-    console.log("postState:'", JSON.stringify(postState));
+    //console.log("postState:'", JSON.stringify(postState));
 
     WebServerCommands.savePreset(PresetName, postState, serverFieldList).then(
       (res) => {
         handleCloseSave();
         setPresetName("");
-        console.log("post response:", res);
+        //console.log("post response:", res);
       }
     );
   }
@@ -205,7 +220,7 @@ const ServerSetupForm = ({ enums, lists }) => {
         <h1>Basic Server Setup</h1>
         <ServerSetupStatus serverState={serverState} />
         <ServerSetupControls
-          sendSetupToServer={sendSetupToServer}
+          sendServerSetup={sendSetupToServer}
           handleShowSave={handleShowSave}
           handleShowLoad={handleShowLoad}
           advanceSession={advanceSession}
@@ -247,6 +262,7 @@ const ServerSetupForm = ({ enums, lists }) => {
                         ? lists[attr.typeListName]
                         : []
                     }
+                    difficultyError={difficultyError}
                   />
                 ))
             ) : (

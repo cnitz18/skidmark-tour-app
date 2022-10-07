@@ -16,7 +16,7 @@ class WebServerCommands {
   }
   static async deletePreset(id) {
     try {
-      console.log("delete:", id);
+      //console.log("delete:", id);
       let res = await fetch(AMS2API + "/db/presets/" + id, {
         method: "DELETE",
       });

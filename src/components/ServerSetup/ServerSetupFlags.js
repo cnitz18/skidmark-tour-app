@@ -2,42 +2,53 @@ import { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { Accordion } from "react-bootstrap";
 
-const ServerSetupFlags = ({ flags, flagsVal, updateState }) => {
+const ServerSetupFlags = ({ flags, flagsState, updateState, attr }) => {
   const [flagStatuses, setFlagStatuses] = useState({});
-  const [curFlags, setCurFlags] = useState(0);
-  function updateFlag(field, val) {
-    console.log("updating flags:", field, val);
-    console.log("curState:", flagsVal);
-    let flagStatus = {};
-    let curVal = curFlags;
-    flags?.session
-      ?.sort((a, b) => Math.abs(a.value) - Math.abs(b.value))
-      .forEach((f) => {
-        flagStatus[f.name] = false;
-        if (curVal - f.value > 0) {
-          console.log("ENABLED:", curVal);
-        }
-      });
-  }
-  useEffect(() => {
-    console.log("FLAGS:", flags, flags.length, flagsVal);
-    setCurFlags(flagsVal);
-    let curValue = flagsVal;
+  const [curFlagState, setCurFlagState] = useState(0);
+
+  function updateCurFlagsFromState() {
+    //console.log('updating based on new state:',flagsState)
+    let curValue = flagsState;
     let flagStatus = {};
     let flagInfo = flags.session?.list;
     flagInfo
       .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
       .forEach((f) => {
-        console.log("f", f, f.value, curValue, curValue - f.value);
-        flagStatus[f.name] = false;
-        if (curValue - f.value > 0) {
+        flagStatus[f.name] = { checked: false, ...f };
+        //console.log("mathing... field", f.name,'value:', f.value,'curValue:', curValue, 'after subtracting:', curValue - f.value);
+
+        if (
+          (curValue - f.value >= 0 && f.name !== "COOLDOWNLAP") ||
+          (f.name === "COOLDOWNLAP" && curValue < 0)
+        ) {
+          //console.log('CHECKED:',f.name,f.value)
           curValue -= f.value;
-          flagStatus[f.name] = true;
+          flagStatus[f.name].checked = true;
         }
       });
-    console.log("flagStatus:", JSON.stringify(flagStatus, null, " "));
+    //console.log("flagStatus:", JSON.stringify(flagStatus, null, " "));
     setFlagStatuses({ ...flagStatus });
-  }, [flags]);
+  }
+  function updateStateFromFlagCheck(st, checked) {
+    //console.log('need to update state now:',st,checked,attr.name);
+    //console.log('')
+    //updateState('Flags',flags - st.value)
+
+    if (checked) {
+      //console.log('checking and adding...')
+      //console.log('updating state:',attr.name,flagsState + st.value)
+      updateState(attr.name, flagsState + st.value);
+    } else {
+      //console.log('checking and subtracting...')
+      // console.log('updating state:',attr.name,flagsState - st.value)
+      updateState(attr.name, flagsState - st.value);
+    }
+  }
+
+  useEffect(() => {
+    setCurFlagState(flagsState);
+    updateCurFlagsFromState();
+  }, [flagsState]);
 
   return (
     <Accordion>
@@ -50,9 +61,9 @@ const ServerSetupFlags = ({ flags, flagsVal, updateState }) => {
               <Form.Check
                 type="switch"
                 id={st}
-                checked={flagStatuses[st]}
+                checked={flagStatuses[st].checked}
                 onChange={(e) => {
-                  updateFlag(st, e.target.checked);
+                  updateStateFromFlagCheck(flagStatuses[st], e.target.checked);
                 }}
               />
             </div>

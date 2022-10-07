@@ -35,7 +35,10 @@ function ConvertFieldToInput(field, curState) {
   curField.inputType = ConvertInputType(field);
   if (curField.inputType === "list" || curField.inputType === "flags")
     curField.typeListName = listTypeListName(field.name);
-  //console.log('converted:',curField);
+  if (curField.name === "OpponentDifficulty")
+    curField.description =
+      "Difficulty of AI participants. Valid Values in range 70-120";
+  // console.log('converted:',curField);
   return curField;
 }
 export default ConvertFieldToInput;

@@ -22,7 +22,7 @@ const App = () => {
       let carClassResponse = await getAPIData("/api/list/vehicle_classes");
       let carResponse = await getAPIData("/api/list/vehicles");
       let flagResponse = await getAPIData("/api/list/flags");
-      console.log("flagsResponse:", flagResponse);
+      //console.log("flagsResponse:", flagResponse);
       let curLists = {
         tracks: trackResponse,
         vehicle_classes: carClassResponse,
@@ -39,7 +39,7 @@ const App = () => {
   return (
     <div className="container">
       <img src={logo} alt="The Skidmarks" />
-      <Tabs defaultActiveKey="home" className="mb-3" id="tabs">
+      <Tabs defaultActiveKey="serverSetup" className="mb-3" id="tabs">
         <Tab eventKey="home" title="Home">
           <>
             Welcome! This website is under construction, see our progress in the

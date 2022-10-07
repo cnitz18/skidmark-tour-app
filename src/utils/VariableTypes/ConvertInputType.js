@@ -35,7 +35,6 @@ function ConvertInputType(field) {
     case "RaceWeatherSlots":
     case "GridSize":
     case "MaxPlayers":
-    case "OpponentDifficulty":
     case "DamageScale":
     case "MultiClassSlots":
     case "Latitude":
@@ -58,6 +57,8 @@ function ConvertInputType(field) {
       return "string";
     case "Flags":
       return "flags";
+    case "OpponentDifficulty":
+      return "opponentdifficulty";
     default:
       if (fieldName) {
         //console.log('fieldName:',fieldName)

@@ -8,6 +8,15 @@ class DedicatedServerCommands {
         setupData,
         fieldList
       );
+      //console.log("validatedData:", validatedData);
+      if (
+        validatedData.session_OpponentDifficulty > 100 ||
+        validatedData.session_OpponentDifficulty < 0
+      )
+        return {
+          status: 400,
+          statusText: "Opponent Difficulty must be between 70-120",
+        };
       let res = await postAPIData("/api/session/set_attributes", validatedData);
       // console.log('setDedicatedServerState done!',res);
       return { status: res.status, statusText: res.statusText };

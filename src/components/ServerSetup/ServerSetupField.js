@@ -5,8 +5,16 @@ import { OverlayTrigger } from "react-bootstrap";
 import ServerSetupFlags from "./ServerSetupFlags";
 import { Button } from "react-bootstrap";
 import { useEffect } from "react";
+import ServerSetupOpponentDifficulty from "./ServerSetupOpponentDifficulty";
 
-const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
+const ServerSetupField = ({
+  attr,
+  state,
+  enums,
+  list,
+  updateState,
+  difficultyError,
+}) => {
   const tooltip = (desc) => (
     <Tooltip id="Tooltip">
       <span>{desc}</span>
@@ -97,19 +105,28 @@ const ServerSetupField = ({ attr, state, enums, list, updateState }) => {
               type="number"
               value={state[attr.name]}
               onChange={(e) => updateState(attr.name, e.target.value)}
+              disabled
             ></input>
             <a
-              href="https://docs.google.com/spreadsheets/d/1dSst7oaWrwbzhZCRZnfBlfdM-ob2htHyvS4i0g3M-Qw/edit#gid=0"
+              href="https://docs.google.com/spreadsheets/d/1aSgY5wPyvR1eJ-99a26M0RGbaDZqHpYwCiNdxDHa5fA/edit#gid=0"
               target="_blank"
             >
               Flags Calculator
             </a>
             <ServerSetupFlags
               flags={list}
-              flagsVal={state[attr.name]}
+              flagsState={state[attr.name]}
               updateState={updateState}
+              attr={attr}
             />
           </div>
+        ) : attr.inputType === "opponentdifficulty" ? (
+          <ServerSetupOpponentDifficulty
+            updateState={updateState}
+            state={state}
+            attr={attr}
+            difficultyError={difficultyError}
+          />
         ) : (
           <></>
         )}
