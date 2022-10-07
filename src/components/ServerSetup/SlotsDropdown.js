@@ -23,7 +23,7 @@ const SlotsDropdown = ({
           />
         </Accordion.Header>
         <Accordion.Body className="setup">
-          {slotsAttrs.sort().map((attr,i) => (
+          {slotsAttrs.sort().map((attr, i) => (
             <ServerSetupField
               key={i}
               attr={attr}

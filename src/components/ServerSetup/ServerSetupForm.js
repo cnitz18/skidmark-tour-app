@@ -4,7 +4,6 @@ import getAPIData from "../../utils/getAPIData";
 import { Accordion, Button, Modal, ButtonGroup } from "react-bootstrap";
 import ServerSessionSetup from "./ServerSessionSetup";
 import ConvertFieldToInput from "../../utils/ConvertFieldToInput";
-import ServerStatusField from "./ServerStatusField";
 import SlotsDropdown from "./SlotsDropdown";
 import ServerSetupField from "./ServerSetupField";
 import ServerSetupWarning from "./ServerSetupWarning";
@@ -13,13 +12,17 @@ import ServerSetupLoadPresetModal from "./ServerSetupLoadPresetModal";
 import ServerSetupStatus from "./ServerSetupStatus";
 import ServerSetupUnsupportedFields from "./ServerSetupUnsupportedFields";
 import ServerSetupControls from "./ServerSetupControls";
+import DedicatedServerCommands from "../../utils/Classes/DedicatedServerCommands";
+import WebServerCommands from "../../utils/Classes/WebServerCommands";
 
 const ServerSetupForm = ({ enums, lists }) => {
   const [serverState, setServerState] = useState("");
   const [serverMessage, setServerMessage] = useState("");
+  const [serverFieldList, setServerFieldList] = useState([]);
 
   const [state, setState] = useState({});
   const [stateUpdated, setStateUpdated] = useState({});
+
   const [attrInputInfo, setAttrInputInfo] = useState([]);
   const [practiceSettings, setPracticeSettings] = useState([]);
   const [qualiSettings, setQualiSettings] = useState([]);
@@ -32,32 +35,12 @@ const ServerSetupForm = ({ enums, lists }) => {
   const [PresetList, setPresetList] = useState([]);
   const [PresetName, setPresetName] = useState("");
   const [showSave, setShowSave] = useState(false);
-
+  const [showLoad, setShowLoad] = useState(false);
   const handleCloseSave = () => setShowSave(false);
   const handleShowSave = () => setShowSave(true);
-
-  const [showLoad, setShowLoad] = useState(false);
-
   const handleCloseLoad = () => setShowLoad(false);
   const handleShowLoad = () => loadPresetList().then(() => setShowLoad(true));
 
-  function updateState(fieldName, val) {
-    //console.log(`setting sttate(${fieldName},${val})...`)
-    setState((prevState) => {
-      let updState = Object.assign({}, prevState);
-      updState[fieldName] = val;
-      //console.log('updState:',fieldName,val);
-      return { ...updState };
-    });
-    setStateUpdated((prevState) => {
-      let updState = Object.assign({}, prevState);
-      updState[fieldName] = true;
-      //console.log('updState:',updState);
-      return { ...updState };
-    });
-    //console.log('state now:',state[fieldName]);
-    //console.log('stateUpdated now:',stateUpdated[fieldName])
-  }
   async function loadServerSetup() {
     let status = await postAPIData(
       "/api/session/status",
@@ -68,15 +51,20 @@ const ServerSetupForm = ({ enums, lists }) => {
     let attrList = await getAPIData("/api/list/attributes/session");
     if (attrList.list) {
       let inputInfo = [];
-      setState({ ...status.attributes });
-      let obj = {};
-      Object.keys(status.attributes).forEach((a) => (obj[a] = false));
-      setStateUpdated({ ...obj });
+      let tempStateUpdated = {};
+      let tempServerFieldList = [];
+      Object.keys(status.attributes).forEach(
+        (a) => (tempStateUpdated[a] = false)
+      );
       attrList.list.forEach((a) => {
         inputInfo.push(ConvertFieldToInput(a, state));
+        if (a.access === "ReadWrite") tempServerFieldList.push(a.name);
       });
-      inputInfo.sort((a, b) => a.disabled);
+      inputInfo.sort((a) => a.disabled);
 
+      setState({ ...status.attributes });
+      setStateUpdated({ ...tempStateUpdated });
+      setServerFieldList([...tempServerFieldList]);
       setPracticeSettings([
         ...inputInfo.filter((x) => x.name.startsWith("Practice")),
       ]);
@@ -94,6 +82,7 @@ const ServerSetupForm = ({ enums, lists }) => {
         ),
       ]);
       setAttrInputInfo([...inputInfo]);
+
       if (lists && Object.keys(lists).length) {
         let curList = [...lists["vehicle_classes"].list];
         let sortedList = curList.sort((a, b) => a.name.localeCompare(b.name));
@@ -104,80 +93,88 @@ const ServerSetupForm = ({ enums, lists }) => {
   async function loadPresetList() {
     let list = await getAPIData("/db/presets");
     setPresetList([...list]);
-    console.log("list length:", list.length, list);
+    //console.log("list length:", list.length, list);
   }
-  function getUpdatedState() {
-    //refactor here
-  }
-  function sendServerSetup(e) {
-    e.preventDefault();
-    //console.log('sendServerSEtup called:::')
-    //console.log(state);
 
-    let newStateUpdated = { ...stateUpdated };
+  function updateState(fieldName, val) {
+    setState((prevState) => {
+      let updState = Object.assign({}, prevState);
+      updState[fieldName] = val;
+      return { ...updState };
+    });
+    setStateUpdated((prevState) => {
+      let updState = Object.assign({}, prevState);
+      updState[fieldName] = true;
+      return { ...updState };
+    });
+  }
+  function sendSetupToServer(e) {
+    e.preventDefault();
     let postState = {};
+    let newStateUpdated = { ...stateUpdated };
     for (let field in stateUpdated) {
       if (stateUpdated[field]) {
         postState["session_" + field] = state[field];
         newStateUpdated[field] = false;
       }
     }
-    console.log("postState:'", postState);
-    setStateUpdated(() => {
-      return { ...newStateUpdated };
-    });
-    postAPIData("/api/session/set_attributes", postState).then((res) => {
-      window.alert("Session settings sent, received response:", res.status);
+    setStateUpdated({ ...newStateUpdated });
+    DedicatedServerCommands.setDedicatedServerState(
+      postState,
+      serverFieldList
+    ).then((res) => {
+      window.alert("Session settings sent, response: " + res.statusText);
       console.log("post response:", res);
     });
   }
-  function saveServerSetup(e) {
+  function handleLoadPreset(preset, e) {
     e.preventDefault();
-    //console.log('saveServerSetup called:::')
-    //console.log(state);
+
+    let newStateUpdated = {};
+    let postState = {};
+    for (let field in preset) {
+      newStateUpdated[field] = true;
+      if (field !== "_id" && field !== "PresetName")
+        postState["session_" + field] = preset[field];
+    }
+
+    setState({ ...preset });
+    setStateUpdated({ ...newStateUpdated });
+
+    DedicatedServerCommands.setDedicatedServerState(
+      postState,
+      serverFieldList
+    ).then((res) => {
+      window.alert("Preset loaded, response: " + res.statusText);
+      console.log("post response:", res);
+      handleCloseLoad();
+    });
+  }
+  function handleSavePreset(e) {
+    e.preventDefault();
+
     let postState = {};
     console.log("state objs:", Object.keys(state).length);
     for (let field in state) {
       postState[field] = state[field];
     }
     console.log("postState:'", JSON.stringify(postState));
-    // setStateUpdated(() =>{
-    //     return { ...newStateUpdated };
-    // })
-    postAPIData("/db/presets/add", { PresetName, ...postState }).then((res) => {
-      handleCloseSave();
-      setPresetName("");
-      console.log("post response:", res);
-    });
-  }
-  function handleLoadPreset(preset, e) {
-    e.preventDefault();
-    console.log("handleLoadPreset");
-    console.log(preset);
-    // setStateUpdated(() =>{
-    //     return { ...preset };
-    // })
-    let newStateUpdated = {};
-    let postState = {};
-    for (let field in preset) {
-      //updateState(key,preset[key]);
-      newStateUpdated[field] = true;
-      if (field !== "_id" && field !== "PresetName")
-        postState["session_" + field] = preset[field];
-    }
-    setState({ ...preset });
-    setStateUpdated({ ...newStateUpdated });
-    console.log("postState:", postState);
-    postAPIData("/api/session/set_attributes", postState).then((res) => {
-      console.log("post response:", res);
-      console.log(res.body.toString());
-      handleCloseLoad();
-    });
+
+    WebServerCommands.savePreset(PresetName, postState, serverFieldList).then(
+      (res) => {
+        handleCloseSave();
+        setPresetName("");
+        console.log("post response:", res);
+      }
+    );
   }
   function handleDeletePreset(presetID, e) {
     e.preventDefault();
 
-    console.log("delete:", presetID);
+    WebServerCommands.deletePreset(presetID).then((res) => {
+      handleCloseLoad();
+      window.alert("Preset deleted, response: " + res.statusText);
+    });
   }
   function sendServerMessage() {
     //console.log('Sending message:',serverMessage)
@@ -199,7 +196,6 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   useEffect(() => {
     loadServerSetup();
-    loadPresetList();
   }, [lists]);
 
   return (
@@ -208,24 +204,17 @@ const ServerSetupForm = ({ enums, lists }) => {
       <div className="setup-3">
         <h1>Basic Server Setup</h1>
         <ServerSetupStatus serverState={serverState} />
-        <ServerSetupControls 
-          sendServerSetup={sendServerSetup}
+        <ServerSetupControls
+          sendSetupToServer={sendSetupToServer}
           handleShowSave={handleShowSave}
           handleShowLoad={handleShowLoad}
-          advanceSession={advanceSession}/>
-        {/* <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button> */}
+          advanceSession={advanceSession}
+        />
       </div>
       <br />
       <br />
-      <form onSubmit={sendServerSetup}>
+      <form onSubmit={sendSetupToServer}>
         <div>
-          {/* <div className="setup-3">
-                        <div><button className="command" type='button' onClick={sendServerSetup}>Set Server</button></div>
-                        <div>
-                            <Button variant='outline-success' onClick={handleShowSave}>Save as Preset</Button>
-                            <Button variant='outline-primary' onClick={handleShowLoad}>Load Existing Preset</Button>
-                        </div>
-                    </div> */}
           <div className="setup-3">
             {attrInputInfo.length &&
             Object.keys(enums).length &&
@@ -242,7 +231,7 @@ const ServerSetupForm = ({ enums, lists }) => {
                   );
                 })
                 .sort((a, b) => b.inputType.localeCompare(a.inputType))
-                .map((attr,i) => (
+                .map((attr, i) => (
                   <ServerSetupField
                     key={i}
                     attr={attr}
@@ -316,30 +305,24 @@ const ServerSetupForm = ({ enums, lists }) => {
       </label>
       <br />
       <br />
-      <ServerSetupUnsupportedFields attrInputInfo={attrInputInfo} state={state}/>
-      {/* <h3> Read-Only Fields </h3>
-        <div className="setup">
-            {
-                attrInputInfo.filter(x => x.access==="ReadOnly").map((attr) =>(
-                    <ServerStatusField 
-                        statusField={attr} 
-                        state={state[attr.name]}/>
-                ))
-            }
-        </div> */}
-
+      <ServerSetupUnsupportedFields
+        attrInputInfo={attrInputInfo}
+        state={state}
+      />
       <ServerSetupSavePresetModal
         showSave={showSave}
-        handleCloseSave={handleCloseSave} 
-        PresetName={PresetName} 
-        saveServerSetup={saveServerSetup}
-        setPresetName={setPresetName}/>
+        handleCloseSave={handleCloseSave}
+        PresetName={PresetName}
+        handleSavePreset={handleSavePreset}
+        setPresetName={setPresetName}
+      />
       <ServerSetupLoadPresetModal
-        showLoad={showLoad} 
-        handleCloseLoad={handleCloseLoad} 
-        PresetList={PresetList} 
-        handleDeletePreset={handleDeletePreset} 
-        handleLoadPreset={handleLoadPreset}/>
+        showLoad={showLoad}
+        handleCloseLoad={handleCloseLoad}
+        PresetList={PresetList}
+        handleDeletePreset={handleDeletePreset}
+        handleLoadPreset={handleLoadPreset}
+      />
       <br /> <br /> <br />
       <div></div>
     </div>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button } from 'react-bootstrap'
+import React from "react";
+import { Button } from "react-bootstrap";
 
 export default function ServerSetupStatus({ serverState }) {
   return (
@@ -18,6 +18,6 @@ export default function ServerSetupStatus({ serverState }) {
           Server Status Unexpected!
         </Button>
       )}
-  </div>
+    </div>
   );
 }

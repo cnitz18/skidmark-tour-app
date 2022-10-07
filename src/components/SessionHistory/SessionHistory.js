@@ -19,7 +19,7 @@ const SessionHistory = ({ enums, lists }) => {
       <h3> Session History: </h3>
       {history
         .filter((h) => Object.keys(h.stages) !== 0 && h.stages.race1)
-        .map((h,i) =>
+        .map((h, i) =>
           h && enums && lists ? (
             <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
           ) : (
