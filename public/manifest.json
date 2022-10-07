@@ -3,13 +3,13 @@
   "name": "Skidmark Tour dedicated server webpage",
   "icons": [
     {
-      "src":"skidmark-icon.jpg",
-      "type":"image/jpg",
+      "src": "skidmark-icon.jpg",
+      "type": "image/jpg",
       "sizes": "64x64 32x32 24x24 16x16"
     },
     {
-      "src":"info-icon.png",
-      "type":"image/png",
+      "src": "info-icon.png",
+      "type": "image/png",
       "sizes": "64x64 32x32 24x24 16x16"
     }
   ],

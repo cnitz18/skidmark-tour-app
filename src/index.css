@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
 
 * {
   box-sizing: border-box;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .container {
@@ -21,8 +21,8 @@ body {
 }
 
 .title {
-  font-weight:bold;
-  align-items:center;
+  font-weight: bold;
+  align-items: center;
   justify-content: space-between;
   font-size: 1.5rem;
   margin-bottom: 0;
@@ -43,7 +43,7 @@ body {
   display: grid;
 }
 .history-entry-data {
-  display:grid; 
+  display: grid;
   grid-template-columns: 2fr 2fr 2fr 1fr;
 }
 
@@ -51,22 +51,23 @@ body {
   color: steelblue;
 }
 
-footer{
+footer {
   margin-top: 30px;
   text-align: center;
 }
 
-
-.center-header{
-  text-align:center;
+.center-header {
+  text-align: center;
 }
 
 a.button {
   text-decoration: none;
   color: initial;
-  float:right;
+  float: right;
 }
-input[type=text], input[type=number], select {
+input[type="text"],
+input[type="number"],
+select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -74,13 +75,13 @@ input[type=text], input[type=number], select {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-label { 
+label {
   width: 75%;
 }
 
 .command {
   width: 50%;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -99,27 +100,27 @@ div {
   padding: 5px;
 }
 
-.setup{
+.setup {
   column-count: 2;
 }
-.setup-3{
+.setup-3 {
   column-count: 3;
 }
-.setup-4{
+.setup-4 {
   column-count: 4;
 }
 
-.bordered{
+.bordered {
   border: 1px solid;
   border-radius: 10px;
   border-color: #bbb;
   padding: 14px 20px;
 }
 
-.session-section{
+.session-section {
   grid-template-columns: auto auto;
 }
 
-.column{
+.column {
   grid-column: 1/2;
 }

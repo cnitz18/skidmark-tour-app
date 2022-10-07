@@ -1,7 +1,5 @@
 const APIDetails = ({ methods }) => {
-    return (
-        <></>
-    );
+  return <></>;
 };
 
 export default APIDetails;

@@ -1,4 +1,2 @@
-const SessionHistoryEntryScoreboardEntry = ({}) =>{
-
-};
+const SessionHistoryEntryScoreboardEntry = ({}) => {};
 export default SessionHistoryEntryScoreboardEntry;
