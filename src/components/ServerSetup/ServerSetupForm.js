@@ -8,6 +8,11 @@ import ServerStatusField from "./ServerStatusField";
 import SlotsDropdown from "./SlotsDropdown";
 import ServerSetupField from "./ServerSetupField";
 import ServerSetupWarning from "./ServerSetupWarning";
+import ServerSetupSavePresetModal from "./ServerSetupSavePresetModal";
+import ServerSetupLoadPresetModal from "./ServerSetupLoadPresetModal";
+import ServerSetupStatus from "./ServerSetupStatus";
+import ServerSetupUnsupportedFields from "./ServerSetupUnsupportedFields";
+import ServerSetupControls from "./ServerSetupControls";
 
 const ServerSetupForm = ({ enums, lists }) => {
   const [serverState, setServerState] = useState("");
@@ -202,36 +207,12 @@ const ServerSetupForm = ({ enums, lists }) => {
       <ServerSetupWarning show={false} />
       <div className="setup-3">
         <h1>Basic Server Setup</h1>
-        <div className="setup">
-          <span>Current Status: </span>
-          {serverState === "Running" ? (
-            <Button variant="outline-success" disabled>
-              Running
-            </Button>
-          ) : serverState === "Idle" ? (
-            <Button variant="outline-warning" disabled>
-              Idle
-            </Button>
-          ) : (
-            <Button variant="outline-danger" disabled>
-              Server Status Unexpected!
-            </Button>
-          )}
-        </div>
-        <ButtonGroup style={{ float: "right" }} aria-label="Basic example">
-          <Button variant="success" onClick={sendServerSetup}>
-            Send Settings To Server
-          </Button>
-          <Button variant="outline-success" onClick={handleShowSave}>
-            Save Settings As Preset
-          </Button>
-          <Button variant="outline-primary" onClick={handleShowLoad}>
-            Load Existing Preset
-          </Button>
-          <Button variant="danger" onClick={advanceSession}>
-            Advance Session
-          </Button>
-        </ButtonGroup>
+        <ServerSetupStatus serverState={serverState} />
+        <ServerSetupControls 
+          sendServerSetup={sendServerSetup}
+          handleShowSave={handleShowSave}
+          handleShowLoad={handleShowLoad}
+          advanceSession={advanceSession}/>
         {/* <Button style={{ float: 'right'}} variant="danger" onClick={advanceSession}>Advance Session</Button> */}
       </div>
       <br />
@@ -261,8 +242,9 @@ const ServerSetupForm = ({ enums, lists }) => {
                   );
                 })
                 .sort((a, b) => b.inputType.localeCompare(a.inputType))
-                .map((attr) => (
+                .map((attr,i) => (
                   <ServerSetupField
+                    key={i}
                     attr={attr}
                     state={state}
                     enums={
@@ -334,86 +316,30 @@ const ServerSetupForm = ({ enums, lists }) => {
       </label>
       <br />
       <br />
-      <div className="setup">
-        <h4>Unsupported Fields(WIP): </h4>
-        {attrInputInfo
-          .filter((x) => x.inputType === "none")
-          .map((attr) => (
-            <>
-              {attr.readableName +
-                ": (Current Value: " +
-                state[attr.name] +
-                " )"}
-              <br />
-            </>
-          ))}
-      </div>
+      <ServerSetupUnsupportedFields attrInputInfo={attrInputInfo} state={state}/>
       {/* <h3> Read-Only Fields </h3>
-            <div className="setup">
-                {
-                    attrInputInfo.filter(x => x.access==="ReadOnly").map((attr) =>(
-                        <ServerStatusField 
-                            statusField={attr} 
-                            state={state[attr.name]}/>
-                    ))
-                }
-            </div> */}
-      <Modal show={showSave} onHide={handleCloseSave} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Saving Race Preset</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <label>
-            Enter Name for Preset:
-            <input
-              type="text"
-              onInput={(e) => setPresetName(e.target.value)}
-              value={PresetName}
-            ></input>
-          </label>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSave}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={saveServerSetup}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={showLoad} onHide={handleCloseLoad} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Load Race Preset</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {PresetList.map((preset, i) => (
-            <Accordion.Item eventKey={i}>
-              <Accordion.Header>
-                <label>
-                  {preset.PresetName ? preset.PresetName : "<unnamed>"}
-                  <Button
-                    style={{ float: "right" }}
-                    onClick={(e) => handleLoadPreset(preset, e)}
-                  >
-                    Load
-                  </Button>
-                  {/* <Button
-                    variant='danger'
-                    onClick={(e) => handleDeletePreset(preset._id, e)}
-                  >
-                    Delete
-                  </Button> */}
-                </label>
-              </Accordion.Header>
-            </Accordion.Item>
-          ))}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseLoad}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <div className="setup">
+            {
+                attrInputInfo.filter(x => x.access==="ReadOnly").map((attr) =>(
+                    <ServerStatusField 
+                        statusField={attr} 
+                        state={state[attr.name]}/>
+                ))
+            }
+        </div> */}
+
+      <ServerSetupSavePresetModal
+        showSave={showSave}
+        handleCloseSave={handleCloseSave} 
+        PresetName={PresetName} 
+        saveServerSetup={saveServerSetup}
+        setPresetName={setPresetName}/>
+      <ServerSetupLoadPresetModal
+        showLoad={showLoad} 
+        handleCloseLoad={handleCloseLoad} 
+        PresetList={PresetList} 
+        handleDeletePreset={handleDeletePreset} 
+        handleLoadPreset={handleLoadPreset}/>
       <br /> <br /> <br />
       <div></div>
     </div>

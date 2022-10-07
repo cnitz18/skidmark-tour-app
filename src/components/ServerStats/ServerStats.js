@@ -95,8 +95,8 @@ const ServerStats = ({ lists }) => {
               <Table striped bordered hover>
                 <tbody>
                   {topTracks.length ? (
-                    topTracks.map((t) => (
-                      <tr>
+                    topTracks.map((t,i) => (
+                      <tr key={i}>
                         <td>{t.name}</td>
                         <td>
                           {"(" +
@@ -118,8 +118,8 @@ const ServerStats = ({ lists }) => {
               <Table striped bordered hover>
                 <tbody>
                   {topCars.length ? (
-                    topCars.map((t) => (
-                      <tr>
+                    topCars.map((t,i) => (
+                      <tr key={i}>
                         <td>{t.name}</td>
                         <td>{"(" + t.dist + " meters driven)"}</td>
                       </tr>

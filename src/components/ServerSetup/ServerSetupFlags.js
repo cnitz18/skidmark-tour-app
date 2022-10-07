@@ -44,8 +44,8 @@ const ServerSetupFlags = ({ flags, flagsVal, updateState }) => {
       <Accordion.Header>Expand</Accordion.Header>
       <Accordion.Body>
         {Object.keys(flagStatuses).length ? (
-          Object.keys(flagStatuses).map((st) => (
-            <div>
+          Object.keys(flagStatuses).map((st,i) => (
+            <div key={i}>
               <label>{st}</label>
               <Form.Check
                 type="switch"

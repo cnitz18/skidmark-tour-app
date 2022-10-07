@@ -34,8 +34,9 @@ const ServerSessionSetup = ({
       <br />
       <h4>{header}</h4>
       <div className="setup-3">
-        {otherSettings.map((attr) => (
+        {otherSettings.map((attr,i) => (
           <ServerSetupField
+            key={i}
             attr={attr}
             state={state}
             enums={attr.isEnum ? enums[attr.enumListName].list : []}
