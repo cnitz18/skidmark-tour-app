@@ -17,7 +17,7 @@ module.exports = {
     DamageType:3,
     DisablePitstopRefuelling:0,
     DriveThroughPenalty:0,
-    Flags:"-888536344",
+    Flags:"-887487768",
     FuelUsageType:"5",
     FullCourseYellows:0,
     GameMode:-1958878043,
