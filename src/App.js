@@ -53,7 +53,7 @@ const App = () => {
             Race Request Form Under Construction. Ideally would like to have
             this hook into the server setup form to pre-configure race setups
             for us
-            <WeeklyPolls />
+            <WeeklyPolls lists={lists}/>
           </>
         </Tab>
         <Tab eventKey="history" title="Race History">
