@@ -75,7 +75,7 @@ module.exports = {
     RaceDateMonth:7,
     RaceDateProgression:1,
     RaceDateYear:2020,
-    RaceExtraLap:0,
+    RaceExtraLap:1,
     RaceFormationLap:0,
     RaceLength:"30",
     RaceLiveTrackPreset:0,
