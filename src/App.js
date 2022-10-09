@@ -60,7 +60,7 @@ const App = () => {
         </Tab>
         <Tab eventKey="requestForm" title="Weekly Polls">
           <>
-            {/* <WeeklyPolls lists={lists} navigateToTab={navigateToTab} /> */}
+            <WeeklyPolls lists={lists} navigateToTab={navigateToTab} />
           </>
         </Tab>
         <Tab eventKey="history" title="Race History">
@@ -82,7 +82,7 @@ const App = () => {
         </Tab>
         <Tab eventKey="serverStats" title="Server Configuration">
           <>
-            {/* <ServerConfig lists={lists} /> */}
+            <ServerConfig lists={lists} />
           </>
         </Tab>
       </Tabs>
