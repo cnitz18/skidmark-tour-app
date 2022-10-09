@@ -12,13 +12,17 @@ const PlayerStats = ({ lists }) => {
         setStats({ ...res });
       }
     });
-  }, []);
+  }, [lists]);
   return (
     <>
       {Object.keys(stats).length ? (
         Object.keys(stats)
-          .sort((a, b) => stats[b].last_joined - stats[a].last_joined)
-          .map((p) => <PlayerStatsEntry player={stats[p]} lists={lists} />)
+          .sort(
+            (a, b) => stats[b].counts.race_joins - stats[a].counts.race_joins
+          )
+          .map((p, i) => (
+            <PlayerStatsEntry player={stats[p]} lists={lists} key={i} />
+          ))
       ) : (
         <></>
       )}

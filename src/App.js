@@ -6,7 +6,9 @@ import ServerSetupForm from "./components/ServerSetup/ServerSetupForm";
 import getAPIData from "./utils/getAPIData";
 import SessionHistory from "./components/SessionHistory/SessionHistory";
 import PlayerStats from "./components/PlayerStats/PlayerStats";
-import ServerStats from "./components/ServerStats/ServerStats";
+import ServerStats from "./components/ServerConfig/ServerStats";
+import WeeklyPolls from "./components/WeeklyPolls/WeeklyPolls";
+import ServerConfig from "./components/ServerConfig/ServerConfig";
 
 const App = () => {
   const [enums, setEnums] = useState({});
@@ -37,7 +39,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="app-container">
       <img src={logo} alt="The Skidmarks" />
       <Tabs defaultActiveKey="serverSetup" className="mb-3" id="tabs">
         <Tab eventKey="home" title="Home">
@@ -46,32 +48,33 @@ const App = () => {
             tabs above!
           </>
         </Tab>
-        <Tab eventKey="requestForm" title="Race Requests">
+        <Tab eventKey="requestForm" title="Weekly Polls">
           <>
             Race Request Form Under Construction. Ideally would like to have
             this hook into the server setup form to pre-configure race setups
             for us
+            <WeeklyPolls />
           </>
         </Tab>
-        <Tab eventKey="history" title="Session History">
+        <Tab eventKey="history" title="Race History">
           <>
             <SessionHistory enums={enums} lists={lists} />
           </>
         </Tab>
-        <Tab eventKey="serverSetup" title="Server Setup">
+        <Tab eventKey="serverSetup" title="Race Setup">
           <>
             <div>
               <ServerSetupForm enums={enums} lists={lists} />
             </div>
           </>
         </Tab>
-        {/* <Tab eventKey="playerStats" title="Player Statistics">
-            <>
-              <PlayerStats lists={lists}/>
-            </>
-          </Tab> */}
-        <Tab eventKey="serverStats" title="Server Statistics">
-          <ServerStats lists={lists} />
+        <Tab eventKey="playerStats" title="Player Statistics">
+          <>
+            <PlayerStats lists={lists} />
+          </>
+        </Tab>
+        <Tab eventKey="serverStats" title="Server Configuration">
+          <ServerConfig lists={lists} />
         </Tab>
       </Tabs>
       <footer>

@@ -8,6 +8,7 @@ const PlayerStatsEntry = ({ player, lists }) => {
   const [polePositions, setPolePositions] = useState(0);
   const [favTrack, setFavTrack] = useState(0);
   const [favCar, setFavCar] = useState(0);
+
   let calculateAverage = (positions) => {
     let sumPosition = 0;
     let numRaces = 0;
@@ -38,6 +39,7 @@ const PlayerStatsEntry = ({ player, lists }) => {
     setRaceWins(player.counts?.race?.positions[1] ?? 0);
     setPolePositions(player.counts?.qualify?.positions[1] ?? 0);
   }, [player]);
+
   return (
     <Accordion>
       <div className="history-entry">
@@ -78,11 +80,11 @@ const PlayerStatsEntry = ({ player, lists }) => {
                   </p>
                   <p>
                     Favorite Car:{" "}
-                    {lists["vehicles"].list.find((v) => v.id == favCar).name}
+                    {lists["vehicles"].list.find((v) => v.id == favCar)?.name}
                   </p>
                   <p>
                     Favorite Track:{" "}
-                    {lists["tracks"].list.find((v) => v.id == favTrack).name}
+                    {lists["tracks"].list.find((v) => v.id == favTrack)?.name}
                   </p>
                 </>
               ) : (
