@@ -9,6 +9,7 @@ export default function WeeklyPollEntryDetails({
   lists,
   incrementPolls,
   handleCompletePoll,
+  navigateToTab
 }) {
   const [checkedState, setCheckedState] = useState({});
   const [selectedRace, setSelectedRace] = useState({});
@@ -37,9 +38,12 @@ export default function WeeklyPollEntryDetails({
         console.log('setupss:',setup);
         let attrList = await getAPIData("/api/list/attributes/session");
         console.log('list?',attrList?.list?.length)
-        let res = await DedicatedServerCommands.setDedicatedServerState(setup,attrList?.list?.map((e) => e.name))
+        let res = await DedicatedServerCommands.setDedicatedServerState(setup,attrList?.list?.filter((e) => e.access ==='ReadWrite').map((e) => e.name))
         console.log('weekly poll res:',res);
         setSelectedRace({});
+        handleCloseLoad();
+        console.log('nav:',navigateToTab)
+        navigateToTab('serverSetup')
     }
   };
   const handleShowLoad = (raceID) => {

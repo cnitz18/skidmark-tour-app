@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Accordion, Button } from "react-bootstrap";
+import { Accordion, Button, Form } from "react-bootstrap";
 import { FiTrash2 } from "react-icons/fi";
 import AMS2API from "../../utils/AMS2API";
 import WeeklyPollEntryDetails from "./WeeklyPollEntryDetails";
@@ -11,6 +11,7 @@ export default function WeeklyPollEntry({
   incrementPolls,
   refreshSavedPolls,
   lists,
+  navigateToTab
 }) {
   async function deletePoll() {
     console.log("deletePOll:", poll._id);
@@ -38,17 +39,23 @@ export default function WeeklyPollEntry({
             <FiTrash2 color="red" />
           </Button>
         </span>
-        <h4>{poll.name}</h4>
-        <span>
-          Submitted by: {poll.createdBy} on {poll.createdOn}
+        <span >
+
+          <h4 style={{ margin: '5px'}}>{poll.name}</h4>
         </span>
-        <Accordion.Header>Details:</Accordion.Header>
+        <small>
+          Submitted by: {poll.createdBy} on {poll.createdOn}
+        </small>
+        <Accordion.Header>
+            Details:
+        </Accordion.Header>
         <Accordion.Body>
           <WeeklyPollEntryDetails
             poll={poll}
             lists={lists}
             incrementPolls={incrementPolls}
             handleCompletePoll={completePoll}
+            navigateToTab={navigateToTab}
           />
         </Accordion.Body>
       </Accordion.Item>

@@ -13,6 +13,11 @@ import ServerConfig from "./components/ServerConfig/ServerConfig";
 const App = () => {
   const [enums, setEnums] = useState({});
   const [lists, setLists] = useState({});
+  const [tabKey, setTabKey] = useState('serverSetup');
+
+  function navigateToTab(tabName){
+    setTabKey(tabName);
+  }
 
   useEffect(() => {
     async function getEnums() {
@@ -41,7 +46,12 @@ const App = () => {
   return (
     <div className="app-container">
       <img src={logo} alt="The Skidmarks" />
-      <Tabs defaultActiveKey="serverSetup" className="mb-3" id="tabs">
+      <Tabs 
+        defaultActiveKey="serverSetup" 
+        className="mb-3" 
+        activeKey={tabKey}
+        onSelect={(k) => setTabKey(k)}
+        id="tabs">
         <Tab eventKey="home" title="Home">
           <>
             Welcome! This website is under construction, see our progress in the
@@ -50,7 +60,7 @@ const App = () => {
         </Tab>
         <Tab eventKey="requestForm" title="Weekly Polls">
           <>
-            <WeeklyPolls lists={lists} />
+            <WeeklyPolls lists={lists} navigateToTab={navigateToTab} />
           </>
         </Tab>
         <Tab eventKey="history" title="Race History">
@@ -71,7 +81,9 @@ const App = () => {
           </>
         </Tab>
         <Tab eventKey="serverStats" title="Server Configuration">
-          <ServerConfig lists={lists} />
+          <>
+            <ServerConfig lists={lists} />
+          </>
         </Tab>
       </Tabs>
       <footer>

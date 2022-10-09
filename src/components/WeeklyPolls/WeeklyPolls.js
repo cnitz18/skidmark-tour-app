@@ -8,7 +8,7 @@ import getAPIData from "../../utils/getAPIData";
 import WeeklyPollEntry from "./WeeklyPollEntry";
 import postAPIData from "../../utils/postAPIData";
 
-export default function WeeklyPolls({ lists }) {
+export default function WeeklyPolls({ lists, navigateToTab }) {
   const [savedPolls, setSavedPolls] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -70,6 +70,7 @@ export default function WeeklyPolls({ lists }) {
           refreshSavedPolls={refreshSavedPolls}
           incrementPolls={incrementPolls}
           lists={lists}
+          navigateToTab={navigateToTab}
         />
       ))}
       <WeeklyPollModal
