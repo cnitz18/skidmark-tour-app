@@ -139,7 +139,7 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   function handleLoadPreset(preset, e) {
     e.preventDefault();
-
+    console.log("loadig...", preset);
     let newStateUpdated = {};
     let postState = {};
     for (let field in preset) {

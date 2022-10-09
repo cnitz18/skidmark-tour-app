@@ -19,8 +19,9 @@ class DedicatedServerCommands {
           status: 400,
           statusText: "Opponent Difficulty must be between 70-120",
         };
+        console.log("senging......")
       let res = await postAPIData("/api/session/set_attributes", validatedData);
-      // console.log('setDedicatedServerState done!',res);
+       console.log('setDedicatedServerState done!',res);
       return { status: res.status, statusText: res.statusText };
     } catch (err) {
       console.error("Error in setServerState:" + err);

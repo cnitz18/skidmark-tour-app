@@ -50,10 +50,7 @@ const App = () => {
         </Tab>
         <Tab eventKey="requestForm" title="Weekly Polls">
           <>
-            Race Request Form Under Construction. Ideally would like to have
-            this hook into the server setup form to pre-configure race setups
-            for us
-            <WeeklyPolls lists={lists}/>
+            <WeeklyPolls lists={lists} />
           </>
         </Tab>
         <Tab eventKey="history" title="Race History">

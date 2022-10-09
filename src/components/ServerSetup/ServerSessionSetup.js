@@ -39,7 +39,7 @@ const ServerSessionSetup = ({
             key={i}
             attr={attr}
             state={state}
-            enums={attr.isEnum ? enums[attr.enumListName].list : []}
+            enums={attr.isEnum ? enums[attr.enumListName]?.list : []}
             updateState={updateState}
           />
         ))}
