@@ -82,7 +82,7 @@ const App = () => {
         </Tab>
         <Tab eventKey="serverStats" title="Server Configuration">
           <>
-            <ServerConfig lists={lists} />
+            {/* <ServerConfig lists={lists} /> */}
           </>
         </Tab>
       </Tabs>
