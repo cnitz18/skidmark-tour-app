@@ -4,7 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 export default function ServerSetupSavePresetModal({
   showSave,
   handleCloseSave,
-  saveServerSetup,
+  handleSavePreset,
   PresetName,
   setPresetName,
 }) {
@@ -27,7 +27,7 @@ export default function ServerSetupSavePresetModal({
         <Button variant="secondary" onClick={handleCloseSave}>
           Close
         </Button>
-        <Button variant="primary" onClick={saveServerSetup}>
+        <Button variant="primary" onClick={handleSavePreset}>
           Save Changes
         </Button>
       </Modal.Footer>
