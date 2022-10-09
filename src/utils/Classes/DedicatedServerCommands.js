@@ -19,9 +19,9 @@ class DedicatedServerCommands {
           status: 400,
           statusText: "Opponent Difficulty must be between 70-120",
         };
-        console.log("senging......")
+        // console.log("senging......")
       let res = await postAPIData("/api/session/set_attributes", validatedData);
-       console.log('setDedicatedServerState done!',res);
+      //  console.log('setDedicatedServerState done!',res);
       return { status: res.status, statusText: res.statusText };
     } catch (err) {
       console.error("Error in setServerState:" + err);
@@ -31,7 +31,7 @@ class DedicatedServerCommands {
   static async softRestartServer() {
     try {
       let res = await getAPIData("/api/restart");
-      console.log("softRestartServer res:", res);
+      // console.log("softRestartServer res:", res);
       return { status: 200, statusText: "I think this worked?" };
     } catch (err) {
       console.error("Error in softRestartServer:" + err);
@@ -40,7 +40,7 @@ class DedicatedServerCommands {
   }
   static async updateSessionConfig(cfgObject) {
     try {
-      console.log("updateSessionConfig:", cfgObject);
+      // console.log("updateSessionConfig:", cfgObject);
       let validatedData = {
         name: cfgObject.name.replace(SPECIAL_CHAR_REGEX, ""),
         pwd: cfgObject.pwd,
@@ -51,7 +51,7 @@ class DedicatedServerCommands {
           "Non-empty <name> and non-null <pwd> properties expected"
         );
       let res = await postAPIData("/config", validatedData);
-      console.log("updateSessionConfig done!", res);
+      // console.log("updateSessionConfig done!", res);
       return { status: res.status, statusText: res.statusText };
     } catch (err) {
       console.error("Error in updateSessionConfig:" + err);

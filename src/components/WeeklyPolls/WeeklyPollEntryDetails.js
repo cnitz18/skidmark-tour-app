@@ -24,7 +24,7 @@ export default function WeeklyPollEntryDetails({
   const handleShow = () => setShow(true);
   const handleCloseLoad = () => setShowLoad(false);
   const handleLoad = async () => {
-    console.log("handleLoad", selectedRace);
+    // console.log("handleLoad", selectedRace);
     if (selectedRace) {
         let setup = {};
         for( let field in WeeklyPollDefaultSetup ){
@@ -35,14 +35,14 @@ export default function WeeklyPollEntryDetails({
             else if( field !== '_id' )
                 setup['session_' + field] = WeeklyPollDefaultSetup[field];
         }
-        console.log('setupss:',setup);
+        // console.log('setupss:',setup);
         let attrList = await getAPIData("/api/list/attributes/session");
-        console.log('list?',attrList?.list?.length)
+        // console.log('list?',attrList?.list?.length)
         let res = await DedicatedServerCommands.setDedicatedServerState(setup,attrList?.list?.filter((e) => e.access ==='ReadWrite').map((e) => e.name))
-        console.log('weekly poll res:',res);
+        // console.log('weekly poll res:',res);
         setSelectedRace({});
         handleCloseLoad();
-        console.log('nav:',navigateToTab)
+        // console.log('nav:',navigateToTab)
         navigateToTab('serverSetup')
     }
   };
@@ -51,13 +51,13 @@ export default function WeeklyPollEntryDetails({
     if( selRace ){
 
         setSelectedRace({ ...selRace });
-        console.log("selRace", selRace);
+        // console.log("selRace", selRace);
 
         setShowLoad(true);
     }
   };
   function updateVoteState(id, checked) {
-    console.log("updateVoteState", id, checked);
+    // console.log("updateVoteState", id, checked);
     let newCheckedState = { ...checkedState };
     newCheckedState[id] = checked;
     setCheckedState({ ...newCheckedState });
@@ -68,7 +68,7 @@ export default function WeeklyPollEntryDetails({
   }
   function clearCheckedState() {
     let newCheckedState = {};
-    console.log("clearingcheckstate:", poll);
+    // console.log("clearingcheckstate:", poll);
     //( let id in poll )
     poll?.races?.forEach((r) => {
       newCheckedState[r.id] = false;
@@ -76,7 +76,7 @@ export default function WeeklyPollEntryDetails({
     setCheckedState({ ...newCheckedState });
   }
   useEffect(() => {
-    console.log("poll:", poll, lists);
+    // console.log("poll:", poll, lists);
     clearCheckedState();
   }, [lists, poll]);
   return (

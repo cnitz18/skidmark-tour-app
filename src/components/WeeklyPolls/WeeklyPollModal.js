@@ -15,7 +15,7 @@ export default function WeeklyPollModal({
   const [curID, setCurID] = useState(0);
 
   async function createPoll() {
-    console.log("creating poll.....", curRaces);
+    // console.log("creating poll.....", curRaces);
     let today = new Date();
     let res = await postAPIData("/db/polls/add", {
       name: pollName,
@@ -23,7 +23,7 @@ export default function WeeklyPollModal({
       createdOn: today.toDateString(),
       races: curRaces,
     });
-    console.log("res:", res);
+    // console.log("res:", res);
 
     handleCloseModal();
     setYourName("");
@@ -48,7 +48,7 @@ export default function WeeklyPollModal({
     setCurRaces([...newRaces]);
   }
   useEffect(() => {
-    console.log("lists:", lists);
+    // console.log("lists:", lists);
   }, [showModal]);
   return (
     <Modal show={showModal} onHide={handleCloseModal} size="lg" centered>

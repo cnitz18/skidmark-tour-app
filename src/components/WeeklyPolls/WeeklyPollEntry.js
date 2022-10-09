@@ -14,20 +14,20 @@ export default function WeeklyPollEntry({
   navigateToTab
 }) {
   async function deletePoll() {
-    console.log("deletePOll:", poll._id);
+    //console.log("deletePOll:", poll._id);
     await fetch(AMS2API + "/db/polls/" + poll._id, { method: "DELETE" });
     return refreshSavedPolls();
   }
   async function completePoll() {
-    console.log("COMPELTE", poll);
+    //console.log("COMPELTE", poll);
     let updatedPoll = { ...poll };
     updatedPoll.complete = true;
-    console.log("sending:", updatedPoll);
+    // console.log("sending:", updatedPoll);
     let res = await postAPIData(
       "/db/polls/update/" + updatedPoll._id,
       updatedPoll
     );
-    console.log("res:", res);
+    // console.log("res:", res);
     refreshSavedPolls();
   }
   
