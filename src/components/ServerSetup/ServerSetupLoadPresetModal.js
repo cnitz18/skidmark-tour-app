@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row, Col, Table } from "react-bootstrap";
 
 export default function ServerSetupLoadPresetModal({
   showLoad,
@@ -9,33 +9,41 @@ export default function ServerSetupLoadPresetModal({
   handleLoadPreset,
 }) {
   return (
-    <Modal show={showLoad} onHide={handleCloseLoad} centered>
+    <Modal show={showLoad} onHide={handleCloseLoad} centered size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Load Race Preset</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {PresetList.map((preset, i) => (
-          // <Accordion.Item eventKey={i}>
-          //   <Accordion.Header>
-          <label key={i}>
-            {preset.PresetName ? preset.PresetName : "<unnamed>"}
-            <Button
-              style={{ float: "right" }}
-              variant="danger"
-              onClick={(e) => handleDeletePreset(preset._id, e)}
-            >
-              Delete
-            </Button>
-            <Button
-              style={{ float: "right" }}
-              onClick={(e) => handleLoadPreset(preset, e)}
-            >
-              Load
-            </Button>
-          </label>
-          //   </Accordion.Header>
-          // </Accordion.Item>
-        ))}
+        <Table striped bordered>
+          <tbody>
+            {PresetList.map((preset, i) => (
+              // <Accordion.Item eventKey={i}>
+              //   <Accordion.Header>
+              <tr>
+                <Row key={i} style={{ width: "100%" }}>
+                  <Col>
+                    {preset.PresetName ? preset.PresetName : "<unnamed>"}
+                  </Col>
+                  <Col xs lg="1" style={{ marginRight: "10px" }}>
+                    <Button onClick={(e) => handleLoadPreset(preset, e)}>
+                      Load
+                    </Button>
+                  </Col>
+                  <Col xs lg="1">
+                    <Button
+                      variant="danger"
+                      onClick={(e) => handleDeletePreset(preset._id, e)}
+                    >
+                      Delete
+                    </Button>
+                  </Col>
+                </Row>
+              </tr>
+              //   </Accordion.Header>
+              // </Accordion.Item>
+            ))}
+          </tbody>
+        </Table>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleCloseLoad}>

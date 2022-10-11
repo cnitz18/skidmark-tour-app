@@ -9,7 +9,7 @@ export default function WeeklyPollEntryDetails({
   lists,
   incrementPolls,
   handleCompletePoll,
-  navigateToTab
+  navigateToTab,
 }) {
   const [checkedState, setCheckedState] = useState({});
   const [selectedRace, setSelectedRace] = useState({});
@@ -26,34 +26,38 @@ export default function WeeklyPollEntryDetails({
   const handleLoad = async () => {
     // console.log("handleLoad", selectedRace);
     if (selectedRace) {
-        let setup = {};
-        for( let field in WeeklyPollDefaultSetup ){
-            if( field === 'VehicleClassId' )
-                setup['session_' + field] = selectedRace.car;
-            else if( field === 'TrackId' )
-                setup['session_' + field] = selectedRace.track;
-            else if( field !== '_id' )
-                setup['session_' + field] = WeeklyPollDefaultSetup[field];
-        }
-        // console.log('setupss:',setup);
-        let attrList = await getAPIData("/api/list/attributes/session");
-        // console.log('list?',attrList?.list?.length)
-        let res = await DedicatedServerCommands.setDedicatedServerState(setup,attrList?.list?.filter((e) => e.access ==='ReadWrite').map((e) => e.name))
-        // console.log('weekly poll res:',res);
-        setSelectedRace({});
-        handleCloseLoad();
-        // console.log('nav:',navigateToTab)
-        navigateToTab('serverSetup')
+      let setup = {};
+      for (let field in WeeklyPollDefaultSetup) {
+        if (field === "VehicleClassId")
+          setup["session_" + field] = selectedRace.car;
+        else if (field === "TrackId")
+          setup["session_" + field] = selectedRace.track;
+        else if (field !== "_id")
+          setup["session_" + field] = WeeklyPollDefaultSetup[field];
+      }
+      // console.log('setupss:',setup);
+      let attrList = await getAPIData("/api/list/attributes/session");
+      // console.log('list?',attrList?.list?.length)
+      let res = await DedicatedServerCommands.setDedicatedServerState(
+        setup,
+        attrList?.list
+          ?.filter((e) => e.access === "ReadWrite")
+          .map((e) => e.name)
+      );
+      // console.log('weekly poll res:',res);
+      setSelectedRace({});
+      handleCloseLoad();
+      // console.log('nav:',navigateToTab)
+      navigateToTab("serverSetup");
     }
   };
   const handleShowLoad = (raceID) => {
     let selRace = poll?.races?.find((r) => r.id == raceID);
-    if( selRace ){
+    if (selRace) {
+      setSelectedRace({ ...selRace });
+      // console.log("selRace", selRace);
 
-        setSelectedRace({ ...selRace });
-        // console.log("selRace", selRace);
-
-        setShowLoad(true);
+      setShowLoad(true);
     }
   };
   function updateVoteState(id, checked) {
@@ -162,7 +166,8 @@ export default function WeeklyPollEntryDetails({
           <Modal.Title>Load Race</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Would you like load this race from poll "{poll.name}"? This will redirect you to the Race Settings page
+          Would you like load this race from poll "{poll.name}"? This will
+          redirect you to the Race Settings page
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseLoad}>

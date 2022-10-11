@@ -5,8 +5,10 @@ import AMS2API from "../AMS2API";
 class WebServerCommands {
   static async savePreset(name, preset, fields) {
     try {
+      //console.log('pres:',preset)
       let validatedData = ServerConfigHandler.trimExtraFields(preset, fields);
       validatedData.PresetName = name;
+      //console.log('validated:',validatedData)
       let res = await postAPIData("/db/presets/add", validatedData);
       return { status: res.status, statusText: res.statusText };
     } catch (err) {

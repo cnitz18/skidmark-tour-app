@@ -11,7 +11,7 @@ export default function WeeklyPollEntry({
   incrementPolls,
   refreshSavedPolls,
   lists,
-  navigateToTab
+  navigateToTab,
 }) {
   async function deletePoll() {
     //console.log("deletePOll:", poll._id);
@@ -30,7 +30,7 @@ export default function WeeklyPollEntry({
     // console.log("res:", res);
     refreshSavedPolls();
   }
-  
+
   return (
     <Accordion>
       <Accordion.Item eventKey="">
@@ -39,16 +39,13 @@ export default function WeeklyPollEntry({
             <FiTrash2 color="red" />
           </Button>
         </span>
-        <span >
-
-          <h4 style={{ margin: '5px'}}>{poll.name}</h4>
+        <span>
+          <h4 style={{ margin: "5px" }}>{poll.name}</h4>
         </span>
         <small>
           Submitted by: {poll.createdBy} on {poll.createdOn}
         </small>
-        <Accordion.Header>
-            Details:
-        </Accordion.Header>
+        <Accordion.Header>Details:</Accordion.Header>
         <Accordion.Body>
           <WeeklyPollEntryDetails
             poll={poll}

@@ -14,8 +14,7 @@ const SlotsDropdown = ({
   useEffect(() => {
     // console.log('list:',list)
     // console.log('slotsDropdown: attrs',slotsAttrs)
-
-  },[list ])
+  }, [list]);
   return (
     <Accordion>
       <Accordion.Item eventKey="0">

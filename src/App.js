@@ -13,9 +13,9 @@ import ServerConfig from "./components/ServerConfig/ServerConfig";
 const App = () => {
   const [enums, setEnums] = useState({});
   const [lists, setLists] = useState({});
-  const [tabKey, setTabKey] = useState('serverSetup');
+  const [tabKey, setTabKey] = useState("serverSetup");
 
-  function navigateToTab(tabName){
+  function navigateToTab(tabName) {
     setTabKey(tabName);
   }
 
@@ -46,12 +46,13 @@ const App = () => {
   return (
     <div className="app-container">
       <img src={logo} alt="The Skidmarks" />
-      <Tabs 
-        defaultActiveKey="serverSetup" 
-        className="mb-3" 
+      <Tabs
+        defaultActiveKey="serverSetup"
+        className="mb-3"
         activeKey={tabKey}
         onSelect={(k) => setTabKey(k)}
-        id="tabs">
+        id="tabs"
+      >
         <Tab eventKey="home" title="Home">
           <>
             Welcome! This website is under construction, see our progress in the

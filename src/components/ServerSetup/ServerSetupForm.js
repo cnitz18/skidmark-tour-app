@@ -76,10 +76,10 @@ const ServerSetupForm = ({ enums, lists }) => {
       setMultiClassNumSlots({
         ...inputInfo.find((x) => x.name === "MultiClassSlots"),
       });
-      console.log('setting slots attrs:',inputInfo.filter(
-        (x) =>
-          x.name.startsWith("MultiClassSlot") && x.name !== "MultiClassSlots"
-      ))
+      // console.log('setting slots attrs:',inputInfo.filter(
+      //   (x) =>
+      //     x.name.startsWith("MultiClassSlot") && x.name !== "MultiClassSlots"
+      // ))
       setMultiClassSlotsAttrs([
         ...inputInfo.filter(
           (x) =>
@@ -91,7 +91,7 @@ const ServerSetupForm = ({ enums, lists }) => {
       if (lists && Object.keys(lists).length) {
         let curList = [...lists["vehicle_classes"].list];
         let sortedList = curList.sort((a, b) => a.name.localeCompare(b.name));
-        console.log('setting sorted vehicle:',sortedList)
+        // console.log('setting sorted vehicle:',sortedList)
         setSortedVehicleList([...sortedList]);
       }
     }
@@ -144,7 +144,7 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   function handleLoadPreset(preset, e) {
     e.preventDefault();
-    console.log("loadig...", preset);
+    // console.log("loadig...", preset);
     let newStateUpdated = {};
     let postState = {};
     for (let field in preset) {
@@ -174,7 +174,7 @@ const ServerSetupForm = ({ enums, lists }) => {
     e.preventDefault();
 
     let postState = {};
-    //console.log("state objs:", Object.keys(state).length);
+    //console.log("handleSavePreset:", Object.keys(state).length);
     for (let field in state) {
       postState[field] = state[field];
     }
@@ -201,7 +201,7 @@ const ServerSetupForm = ({ enums, lists }) => {
     postAPIData("/api/session/send_chat", { message: serverMessage }).then(
       (res) => {
         //window.alert('Message Sent');
-        console.log("message sent");
+        //console.log("message sent");
       }
     );
   }
@@ -216,8 +216,8 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   useEffect(() => {
     loadServerSetup();
-    console.log('multiClassSlotsAttrs:',multiClassSlotsAttrs);
-    console.log('sortedVehicleList:',sortedVehicleList)
+    // console.log('multiClassSlotsAttrs:',multiClassSlotsAttrs);
+    // console.log('sortedVehicleList:',sortedVehicleList)
   }, [lists]);
 
   return (
