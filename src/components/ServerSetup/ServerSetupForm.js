@@ -76,6 +76,10 @@ const ServerSetupForm = ({ enums, lists }) => {
       setMultiClassNumSlots({
         ...inputInfo.find((x) => x.name === "MultiClassSlots"),
       });
+      console.log('setting slots attrs:',inputInfo.filter(
+        (x) =>
+          x.name.startsWith("MultiClassSlot") && x.name !== "MultiClassSlots"
+      ))
       setMultiClassSlotsAttrs([
         ...inputInfo.filter(
           (x) =>
@@ -87,6 +91,7 @@ const ServerSetupForm = ({ enums, lists }) => {
       if (lists && Object.keys(lists).length) {
         let curList = [...lists["vehicle_classes"].list];
         let sortedList = curList.sort((a, b) => a.name.localeCompare(b.name));
+        console.log('setting sorted vehicle:',sortedList)
         setSortedVehicleList([...sortedList]);
       }
     }

@@ -11,6 +11,11 @@ const SlotsDropdown = ({
   list,
   bodyClass,
 }) => {
+  useEffect(() => {
+    console.log('list:',list)
+    console.log('slotsDropdown: attrs',slotsAttrs)
+
+  },[list ])
   return (
     <Accordion>
       <Accordion.Item eventKey="0">
@@ -23,7 +28,7 @@ const SlotsDropdown = ({
           />
         </Accordion.Header>
         <Accordion.Body className="setup">
-          {slotsAttrs.sort().map((attr, i) => (
+          {slotsAttrs?.sort().map((attr, i) => (
             <ServerSetupField
               key={i}
               attr={attr}
