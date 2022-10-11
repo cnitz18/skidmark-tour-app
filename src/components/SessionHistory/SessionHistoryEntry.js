@@ -1,26 +1,43 @@
 import { useEffect, useState } from "react";
-import { Accordion, Button } from "react-bootstrap";
+import { Accordion, Button, Row, Col } from "react-bootstrap";
+import { ImTrophy } from 'react-icons/im'
 import SessionHistoryEntryScoreboard from "./SessionHistoryEntryScoreboard";
 
 const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [raceOne, setRaceOne] = useState();
+  const [firstPlace,setFirstPlace] = useState('');
+  const [secondPlace,setSecondPlace] = useState('');
+  const [thirdPlace,setThirdPlace] = useState('');
 
   useEffect(() => {
     setStartTime(new Date(data.start_time * 1000));
     setEndTime(new Date(data.end_time * 1000));
-  }, []);
+    
+    let race1 = data?.stages?.race1;
+    if( race1 && race1?.results?.length ){
+      setFirstPlace({ ... race1?.results?.find((m) => m.attributes?.RacePosition === 1) })
+      setSecondPlace({ ... race1?.results?.find((m) => m.attributes?.RacePosition === 2) })
+      setThirdPlace({ ... race1?.results?.find((m) => m.attributes?.RacePosition === 3) })
+    }
+  }, [data]);
   return (
     <Accordion>
       <div className="history-entry">
         <div className="history-entry-data">
           <div>
-            {lists["tracks"] ? (
+            {
+              lists["tracks"] ? (
               <h5>
                 {
-                  lists["tracks"].list.find((t) => t.id === data.setup.TrackId)
-                    .name
+                  lists["tracks"]?.list?.find((t) => t.id === data.setup.TrackId)
+                    ?.name ?? '<undefined>'
+                }
+                {" @ "}
+                {
+                  lists["vehicle_classes"]?.list?.find((t) => t.value === data.setup.VehicleClassId)
+                    ?.name ?? '<undefined>'
                 }
               </h5>
             ) : (
@@ -28,14 +45,28 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             )}
           </div>
           <div>
-            <span>Start Time: </span>
-            <br />
-            <small>{startTime.toLocaleString()}</small>
+            <Row>
+              <label>
+                <ImTrophy color="gold"/>
+                <span>{firstPlace?.name}</span>
+              </label>            </Row>
+            <Row>
+              <label>
+                <ImTrophy color="silver"/>
+                <span>{secondPlace?.name}</span>
+              </label>
+            </Row>
+            <Row>
+              <label>
+                <ImTrophy color="tan"/>
+                <span>{thirdPlace?.name}</span>
+              </label>
+            </Row>
           </div>
           <div>
             <span>End Time: </span>
             <br />
-            {data.end_time ? <small>{endTime.toLocaleString()}</small> : <></>}
+            <small>{endTime.toLocaleString()}</small>
           </div>
           <div>
             {data.finished ? (

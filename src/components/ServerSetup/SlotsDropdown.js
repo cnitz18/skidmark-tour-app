@@ -28,6 +28,12 @@ const SlotsDropdown = ({
           />
         </Accordion.Header>
         <Accordion.Body className="setup">
+          {
+            slotsAttrs ? 
+            slotsAttrs?.sort().forEach((attr) => {
+              console.log(attr,list)
+            }) : <></>
+          }
           {slotsAttrs?.sort().map((attr, i) => (
             <ServerSetupField
               key={i}

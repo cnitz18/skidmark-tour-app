@@ -216,6 +216,8 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   useEffect(() => {
     loadServerSetup();
+    console.log('multiClassSlotsAttrs:',multiClassSlotsAttrs);
+    console.log('sortedVehicleList:',sortedVehicleList)
   }, [lists]);
 
   return (
