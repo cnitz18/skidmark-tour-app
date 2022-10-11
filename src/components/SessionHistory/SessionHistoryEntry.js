@@ -10,6 +10,10 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [firstPlace,setFirstPlace] = useState('');
   const [secondPlace,setSecondPlace] = useState('');
   const [thirdPlace,setThirdPlace] = useState('');
+  const [sessionFlags,setSessionFlags] = useState(0);
+  const [sessionFlagToggles,setSessionFlagToggles] = useState({});
+  const [sessionLength,setSessionLength] = useState(0);
+  const [timedSession,setTimedSession] = useState(false);
 
   useEffect(() => {
     setStartTime(new Date(data.start_time * 1000));
@@ -20,6 +24,34 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
       setFirstPlace({ ... race1?.results?.find((m) => m.attributes?.RacePosition === 1) })
       setSecondPlace({ ... race1?.results?.find((m) => m.attributes?.RacePosition === 2) })
       setThirdPlace({ ... race1?.results?.find((m) => m.attributes?.RacePosition === 3) })
+    }
+    let raceSetup = data?.setup;
+    if( raceSetup ){
+      setSessionFlags(raceSetup.Flags);
+      let curValue = raceSetup.Flags;
+      let flagStatus = {};
+      console.log('lists?',lists)
+      let flagInfo = lists?.flags?.session?.list;
+      if( flagInfo ){
+        flagInfo
+        .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+        .forEach((f) => {
+          flagStatus[f.name] = { checked: false, ...f };
+          //console.log("mathing... field", f.name,'value:', f.value,'curValue:', curValue, 'after subtracting:', curValue - f.value);
+          
+          if (
+            (curValue - f.value >= 0 && f.name !== "COOLDOWNLAP") ||
+            (f.name === "COOLDOWNLAP" && curValue < 0)
+            ) {
+              //console.log('CHECKED:',f.name,f.value)
+            curValue -= f.value;
+            flagStatus[f.name].checked = true;
+          }
+        });
+      }
+      console.log('flagStatuses:',flagStatus)
+      setTimedSession( flagStatus?.TIMED_RACE?.checked );
+      setSessionLength(raceSetup.RaceLength);
     }
   }, [data]);
   return (
@@ -69,6 +101,15 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             <small>{endTime.toLocaleString()}</small>
           </div>
           <div>
+            <div>
+              {
+                sessionLength + " "
+              }
+              {
+                timedSession ? 
+                "Minutes" : "Laps"
+              } 
+            </div>
             {data.finished ? (
               <Button variant="outline-success" disabled>
                 Finished

@@ -12,8 +12,8 @@ const SlotsDropdown = ({
   bodyClass,
 }) => {
   useEffect(() => {
-    console.log('list:',list)
-    console.log('slotsDropdown: attrs',slotsAttrs)
+    // console.log('list:',list)
+    // console.log('slotsDropdown: attrs',slotsAttrs)
 
   },[list ])
   return (
@@ -28,12 +28,6 @@ const SlotsDropdown = ({
           />
         </Accordion.Header>
         <Accordion.Body className="setup">
-          {
-            slotsAttrs ? 
-            slotsAttrs?.sort().forEach((attr) => {
-              console.log(attr,list)
-            }) : <></>
-          }
           {slotsAttrs?.sort().map((attr, i) => (
             <ServerSetupField
               key={i}
