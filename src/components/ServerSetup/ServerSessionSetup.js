@@ -33,7 +33,7 @@ const ServerSessionSetup = ({
     <div className="bordered column">
       <br />
       <h4>{header}</h4>
-      <div className="setup-3">
+      <div className="setup-4">
         {otherSettings.map((attr, i) => (
           <ServerSetupField
             key={i}

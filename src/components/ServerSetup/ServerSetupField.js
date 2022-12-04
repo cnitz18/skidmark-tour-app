@@ -1,10 +1,16 @@
 /* eslint-disable react/jsx-no-target-blank */
-import { Form } from "react-bootstrap";
-import { Image } from "react-bootstrap";
-import { Tooltip } from "react-bootstrap";
-import { OverlayTrigger } from "react-bootstrap";
+import {
+  Image,
+  Form,
+  Tooltip,
+  OverlayTrigger,
+  Container,
+  Col,
+  Row,
+} from "react-bootstrap";
 import ServerSetupFlags from "./ServerSetupFlags";
 import ServerSetupOpponentDifficulty from "./ServerSetupOpponentDifficulty";
+import RangeSlider from "react-bootstrap-range-slider";
 
 const ServerSetupField = ({
   attr,
@@ -21,7 +27,7 @@ const ServerSetupField = ({
   );
 
   return (
-    <div>
+    <Container>
       <label>
         <div>
           <span style={{ position: "relative", right: "10px" }}>
@@ -61,7 +67,7 @@ const ServerSetupField = ({
             {enums.length ? (
               enums.map((e) => (
                 <option value={e.value} id={e.id} key={e.value}>
-                  {e.name}
+                  {e.name.replaceAll("_", " ")}
                 </option>
               ))
             ) : (
@@ -82,7 +88,7 @@ const ServerSetupField = ({
                     id={l.value}
                     key={l.id ?? l.value}
                   >
-                    {l.name}
+                    {l.name.replaceAll("_", " ")}
                   </option>
                 ))
             ) : (
@@ -97,7 +103,7 @@ const ServerSetupField = ({
                     id={l.value}
                     key={l.id ?? l.value}
                   >
-                    {l.name}
+                    {l.name.replaceAll("_", " ")}
                   </option>
                 ))
             ) : (
@@ -115,17 +121,18 @@ const ServerSetupField = ({
           />
         ) : attr.inputType === "flags" ? (
           <div>
+            <a
+              href="https://docs.google.com/spreadsheets/d/1aSgY5wPyvR1eJ-99a26M0RGbaDZqHpYwCiNdxDHa5fA/edit#gid=0"
+              target="_blank"
+            >
+              Calculator
+            </a>
+            <br />
             <input
               type="number"
               value={state[attr.name]}
               onChange={(e) => updateState(attr.name, e.target.value)}
             ></input>
-            <a
-              href="https://docs.google.com/spreadsheets/d/1aSgY5wPyvR1eJ-99a26M0RGbaDZqHpYwCiNdxDHa5fA/edit#gid=0"
-              target="_blank"
-            >
-              Flags Calculator
-            </a>
             <ServerSetupFlags
               flags={list}
               flagsState={state[attr.name]}
@@ -140,11 +147,30 @@ const ServerSetupField = ({
             attr={attr}
             difficultyError={difficultyError}
           />
+        ) : attr.inputType === "slider" ? (
+          <Container>
+            <Row>
+              <Col xs lg="2">
+                <Form.Control
+                  value={state[attr.name]}
+                  onChange={(e) => updateState(attr.name, e.target.value)}
+                />
+              </Col>
+              <Col>
+                <RangeSlider
+                  value={state[attr.name]}
+                  onChange={(e) => updateState(attr.name, e.target.value)}
+                  min={attr.min ?? 0}
+                  max={attr.max ?? 99}
+                />
+              </Col>
+            </Row>
+          </Container>
         ) : (
           <></>
         )}
       </label>
-    </div>
+    </Container>
   );
 };
 export default ServerSetupField;

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import {  Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { BsFillFileEarmarkPlusFill } from "react-icons/bs";
 import { FiRefreshCcw } from "react-icons/fi";
 import WeeklyPollModal from "./WeeklyPollModal";
@@ -44,10 +44,7 @@ export default function WeeklyPolls({ lists, navigateToTab }) {
         }
       }
       if (wasUpdated) {
-        await postAPIData(
-          "/db/polls/update/" + updatedPoll._id,
-          updatedPoll
-        );
+        await postAPIData("/db/polls/update/" + updatedPoll._id, updatedPoll);
         // console.log("update poll res:", res);
       }
     }

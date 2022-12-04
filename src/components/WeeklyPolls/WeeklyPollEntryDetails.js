@@ -82,7 +82,7 @@ export default function WeeklyPollEntryDetails({
   useEffect(() => {
     // console.log("poll:", poll, lists);
     clearCheckedState();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lists, poll]);
   return (
     <div>
@@ -111,7 +111,9 @@ export default function WeeklyPollEntryDetails({
                   </Button>
                 )}
               </td>
-              <td>{lists?.tracks?.list?.find((t) => t.id === r.track)?.name}</td>
+              <td>
+                {lists?.tracks?.list?.find((t) => t.id === r.track)?.name}
+              </td>
               <td>
                 {
                   lists?.vehicle_classes?.list?.find((c) => c.value === r.car)

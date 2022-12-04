@@ -22,10 +22,7 @@ export default function WeeklyPollEntry({
     let updatedPoll = { ...poll };
     updatedPoll.complete = true;
     // console.log("sending:", updatedPoll);
-    await postAPIData(
-      "/db/polls/update/" + updatedPoll._id,
-      updatedPoll
-    );
+    await postAPIData("/db/polls/update/" + updatedPoll._id, updatedPoll);
     // console.log("res:", res);
     refreshSavedPolls();
   }

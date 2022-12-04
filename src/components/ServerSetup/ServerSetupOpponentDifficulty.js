@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useEffect, useState } from "react";
+import { Container, Row, Col, Form } from "react-bootstrap";
+import RangeSlider from "react-bootstrap-range-slider";
 
 export default function ServerSetupOpponentDifficulty({
   updateState,
@@ -25,13 +27,21 @@ export default function ServerSetupOpponentDifficulty({
     updateInputFromState();
   }, [state]);
   return (
-    <input
-      type="number"
-      value={diff}
-      min="70"
-      max="120"
-      onChange={(e) => updateStateFromInput(e.target.value)}
-      style={difficultyError ? { border: "1px solid red" } : {}}
-    ></input>
+    <Container>
+      <Row>
+        <Col xs lg="2">
+          <Form.Control value={state[attr.name]} />
+        </Col>
+        <Col>
+          <RangeSlider
+            value={diff}
+            min={70}
+            max={120}
+            onChange={(e) => updateStateFromInput(e.target.value)}
+            style={difficultyError ? { border: "1px solid red" } : {}}
+          />
+        </Col>
+      </Row>
+    </Container>
   );
 }

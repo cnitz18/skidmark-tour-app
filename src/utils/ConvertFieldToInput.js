@@ -38,6 +38,36 @@ function ConvertFieldToInput(field, curState) {
   if (curField.name === "OpponentDifficulty")
     curField.description =
       "Difficulty of AI participants. Valid Values in range 70-120";
+  if (curField.inputType === "slider") {
+    switch (curField.name) {
+      case "GridSize":
+      case "MaxPlayers":
+        curField.min = 1;
+        curField.max = 32;
+        break;
+      case "DamageScale":
+        curField.min = 0;
+        curField.max = 4;
+        break;
+      case "AllowedCutsBeforePenalty":
+        curField.min = 0;
+        curField.max = 50;
+        break;
+      case "PracticeWeatherSlots":
+      case "QualifyWeatherSlots":
+      case "RaceWeatherSlots":
+        curField.min = 0;
+        curField.max = 4;
+        break;
+      case "MultiClassSlots":
+        curField.min = 0;
+        curField.max = 9;
+        break;
+      default:
+        curField.min = -100;
+        curField.max = 100;
+    }
+  }
   // console.log('converted:',curField);
   return curField;
 }

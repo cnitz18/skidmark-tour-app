@@ -30,13 +30,6 @@ function ConvertInputType(field) {
     case "FullCourseYellows":
     case "DamageRandomFailures":
       return "boolean";
-    case "PracticeWeatherSlots":
-    case "QualifyWeatherSlots":
-    case "RaceWeatherSlots":
-    case "GridSize":
-    case "MaxPlayers":
-    case "DamageScale":
-    case "MultiClassSlots":
     case "Latitude":
     case "Longitude":
     case "Altitude":
@@ -49,7 +42,6 @@ function ConvertInputType(field) {
     case "RaceDateMonth":
     case "RaceDateDay":
     case "RaceDateHour":
-    case "AllowedCutsBeforePenalty":
       return "number";
     case "SessionState":
     case "SessionStage":
@@ -59,6 +51,15 @@ function ConvertInputType(field) {
       return "flags";
     case "OpponentDifficulty":
       return "opponentdifficulty";
+    case "GridSize":
+    case "MaxPlayers":
+    case "DamageScale":
+    case "AllowedCutsBeforePenalty":
+    case "PracticeWeatherSlots":
+    case "QualifyWeatherSlots":
+    case "RaceWeatherSlots":
+    case "MultiClassSlots":
+      return "slider";
     default:
       if (fieldName) {
         //console.log('fieldName:',fieldName)

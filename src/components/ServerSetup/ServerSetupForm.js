@@ -10,15 +10,21 @@ import ServerSetupWarning from "./ServerSetupWarning";
 import ServerSetupSavePresetModal from "./ServerSetupSavePresetModal";
 import ServerSetupLoadPresetModal from "./ServerSetupLoadPresetModal";
 import ServerSetupStatus from "./ServerSetupStatus";
-import ServerSetupUnsupportedFields from "./ServerSetupUnsupportedFields";
 import ServerSetupControls from "./ServerSetupControls";
 import DedicatedServerCommands from "../../utils/Classes/DedicatedServerCommands";
 import WebServerCommands from "../../utils/Classes/WebServerCommands";
+import { Toast, Col, Row, ToastContainer } from "react-bootstrap";
 
 const ServerSetupForm = ({ enums, lists }) => {
   const [serverState, setServerState] = useState("");
   const [serverMessage, setServerMessage] = useState("");
   const [serverFieldList, setServerFieldList] = useState([]);
+  const [toastVariant, setToastVariant] = useState("");
+  const [toastBody, setToastBody] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [disableFields, setDisableFields] = useState(false);
 
   const [state, setState] = useState({});
   const [stateUpdated, setStateUpdated] = useState({});
@@ -116,6 +122,8 @@ const ServerSetupForm = ({ enums, lists }) => {
     });
   }
   function sendSetupToServer(e) {
+    setShowSpinner(true);
+    setDisableFields(true);
     e.preventDefault();
     let postState = {};
     let newStateUpdated = { ...stateUpdated };
@@ -126,21 +134,41 @@ const ServerSetupForm = ({ enums, lists }) => {
       }
     }
     setStateUpdated({ ...newStateUpdated });
-    DedicatedServerCommands.setDedicatedServerState(
-      postState,
-      serverFieldList
-    ).then((res) => {
-      if (res.status === 200) {
-        setDifficultyError(false);
-        window.alert("Session settings sent, response: " + res.statusText);
-      } else {
+    DedicatedServerCommands.setDedicatedServerState(postState, serverFieldList)
+      .then((res) => {
+        if (res.status === 200) {
+          setDifficultyError(false);
+          console.log("showing toast....");
+          setToastVariant("Success");
+          setToastMessage("Server settings saved");
+          setToastBody("");
+          setShowToast(true);
+          setShowSpinner(false);
+          setDisableFields(false);
+          //window.alert("Session settings sent, response: " + res.statusText);
+        } else {
+          setDifficultyError(true);
+          setToastVariant("Danger");
+          setToastMessage("Error when saving settings");
+          setToastBody(`Server sent a status code of ${res.status}`);
+          setShowToast(true);
+          setShowSpinner(false);
+          setDisableFields(false);
+          // window.alert(
+          //   `Session setting load failed with code "${res.status}" and reason: "${res.statusText}"`
+          // );
+          console.error(res);
+        }
+      })
+      .catch((err) => {
         setDifficultyError(true);
-        window.alert(
-          `Session setting load failed with code "${res.status}" and reason: "${res.statusText}"`
-        );
-        console.error(res);
-      }
-    });
+        setToastVariant("Danger");
+        setToastMessage("Error when saving settings");
+        setToastBody(`Server errored out with message: "${err.body}"`);
+        setShowToast(true);
+        setShowSpinner(false);
+        setDisableFields(false);
+      });
   }
   function handleLoadPreset(preset, e) {
     e.preventDefault();
@@ -222,21 +250,42 @@ const ServerSetupForm = ({ enums, lists }) => {
 
   return (
     <div>
+      <ToastContainer position="top-center">
+        <Toast
+          className="d-inline-block m-1"
+          bg={toastVariant.toLowerCase()}
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          autohide
+        >
+          <Toast.Header>
+            <span className="me-auto">{toastMessage}</span>
+          </Toast.Header>
+          {toastBody ? <Toast.Body>{toastBody}</Toast.Body> : <></>}
+        </Toast>
+      </ToastContainer>
       <ServerSetupWarning show={false} />
-      <div className="setup-3">
-        <h1>Basic Server Setup</h1>
-        <ServerSetupStatus serverState={serverState} />
-        <ServerSetupControls
-          sendServerSetup={sendSetupToServer}
-          handleShowSave={handleShowSave}
-          handleShowLoad={handleShowLoad}
-          advanceSession={advanceSession}
-        />
-      </div>
+      <Row>
+        <Col>
+          <h1>Server Setup</h1>
+        </Col>
+        <Col>
+          <ServerSetupStatus serverState={serverState} />
+        </Col>
+        <Col>
+          <ServerSetupControls
+            sendServerSetup={sendSetupToServer}
+            handleShowSave={handleShowSave}
+            handleShowLoad={handleShowLoad}
+            advanceSession={advanceSession}
+            showSpinner={showSpinner}
+          />
+        </Col>
+      </Row>
       <br />
       <br />
       <form onSubmit={sendSetupToServer}>
-        <div>
+        <fieldset disabled={disableFields}>
           <div className="setup-3">
             {attrInputInfo.length &&
             Object.keys(enums).length &&
@@ -312,7 +361,7 @@ const ServerSetupForm = ({ enums, lists }) => {
             enums={enums}
             updateState={updateState}
           />
-        </div>
+        </fieldset>
       </form>
       <br />
       <br />
@@ -328,10 +377,6 @@ const ServerSetupForm = ({ enums, lists }) => {
       </label>
       <br />
       <br />
-      <ServerSetupUnsupportedFields
-        attrInputInfo={attrInputInfo}
-        state={state}
-      />
       <ServerSetupSavePresetModal
         showSave={showSave}
         handleCloseSave={handleCloseSave}

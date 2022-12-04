@@ -66,7 +66,6 @@ a.button {
   float: right;
 }
 input[type="text"],
-input[type="number"],
 select {
   width: 100%;
   padding: 12px 20px;
@@ -75,6 +74,14 @@ select {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+input[type="number"] {
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .error {
   width: 100%;
   padding: 12px 20px;
@@ -84,7 +91,7 @@ select {
   border-radius: 4px;
 }
 label {
-  width: 75%;
+  width: 100%;
 }
 
 .command {
@@ -104,7 +111,7 @@ label {
 
 div {
   border-radius: 5px;
-  padding: 5px;
+  padding: 4px;
 }
 
 .setup {
