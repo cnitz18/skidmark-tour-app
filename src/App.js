@@ -4,10 +4,7 @@ import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import ServerSetupForm from "./components/ServerSetup/ServerSetupForm";
 import getAPIData from "./utils/getAPIData";
-import SessionHistory from "./components/SessionHistory/SessionHistory";
-import PlayerStats from "./components/PlayerStats/PlayerStats";
 import WeeklyPolls from "./components/WeeklyPolls/WeeklyPolls";
-import ServerConfig from "./components/ServerConfig/ServerConfig";
 
 const App = () => {
   const [enums, setEnums] = useState({});
@@ -52,20 +49,9 @@ const App = () => {
         onSelect={(k) => setTabKey(k)}
         id="tabs"
       >
-        <Tab eventKey="home" title="Home">
-          <>
-            Welcome! This website is under construction, see our progress in the
-            tabs above!
-          </>
-        </Tab>
         <Tab eventKey="requestForm" title="Weekly Polls">
           <>
             <WeeklyPolls lists={lists} navigateToTab={navigateToTab} />
-          </>
-        </Tab>
-        <Tab eventKey="history" title="Race History">
-          <>
-            <SessionHistory enums={enums} lists={lists} />
           </>
         </Tab>
         <Tab eventKey="serverSetup" title="Race Setup">
@@ -73,16 +59,6 @@ const App = () => {
             <div>
               <ServerSetupForm enums={enums} lists={lists} />
             </div>
-          </>
-        </Tab>
-        <Tab eventKey="playerStats" title="Player Statistics">
-          <>
-            <PlayerStats lists={lists} />
-          </>
-        </Tab>
-        <Tab eventKey="serverStats" title="Server Configuration">
-          <>
-            <ServerConfig lists={lists} />
           </>
         </Tab>
       </Tabs>
