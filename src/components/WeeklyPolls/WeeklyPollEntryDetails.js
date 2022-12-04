@@ -38,7 +38,7 @@ export default function WeeklyPollEntryDetails({
       // console.log('setupss:',setup);
       let attrList = await getAPIData("/api/list/attributes/session");
       // console.log('list?',attrList?.list?.length)
-      let res = await DedicatedServerCommands.setDedicatedServerState(
+      await DedicatedServerCommands.setDedicatedServerState(
         setup,
         attrList?.list
           ?.filter((e) => e.access === "ReadWrite")
@@ -52,7 +52,7 @@ export default function WeeklyPollEntryDetails({
     }
   };
   const handleShowLoad = (raceID) => {
-    let selRace = poll?.races?.find((r) => r.id == raceID);
+    let selRace = poll?.races?.find((r) => r.id === raceID);
     if (selRace) {
       setSelectedRace({ ...selRace });
       // console.log("selRace", selRace);
@@ -82,6 +82,7 @@ export default function WeeklyPollEntryDetails({
   useEffect(() => {
     // console.log("poll:", poll, lists);
     clearCheckedState();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lists, poll]);
   return (
     <div>
@@ -110,10 +111,10 @@ export default function WeeklyPollEntryDetails({
                   </Button>
                 )}
               </td>
-              <td>{lists?.tracks?.list?.find((t) => t.id == r.track)?.name}</td>
+              <td>{lists?.tracks?.list?.find((t) => t.id === r.track)?.name}</td>
               <td>
                 {
-                  lists?.vehicle_classes?.list?.find((c) => c.value == r.car)
+                  lists?.vehicle_classes?.list?.find((c) => c.value === r.car)
                     ?.name
                 }
               </td>

@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { Accordion, Button, Row, Col } from "react-bootstrap";
 import { ImTrophy } from "react-icons/im";

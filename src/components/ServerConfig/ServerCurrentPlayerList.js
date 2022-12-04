@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, Table, Button, Modal } from "react-bootstrap";
 import { BsXCircle } from "react-icons/bs";
 import { FiRefreshCcw } from "react-icons/fi";
@@ -12,9 +12,9 @@ export default function ServerCurrentPlayerList({
   const [disableButtons, setDisableButtons] = useState(false);
   const [currentToKick, setCurrentToKick] = useState({});
   async function kickCurrentToKick() {
-    if (!currentToKick || Object.keys(currentToKick).length == 0) return;
+    if (!currentToKick || Object.keys(currentToKick).length === 0) return;
     setDisableButtons(true);
-    let res = await postAPIData(
+    await postAPIData(
       "/api/session/kick",
       { refid: currentToKick.refid },
       true

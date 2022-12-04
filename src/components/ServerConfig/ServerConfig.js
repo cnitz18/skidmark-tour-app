@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import ServerCurrentPlayerList from "./ServerCurrentPlayerList";
 import ServerStats from "./ServerStats";
 import ServerTroubleshooting from "./ServerTroubleshooting";

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Form, Modal, Button, Row, Col, Table } from "react-bootstrap";
+import { Form, Modal, Button, Table } from "react-bootstrap";
 import { BsFillFileEarmarkPlusFill } from "react-icons/bs";
 import postAPIData from "../../utils/postAPIData";
 
@@ -17,7 +17,7 @@ export default function WeeklyPollModal({
   async function createPoll() {
     // console.log("creating poll.....", curRaces);
     let today = new Date();
-    let res = await postAPIData("/db/polls/add", {
+    await postAPIData("/db/polls/add", {
       name: pollName,
       createdBy: yourName,
       createdOn: today.toDateString(),

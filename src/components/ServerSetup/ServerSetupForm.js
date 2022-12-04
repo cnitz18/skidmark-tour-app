@@ -1,7 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
-import { Accordion, Button, Modal, ButtonGroup } from "react-bootstrap";
 import ServerSessionSetup from "./ServerSessionSetup";
 import ConvertFieldToInput from "../../utils/ConvertFieldToInput";
 import SlotsDropdown from "./SlotsDropdown";

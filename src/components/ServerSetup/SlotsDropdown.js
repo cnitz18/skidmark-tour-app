@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import ServerSetupField from "./ServerSetupField";
 import Accordion from "react-bootstrap/Accordion";
 

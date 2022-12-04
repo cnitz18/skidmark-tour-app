@@ -1,9 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Accordion } from "react-bootstrap";
 
 const PlayerStatsEntry = ({ player, lists }) => {
-  const [avgQuali, setAvgQuali] = useState(0);
-  const [avgRace, setAvgRace] = useState(0);
   const [raceWins, setRaceWins] = useState(0);
   const [polePositions, setPolePositions] = useState(0);
   const [favTrack, setFavTrack] = useState(0);
@@ -80,11 +79,11 @@ const PlayerStatsEntry = ({ player, lists }) => {
                   </p>
                   <p>
                     Favorite Car:{" "}
-                    {lists["vehicles"].list.find((v) => v.id == favCar)?.name}
+                    {lists["vehicles"].list.find((v) => v.id === favCar)?.name}
                   </p>
                   <p>
                     Favorite Track:{" "}
-                    {lists["tracks"].list.find((v) => v.id == favTrack)?.name}
+                    {lists["tracks"].list.find((v) => v.id === favTrack)?.name}
                   </p>
                 </>
               ) : (

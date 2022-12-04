@@ -8,7 +8,7 @@ async function getAPIData(subpath) {
       if (!res.ok) {
         //console.error(res);
         const message = `An error occurred when getting Dedicated Server data: ${res.statusText}`;
-        window.alert(message);
+        console.error(message);
         return;
       }
     }

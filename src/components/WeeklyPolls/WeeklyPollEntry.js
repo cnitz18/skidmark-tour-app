@@ -1,6 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { Accordion, Button, Form } from "react-bootstrap";
+import { Accordion, Button } from "react-bootstrap";
 import { FiTrash2 } from "react-icons/fi";
 import AMS2API from "../../utils/AMS2API";
 import WeeklyPollEntryDetails from "./WeeklyPollEntryDetails";
@@ -23,7 +22,7 @@ export default function WeeklyPollEntry({
     let updatedPoll = { ...poll };
     updatedPoll.complete = true;
     // console.log("sending:", updatedPoll);
-    let res = await postAPIData(
+    await postAPIData(
       "/db/polls/update/" + updatedPoll._id,
       updatedPoll
     );

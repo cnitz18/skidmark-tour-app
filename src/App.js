@@ -6,7 +6,6 @@ import ServerSetupForm from "./components/ServerSetup/ServerSetupForm";
 import getAPIData from "./utils/getAPIData";
 import SessionHistory from "./components/SessionHistory/SessionHistory";
 import PlayerStats from "./components/PlayerStats/PlayerStats";
-import ServerStats from "./components/ServerConfig/ServerStats";
 import WeeklyPolls from "./components/WeeklyPolls/WeeklyPolls";
 import ServerConfig from "./components/ServerConfig/ServerConfig";
 

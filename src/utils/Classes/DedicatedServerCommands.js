@@ -1,6 +1,7 @@
 import getAPIData from "../getAPIData";
 import postAPIData from "../postAPIData";
 import ServerConfigHandler from "./ServerConfigHandler";
+// eslint-disable-next-line no-useless-escape
 const SPECIAL_CHAR_REGEX = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/g;
 
 class DedicatedServerCommands {
@@ -30,7 +31,7 @@ class DedicatedServerCommands {
   }
   static async softRestartServer() {
     try {
-      let res = await getAPIData("/api/restart");
+      await getAPIData("/api/restart");
       // console.log("softRestartServer res:", res);
       return { status: 200, statusText: "I think this worked?" };
     } catch (err) {
@@ -46,7 +47,7 @@ class DedicatedServerCommands {
         pwd: cfgObject.pwd,
       };
 
-      if (validatedData.pwd == undefined || !validatedData.name)
+      if (validatedData.pwd === undefined || !validatedData.name)
         throw new Error(
           "Non-empty <name> and non-null <pwd> properties expected"
         );

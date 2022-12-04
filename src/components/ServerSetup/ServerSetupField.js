@@ -1,10 +1,9 @@
+/* eslint-disable react/jsx-no-target-blank */
 import { Form } from "react-bootstrap";
 import { Image } from "react-bootstrap";
 import { Tooltip } from "react-bootstrap";
 import { OverlayTrigger } from "react-bootstrap";
 import ServerSetupFlags from "./ServerSetupFlags";
-import { Button } from "react-bootstrap";
-import { useEffect } from "react";
 import ServerSetupOpponentDifficulty from "./ServerSetupOpponentDifficulty";
 
 const ServerSetupField = ({
@@ -120,7 +119,6 @@ const ServerSetupField = ({
               type="number"
               value={state[attr.name]}
               onChange={(e) => updateState(attr.name, e.target.value)}
-              disabled
             ></input>
             <a
               href="https://docs.google.com/spreadsheets/d/1aSgY5wPyvR1eJ-99a26M0RGbaDZqHpYwCiNdxDHa5fA/edit#gid=0"

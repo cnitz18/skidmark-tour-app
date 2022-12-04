@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import {  Button } from "react-bootstrap";
 import { BsFillFileEarmarkPlusFill } from "react-icons/bs";
 import { FiRefreshCcw } from "react-icons/fi";
 import WeeklyPollModal from "./WeeklyPollModal";
@@ -35,7 +35,7 @@ export default function WeeklyPolls({ lists, navigateToTab }) {
       // console.log("races:", updatedRaces);
       let wasUpdated = false;
       for (let id in states) {
-        let raceIndex = updatedRaces.findIndex((r) => r.id == id);
+        let raceIndex = updatedRaces.findIndex((r) => r.id === id);
         if (raceIndex !== -1 && states[id]) {
           wasUpdated = true;
           let curRace = { ...updatedRaces[raceIndex] };
@@ -44,7 +44,7 @@ export default function WeeklyPolls({ lists, navigateToTab }) {
         }
       }
       if (wasUpdated) {
-        let res = await postAPIData(
+        await postAPIData(
           "/db/polls/update/" + updatedPoll._id,
           updatedPoll
         );

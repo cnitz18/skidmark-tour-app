@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Table } from "react-bootstrap";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
@@ -8,7 +8,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
     let seconds = totalSeconds - minutes * 60;
     let decimals = num % 1000;
     let str = num.toString();
-    let len = str.length;
     if (str === "0") return "(N/A)";
     let outputString = `${minutes}:${
       seconds / 10 < 1 ? "0" + seconds : seconds

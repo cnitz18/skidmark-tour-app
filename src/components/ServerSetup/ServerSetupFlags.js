@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { Accordion } from "react-bootstrap";
