@@ -59,7 +59,7 @@ function ConvertInputType(field) {
     case "QualifyWeatherSlots":
     case "RaceWeatherSlots":
     case "MultiClassSlots":
-      return "slider";
+      return "number";
     default:
       if (fieldName) {
         //console.log('fieldName:',fieldName)

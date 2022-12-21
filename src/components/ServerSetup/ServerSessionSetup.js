@@ -5,7 +5,6 @@ import SlotsDropdown from "./SlotsDropdown";
 const ServerSessionSetup = ({
   fieldList,
   state,
-  header,
   enums,
   updateState,
 }) => {
@@ -15,25 +14,23 @@ const ServerSessionSetup = ({
   useEffect(() => {
     if (fieldList) {
       let filteredList = fieldList.filter((f) => f.inputType !== "none");
-      let weatherSettings = filteredList.filter((x) =>
-        x.name.includes("Weather")
+      let weatherSettings = filteredList?.filter((x) =>
+        x?.name?.includes("Weather")
       );
       setNumSlotsAttr({
-        ...weatherSettings.find((x) => x.name.includes("WeatherSlots")),
+        ...weatherSettings.find((x) => x?.name?.includes("WeatherSlots")),
       });
       setSlotsAttrs([
-        ...weatherSettings.filter((x) => !x.name.includes("WeatherSlots")),
+        ...weatherSettings.filter((x) => !x?.name?.includes("WeatherSlots")),
       ]);
       setOtherSettings([
-        ...filteredList.filter((x) => !x.name.includes("Weather")),
+        ...filteredList.filter((x) => !x?.name.includes("Weather")),
       ]);
     }
   }, [fieldList]);
   return (
-    <div className="bordered column">
-      <br />
-      <h4>{header}</h4>
-      <div className="setup-4">
+    <>
+      <div>
         {otherSettings.map((attr, i) => (
           <ServerSetupField
             key={i}
@@ -51,7 +48,7 @@ const ServerSessionSetup = ({
         updateState={updateState}
         enums={enums}
       />
-    </div>
+    </>
   );
 };
 export default ServerSessionSetup;

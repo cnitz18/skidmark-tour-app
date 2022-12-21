@@ -53,28 +53,26 @@ const ServerSetupFlags = ({ flags, flagsState, updateState, attr }) => {
   }, [flagsState]);
 
   return (
-    <Accordion>
-      <Accordion.Header>Expand</Accordion.Header>
-      <Accordion.Body>
+    <>
         {Object.keys(flagStatuses).length ? (
           Object.keys(flagStatuses).map((st, i) => (
-            <div key={i}>
-              <label>{st}</label>
+            <Form.Group key={i} className="main-form-element">
               <Form.Check
-                type="switch"
                 id={st}
                 checked={flagStatuses[st].checked}
                 onChange={(e) => {
                   updateStateFromFlagCheck(flagStatuses[st], e.target.checked);
                 }}
+                inline
               />
-            </div>
+              <Form.Label>{st.replaceAll('_',' ')}</Form.Label>
+
+            </Form.Group>
           ))
         ) : (
           <></>
         )}
-      </Accordion.Body>
-    </Accordion>
+    </>
   );
 };
 export default ServerSetupFlags;
