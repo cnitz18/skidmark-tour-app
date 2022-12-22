@@ -490,7 +490,7 @@ export default function NewServerSetupPage({ enums, lists }) {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title>"{presetForViewing?.PresetName}" Preset Settings</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>d
+          <Offcanvas.Body>
             {
               presetForViewing ?
               (
