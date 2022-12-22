@@ -8,7 +8,6 @@ export default function NavBar() {
             <Navbar.Brand href="#home">Skidmark Tour Official Server</Navbar.Brand>
             <Nav>
                     <Nav.Link href="#home" active>Home</Nav.Link>
-                    <Nav.Link href="#polls">Weekly Polls</Nav.Link>
             </Nav>
         </Container>
     </Navbar>
