@@ -31,7 +31,7 @@ export default function ServerSetupOpponentDifficulty({
     <Container>
       <Row>
         <Col lg="3">
-          <Form.Control value={state[attr.name]} />
+          <Form.Control value={state[attr.name]} readOnly/>
         </Col>
         <Col>
           <RangeSlider

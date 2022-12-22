@@ -11293,3 +11293,6 @@ textarea.form-control-lg {
   display:inline-block;
   padding: 0.25em;
 }
+.vh-50 {
+  height: 50vh !important;
+}

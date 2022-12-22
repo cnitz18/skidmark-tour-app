@@ -36,7 +36,7 @@ export default function ServerSetupControls({
             </Tooltip>
           }
         >
-          <Button variant="outline-success" onClick={handleShowSave} disabled>
+          <Button variant="outline-success" onClick={handleShowSave}>
             Save Settings As Preset
           </Button>
         </OverlayTrigger>
@@ -51,7 +51,7 @@ export default function ServerSetupControls({
               </Tooltip>
             }
           >
-          <Button variant="outline-primary" onClick={handleShowLoad} disabled>
+          <Button variant="outline-primary" onClick={handleShowLoad}>
             Load Existing Preset
           </Button>
         </OverlayTrigger>

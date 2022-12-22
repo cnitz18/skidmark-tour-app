@@ -6,7 +6,6 @@ import ServerSessionSetup from "./ServerSessionSetup";
 import ConvertFieldToInput from "../../utils/ConvertFieldToInput";
 import SlotsDropdown from "./SlotsDropdown";
 import ServerSetupField from "./ServerSetupField";
-import ServerSetupWarning from "./ServerSetupWarning";
 import ServerSetupSavePresetModal from "./ServerSetupSavePresetModal";
 import ServerSetupLoadPresetModal from "./ServerSetupLoadPresetModal";
 import ServerSetupStatus from "./ServerSetupStatus";
@@ -103,7 +102,7 @@ const ServerSetupForm = ({ enums, lists }) => {
     }
   }
   async function loadPresetList() {
-    let list = await getAPIData("/db/presets");
+    let list = await getAPIData("/db/racepresets");
     setPresetList([...list]);
     //console.log("list length:", list.length, list);
   }
@@ -264,7 +263,6 @@ const ServerSetupForm = ({ enums, lists }) => {
           {toastBody ? <Toast.Body>{toastBody}</Toast.Body> : <></>}
         </Toast>
       </ToastContainer>
-      <ServerSetupWarning show={false} />
       <Row>
         <Col>
           <h1>Server Setup</h1>

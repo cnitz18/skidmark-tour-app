@@ -9,7 +9,7 @@ class WebServerCommands {
       let validatedData = ServerConfigHandler.trimExtraFields(preset, fields);
       validatedData.PresetName = name;
       //console.log('validated:',validatedData)
-      let res = await postAPIData("/db/presets/add", validatedData);
+      let res = await postAPIData("/db/racepresets/add", validatedData);
       return { status: res.status, statusText: res.statusText };
     } catch (err) {
       console.error("Error in WebServerCommands.savePreset:" + err);
@@ -19,7 +19,7 @@ class WebServerCommands {
   static async deletePreset(id) {
     try {
       //console.log("delete:", id);
-      let res = await fetch(AMS2API + "/db/presets/" + id, {
+      let res = await fetch(AMS2API + "/db/racepresets/" + id, {
         method: "DELETE",
       });
       return { status: res.status, statusText: res.statusText };

@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Button, Row, Col, Table } from "react-bootstrap";
+import { BsEye } from "react-icons/bs";
 
 export default function ServerSetupLoadPresetModal({
   showLoad,
@@ -7,6 +8,7 @@ export default function ServerSetupLoadPresetModal({
   PresetList,
   handleDeletePreset,
   handleLoadPreset,
+  handleViewPreset
 }) {
   return (
     <Modal show={showLoad} onHide={handleCloseLoad} centered size="lg">
@@ -29,12 +31,20 @@ export default function ServerSetupLoadPresetModal({
                       Load
                     </Button>
                   </Col>
-                  <Col xs lg="1">
+                  <Col xs lg="1" style={{ marginRight: "15px" }}>
                     <Button
                       variant="danger"
                       onClick={(e) => handleDeletePreset(preset._id, e)}
                     >
                       Delete
+                    </Button>
+                  </Col>
+                  <Col xs lg="1">
+                    <Button 
+                      variant="link"
+                      onClick={(e) => handleViewPreset(preset, e)}
+                    >
+                        <BsEye />
                     </Button>
                   </Col>
                 </Row>
