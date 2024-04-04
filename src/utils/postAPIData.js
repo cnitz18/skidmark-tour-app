@@ -1,7 +1,5 @@
-import AMS2API from "./AMS2API";
-
 async function postAPIData(subpath, options, convertToJson = false) {
-  //console.log('postAPIData api path:',AMS2API + subpath);
+  //console.log('postAPIData api path:',process.env.REACT_APP_AMS2API + subpath);
   function checkResponse(res) {
     // console.log('postAPIData res:',res);
     if (!res.ok) {
@@ -18,7 +16,7 @@ async function postAPIData(subpath, options, convertToJson = false) {
     },
     body: JSON.stringify(options),
   };
-  let response = await fetch(AMS2API + subpath, requestOptions);
+  let response = await fetch(process.env.REACT_APP_AMS2API + subpath, requestOptions);
   checkResponse(response);
   if (convertToJson) {
     let json = await response.json();

@@ -1,22 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import Tabs from "react-bootstrap/Tabs";
-import Tab from "react-bootstrap/Tab";
-import ServerSetupForm from "./components/ServerSetup/ServerSetupForm";
 import getAPIData from "./utils/getAPIData";
-import WeeklyPolls from "./components/WeeklyPolls/WeeklyPolls";
 import NavBar from "./components/NavBar";
-import NewServerSetupPage from "./components/NewServerSetup/NewServerSetupPage";
 import Footer from "./components/Footer";
+import './index.css';
 
 const App = () => {
   const [enums, setEnums] = useState({});
   const [lists, setLists] = useState({});
-  const [tabKey, setTabKey] = useState("serverSetup");
-
-  function navigateToTab(tabName) {
-    setTabKey(tabName);
-  }
 
   useEffect(() => {
     async function getEnums() {
@@ -43,38 +34,8 @@ const App = () => {
   }, []);
 
   return (
-    // <div className="app-container">
-    //   <img src={logo} alt="The Skidmarks" />
-    //   <Tabs
-    //     defaultActiveKey="serverSetup"
-    //     className="mb-3"
-    //     activeKey={tabKey}
-    //     onSelect={(k) => setTabKey(k)}
-    //     id="tabs"
-    //   >
-    //     <Tab eventKey="requestForm" title="Weekly Polls">
-    //       <>
-    //         <WeeklyPolls lists={lists} navigateToTab={navigateToTab} />
-    //       </>
-    //     </Tab>
-    //     <Tab eventKey="serverSetup" title="Race Setup">
-    //       <>
-    //         <div>
-    //           <ServerSetupForm enums={enums} lists={lists} />
-    //         </div>
-    //       </>
-    //     </Tab>
-    //   </Tabs>
-    //   <footer>
-    //     <p> Skidmark Tour &copy; 2022</p>
-    //     <small>
-    //       You are running this application in {process.env.NODE_ENV} mode.
-    //     </small>
-    //   </footer>
-    // </div>
     <>
-      <NavBar/>
-      <NewServerSetupPage enums={enums} lists={lists}/>
+      <NavBar enums={enums} lists={lists}/>
       <Footer/>
     </>
 

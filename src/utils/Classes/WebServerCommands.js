@@ -1,6 +1,5 @@
 import postAPIData from "../postAPIData";
 import ServerConfigHandler from "./ServerConfigHandler";
-import AMS2API from "../AMS2API";
 
 class WebServerCommands {
   static async savePreset(name, preset, fields) {
@@ -19,7 +18,7 @@ class WebServerCommands {
   static async deletePreset(id) {
     try {
       //console.log("delete:", id);
-      let res = await fetch(AMS2API + "/db/racepresets/" + id, {
+      let res = await fetch(process.env.REACT_APP_AMS2API + "/db/racepresets/" + id, {
         method: "DELETE",
       });
       return { status: res.status, statusText: res.statusText };

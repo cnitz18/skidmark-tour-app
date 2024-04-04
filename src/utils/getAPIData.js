@@ -1,7 +1,6 @@
-import AMS2API from "./AMS2API";
 
 async function getAPIData(subpath) {
-  //console.log('getAPIData api path:',AMS2API + subpath);
+  //console.log('getAPIData',process.env.REACT_APP_AMS2API + subpath);
   try {
     function checkResponse(res) {
       //console.log('checkResponse:',res)
@@ -12,10 +11,10 @@ async function getAPIData(subpath) {
         return;
       }
     }
-    let response = await fetch(AMS2API + subpath, {
+    let response = await fetch(process.env.REACT_APP_AMS2API + subpath, {
       referrerPolicy: "no-referrer",
     });
-    //let response = await fetch(AMS2API + subpath);
+    //let response = await fetch(process.env.REACT_APP_AMS2API + subpath);
     checkResponse(response);
     let jsonRes = await response.json();
     //console.log('jsonres:',subpath,jsonRes)

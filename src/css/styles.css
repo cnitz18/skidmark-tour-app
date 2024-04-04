@@ -4058,14 +4058,15 @@ textarea.form-control-lg {
 }
 .navbar-nav {
   display: flex;
-  flex-direction: column;
-  padding-left: 0;
+  flex-direction: row;
+  padding-left: 10px;
   margin-bottom: 0;
   list-style: none;
 }
 .navbar-nav .nav-link {
   padding-right: 0;
-  padding-left: 0;
+  padding-left: 10px;
+  right: auto;
 }
 .navbar-nav .dropdown-menu {
   position: static;

@@ -24,13 +24,13 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
     let race1 = data?.stages?.race1;
     if (race1 && race1?.results?.length) {
       setFirstPlace({
-        ...race1?.results?.find((m) => m.attributes?.RacePosition === 1),
+        ...race1?.results?.find((m) => m?.RacePosition === 1),
       });
       setSecondPlace({
-        ...race1?.results?.find((m) => m.attributes?.RacePosition === 2),
+        ...race1?.results?.find((m) => m?.RacePosition === 2),
       });
       setThirdPlace({
-        ...race1?.results?.find((m) => m.attributes?.RacePosition === 3),
+        ...race1?.results?.find((m) => m?.RacePosition === 3),
       });
     }
     let raceSetup = data?.setup;
@@ -69,12 +69,12 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
           <div>
             {lists["tracks"] ? (
               <h5>
-                {lists["tracks"]?.list?.find((t) => t.id === data.setup.TrackId)
-                  ?.name ?? "<undefined>"}
-                {" @ "}
                 {lists["vehicle_classes"]?.list?.find(
                   (t) => t.value === data.setup.VehicleClassId
                 )?.name ?? "<undefined>"}
+                {" @ "}
+                {lists["tracks"]?.list?.find((t) => t.id === data.setup.TrackId)
+                  ?.name ?? "<undefined>"}
               </h5>
             ) : (
               <></>
@@ -121,8 +121,48 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             )}
           </div>
         </div>
-        <Accordion.Item eventKey={data.index}>
-          <Accordion.Header>Details:</Accordion.Header>
+        {
+          data.stages.practice1 && (
+            <Accordion.Item eventKey={data.index + '_prac1'}>
+              <Accordion.Header>Practice Details:</Accordion.Header>
+              <Accordion.Body>
+                {/* 
+                            add some more details about the server/race here
+                            */}
+                {lists["vehicles"] ? (
+                  <SessionHistoryEntryScoreboard
+                    race={data.stages.practice1}
+                    vehicles={lists["vehicles"].list}
+                  />
+                ) : (
+                  <></>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+          )
+        }
+        {
+          data.stages.qualifying1 && (
+            <Accordion.Item eventKey={data.index + '_qual1'}>
+              <Accordion.Header>Qualifying Details:</Accordion.Header>
+              <Accordion.Body>
+                {/* 
+                            add some more details about the server/race here
+                            */}
+                {lists["vehicles"] ? (
+                  <SessionHistoryEntryScoreboard
+                    race={data.stages.qualifying1}
+                    vehicles={lists["vehicles"].list}
+                  />
+                ) : (
+                  <></>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+          )
+        }
+        <Accordion.Item eventKey={data.index + '_race1'}>
+          <Accordion.Header>Race Details:</Accordion.Header>
           <Accordion.Body>
             {/* 
                          add some more details about the server/race here

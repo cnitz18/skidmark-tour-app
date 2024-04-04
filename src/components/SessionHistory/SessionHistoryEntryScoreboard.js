@@ -31,13 +31,11 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles }) => {
         {race && race.results && race.results.length ? (
           race.results.map((res, i) => (
             <tr key={i}>
-              <td>{res.attributes.RacePosition}</td>
+              <td>{res.RacePosition}</td>
               <td>{res.name}</td>
-              <td>
-                {vehicles.find((v) => v.id === res.attributes.VehicleId).name}
-              </td>
-              <td>{convertTimeNumber(res.attributes.TotalTime)}</td>
-              <td>{convertTimeNumber(res.attributes.FastestLapTime)}</td>
+              <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
+              <td>{convertTimeNumber(res.TotalTime)}</td>
+              <td>{convertTimeNumber(res.FastestLapTime)}</td>
             </tr>
           ))
         ) : (
