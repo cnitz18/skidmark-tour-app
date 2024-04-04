@@ -53,6 +53,7 @@ const SessionHistory = ({ enums, lists }) => {
 
   useEffect(() => {
     updateFilteredHistory();
+    // eslint-disable-next-line
   },[filterFinishedOnly,history,sortOptionSelected])
 
   return (
