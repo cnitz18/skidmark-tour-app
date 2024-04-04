@@ -7,6 +7,7 @@ import getAPIData from "./utils/getAPIData";
 import WeeklyPolls from "./components/WeeklyPolls/WeeklyPolls";
 import NavBar from "./components/NavBar";
 import NewServerSetupPage from "./components/NewServerSetup/NewServerSetupPage";
+import SessionHistory from "./components/SessionHistory/SessionHistory";
 import Footer from "./components/Footer";
 
 const App = () => {
@@ -73,8 +74,9 @@ const App = () => {
     //   </footer>
     // </div>
     <>
-      <NavBar/>
-      <NewServerSetupPage enums={enums} lists={lists}/>
+      <NavBar enums={enums} lists={lists}/>
+      {/* <NewServerSetupPage enums={enums} lists={lists}/> 
+      <SessionHistory enums={enums} lists={lists}/>*/}
       <Footer/>
     </>
 

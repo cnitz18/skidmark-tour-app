@@ -1,7 +1,7 @@
 import AMS2API from "./AMS2API";
 
 async function getAPIData(subpath) {
-  //console.log('getAPIData api path:',AMS2API + subpath);
+  console.log('getAPIData',AMS2API + subpath);
   try {
     function checkResponse(res) {
       //console.log('checkResponse:',res)
