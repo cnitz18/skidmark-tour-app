@@ -7,7 +7,7 @@ export default function NewServerUnavailablePage() {
                 <h1 class="display-1 fw-bold">404</h1>
                 <p class="fs-3"> <span class="text-danger">Oops!</span> Dedicated Server is not Online </p>
                 <p class="lead">
-                    Contact Casey Nitz to see wtf be goin on
+                    This feature might be discontinued, but contact Casey to see wtf be goin on
                     </p>
             </div>
         </div>  

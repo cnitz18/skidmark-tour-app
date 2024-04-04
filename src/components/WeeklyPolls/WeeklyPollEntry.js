@@ -1,7 +1,6 @@
 import React from "react";
 import { Accordion, Button } from "react-bootstrap";
 import { FiTrash2 } from "react-icons/fi";
-import AMS2API from "../../utils/AMS2API";
 import WeeklyPollEntryDetails from "./WeeklyPollEntryDetails";
 import postAPIData from "../../utils/postAPIData";
 
@@ -14,7 +13,7 @@ export default function WeeklyPollEntry({
 }) {
   async function deletePoll() {
     //console.log("deletePOll:", poll._id);
-    await fetch(AMS2API + "/db/polls/" + poll._id, { method: "DELETE" });
+    await fetch(process.env.REACT_APP_AMS2API + "/db/polls/" + poll._id, { method: "DELETE" });
     return refreshSavedPolls();
   }
   async function completePoll() {
