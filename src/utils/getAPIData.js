@@ -1,7 +1,6 @@
 
 async function getAPIData(subpath) {
-  console.log('getAPIData',process.env.REACT_APP_AMS2API + subpath);
-  console.log(process.env.NODE_ENV,process.env.REACT_APP_NODE_ENV,process.env.REACT_APP_TEST)
+  //console.log('getAPIData',process.env.REACT_APP_AMS2API + subpath);
   try {
     function checkResponse(res) {
       //console.log('checkResponse:',res)
