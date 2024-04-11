@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { Accordion, Button, Row, Col } from "react-bootstrap";
+import { Accordion, Button, Row, Col, Container } from "react-bootstrap";
 import { ImTrophy } from "react-icons/im";
 import SessionHistoryEntryScoreboard from "./SessionHistoryEntryScoreboard";
 
@@ -9,6 +9,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [raceOne, setRaceOne] = useState();
+  const [polePosition, setPolePosition] = useState("");
   const [firstPlace, setFirstPlace] = useState("");
   const [secondPlace, setSecondPlace] = useState("");
   const [thirdPlace, setThirdPlace] = useState("");
@@ -22,6 +23,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
     setEndTime(new Date(data.end_time * 1000));
 
     let race1 = data?.stages?.race1;
+    let quali1 = data?.stages?.qualifying1;
     if (race1 && race1?.results?.length) {
       setFirstPlace({
         ...race1?.results?.find((m) => m?.RacePosition === 1),
@@ -32,6 +34,18 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
       setThirdPlace({
         ...race1?.results?.find((m) => m?.RacePosition === 3),
       });
+    }
+    else{
+      setFirstPlace("");
+      setSecondPlace("");
+      setThirdPlace();
+    }
+    if( quali1 ){
+      setPolePosition({
+        ...quali1?.results?.find((m) => m?.RacePosition === 1),
+      });
+    }else{
+      setPolePosition("")
     }
     let raceSetup = data?.setup;
     if (raceSetup) {
@@ -45,8 +59,6 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
           .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
           .forEach((f) => {
             flagStatus[f.name] = { checked: false, ...f };
-            //console.log("mathing... field", f.name,'value:', f.value,'curValue:', curValue, 'after subtracting:', curValue - f.value);
-
             if (
               (curValue - f.value >= 0 && f.name !== "COOLDOWNLAP") ||
               (f.name === "COOLDOWNLAP" && curValue < 0)
@@ -64,9 +76,9 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
   }, [data]);
   return (
     <Accordion>
-      <div className="history-entry">
-        <div className="history-entry-data">
-          <div>
+        <Container className="history-entry">
+        <Row className="history-entry-data">
+          <Col lg="4">
             {lists["tracks"] ? (
               <h5>
                 {lists["vehicle_classes"]?.list?.find(
@@ -79,33 +91,31 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             ) : (
               <></>
             )}
-          </div>
-          <div>
-            <Row>
+            <small>{endTime.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric'}) + " " + endTime.toLocaleString("en",{timeStyle:'short'}) }</small>
+          </Col>
+          <Col className="text-center">
+            <Row className="lessVerticalPadding">
               <label>
-                <ImTrophy color="gold" />
-                <span>{firstPlace?.name}</span>
+                <ImTrophy color="gold" className="trophy" size={40}/>
+                <span className="firstPlace">{firstPlace?.name}</span>
               </label>{" "}
             </Row>
-            <Row>
-              <label>
-                <ImTrophy color="silver" />
-                <span>{secondPlace?.name}</span>
-              </label>
+            <Row className="justify-content-md-center lessVerticalPadding">
+              <Col md="auto">
+                <label>
+                  <ImTrophy color="silver" className="trophy" size={20} />
+                  <small>{secondPlace?.name}</small>
+                </label>
+              </Col>
+              <Col md="auto">
+                <label>
+                  <ImTrophy color="tan" className="trophy" size={20} />
+                  <small>{thirdPlace?.name}</small>
+                </label>
+              </Col>
             </Row>
-            <Row>
-              <label>
-                <ImTrophy color="tan" />
-                <span>{thirdPlace?.name}</span>
-              </label>
-            </Row>
-          </div>
-          <div>
-            <span>End Time: </span>
-            <br />
-            <small>{endTime.toLocaleString()}</small>
-          </div>
-          <div>
+          </Col>
+          <Col xs lg="2">
             <div>
               {sessionLength + " "}
               {timedSession ? "Minutes" : "Laps"}
@@ -119,8 +129,8 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
                 Not Finished
               </Button>
             )}
-          </div>
-        </div>
+          </Col>
+        </Row>
         {
           data.stages.practice1 && (
             <Accordion.Item eventKey={data.index + '_prac1'}>
@@ -152,6 +162,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
                     race={data.stages.qualifying1}
+                    winningTime={polePosition?.winningTime}
                     vehicles={lists["vehicles"].list}
                   />
                 ) : (
@@ -170,6 +181,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             {lists["vehicles"] ? (
               <SessionHistoryEntryScoreboard
                 race={data.stages.race1}
+                winningTime={firstPlace?.TotalTime}
                 vehicles={lists["vehicles"].list}
               />
             ) : (
@@ -177,7 +189,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             )}
           </Accordion.Body>
         </Accordion.Item>
-      </div>
+      </Container>
     </Accordion>
   );
 };

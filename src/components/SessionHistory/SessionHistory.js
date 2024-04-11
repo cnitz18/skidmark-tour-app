@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import getAPIData from "../../utils/getAPIData";
 import SessionHistoryEntry from "./SessionHistoryEntry";
 import PageHeader from "../shared/NewServerSetupPageHeader";
-import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form } from "react-bootstrap";
+import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination } from "react-bootstrap";
+import LoadingOverlay from 'react-loading-overlay-ts';
+
 
 const SessionHistory = ({ enums, lists }) => {
   const [history, setHistory] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [paginators, setPaginators] = useState([])
+  const [curPage, setCurPage] = useState(1)
   // TODO: this feels really inefficient computing-wise but timewise tonight saves me headache
-  const [filteredHistory, setFilteredHistory] = useState([]);
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showMiniSpinner, setShowMiniSpinner] = useState(false);
   const [filterFinishedOnly, setFilterFinishedOnly] = useState(true);
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
 
@@ -16,45 +21,44 @@ const SessionHistory = ({ enums, lists }) => {
     { name: 'Finished Only', value: true },
     { name: 'All', value: false },
   ];
-  
-  function updateFilteredHistory(){
-    //Sort history
-    var sortFunc;
-    switch( sortOptionSelected ){
-      case 'dateAsc':
-        sortFunc = (a,b) => a.end_time - b.end_time
-        break;
-      default:
-        sortFunc = (a,b) => b.end_time - a.end_time
-    }
-    //filter history
-    var filterFunc = (h) => filterFinishedOnly ? h.finished === true: true
 
-    setFilteredHistory([
-      ...history.sort(sortFunc).filter(filterFunc)
-    ])
-  }
   function handleFilters(e){
     setFilterFinishedOnly(e.currentTarget.value === "true" )    
   }
   function handleSort(e){
+    //console.log('setSortOptionSelected:',e.currentTarget.value)
     setSortOptionSelected(e.currentTarget.value)
   }
-
-  useEffect(() => {
-    getAPIData("/api/batchupload/sms_stats_data/").then((res) => {
+  function fetchCurrentPage(){
+    setShowMiniSpinner(true)
+    getAPIData("/api/batchupload/sms_stats_data/pagecount/?onlyFinished=" + filterFinishedOnly)
+    .then((res) => {
+      //console.log('setting paginators')
+      if( parseInt(res) > -1 ){
+        setPageCount(parseInt(res));
+        const rows = [];
+        for (let i = 1; i <= parseInt(res); i++) {
+            rows.push(<Pagination.Item key={i} active={i===curPage} onClick={() => setCurPage(i)}>{i}</Pagination.Item>);
+        }
+        setPaginators(rows);
+      }
+        
+    })
+    getAPIData("/api/batchupload/sms_stats_data/?page=" + curPage + "&onlyFinished=" + filterFinishedOnly + "&sort=" + (sortOptionSelected === "dateAsc" ? "asc" : "desc"))
+    .then((res) => {
       if (res) {
+        //console.log('setting history')
         setHistory([...res]);
+        setShowMiniSpinner(false);
         setShowSpinner(false);
       }
     });
-    // eslint-disable-next-line
-  }, [enums,lists]);
+  }
 
   useEffect(() => {
-    updateFilteredHistory();
+    fetchCurrentPage();
     // eslint-disable-next-line
-  },[filterFinishedOnly,history,sortOptionSelected])
+  },[curPage,pageCount,filterFinishedOnly,sortOptionSelected])
 
   return (
     <>
@@ -98,13 +102,28 @@ const SessionHistory = ({ enums, lists }) => {
                   </Col>
                 </Row>
                 {/* History List */}
+                <LoadingOverlay
+                  active={showMiniSpinner}
+                  spinner
+                  text='Loading...'>  
+                  <Row>
+                    {
+                      history
+                      .map((h, i) => 
+                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                      ) 
+                    }
+                  
+                  </Row>
+                </LoadingOverlay>
                 <Row>
-                {
-                  filteredHistory
-                  .map((h, i) => 
-                  <SessionHistoryEntry key={h._id} data={h} enums={enums} lists={lists} />
-                  ) 
-                }
+                  <Col></Col>
+                  <Col className="justify-content-md-center display-flex">
+                      <Pagination>
+                        {paginators}
+                      </Pagination>
+                  </Col>
+                  <Col></Col>
                 </Row>
               </Container>
 

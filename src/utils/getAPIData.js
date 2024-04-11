@@ -16,6 +16,7 @@ async function getAPIData(subpath) {
     });
     //let response = await fetch(process.env.REACT_APP_AMS2API + subpath);
     checkResponse(response);
+    //console.log('setting response json',response.body)
     let jsonRes = await response.json();
     //console.log('jsonres:',subpath,jsonRes)
     return jsonRes.response ?? jsonRes;

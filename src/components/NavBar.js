@@ -19,7 +19,6 @@ export default function NavBar({ enums, lists }) {
               <Nav className="me-auto">
                 <Nav.Link href="/" active>Home</Nav.Link>
                 <Nav.Link href="/history" active>History</Nav.Link>
-                <Nav.Link href="/serversetup" active>Server Setup</Nav.Link>
               </Nav>
             </Col>
           </Container>
