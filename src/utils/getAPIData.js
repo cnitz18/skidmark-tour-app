@@ -13,6 +13,7 @@ async function getAPIData(subpath) {
     }
     let response = await fetch(process.env.REACT_APP_AMS2API + subpath, {
       referrerPolicy: "no-referrer",
+      headers: {Authorization: 'Token ' + process.env.REACT_APP_AUTH_TOKEN}
     });
     //let response = await fetch(process.env.REACT_APP_AMS2API + subpath);
     checkResponse(response);
