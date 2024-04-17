@@ -14,16 +14,18 @@ const SessionHistory = ({ enums, lists }) => {
   // TODO: this feels really inefficient computing-wise but timewise tonight saves me headache
   const [showSpinner, setShowSpinner] = useState(true);
   const [showMiniSpinner, setShowMiniSpinner] = useState(false);
-  const [filterFinishedOnly, setFilterFinishedOnly] = useState(true);
+  const [filter, setFilter] = useState('finished-only');
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
 
   const radios = [
-    { name: 'Finished Only', value: true },
-    { name: 'All', value: false },
+    { name: 'Finished Only', filter: 'finished-only', variant: 'outline-success' },
+    { name: 'League Races', filter: 'league-only', variant: 'outline-info' },
+    { name: 'All', filter: 'all', variant: 'outline-warning' },
   ];
 
   function handleFilters(e){
-    setFilterFinishedOnly(e.currentTarget.value === "true" )    
+    console.log('setFilter:',e.currentTarget.value)
+    setFilter(e.currentTarget.value)    
   }
   function handleSort(e){
     //console.log('setSortOptionSelected:',e.currentTarget.value)
@@ -31,7 +33,7 @@ const SessionHistory = ({ enums, lists }) => {
   }
   function fetchCurrentPage(){
     setShowMiniSpinner(true)
-    getAPIData("/api/batchupload/sms_stats_data/pagecount/?onlyFinished=" + filterFinishedOnly)
+    getAPIData("/api/batchupload/sms_stats_data/pagecount/?filter=" + filter)
     .then((res) => {
       //console.log('setting paginators')
       if( parseInt(res) > -1 ){
@@ -44,7 +46,7 @@ const SessionHistory = ({ enums, lists }) => {
       }
         
     })
-    getAPIData("/api/batchupload/sms_stats_data/?page=" + curPage + "&onlyFinished=" + filterFinishedOnly + "&sort=" + (sortOptionSelected === "dateAsc" ? "asc" : "desc"))
+    getAPIData("/api/batchupload/sms_stats_data/?page=" + curPage + "&filter=" + filter + "&sort=" + (sortOptionSelected === "dateAsc" ? "asc" : "desc"))
     .then((res) => {
       if (res) {
         //console.log('setting history')
@@ -58,7 +60,7 @@ const SessionHistory = ({ enums, lists }) => {
   useEffect(() => {
     fetchCurrentPage();
     // eslint-disable-next-line
-  },[curPage,pageCount,filterFinishedOnly,sortOptionSelected])
+  },[curPage,pageCount,filter,sortOptionSelected])
 
   return (
     <>
@@ -78,13 +80,13 @@ const SessionHistory = ({ enums, lists }) => {
                   <Col sm>
                     <div>Filters:</div>
                     <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
-                      {radios.map((radio, idx) => (
+                      {filter && radios.map((radio, idx) => (
                         <ToggleButton
                           key={idx}
                           id={`radio-${idx}`}
-                          variant={idx % 2 ? 'outline-warning' : 'outline-success'}
-                          value={radio.value}
-                          checked={filterFinishedOnly === radio.value}
+                          variant={radio.variant}
+                          value={radio.filter}
+                          checked={filter === radio.filter}
                           onChange={handleFilters}
                         >
                           {radio.name}

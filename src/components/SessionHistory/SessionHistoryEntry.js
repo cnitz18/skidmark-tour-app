@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { Accordion, Button, Row, Col, Container } from "react-bootstrap";
+import { Accordion, Button, Row, Col, Container,Badge, Modal } from "react-bootstrap";
 import { ImTrophy } from "react-icons/im";
 import SessionHistoryEntryScoreboard from "./SessionHistoryEntryScoreboard";
+import getAPIData from "../../utils/getAPIData";
 
 const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [startTime, setStartTime] = useState(new Date());
@@ -17,10 +18,15 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [sessionFlagToggles, setSessionFlagToggles] = useState({});
   const [sessionLength, setSessionLength] = useState(0);
   const [timedSession, setTimedSession] = useState(false);
+  const [leagueId, setLeagueId] = useState(null);
+  const [showLeague, setShowLeague] = useState(0);
+  const [fullLeagueInfo,setFullLeagueInfo] = useState(null);
 
   useEffect(() => {
     setStartTime(new Date(data.start_time * 1000));
     setEndTime(new Date(data.end_time * 1000));
+
+    setLeagueId(data.league)
 
     let race1 = data?.stages?.race1;
     let quali1 = data?.stages?.qualifying1;
@@ -74,9 +80,35 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
       setSessionLength(raceSetup.RaceLength);
     }
   }, [data]);
+  function clickLeague(){
+    setShowLeague(leagueId)
+    getAPIData("/leagues/get/?id=" + leagueId)
+    .then((res) => setFullLeagueInfo(res))
+  }
+  const handleClose = () => { setFullLeagueInfo(null); setShowLeague(0); }
   return (
     <Accordion>
-        <Container className="history-entry">
+        <Container className={ leagueId == null ? "history-entry" : "league-entry history-entry"}>
+        {
+          leagueId && <Badge bg="info" className="league-badge" onClick={clickLeague}>League Info</Badge>
+        }
+        {
+          showLeague !== 0 && 
+          <Modal show={showLeague !== 0} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>{fullLeagueInfo ? fullLeagueInfo?.Name : 'Loading...'}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>League information WIP</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleClose}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        }
         <Row className="history-entry-data">
           <Col lg="4">
             {lists["tracks"] ? (

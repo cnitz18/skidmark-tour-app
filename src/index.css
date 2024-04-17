@@ -35,6 +35,10 @@ body {
   display: grid;
 }
 
+.league-entry {
+  box-shadow: 0 0 0 2px lightblue inset;
+}
+
 .history-entry {
   background: #f4f4f4;
   margin: 5px;
@@ -150,4 +154,15 @@ div {
 }
 .display-flex {
   display: flex;
+}
+
+.league-badge {
+  float: right;
+}
+.league-badge:hover {
+  outline-style: solid;
+  outline-width: 1px;
+  background-color: white !important;
+  outline-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
+  color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
 }
