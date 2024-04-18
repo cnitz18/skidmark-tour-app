@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { Nav, Navbar, Container, Col } from 'react-bootstrap'
 import Home from './Home/Home'

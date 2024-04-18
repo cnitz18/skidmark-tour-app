@@ -1,11 +1,8 @@
-import { Container, Row, Col, Button, Modal, Form, Table, FormGroup } from "react-bootstrap";
+import { Container, Row, Col, Button, Modal, Form, Table } from "react-bootstrap";
 import PageHeader from "../shared/NewServerSetupPageHeader";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import postAPIData from "../../utils/postAPIData";
 
-function createLeague(e){
-    console.log('create league!!')
-}
 const Leagues = ({ enums, lists }) => {
     const [showModal, setShowModal] = useState(false);
     const [newPositions,setNewPositions] = useState([{ position: 1, points: 1 }])
@@ -45,7 +42,7 @@ const Leagues = ({ enums, lists }) => {
     }
     function updateRace(e,index,field){
         let curRaces = [...newRaces];
-        if( field == "track")
+        if( field === "track")
             curRaces[index][field] = parseInt(e.currentTarget.value);
         else 
             curRaces[index][field] = e.currentTarget.value
