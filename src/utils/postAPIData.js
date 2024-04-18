@@ -16,6 +16,8 @@ async function postAPIData(subpath, options, convertToJson = false) {
     },
     body: JSON.stringify(options),
   };
+  console.log('fetching...')
+  console.log(process.env.REACT_APP_AMS2API + subpath, requestOptions)
   let response = await fetch(process.env.REACT_APP_AMS2API + subpath, requestOptions);
   checkResponse(response);
   if (convertToJson) {
