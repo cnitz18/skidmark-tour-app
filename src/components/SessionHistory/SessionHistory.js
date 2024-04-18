@@ -4,7 +4,7 @@ import SessionHistoryEntry from "./SessionHistoryEntry";
 import PageHeader from "../shared/NewServerSetupPageHeader";
 import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination } from "react-bootstrap";
 import LoadingOverlay from 'react-loading-overlay-ts';
-
+import UnavailablePage from "../NewServerSetup/NewServerUnavailablePage";
 
 const SessionHistory = ({ enums, lists }) => {
   const [history, setHistory] = useState([]);
@@ -12,6 +12,7 @@ const SessionHistory = ({ enums, lists }) => {
   const [paginators, setPaginators] = useState([])
   const [curPage, setCurPage] = useState(1)
   // TODO: this feels really inefficient computing-wise but timewise tonight saves me headache
+  const [showErrorPage, setShowErrorPage] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const [showMiniSpinner, setShowMiniSpinner] = useState(false);
   const [filter, setFilter] = useState('finished-only');
@@ -35,6 +36,7 @@ const SessionHistory = ({ enums, lists }) => {
     setShowMiniSpinner(true)
     getAPIData("/api/batchupload/sms_stats_data/pagecount/?filter=" + filter)
     .then((res) => {
+      setShowErrorPage(false);
       //console.log('setting paginators')
       if( parseInt(res) > -1 ){
         setPageCount(parseInt(res));
@@ -46,14 +48,25 @@ const SessionHistory = ({ enums, lists }) => {
       }
         
     })
+    .catch((err) => {
+      console.error(err);
+      setShowErrorPage(true);
+      setShowSpinner(false);
+    })
     getAPIData("/api/batchupload/sms_stats_data/?page=" + curPage + "&filter=" + filter + "&sort=" + (sortOptionSelected === "dateAsc" ? "asc" : "desc"))
     .then((res) => {
       if (res) {
+        setShowErrorPage(false);
         //console.log('setting history')
         setHistory([...res]);
         setShowMiniSpinner(false);
         setShowSpinner(false);
       }
+    })
+    .catch((err) => {
+      console.error(err);
+      setShowErrorPage(true);
+      setShowSpinner(false);
     });
   }
 
@@ -130,6 +143,9 @@ const SessionHistory = ({ enums, lists }) => {
               </Container>
 
             )
+      }
+      {
+        showErrorPage && <UnavailablePage/>
       }
     </>
   );

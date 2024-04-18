@@ -17,7 +17,7 @@ import DedicatedServerCommands from "../../utils/Classes/DedicatedServerCommands
 import WebServerCommands from "../../utils/Classes/WebServerCommands";
 import ServerSetupFlags from '../ServerSetup/ServerSetupFlags';
 import { Card, Container, Toast, ToastContainer, Row, Offcanvas, ListGroup, Table } from 'react-bootstrap';
-import NewServerUnavailablePage from './NewServerUnavailablePage';
+import UnavailablePage from './NewServerUnavailablePage';
 
 export default function NewServerSetupPage({ enums, lists }) {
     const [serverState, setServerState] = useState("");
@@ -314,7 +314,7 @@ export default function NewServerSetupPage({ enums, lists }) {
         <NewServerSetupPageHeader/>
         {
           serverState === "unavailable" ?
-          <NewServerUnavailablePage/>
+          <UnavailablePage/>
           :
           ( serverState === "Idle" || serverState === "Running" ? 
             <Container>
