@@ -7,6 +7,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
   const [showModal, setShowModal] = useState(false);
   const [eventsData, setEventsData] = useState("")
   const [selectedRacerName, setSelectedRacerName] = useState("")
+  const [participantsMap, setParticipantsMap] = useState({});
 
   const handleCloseModal = () => {
     setEventsData([]);
@@ -65,8 +66,8 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
   function getEventDescription( evt ){
     switch( evt.event_name ){
       case 'Impact': 
-        let player_name = evt.attributes_OtherParticipantId === -1 ? "the wall" : evt.attributes_OtherParticipantId.toString
-        return `Contact with ${player_name}`
+        let player_name = evt.attributes_OtherParticipantId === -1 ? "the wall" : (participantsMap[evt.attributes_OtherParticipantId] ?? "<unnamed driver>")
+        return `Contact with ${player_name} - magnitude ${evt.attributes_CollisionMagnitude}`
       case 'CutTrackStart':
         return `Lap : ${evt.attributes_Lap}, Position: ${evt.attributes_RacePosition}, at Lap Time ${msToTime(evt.attributes_LapTime)}`;
       case 'CutTrackEnd':
@@ -81,7 +82,14 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
     }
   }
 
-  useEffect(() => {}, [race,selectedRacerName]);
+  useEffect(() => {
+    if( race?.results?.length ){
+      let participants = {};
+      for( let i=0; i < race.results.length; i++ )
+        participants[race.results[i].participantid] = race.results[i].name;
+      setParticipantsMap(participants)
+    }
+  }, [race,selectedRacerName]);
   return (
     <>
       <Modal show={showModal} onHide={handleCloseModal} size="xl">
