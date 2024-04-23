@@ -1,17 +1,26 @@
-import { Container, Row, Col, Button, Modal, Form, Table } from "react-bootstrap";
+import { Container, Row, Col, Button, Modal, Form, Table, Card, Spinner } from "react-bootstrap";
 import PageHeader from "../shared/NewServerSetupPageHeader";
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 import postAPIData from "../../utils/postAPIData";
+import getAPIData from "../../utils/getAPIData";
+import { Link } from "react-router-dom";
 
 const Leagues = ({ enums, lists }) => {
     const [showModal, setShowModal] = useState(false);
     const [newPositions,setNewPositions] = useState([{ position: 1, points: 1 }])
     const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id), date: formatDateTime(new Date()) }])
     const [newName,setNewName] = useState("");
+    const [description,setDescription] = useState("");
     const [newFastestLapPoint,setNewFastestLapPoint] = useState(false);
+    const [leagues,setLeagues] = useState([]);
+    const [showSpinner, setShowSpinner] = useState(true);
 
     const handleCloseModal = () => {
         setNewPositions([{ position: 1, points: 1 }]);
+        setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id), date: formatDateTime(new Date()) }])
+        setNewName("")
+        setDescription("")
+        setNewFastestLapPoint(false)
         setShowModal(false);
     }
     const handleShowModal = () => setShowModal(true);
@@ -55,18 +64,65 @@ const Leagues = ({ enums, lists }) => {
             points: newPositions,
             extraPointForFastestLap: newFastestLapPoint,
             races: newRaces,
+            description
         }
-        postAPIData('/leagues/create/',data).then(console.log)
+        postAPIData('/leagues/create/',data)
+        .then(() => handleCloseModal())
+
         console.log('saving new league...',data)
     }
+
+    useEffect(() => {
+        setShowSpinner(true);
+        getAPIData('/leagues/get/').then((res) => {
+            setShowSpinner(false);
+            setLeagues([...res])
+        })
+    },[])
     return (
         <Container>
             <PageHeader title="Leagues"/>
             <Row className="text-center">
-                <Col >
-                    <Button onClick={handleShowModal}>Create League</Button>
+                <Col className="text-center">
+                    <Button onClick={handleShowModal}>Create New League</Button>
                 </Col>
             </Row>
+            <Row xs={1} md={3} className="g-4 justify-content-center">
+            {showSpinner ? (
+
+                <div className="text-center mt-4">
+                    <Spinner animation="border" role="status"/>
+                    <div>
+                        One moment please...
+                    </div>
+                </div>
+                ) : (
+                    leagues && leagues.map((l,i) => (
+                        <Col key={i}>
+                            <Card className="text-center">
+                                <Card.Body>
+                                    <Card.Title>{l.name}</Card.Title>
+                                        <Container>
+                                            <Row>
+                                                {l.description ?? "No description provided"}
+                                            </Row>
+                                            <Row>
+                                                <Link
+                                                    to={`/league/${l.id}`}
+                                                    state={{ league: l }}
+                                                    >
+                                                    <Button variant="outline-primary" size="sm">View</Button>
+                                                </Link>
+                                            </Row>
+                                        </Container>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))
+                )
+            }
+            </Row>
+            {/* Modal */}
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>New League</Modal.Title>
@@ -79,6 +135,13 @@ const Leagues = ({ enums, lists }) => {
                                 <Form.Control placeholder="Enter name" onChange={(e) => setNewName(e.target.value)} />
                             </Form.Group>
                         </Row>
+                        <Row>
+                            <Form.Group as={Col}>
+                                <Form.Label>Description</Form.Label>
+                                <Form.Control as="textarea" rows={3} placeholder="Give a lil info here" onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Group>
+                        </Row>
+                        <br/>
                         <h5>Scoring System</h5>
                         <hr/>
                         <Row>   
@@ -93,7 +156,7 @@ const Leagues = ({ enums, lists }) => {
                                     <tbody>
                                         {
                                             newPositions?.map((pos,i) => (
-                                                <tr>
+                                                <tr key={i}>
                                                     <td>
                                                         <Form.Control type="number" value={pos.position} onChange={(e) => updatePosition(e,i,"position")}/>
                                                     </td>
@@ -134,12 +197,12 @@ const Leagues = ({ enums, lists }) => {
                                     <tbody>
                                         {
                                             newRaces?.map((race,i) => (
-                                                <tr>
+                                                <tr key={i}>
                                                     <td>
                                                     <Form.Select onChange={(e) => updateRace(e,i,"track")} aria-label="Track Selection">
                                                         {
-                                                            lists && lists.tracks?.list.map((track) => (
-                                                                <option value={track.id}>{track.name}</option>
+                                                            lists && lists.tracks?.list.map((track,i) => (
+                                                                <option value={track.id} key={i}>{track.name}</option>
                                                             ))
                                                         }
                                                     </Form.Select>

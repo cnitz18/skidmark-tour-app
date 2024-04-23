@@ -5,6 +5,8 @@ import { Accordion, Button, Row, Col, Container,Badge, Modal } from "react-boots
 import { ImTrophy } from "react-icons/im";
 import SessionHistoryEntryScoreboard from "./SessionHistoryEntryScoreboard";
 import getAPIData from "../../utils/getAPIData";
+import { Link } from "react-router-dom";
+
 
 const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [startTime, setStartTime] = useState(new Date());
@@ -90,24 +92,13 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
     <Accordion>
         <Container className={ leagueId == null ? "history-entry" : "league-entry history-entry"}>
         {
-          leagueId && <Badge bg="info" className="league-badge" onClick={clickLeague}>League Info</Badge>
-        }
-        {
-          showLeague !== 0 && 
-          <Modal show={showLeague !== 0} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>{fullLeagueInfo ? fullLeagueInfo?.Name : 'Loading...'}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>League information WIP</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleClose}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          leagueId && 
+          <Link
+            to={`/league/${leagueId}`}
+            state={{ leagueId }}
+            >
+            <Badge bg="info" className="league-badge">League Info</Badge>
+          </Link>
         }
         <Row className="history-entry-data">
           <Col lg="4">

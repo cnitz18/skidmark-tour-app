@@ -166,3 +166,10 @@ div {
   outline-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
   color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
 }
+
+.league-config-panel {
+  border-left: 1px dashed #333;
+}
+.race-complete-row {
+  background-color: #9eb5a8;
+}

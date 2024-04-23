@@ -12,12 +12,10 @@ async function postAPIData(subpath, options, convertToJson = false) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      //"Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify(options),
   };
-  console.log('fetching...')
-  console.log(process.env.REACT_APP_AMS2API + subpath, requestOptions)
   let response = await fetch(process.env.REACT_APP_AMS2API + subpath, requestOptions);
   checkResponse(response);
   if (convertToJson) {
