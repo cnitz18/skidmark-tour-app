@@ -4,11 +4,14 @@ import { Container, Spinner, Row, Col, Table, Form, Tooltip, OverlayTrigger } fr
 import PageHeader from '../shared/NewServerSetupPageHeader';
 import getAPIData from '../../utils/getAPIData';
 import { useLocation } from "react-router-dom";
+import SessionHistoryEntry from '../SessionHistory/SessionHistoryEntry';
 
 const LeagueDescription = ({ enums, lists }) => {
     const [showSpinner, setShowSpinner] = useState(true);
+    const [showHistorySpinner, setShowHistorySpinner] = useState(true);
     const [league, setLeague] = useState({});
     const [leagueDetails, setLeagueDetails] = useState({});
+    const [leagueHistory, setLeagueHistory] = useState([])
     const { state } = useLocation();
 
     function dateToDisplayString(dt){
@@ -19,10 +22,10 @@ const LeagueDescription = ({ enums, lists }) => {
     }
     useEffect(() => {
         if( state.league ){
-            console.log('setting league:',{...state.league})
+            //console.log('setting league:',{...state.league})
             setLeague({...state.league});
         }else if( state.leagueId ){
-            console.log('league id received')
+            //console.log('league id received')
             getAPIData('/leagues/get/?id='+state.leagueId)
             .then((res) => {
                 setLeague({...res})
@@ -30,12 +33,20 @@ const LeagueDescription = ({ enums, lists }) => {
         }
     },[state.league,state.leagueId])
     useEffect(() => {
-        if( league && league.id )
-            getAPIData('/leagues/get/stats/?id=' + league.id).then((res) => {
-                console.log('setting league details:',res)
+        if( league && league.id ){
+
+            getAPIData('/leagues/get/stats/?id=' + league.id)
+            .then((res) => {
+                //console.log('setting league details:',res)
                 setLeagueDetails({...res})
                 setShowSpinner(false)
             }).catch((err) => { console.error(err); setShowSpinner(false) })
+            getAPIData('/api/batchupload/sms_stats_data/?league=' + league.id)
+            .then((res) => {
+                setLeagueHistory([...res])
+                setShowHistorySpinner(false)
+            }).catch((err) => { console.error(err); setShowHistorySpinner(false) })
+        }
     },[league])
     return (
         <Container>
@@ -114,6 +125,24 @@ const LeagueDescription = ({ enums, lists }) => {
                                                 }
                                                 More content to come
                                             </Col>
+                                        </Row>
+                                        <hr/>
+                                        <Row>
+                                            {
+                                                showHistorySpinner &&
+                                                <div className="text-center mt-4">
+                                                    <Spinner animation="border" role="status"/>
+                                                    <div>
+                                                        Loading Race Results...
+                                                    </div>
+                                                </div>
+                                            }
+                                            {
+                                                leagueHistory && 
+                                                leagueHistory.map((h,i) => 
+                                                    <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                                                )
+                                            }
                                         </Row>
                                         </Container>
                                     </Row>

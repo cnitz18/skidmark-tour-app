@@ -137,7 +137,7 @@ const ServerSetupForm = ({ enums, lists }) => {
       .then((res) => {
         if (res.status === 200) {
           setDifficultyError(false);
-          console.log("showing toast....");
+          //console.log("showing toast....");
           setToastVariant("Success");
           setToastMessage("Server settings saved");
           setToastBody("");

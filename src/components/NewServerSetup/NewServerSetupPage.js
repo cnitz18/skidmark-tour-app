@@ -65,10 +65,10 @@ export default function NewServerSetupPage({ enums, lists }) {
           { attributes: true },
           true
         );
-        console.log('server state:',status.state)
+        //console.log('server state:',status.state)
       }catch(err){
         console.error(err);
-        console.log('lets put up a thing here!')
+        //console.log('lets put up a thing here!')
         setServerState('unavailable');
         return;
       }
@@ -157,7 +157,7 @@ export default function NewServerSetupPage({ enums, lists }) {
         .then((res) => {
           if (res.status === 200) {
             setDifficultyError(false);
-            console.log("showing toast....");
+            //console.log("showing toast....");
             setToastVariant("Success");
             setToastMessage("Server settings saved");
             setToastBody("");
@@ -244,10 +244,10 @@ export default function NewServerSetupPage({ enums, lists }) {
       });
     }
     function handleViewPreset(preset, e){
-      console.log('handleViewPreset');
+      //('handleViewPreset');
       setPresetForViewing(preset);
       handleShowOffcanvas();
-      console.log(preset);
+      //console.log(preset);
     }
     function translateField( fieldName, fieldValue ){
       if( fieldName === 'TrackId' ){
@@ -259,12 +259,12 @@ export default function NewServerSetupPage({ enums, lists }) {
         if( list && list.list ) 
           return list.list.find((t) => t.value === fieldValue)?.name?.replaceAll('_',' ')
       } else if( fieldName === 'VehicleModelId' || fieldName === "MultiClassSlot1" || fieldName === "MultiClassSlot2" || fieldName === "MultiClassSlot3" || fieldName === "MultiClassSlot4" || fieldName === "MultiClassSlot5" || fieldName === "MultiClassSlot6" || fieldName === "MultiClassSlot7" || fieldName === "MultiClassSlot8" || fieldName === "MultiClassSlot9" ){
-        console.log(fieldValue)
+        //console.log(fieldValue)
         let list = lists.vehicles;
         if( list && list.list ) 
           return list.list.find((t) => t.id === fieldValue)?.name?.replaceAll('_',' ')
       } else if( fieldName === 'PracticeWeatherSlot1' || fieldName === 'PracticeWeatherSlot2' || fieldName === 'PracticeWeatherSlot3' || fieldName === 'PracticeWeatherSlot4' || fieldName === 'QualifyWeatherSlot1' || fieldName === 'QualifyWeatherSlot2' || fieldName === 'QualifyWeatherSlot3' || fieldName === 'QualifyWeatherSlot4'){
-        console.log(enums); 
+        //console.log(enums); 
         let list = enums.weather;
         if( list && list.list ) 
           return list.list.find((t) => t.value === fieldValue)?.name?.replaceAll('_',' ')

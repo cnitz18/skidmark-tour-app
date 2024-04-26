@@ -25,7 +25,7 @@ const SessionHistory = ({ enums, lists }) => {
   ];
 
   function handleFilters(e){
-    console.log('setFilter:',e.currentTarget.value)
+    //console.log('setFilter:',e.currentTarget.value)
     setCurPage(1)
     setFilter(e.currentTarget.value)
   }

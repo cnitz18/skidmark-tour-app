@@ -23,7 +23,7 @@ const Leagues = ({ enums, lists }) => {
         setNewFastestLapPoint(false)
         setShowModal(false);
     }
-    const handleShowModal = () => setShowModal(true);
+    // const handleShowModal = () => setShowModal(true);
 
     // function formatDateTime(datetime){
     //     let now = datetime
@@ -39,7 +39,7 @@ const Leagues = ({ enums, lists }) => {
     function updatePosition(e,index,field){
         let curPositions = [...newPositions]
         curPositions[index][field] = parseInt(e.currentTarget.value);
-        console.log(curPositions)
+        //console.log(curPositions)
         setNewPositions([...curPositions])
     }
 
@@ -54,7 +54,7 @@ const Leagues = ({ enums, lists }) => {
         if( field === "track")
             curRaces[index][field] = parseInt(e.currentTarget.value);
         else if (field === "date"){
-            console.log('setting date:',field,e.currentTarget.value)
+            //console.log('setting date:',field,e.currentTarget.value)
             curRaces[index][field] = e.currentTarget.value
         }
         else {
@@ -77,7 +77,7 @@ const Leagues = ({ enums, lists }) => {
             description,
             completed: false
         }
-        console.log('creating league:',data)
+        //console.log('creating league:',data)
         postAPIData('/leagues/create/',data)
         .then(() => handleCloseModal())
     }
@@ -93,11 +93,11 @@ const Leagues = ({ enums, lists }) => {
         <Container>
             <PageHeader title="Leagues"/>
             {/* TODO: only show section below for "admin" users somehow */}
-            <Row className="text-center">
+            {/* <Row className="text-center">
                 <Col className="text-center">
                     <Button onClick={handleShowModal}>Create New League</Button>
                 </Col>
-            </Row>
+            </Row> */}
             <Row xs={1} md={3} className="g-4 justify-content-center">
             {showSpinner ? (
 
