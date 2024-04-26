@@ -8,6 +8,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
   const [eventsData, setEventsData] = useState("")
   const [selectedRacerName, setSelectedRacerName] = useState("")
   const [participantsMap, setParticipantsMap] = useState({});
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const handleCloseModal = () => {
     setEventsData([]);
@@ -94,11 +95,20 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
     <>
       <Modal show={showModal} onHide={handleCloseModal} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Details</Modal.Title>
+          <Modal.Title>Race Event Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {
-            eventsData ? 
+            showSpinner &&
+            <div className="text-center mt-4">
+              <Spinner animation="border" role="status"/>
+                <div>
+                  Loading event data...
+                </div>
+            </div>
+          }
+          {
+            eventsData &&
               eventsData.length > 0 ? 
                 <Container>
                   <h5>Laps Logged</h5>
@@ -148,14 +158,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
                     </tbody>
                   </Table>
                 </Container>
-              : <span>No event data found</span>
-            : 
-            <div className="text-center mt-4">
-              <Spinner animation="border" role="status"/>
-                <div>
-                  Loading event data...
-                </div>
-            </div>
+              : <span>No event data found</span>     
           }
         </Modal.Body>
         <Modal.Footer>
