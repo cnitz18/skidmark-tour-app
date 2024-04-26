@@ -63,6 +63,7 @@ const LeagueDescription = ({ enums, lists }) => {
                 setLeague({...res})
             })
         }
+        // eslint-disable-next-line
     },[state?.league,state?.leagueId])
     useEffect(() => {
         if( league && league.id ){
