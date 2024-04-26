@@ -11,6 +11,12 @@ const LeagueDescription = ({ enums, lists }) => {
     const [leagueDetails, setLeagueDetails] = useState({});
     const { state } = useLocation();
 
+    function dateToDisplayString(dt){
+        let dtObj = new Date(dt);
+
+        dtObj.setMinutes(dtObj.getMinutes() + dtObj.getTimezoneOffset());
+        return dtObj.toLocaleDateString()+ " @ " + dtObj.toLocaleString("en",{timeStyle:'short'})
+    }
     useEffect(() => {
         if( state.league ){
             console.log('setting league:',{...state.league})
@@ -51,14 +57,16 @@ const LeagueDescription = ({ enums, lists }) => {
                                 <Col sm={8}>
                                     <Row>
                                         <b>Description:</b>
-                                        <span>{league.description}</span>
+                                        <p>{league.description}</p>
+                                        <br/>
+                                        <hr/>
                                     </Row>
                                     <Row>
-                                    <Container fluid="sm">  
+                                    <Container>  
                                         <Row>
                                             <Col md={{ span: 6, offset: 3 }}>
                                                 <span className='text-center'>
-                                                    <h4>Current Standings</h4>
+                                                    <h4>Standings</h4>
                                                 </span>
                                                 {
                                                     (leagueDetails && leagueDetails?.scoreboard_entries) 
@@ -75,6 +83,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                                         {
                                                             leagueDetails.scoreboard_entries.map((ent,i,arr) => (
                                                                 <OverlayTrigger
+                                                                    key={i}
                                                                     placement="right"
                                                                     overlay={(props) => (
                                                                         <Tooltip {...props} className="text-left">
@@ -163,7 +172,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                                         <tbody>
                                                             {league.races.map((r,i) => (
                                                                 <tr key={i}>
-                                                                    <td>{(new Date(r.date)).toLocaleDateString()+ " @ " + (new Date(r.date)).toLocaleString("en",{timeStyle:'short'})}</td>
+                                                                    <td>{dateToDisplayString(r.date)}</td>
                                                                     <td>{lists["tracks"]?.list?.find((t) => t.id === r.track)?.name ?? "[undefined: error]"}</td>
                                                                 </tr>
                                                             ))}

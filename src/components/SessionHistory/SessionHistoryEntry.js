@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { Accordion, Button, Row, Col, Container,Badge, Modal } from "react-bootstrap";
+import { Accordion, Button, Row, Col, Container,Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { ImTrophy } from "react-icons/im";
 import SessionHistoryEntryScoreboard from "./SessionHistoryEntryScoreboard";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
-
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [startTime, setStartTime] = useState(new Date());
@@ -21,6 +21,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [sessionLength, setSessionLength] = useState(0);
   const [timedSession, setTimedSession] = useState(false);
   const [leagueId, setLeagueId] = useState(null);
+  const [isHistorical, setIsHistorical] = useState(false);
   const [showLeague, setShowLeague] = useState(0);
   const [fullLeagueInfo,setFullLeagueInfo] = useState(null);
 
@@ -29,6 +30,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
     setEndTime(new Date(data.end_time * 1000));
 
     setLeagueId(data.league)
+    setIsHistorical(data.isHistoricalOrIncomplete ?? false)
 
     let race1 = data?.stages?.race1;
     let quali1 = data?.stages?.qualifying1;
@@ -82,23 +84,32 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
       setSessionLength(raceSetup.RaceLength);
     }
   }, [data]);
-  function clickLeague(){
-    setShowLeague(leagueId)
-    getAPIData("/leagues/get/?id=" + leagueId)
-    .then((res) => setFullLeagueInfo(res))
-  }
-  const handleClose = () => { setFullLeagueInfo(null); setShowLeague(0); }
   return (
     <Accordion>
         <Container className={ leagueId == null ? "history-entry" : "league-entry history-entry"}>
         {
-          leagueId && 
+          leagueId &&
           <Link
             to={`/league/${leagueId}`}
             state={{ leagueId }}
             >
             <Badge bg="info" className="league-badge">League Info</Badge>
           </Link>
+        }
+        {
+          isHistorical &&
+          <OverlayTrigger 
+            placement="top"
+            overlay={(props) => (
+                <Tooltip {...props}>
+                    This information was manually entered based on historical screenshots. Not all information may be completely accurate.
+                </Tooltip>
+              )}
+          >
+            <div className="info-marker">
+              <IoInformationCircleOutline color="red"/>
+            </div>
+          </OverlayTrigger>
         }
         <Row className="history-entry-data">
           <Col lg="4">

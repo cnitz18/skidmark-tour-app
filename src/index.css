@@ -166,7 +166,14 @@ div {
   outline-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
   color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
 }
-
+.info-marker {
+  float: right;
+  padding: 0px;
+  margin: 3px 5px;
+}
+.info-marker > svg {
+  display: block;
+}
 .league-config-panel {
   border-left: 1px dashed #333;
 }

@@ -26,7 +26,8 @@ const SessionHistory = ({ enums, lists }) => {
 
   function handleFilters(e){
     console.log('setFilter:',e.currentTarget.value)
-    setFilter(e.currentTarget.value)    
+    setCurPage(1)
+    setFilter(e.currentTarget.value)
   }
   function handleSort(e){
     //console.log('setSortOptionSelected:',e.currentTarget.value)

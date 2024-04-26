@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 const Leagues = ({ enums, lists }) => {
     const [showModal, setShowModal] = useState(false);
     const [newPositions,setNewPositions] = useState([{ position: 1, points: 1 }])
-    const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id), date: formatDateTime(new Date()) }])
+    const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: (new Date()).toISOString().slice(0,16) }])
     const [newName,setNewName] = useState("");
     const [description,setDescription] = useState("");
     const [newFastestLapPoint,setNewFastestLapPoint] = useState(false);
@@ -17,7 +17,7 @@ const Leagues = ({ enums, lists }) => {
 
     const handleCloseModal = () => {
         setNewPositions([{ position: 1, points: 1 }]);
-        setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id), date: formatDateTime(new Date()) }])
+        setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: (new Date()).toISOString().slice(0,16) }])
         setNewName("")
         setDescription("")
         setNewFastestLapPoint(false)
@@ -25,11 +25,11 @@ const Leagues = ({ enums, lists }) => {
     }
     const handleShowModal = () => setShowModal(true);
 
-    function formatDateTime(datetime){
-        let now = datetime
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        return now.toISOString().slice(0,16);
-    }
+    // function formatDateTime(datetime){
+    //     let now = datetime
+    //     // now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    //     return now.toISOString().slice(0,16);
+    // }
 
     function addNewPosition(){
         let curPositions = [...newPositions]
@@ -46,30 +46,40 @@ const Leagues = ({ enums, lists }) => {
     function addNewRace(){
         let curRaces = [...newRaces];
 
-        curRaces.push({ track: parseInt(lists?.tracks.list[0].id), date: formatDateTime(new Date()) })
+        curRaces.push({ track: parseInt(lists?.tracks.list[0].id), date: (new Date()).toISOString().slice(0,16) })
         setNewRaces([...curRaces])
     }
     function updateRace(e,index,field){
         let curRaces = [...newRaces];
         if( field === "track")
             curRaces[index][field] = parseInt(e.currentTarget.value);
-        else 
+        else if (field === "date"){
+            console.log('setting date:',field,e.currentTarget.value)
             curRaces[index][field] = e.currentTarget.value
+        }
+        else {
+            curRaces[index][field] = e.currentTarget.value
+        }
         setNewRaces([...curRaces])    
     }
 
     function saveNewLeague(){
+        // shitty solution but i guess it works to translate dates to backend properly
+        // newRaces.forEach((r,i,arr) => {
+        //     let now = new Date(r.date)
+        //     arr[i].date = now.toISOString().slice(0,16);
+        // })
         let data = {
             name: newName,
             points: newPositions,
             extraPointForFastestLap: newFastestLapPoint,
             races: newRaces,
-            description
+            description,
+            completed: false
         }
+        console.log('creating league:',data)
         postAPIData('/leagues/create/',data)
         .then(() => handleCloseModal())
-
-        console.log('saving new league...',data)
     }
 
     useEffect(() => {
@@ -82,6 +92,7 @@ const Leagues = ({ enums, lists }) => {
     return (
         <Container>
             <PageHeader title="Leagues"/>
+            {/* TODO: only show section below for "admin" users somehow */}
             <Row className="text-center">
                 <Col className="text-center">
                     <Button onClick={handleShowModal}>Create New League</Button>
@@ -208,7 +219,7 @@ const Leagues = ({ enums, lists }) => {
                                                     </Form.Select>
                                                     </td>
                                                     <td>
-                                                        <Form.Control type="datetime-local" value={race.date} onChange={(e) => updateRace(e,i,"date")} />
+                                                        <Form.Control type="datetime-local" value={race.date} onChange={(e) => updateRace(e,i,"date")}/>
                                                     </td>
                                                 </tr>
                                             ))
