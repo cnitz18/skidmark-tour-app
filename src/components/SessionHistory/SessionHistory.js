@@ -25,8 +25,9 @@ const SessionHistory = ({ enums, lists }) => {
   ];
 
   function handleFilters(e){
-    console.log('setFilter:',e.currentTarget.value)
-    setFilter(e.currentTarget.value)    
+    //console.log('setFilter:',e.currentTarget.value)
+    setCurPage(1)
+    setFilter(e.currentTarget.value)
   }
   function handleSort(e){
     //console.log('setSortOptionSelected:',e.currentTarget.value)
@@ -101,6 +102,7 @@ const SessionHistory = ({ enums, lists }) => {
                           value={radio.filter}
                           checked={filter === radio.filter}
                           onChange={handleFilters}
+                          className="text-nowrap"
                         >
                           {radio.name}
                         </ToggleButton>

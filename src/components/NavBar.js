@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from "react";
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { Nav, Navbar, Container, Col } from 'react-bootstrap'
@@ -7,21 +7,27 @@ import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
 import NewServerSetupPage from './NewServerSetup/NewServerSetupPage'
 import Leagues from './Leagues/Leagues'
+import LeagueDescription from './Leagues/LeagueDescription';
 
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Race History', href: '/history' },
-  // { name: 'Leagues', href: '/leagues'}
+  { name: 'Leagues', href: '/leagues'}
 ]
 
 
 export default function NavBar({ enums, lists }) {
-  const [selectedRoute,setSelectedRoute] = useState('/')
+  const [selectedRoute,setSelectedRoute] = useState(null)
 
   function onSelectRoute(e){
-    console.log('setting selectedRoute:',setSelectedRoute)
+    // console.log('setting selectedRoute:',setSelectedRoute)
     setSelectedRoute(e.currentTarget.value)
   }
+  useEffect(() => {
+    let href = window.location.href;
+    href = href.substring(href.lastIndexOf('/'))
+    setSelectedRoute(href)
+  },[]);
   return (
     <Router>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -56,6 +62,11 @@ export default function NavBar({ enums, lists }) {
         <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
         <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
         <Route path="/serversetup" element={<NewServerSetupPage enums={enums} lists={lists}/> }/>
+        <Route
+          exact
+          path="/league/:id"
+          element={<LeagueDescription  enums={enums} lists={lists}/>}
+        />
       </Routes>
     </Router>
   )
