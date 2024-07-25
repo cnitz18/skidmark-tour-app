@@ -5,7 +5,6 @@ import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { Nav, Navbar, Container, Col } from 'react-bootstrap'
 import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
-import NewServerSetupPage from './NewServerSetup/NewServerSetupPage'
 import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
 import ServerLanding from './ServerLanding/ServerLanding';
