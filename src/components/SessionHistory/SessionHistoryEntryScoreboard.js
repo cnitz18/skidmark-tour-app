@@ -8,7 +8,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
   const [eventsData, setEventsData] = useState("")
   const [selectedRacerName, setSelectedRacerName] = useState("")
   const [participantsMap, setParticipantsMap] = useState({});
-  const [showSpinner, setShowSpinner] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(true);
 
   const handleCloseModal = () => {
     setEventsData([]);
@@ -47,7 +47,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
     .then((res) => {
       //console.log('api response:',res)
       setEventsData(res)
-    }).catch(console.error)
+      setShowSpinner(false);
+    }).catch((e) => {
+      setShowSpinner(false);
+    })
     handleShowModal()
   }
 
@@ -99,67 +102,67 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
         </Modal.Header>
         <Modal.Body>
           {
-            showSpinner &&
+            showSpinner ?
             <div className="text-center mt-4">
               <Spinner animation="border" role="status"/>
                 <div>
                   Loading event data...
                 </div>
             </div>
-          }
-          {
+            :
             eventsData &&
-              eventsData.length > 0 ? 
-                <Container>
-                  <h5>Laps Logged</h5>
-                  <Table striped bordered>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Time</th>
-                        <th>Sector 1</th>
-                        <th>Sector 2</th>
-                        <th>Sector 3</th>
-                        <th>Position</th>
-                      </tr>
-                    </thead>
-                    <tbody>  
-                      {
-                        eventsData.filter(evt => evt.event_name === "Lap").map((evt,i) => (
-                          <tr key = {i}>
-                            <td>{evt.attributes_CountThisLapTimes}</td>                            
-                            <td>{msToTime(evt.attributes_LapTime)}</td>
-                            <td>{msToTime(evt.attributes_Sector1Time)}</td>
-                            <td>{msToTime(evt.attributes_Sector2Time)}</td>
-                            <td>{msToTime(evt.attributes_Sector3Time)}</td>
-                            <td>{evt.attributes_RacePosition}</td>
+                  eventsData.length > 0 ? 
+                    <Container>
+                      <h5>Laps Logged</h5>
+                      <Table striped bordered>
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Time</th>
+                            <th>Sector 1</th>
+                            <th>Sector 2</th>
+                            <th>Sector 3</th>
+                            <th>Position</th>
                           </tr>
-                        ))
-                      }
-                    </tbody>
-                  </Table>
-                  <h5>Other Events</h5>
-                  <Table striped bordered>
-                    <thead>
-                      <tr>
-                        <th>Event Type</th>
-                        <th>Description</th>
-                      </tr>
-                    </thead>
-                    <tbody>  
-                      {
-                        eventsData.filter(evt => evt.event_name !== "Lap").map((evt,i) => (
-                          <tr key={i}>
-                            <td>{getEventName(evt.event_name)}</td>
-                            <td>{getEventDescription(evt)}</td>
+                        </thead>
+                        <tbody>  
+                          {
+                            eventsData.filter(evt => evt.event_name === "Lap").map((evt,i) => (
+                              <tr key = {i}>
+                                <td>{evt.attributes_CountThisLapTimes}</td>                            
+                                <td>{msToTime(evt.attributes_LapTime)}</td>
+                                <td>{msToTime(evt.attributes_Sector1Time)}</td>
+                                <td>{msToTime(evt.attributes_Sector2Time)}</td>
+                                <td>{msToTime(evt.attributes_Sector3Time)}</td>
+                                <td>{evt.attributes_RacePosition}</td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </Table>
+                      <h5>Other Events</h5>
+                      <Table striped bordered>
+                        <thead>
+                          <tr>
+                            <th>Event Type</th>
+                            <th>Description</th>
                           </tr>
-                        ))
-                      }
-                    </tbody>
-                  </Table>
-                </Container>
-              : <span>No event data found</span>     
+                        </thead>
+                        <tbody>  
+                          {
+                            eventsData.filter(evt => evt.event_name !== "Lap").map((evt,i) => (
+                              <tr key={i}>
+                                <td>{getEventName(evt.event_name)}</td>
+                                <td>{getEventDescription(evt)}</td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </Table>
+                    </Container>
+                  : <span>No event data found</span>
           }
+          
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

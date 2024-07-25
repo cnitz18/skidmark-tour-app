@@ -102,6 +102,7 @@ const SessionHistory = ({ enums, lists }) => {
                           value={radio.filter}
                           checked={filter === radio.filter}
                           onChange={handleFilters}
+                          className="text-nowrap"
                         >
                           {radio.name}
                         </ToggleButton>

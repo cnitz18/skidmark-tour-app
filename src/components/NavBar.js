@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from "react";
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { Nav, Navbar, Container, Col } from 'react-bootstrap'
@@ -19,12 +19,17 @@ const navLinks = [
 
 
 export default function NavBar({ enums, lists }) {
-  const [selectedRoute,setSelectedRoute] = useState('/')
+  const [selectedRoute,setSelectedRoute] = useState(null)
 
   function onSelectRoute(e){
     // console.log('setting selectedRoute:',setSelectedRoute)
     setSelectedRoute(e.currentTarget.value)
   }
+  useEffect(() => {
+    let href = window.location.href;
+    href = href.substring(href.lastIndexOf('/'))
+    setSelectedRoute(href)
+  },[]);
   return (
     <Router>
       <Navbar bg="dark" variant="dark" expand="lg">
