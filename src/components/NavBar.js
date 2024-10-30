@@ -44,7 +44,8 @@ export default function NavBar({ enums, lists }) {
                       value={nLink.href}
                       href={nLink.href} 
                       active={selectedRoute === nLink.href}
-                      onClick={onSelectRoute}>
+                      onClick={onSelectRoute}
+                      className="nav-link">
                         {nLink.name}
                       </Nav.Link>
                   ))

@@ -180,7 +180,23 @@ div {
 .race-complete-row {
   background-color: #9eb5a8;
 }
-.carousel-image {
-  height: 600px;
-  width: 900px;
+.nav-link{
+  text-align: center;
+}
+.social-name {
+  padding: 5px; 
+}
+.homepage-content {
+  text-align: center;
+}
+.social-list {
+  text-align: center;
+}
+.btn-twitch, .btn-twitch:hover {
+  background-color: #6441a5;
+  color: white;
+}
+.btn-youtube,.btn-youtube:hover {
+  background-color: red;
+  color: white;
 }
