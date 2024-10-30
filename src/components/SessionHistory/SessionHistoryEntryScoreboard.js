@@ -3,7 +3,7 @@ import { Modal, Table, Button, Spinner, Container } from 'react-bootstrap';
 import getAPIData from "../../utils/getAPIData";
 
 
-const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
+const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTotalTime=false }) => {
   const [showModal, setShowModal] = useState(false);
   const [eventsData, setEventsData] = useState("")
   const [selectedRacerName, setSelectedRacerName] = useState("")
@@ -176,7 +176,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
           <th>Finish Position</th>
           <th>Name</th>
           <th>Vehicle</th>
-          <th>Time</th>
+          {
+            showTotalTime?
+            <th>Time</th> : <></>
+          }
           <th>Fastest Lap</th>
           <th></th>
         </tr>
@@ -189,19 +192,23 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0 }) => {
                 <td>{res.RacePosition}</td>
                 <td>{res.name}</td>
                 <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
-                <td>{ 
-                      res.TotalTime < winningTime ?
-                      "DNF"
-                      :
-                      (
-                        (i && winningTime) 
-                        ? 
-                          "+" + msToTime(res.TotalTime - winningTime) 
-                        : 
-                          msToTime(res.TotalTime)
-                      )
-                    }
-                </td>
+                {
+                  showTotalTime?
+                  <td>{ 
+                        res.TotalTime < winningTime ?
+                        "DNF"
+                        :
+                        (
+                          (i && winningTime) 
+                          ? 
+                            "+" + msToTime(res.TotalTime - winningTime) 
+                          : 
+                            msToTime(res.TotalTime)
+                        )
+                      }
+                  </td>
+                  : <></>
+                }
                 <td>{msToTime(res.FastestLapTime)}</td>
                 <td className="justify-content-md-center display-flex">
                   <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">

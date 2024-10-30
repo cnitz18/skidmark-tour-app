@@ -217,6 +217,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
                 race={data.stages.race1}
                 winningTime={firstPlace?.TotalTime}
                 vehicles={lists["vehicles"].list}
+                showTotalTime={true}
               />
             ) : (
               <></>
