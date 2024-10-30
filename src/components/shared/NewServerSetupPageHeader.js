@@ -7,8 +7,13 @@ export default function PageHeader({ title }) {
         <div className="container">
             <div className="text-center my-3">
                 <img src={logo} alt="The Skidmarks" />
-                <br/><br/>          
-                <h1 className="fw-bolder">{title}</h1>
+                {
+                  title ?
+                  <div>
+                    <br/><br/>          
+                    <h1 className="fw-bolder">{title}</h1>
+                  </div> : <></>
+                }
             </div>
         </div>
     </header>

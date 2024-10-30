@@ -7,13 +7,11 @@ import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
 import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
-import ServerLanding from './ServerLanding/ServerLanding';
 
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Race History', href: '/history' },
   { name: 'Leagues', href: '/leagues'},
-  { name: 'Dedicated Server', href: '/server' }
 ]
 
 
@@ -62,7 +60,6 @@ export default function NavBar({ enums, lists }) {
         <Route path="/" element={<Home />} />
         <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
         <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
-        <Route path="/server" element={<ServerLanding enums={enums} lists={lists}/> }/>
         <Route
           exact
           path="/league/:id"

@@ -180,3 +180,7 @@ div {
 .race-complete-row {
   background-color: #9eb5a8;
 }
+.carousel-image {
+  height: 600px;
+  width: 900px;
+}
