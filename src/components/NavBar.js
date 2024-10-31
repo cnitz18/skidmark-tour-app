@@ -32,7 +32,7 @@ export default function NavBar({ enums, lists }) {
       <Navbar bg="dark" variant="dark" expand="lg">
           <Container>
             <Col>
-              <Navbar.Brand href="/">Skidmark Tour</Navbar.Brand>
+              <Navbar.Brand href="/">{process.env.REACT_APP_ENV}</Navbar.Brand>
             </Col>
             <Col></Col>
             <Col sm>

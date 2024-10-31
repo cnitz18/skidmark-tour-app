@@ -6,11 +6,16 @@ export default function PageHeader({ title }) {
     <header className="py-2 bg-light border-bottom mb-4">
         <div className="container">
             <div className="text-center my-3">
-                <img src={logo} alt="The Skidmarks" />
+                {
+                  process.env.REACT_APP_ENV === "Skidmark Tour" ?
+                  <div>
+                    <img src={logo} alt="The Skidmarks" /> 
+                    <br/><br/>    
+                  </div>: <></>
+                }
                 {
                   title ?
-                  <div>
-                    <br/><br/>          
+                  <div>     
                     <h1 className="fw-bolder">{title}</h1>
                   </div> : <></>
                 }

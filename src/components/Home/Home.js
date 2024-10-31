@@ -63,7 +63,11 @@ export default function Home(){
     return (
         <Container>
             <Row>
-                <PageHeader title=""/>
+                {
+                  process.env.REACT_APP_ENV === "Skidmark Tour" ?
+                  <PageHeader title=""/>: <></>
+                }
+                
             </Row>
             <Row>
                 <Carousel fade>
@@ -71,7 +75,7 @@ export default function Home(){
                     imageInfo.map((img,i) => (
                         <Carousel.Item key={i} interval={3000}>
                             <Carousel.Caption>
-                                <h3>Home of The Skidmark Tour</h3>
+                                <h3>Home of The {process.env.REACT_APP_ENV}</h3>
                                 <p>{img.caption}</p>
                             </Carousel.Caption>
                             <Image src={img.url} fluid/>
