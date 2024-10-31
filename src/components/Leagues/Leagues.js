@@ -5,7 +5,7 @@ import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 
-const Leagues = ({ enums, lists }) => {
+const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [showModal, setShowModal] = useState(false);
     const [newPositions,setNewPositions] = useState([{ position: 1, points: 1 }])
     const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: (new Date()).toISOString().slice(0,16) }])
@@ -23,7 +23,7 @@ const Leagues = ({ enums, lists }) => {
         setNewFastestLapPoint(false)
         setShowModal(false);
     }
-    // const handleShowModal = () => setShowModal(true);
+    const handleShowModal = () => setShowModal(true);
 
     // function formatDateTime(datetime){
     //     let now = datetime
@@ -93,11 +93,14 @@ const Leagues = ({ enums, lists }) => {
         <Container>
             <PageHeader title="Leagues"/>
             {/* TODO: only show section below for "admin" users somehow */}
-            {/* <Row className="text-center">
-                <Col className="text-center">
-                    <Button onClick={handleShowModal}>Create New League</Button>
-                </Col>
-            </Row> */}
+            {
+                showAdmin ?
+                <Row className="text-center">
+                    <Col className="text-center">
+                        <Button onClick={handleShowModal}>Create New League</Button>
+                    </Col>
+                </Row> : <></>
+            }
             <Row xs={1} md={3} className="g-4 justify-content-center">
             {showSpinner ? (
 

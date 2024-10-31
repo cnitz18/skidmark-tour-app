@@ -61,6 +61,7 @@ export default function NavBar({ enums, lists }) {
         <Route path="/" element={<Home />} />
         <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
         <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
+        <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
         <Route
           exact
           path="/league/:id"
