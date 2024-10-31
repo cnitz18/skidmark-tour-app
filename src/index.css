@@ -200,3 +200,18 @@ div {
   background-color: red;
   color: white;
 }
+.fastest-lap-highlight {
+  color: purple;
+  font-weight: bold;
+}
+.personal-fastest-lap-highlight {
+  color: green;
+  font-weight: bold;
+}
+.personal-fastest-sector-highlight {
+  color: green;
+  font-weight: bold;
+}
+.race-event-modal {
+  text-align: center;
+}

@@ -177,6 +177,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
                   <SessionHistoryEntryScoreboard
                     race={data.stages.practice1}
                     vehicles={lists["vehicles"].list}
+                    session="practice"
                   />
                 ) : (
                   <></>
@@ -196,8 +197,8 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
                     race={data.stages.qualifying1}
-                    winningTime={polePosition?.winningTime}
                     vehicles={lists["vehicles"].list}
+                    session="qualifying"
                   />
                 ) : (
                   <></>
@@ -215,9 +216,9 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             {lists["vehicles"] ? (
               <SessionHistoryEntryScoreboard
                 race={data.stages.race1}
-                winningTime={firstPlace?.TotalTime}
+                winner={firstPlace}
                 vehicles={lists["vehicles"].list}
-                showTotalTime={true}
+                session="race"
               />
             ) : (
               <></>

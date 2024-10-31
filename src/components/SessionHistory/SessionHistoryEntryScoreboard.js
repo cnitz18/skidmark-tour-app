@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { Modal, Table, Button, Spinner, Container } from 'react-bootstrap';
+import { Modal, Button, Spinner, Container } from 'react-bootstrap';
 import getAPIData from "../../utils/getAPIData";
+import { Table } from "@mui/material";
 
 
-const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTotalTime=false }) => {
+const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
   const [showModal, setShowModal] = useState(false);
   const [eventsData, setEventsData] = useState("")
   const [selectedRacerName, setSelectedRacerName] = useState("")
   const [participantsMap, setParticipantsMap] = useState({});
   const [showSpinner, setShowSpinner] = useState(true);
+  const [minSectors,setMinSectors] = useState({});
 
   const handleCloseModal = () => {
     setEventsData([]);
+    setMinSectors({});
     setShowModal(false)
   };
   const handleShowModal = () => setShowModal(true);
@@ -71,16 +74,16 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
     switch( evt.event_name ){
       case 'Impact': 
         let player_name = evt.attributes_OtherParticipantId === -1 ? "the wall" : (participantsMap[evt.attributes_OtherParticipantId] ?? "<unnamed driver>")
-        return `Contact with ${player_name} - magnitude ${evt.attributes_CollisionMagnitude}`
+        return `Contact with ${player_name} (magnitude ${evt.attributes_CollisionMagnitude})`
       case 'CutTrackStart':
-        return `Lap : ${evt.attributes_Lap}, Position: ${evt.attributes_RacePosition}, at Lap Time ${msToTime(evt.attributes_LapTime)}`;
+        return `Lap ${evt.attributes_Lap} (+${msToTime(evt.attributes_LapTime)}), Running P${evt.attributes_RacePosition}`;
       case 'CutTrackEnd':
         let str = `Elapsed time: ${msToTime(evt.attributes_ElapsedTime)}, Positions Gained: ${evt.attributes_PlaceGain}, Penalty Applied: ${evt.attributes_PenaltyValue}`;
         if( evt.attributes_PlaceGain > 0 )
           str += ". Naughty naughty!!"
         return str;
       case 'State':
-        return `${evt.attributes_PreviousState} => ${evt.attributes_NewState}`;
+        return `Now ${evt.attributes_NewState.replace(/([A-Z])/g, ' $1').trim()}`;
       default:
         return "Uh oh - no output generated for this event type";
     }
@@ -94,9 +97,27 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
       setParticipantsMap(participants)
     }
   }, [race,selectedRacerName]);
+  useEffect(() => {
+    if( eventsData.length ){
+      var bestHighlightedData = [...eventsData].filter(e => e.event_name==="Lap");
+      const sector1 = bestHighlightedData.reduce((accumulator, currentValue) => {
+        return Math.min(accumulator,currentValue.attributes_Sector1Time);
+      },bestHighlightedData[0]?.attributes_Sector1Time)
+      const sector2 = bestHighlightedData.reduce((accumulator, currentValue) => {
+        return Math.min(accumulator,currentValue.attributes_Sector2Time);
+      },bestHighlightedData[0]?.attributes_Sector2Time)
+      const sector3 = bestHighlightedData.reduce((accumulator, currentValue) => {
+        return Math.min(accumulator,currentValue.attributes_Sector3Time);
+      },bestHighlightedData[0]?.attributes_Sector3Time)
+      const total = bestHighlightedData.reduce((accumulator, currentValue) => {
+        return Math.min(accumulator,currentValue.attributes_LapTime);
+      },bestHighlightedData[0]?.attributes_LapTime)
+      setMinSectors({sector1,sector2,sector3,total})
+    }
+  },[eventsData])
   return (
     <>
-      <Modal show={showModal} onHide={handleCloseModal} size="xl">
+      <Modal show={showModal} onHide={handleCloseModal} size="xl" className="race-event-modal">
         <Modal.Header closeButton>
           <Modal.Title>Race Event Details</Modal.Title>
         </Modal.Header>
@@ -113,8 +134,8 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
             eventsData &&
                   eventsData.length > 0 ? 
                     <Container>
-                      <h5>Laps Logged</h5>
-                      <Table striped bordered>
+                      <h5>Lap Log</h5>
+                      <Table>
                         <thead>
                           <tr>
                             <th>#</th>
@@ -129,21 +150,23 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
                           {
                             eventsData.filter(evt => evt.event_name === "Lap").map((evt,i) => (
                               <tr key = {i}>
-                                <td>{evt.attributes_CountThisLapTimes}</td>                            
-                                <td>{msToTime(evt.attributes_LapTime)}</td>
-                                <td>{msToTime(evt.attributes_Sector1Time)}</td>
-                                <td>{msToTime(evt.attributes_Sector2Time)}</td>
-                                <td>{msToTime(evt.attributes_Sector3Time)}</td>
+                                <td>{i+1}</td>                            
+                                <td className={evt.attributes_LapTime === minSectors.total ? "personal-fastest-lap-highlight" : ""}>{msToTime(evt.attributes_LapTime)}</td>
+                                <td className={evt.attributes_Sector1Time === minSectors.sector1 ? "personal-fastest-sector-highlight" : ""}>{msToTime(evt.attributes_Sector1Time)}</td>
+                                <td className={evt.attributes_Sector2Time === minSectors.sector2 ? "personal-fastest-sector-highlight" : ""}>{msToTime(evt.attributes_Sector2Time)}</td>
+                                <td className={evt.attributes_Sector3Time === minSectors.sector3 ? "personal-fastest-sector-highlight" : ""}>{msToTime(evt.attributes_Sector3Time)}</td>
                                 <td>{evt.attributes_RacePosition}</td>
                               </tr>
                             ))
                           }
                         </tbody>
                       </Table>
+                      <hr/>
                       <h5>Other Events</h5>
-                      <Table striped bordered>
+                      <Table>
                         <thead>
                           <tr>
+                            <th>Session Timestamp</th>
                             <th>Event Type</th>
                             <th>Description</th>
                           </tr>
@@ -152,6 +175,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
                           {
                             eventsData.filter(evt => evt.event_name !== "Lap").map((evt,i) => (
                               <tr key={i}>
+                                <td>{(new Date(evt.time*1000)).toLocaleString()}</td>
                                 <td>{getEventName(evt.event_name)}</td>
                                 <td>{getEventDescription(evt)}</td>
                               </tr>
@@ -170,14 +194,14 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
           </Button>
         </Modal.Footer>
       </Modal>
-    <Table striped bordered >
+    <Table >
       <thead>
         <tr>
           <th>Finish Position</th>
           <th>Name</th>
           <th>Vehicle</th>
           {
-            showTotalTime?
+            session === "race" ?
             <th>Time</th> : <></>
           }
           <th>Fastest Lap</th>
@@ -186,30 +210,32 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winningTime=0, showTota
       </thead>
       <tbody>
         {race && race.results && race.results.length ? (
-          race.results.map((res, i) => {
+          race.results.sort((a,b) => a.RacePosition - b.RacePosition).map((res, i) => {
             return (
               <tr key={i}>
                 <td>{res.RacePosition}</td>
                 <td>{res.name}</td>
                 <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
                 {
-                  showTotalTime?
-                  <td>{ 
-                        res.TotalTime < winningTime ?
-                        "DNF"
-                        :
-                        (
-                          (i && winningTime) 
-                          ? 
-                            "+" + msToTime(res.TotalTime - winningTime) 
-                          : 
-                            msToTime(res.TotalTime)
-                        )
-                      }
+                  session === "race" 
+                    ?
+                  <td>
+                    { 
+                      res.TotalTime < winner.TotalTime || winner.Lap > res.Lap ?
+                      "+ " + (winner.Lap - res.Lap) + " lap" + (winner.Lap - res.Lap > 1 ? "s" : "")
+                      :
+                      (
+                        (i && winner.TotalTime) 
+                        ? 
+                        "+" + msToTime(res.TotalTime - winner.TotalTime) 
+                        : 
+                          msToTime(res.TotalTime)
+                      )
+                    }
                   </td>
                   : <></>
                 }
-                <td>{msToTime(res.FastestLapTime)}</td>
+                <td className={res.IsFastestLap ? "fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
                 <td className="justify-content-md-center display-flex">
                   <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
                     Details
