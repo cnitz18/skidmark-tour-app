@@ -11,7 +11,8 @@ const imageInfo = [
     },
     {
         url: "homepage/ginettas.jpg",
-        caption: "Ginetta GT5s @ Daytona Roval"
+        caption: "Ginetta GT5s @ Daytona Roval",
+        href: "https://youtu.be/WpYystD5N-U?si=OCRXFccgjdf_C6AL"
     },
     {
         url: "homepage/kartsontrack.jpg",
@@ -19,7 +20,8 @@ const imageInfo = [
     },
     {
         url: "homepage/formulajuniors.jpg",
-        caption: "Formula Juniors @ Spa-Francorchamps 1970"
+        caption: "Formula Juniors @ Spa-Francorchamps 1970",
+        href: "https://youtu.be/yMqXIcBbhxo?si=5iHQGi5Mn_rXBd3v"
     },
     {
         url: "homepage/irl.jpg",
@@ -69,16 +71,23 @@ export default function Home(){
                 }
                 
             </Row>
-            <Row>
-                <Carousel fade>
+            <Row className='justify-content-md-center homepage-content'>
+                <Carousel className='homepage-carousel' fade>
                 {
                     imageInfo.map((img,i) => (
-                        <Carousel.Item key={i} interval={3000}>
+                        <Carousel.Item key={i} interval={3000} className='homepage-carousel-item'>
                             <Carousel.Caption>
                                 <h3>Home of The {process.env.REACT_APP_ENV}</h3>
                                 <p>{img.caption}</p>
                             </Carousel.Caption>
-                            <Image src={img.url} fluid/>
+                            {
+                                img.href ?
+                                    <a href={img.href}>
+                                        <Image src={img.url} fluid/>
+                                    </a>
+                                    :
+                                    <Image src={img.url} fluid/>
+                            }
                         </Carousel.Item>
                     ))
                 }

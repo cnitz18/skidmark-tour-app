@@ -218,3 +218,16 @@ div {
 hr {
   margin: 3rem;
 }
+.homepage-carousel {
+  height: 708px;
+  width: 1068px;
+}
+.homepage-carousel-item{
+  height: 708px;
+  width: 1068px;
+}
+.homepage-carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
