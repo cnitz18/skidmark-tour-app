@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Row, Carousel, Image, Button, Col, Card } from 'react-bootstrap';
+import { Container, Row, Carousel, Image, Button, Col } from 'react-bootstrap';
 import PageHeader from '../shared/NewServerSetupPageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 
@@ -83,23 +83,6 @@ export default function Home(){
                     ))
                 }
                 </Carousel>
-            </Row>
-            <hr/>
-            <Row>
-                <h2 className='homepage-content'>Upcoming Events</h2>
-            </Row>
-            <Row className='homepage-content'>
-                <center>
-                    <Card style={{ width: '18rem' }}>
-                        <Card.Body>
-                            <Card.Title>Event TBD</Card.Title>
-                            <Card.Text>
-                                Discord Integrations coming soon...
-                            </Card.Text>
-                            <Button variant="primary">Go Nowhere</Button>
-                        </Card.Body>
-                    </Card>
-                </center>
             </Row>
             <hr/>
             <Row>

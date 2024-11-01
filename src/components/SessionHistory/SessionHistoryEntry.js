@@ -7,6 +7,7 @@ import SessionHistoryEntryScoreboard from "./SessionHistoryEntryScoreboard";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import NameMapper from "../../utils/Classes/NameMapper";
 
 const SessionHistoryEntry = ({ data, enums, lists }) => {
   const [startTime, setStartTime] = useState(new Date());
@@ -114,18 +115,17 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
         <Row className="history-entry-data">
           <Col lg="4">
             {lists["tracks"] ? (
-              <h5>
-                {lists["vehicle_classes"]?.list?.find(
-                  (t) => t.value === data.setup.VehicleClassId
-                )?.name ?? "<undefined>"}
-                {" @ "}
-                {lists["tracks"]?.list?.find((t) => t.id === data.setup.TrackId)
-                  ?.name ?? "<undefined>"}
-              </h5>
+              <>
+                <h5>
+                  {NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list)}
+                </h5>
+                <p>
+                  {NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list)}
+                </p>
+              </>
             ) : (
               <></>
             )}
-            <small>{endTime.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric'}) + " " + endTime.toLocaleString("en",{timeStyle:'short'}) }</small>
           </Col>
           <Col className="text-center">
             <Row className="lessVerticalPadding">
@@ -149,20 +149,23 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
               </Col>
             </Row>
           </Col>
-          <Col xs lg="2">
+          <Col xs lg="2" className="text-center">
             <div>
-              {sessionLength + " "}
-              {timedSession ? "Minutes" : "Laps"}
+              <b>
+                {sessionLength + " "}
+                {timedSession ? "Minutes" : "Laps"}
+              </b>
             </div>
             {data.finished ? (
-              <Button variant="outline-success" disabled>
-                Finished
-              </Button>
+              <></>
             ) : (
               <Button variant="outline-warning" disabled>
                 Not Finished
               </Button>
             )}
+             <small>{startTime.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric'}) }</small>
+             <br/>
+             <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
           </Col>
         </Row>
         {
