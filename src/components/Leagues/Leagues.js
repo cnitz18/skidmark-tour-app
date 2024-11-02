@@ -1,4 +1,6 @@
-import { Container, Row, Col, Button, Modal, Form, Table, Card, Spinner } from "react-bootstrap";
+//import { Container, Row, Col, Button, Modal, Form, Table, Card, Spinner } from "react-bootstrap";
+ import { Container, Row, Col, Modal, Form, Table, Spinner } from "react-bootstrap";
+ import { Card, CardActions, CardContent, CardMedia, Button, Chip } from "@mui/material";
 import PageHeader from "../shared/NewServerSetupPageHeader";
 import { useEffect, useState } from "react";
 import postAPIData from "../../utils/postAPIData";
@@ -24,13 +26,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         setShowModal(false);
     }
     const handleShowModal = () => setShowModal(true);
-
-    // function formatDateTime(datetime){
-    //     let now = datetime
-    //     // now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    //     return now.toISOString().slice(0,16);
-    // }
-
     function addNewPosition(){
         let curPositions = [...newPositions]
         curPositions.push({ position: 1, points: 1 })
@@ -54,7 +49,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         if( field === "track")
             curRaces[index][field] = parseInt(e.currentTarget.value);
         else if (field === "date"){
-            //console.log('setting date:',field,e.currentTarget.value)
             curRaces[index][field] = e.currentTarget.value
         }
         else {
@@ -64,11 +58,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     }
 
     function saveNewLeague(){
-        // shitty solution but i guess it works to translate dates to backend properly
-        // newRaces.forEach((r,i,arr) => {
-        //     let now = new Date(r.date)
-        //     arr[i].date = now.toISOString().slice(0,16);
-        // })
         let data = {
             name: newName,
             points: newPositions,
@@ -77,7 +66,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
             description,
             completed: false
         }
-        //console.log('creating league:',data)
         postAPIData('/leagues/create/',data)
         .then(() => handleCloseModal())
     }
@@ -92,7 +80,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     return (
         <Container>
             <PageHeader title="Leagues"/>
-            {/* TODO: only show section below for "admin" users somehow */}
             {
                 showAdmin ?
                 <Row className="text-center">
@@ -101,7 +88,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </Col>
                 </Row> : <></>
             }
-            <Row xs={1} md={3} className="g-4 justify-content-center">
+            <Row md={1} lg={2} className="g-4 justify-content-center leagues-container">
             {showSpinner ? (
 
                 <div className="text-center mt-4">
@@ -113,23 +100,27 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                 ) : (
                     leagues && leagues.map((l,i) => (
                         <Col key={i}>
-                            <Card className="text-center">
-                                <Card.Body>
-                                    <Card.Title>{l.name}</Card.Title>
-                                        <Container>
-                                            <Row>
-                                                {l.description ?? "No description provided"}
-                                            </Row>
-                                            <Row>
-                                                <Link
-                                                    to={`/league/${l.id}`}
-                                                    state={{ league: l }}
-                                                    >
-                                                    <Button variant="outline-primary" size="sm">View</Button>
-                                                </Link>
-                                            </Row>
-                                        </Container>
-                                </Card.Body>
+                            <Card className="text-center" >
+                                <CardMedia image={l.img} height="140" component="img" alt="Photo Credit https://ams2cars.info/"/>
+                                <CardContent>
+                                    <h5>{l.name}</h5>
+                                    <span>{l.description ?? "No description provided"}</span>
+                                </CardContent>
+                                <CardActions className="league-cardactions">
+                                    <Link
+                                        to={`/league/${l.id}`}
+                                        state={{ league: l }}
+                                        >
+                                        <Button variant="outline-primary" size="sm">Details</Button>
+                                    </Link>
+                                    <div className="league-display-badge">
+                                        {
+                                            l.completed ?
+                                            <Chip size="small" label="Complete" color="success" variant="outlined"/>
+                                            : <Chip size="small" label="In Progress" color="primary" variant="outlined"/>
+                                        }
+                                    </div>
+                                </CardActions>
                             </Card>
                         </Col>
                     ))

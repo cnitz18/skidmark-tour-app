@@ -247,3 +247,14 @@ hr {
 .header-logo {
   max-width: 100%;
 }
+.leagues-container {
+  margin: 0;
+}
+.league-cardactions {
+  position: relative;
+}
+.league-display-badge {
+  position: absolute;
+  right: 0px;
+  margin: 6px 16px;
+}
