@@ -1,15 +1,14 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
-import { Container, Spinner, Row, Col, Table, Form, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Container, Spinner, Row, Col, Table, Form, Tooltip, OverlayTrigger} from 'react-bootstrap';
 import PageHeader from '../shared/NewServerSetupPageHeader';
 import getAPIData from '../../utils/getAPIData';
 import { useLocation } from "react-router-dom";
 import SessionHistoryEntry from '../SessionHistory/SessionHistoryEntry';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from "@mui/x-charts";
-import {
-    cheerfulFiestaPalette,
-  } from '@mui/x-charts/colorPalettes';
+import { cheerfulFiestaPalette } from '@mui/x-charts/colorPalettes';
+import { Tabs, Tab, Box } from '@mui/material'
 
 const LeagueDescription = ({ enums, lists }) => {
     const [showSpinner, setShowSpinner] = useState(true);
@@ -91,199 +90,203 @@ const LeagueDescription = ({ enums, lists }) => {
                         One moment please...
                     </div>
                 </div>
-                ) : ( league &&
-                    <>  
-                        <PageHeader title={league.name}/>
-                        <Container>
-                            <Row>
-                                {/* Main panel */}
-                                <Col sm={8}>
-                                    <Row>
-                                        <b>Description:</b>
-                                        <p>{league.description}</p>
-                                        <br/>
-                                        <hr/>
-                                    </Row>
-                                    <Row>
-                                    <Container>  
-                                        <Row>
-                                            <Col md={{ span: 6, offset: 3 }}>
-                                                <span className='text-center'>
-                                                    <h4>Standings</h4>
-                                                </span>
-                                                {
-                                                    (leagueDetails && leagueDetails?.scoreboard_entries) 
-                                                    && 
-                                                    <Table size="sm" hover>
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Position</th>
-                                                                <th>Name</th>
-                                                                <th>Points</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        {
-                                                            leagueDetails.scoreboard_entries.map((ent,i,arr) => (
-                                                                <OverlayTrigger
-                                                                    key={i}
-                                                                    placement="right"
-                                                                    overlay={(props) => (
-                                                                        <Tooltip {...props} className="text-left">
-                                                                          <span>
-                                                                            Races Won: { ent.Wins }
-                                                                            <br/>
-                                                                            Pole Positions: { ent.Poles }
-                                                                            <br/>
-                                                                            Fastest Laps: { ent.FastestLaps }
-                                                                            <br/>
-                                                                            Podium Finishes: { ent.Podiums }
-                                                                            <br/>
-                                                                            Points Finishes: { ent.PointsFinishes }
-                                                                          </span>
-                                                                        </Tooltip>
-                                                                      )}
-                                                                >
-                                                                    <tr key={i}>
-                                                                        <td>{ent.Position === arr[i-1]?.Position ? '' : ent.Position}</td>
-                                                                        <td>{ent.PlayerName}</td>
-                                                                        <td>{ent.Points === arr[i-1]?.Points ? '' : ent.Points}</td>
-                                                                    </tr>
-                                                                </OverlayTrigger>
-                                                            ))
-                                                        }
-                                                        </tbody>
-                                                    </Table>
-                                                }
-                                            </Col>
-                                        </Row>
-                                        </Container>
-                                    </Row>
-                                </Col>
-                                {/* Right-side config panel */}
-                                <Col sm={4} className='league-config-panel'>
-                                    <Row>
-                                        <b>Points System</b>
-                                        <Container fluid="sm">
-                                        {
-                                            league.points?.length ?
-                                            <Row className='text-center'>
-                                                <Col md={{ span: 6, offset: 3 }}>
-                                                    <Table size="sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Pos.</th>
-                                                                <th>Points</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {league.points.map((p,i) => (
-                                                                <tr key={i}>
-                                                                    <td>{"P" + p.position}</td>
-                                                                    <td>{p.points}</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </Table>
-                                                </Col>
-                                            </Row>
-                                            :<>
-                                                Error... no points data found
-                                            </>
+                ) : 
+                ( league &&
+                    <Container>
+
+                    </Container>
+                    // <>  
+                    //     <PageHeader title={league.name}/>
+                    //     <Container>
+                    //         <Row>
+                    //             {/* Main panel */}
+                    //             <Col sm={8}>
+                    //                 <Row>
+                    //                     <b>Description:</b>
+                    //                     <p>{league.description}</p>
+                    //                     <br/>
+                    //                     <hr/>
+                    //                 </Row>
+                    //                 <Row>
+                    //                 <Container>  
+                    //                     <Row>
+                    //                         <Col md={{ span: 6, offset: 3 }}>
+                    //                             <span className='text-center'>
+                    //                                 <h4>Standings</h4>
+                    //                             </span>
+                    //                             {
+                    //                                 (leagueDetails && leagueDetails?.scoreboard_entries) 
+                    //                                 && 
+                    //                                 <Table size="sm" hover>
+                    //                                     <thead>
+                    //                                         <tr>
+                    //                                             <th>Position</th>
+                    //                                             <th>Name</th>
+                    //                                             <th>Points</th>
+                    //                                         </tr>
+                    //                                     </thead>
+                    //                                     <tbody>
+                    //                                     {
+                    //                                         leagueDetails.scoreboard_entries.map((ent,i,arr) => (
+                    //                                             <OverlayTrigger
+                    //                                                 key={i}
+                    //                                                 placement="right"
+                    //                                                 overlay={(props) => (
+                    //                                                     <Tooltip {...props} className="text-left">
+                    //                                                       <span>
+                    //                                                         Races Won: { ent.Wins }
+                    //                                                         <br/>
+                    //                                                         Pole Positions: { ent.Poles }
+                    //                                                         <br/>
+                    //                                                         Fastest Laps: { ent.FastestLaps }
+                    //                                                         <br/>
+                    //                                                         Podium Finishes: { ent.Podiums }
+                    //                                                         <br/>
+                    //                                                         Points Finishes: { ent.PointsFinishes }
+                    //                                                       </span>
+                    //                                                     </Tooltip>
+                    //                                                   )}
+                    //                                             >
+                    //                                                 <tr key={i}>
+                    //                                                     <td>{ent.Position === arr[i-1]?.Position ? '' : ent.Position}</td>
+                    //                                                     <td>{ent.PlayerName}</td>
+                    //                                                     <td>{ent.Points === arr[i-1]?.Points ? '' : ent.Points}</td>
+                    //                                                 </tr>
+                    //                                             </OverlayTrigger>
+                    //                                         ))
+                    //                                     }
+                    //                                     </tbody>
+                    //                                 </Table>
+                    //                             }
+                    //                         </Col>
+                    //                     </Row>
+                    //                     </Container>
+                    //                 </Row>
+                    //             </Col>
+                    //             {/* Right-side config panel */}
+                    //             <Col sm={4} className='league-config-panel'>
+                    //                 <Row>
+                    //                     <b>Points System</b>
+                    //                     <Container fluid="sm">
+                    //                     {
+                    //                         league.points?.length ?
+                    //                         <Row className='text-center'>
+                    //                             <Col md={{ span: 6, offset: 3 }}>
+                    //                                 <Table size="sm">
+                    //                                     <thead>
+                    //                                         <tr>
+                    //                                             <th>Pos.</th>
+                    //                                             <th>Points</th>
+                    //                                         </tr>
+                    //                                     </thead>
+                    //                                     <tbody>
+                    //                                         {league.points.map((p,i) => (
+                    //                                             <tr key={i}>
+                    //                                                 <td>{"P" + p.position}</td>
+                    //                                                 <td>{p.points}</td>
+                    //                                             </tr>
+                    //                                         ))}
+                    //                                     </tbody>
+                    //                                 </Table>
+                    //                             </Col>
+                    //                         </Row>
+                    //                         :<>
+                    //                             Error... no points data found
+                    //                         </>
                                             
-                                        }
-                                        <Row>
-                                            <Col>
-                                                <Form.Check 
-                                                    label="Extra point for fastest lap?"
-                                                    type="checkbox" 
-                                                    checked={league?.extraPointForFastestLap} 
-                                                    disabled/>
-                                            </Col>
-                                        </Row>
-                                        </Container>
-                                    </Row>
-                                    <hr/>
-                                    <Row>
-                                        <b>Race Calendar:</b>
-                                        {
-                                            league.races?.length ?
-                                            <Container fluid="sm" className='text-center'>
-                                                <Col>
-                                                    <Table size="sm" striped bordered>
-                                                        <tbody>
-                                                            {league.races.map((r,i) => (
-                                                                <tr key={i}>
-                                                                    <td>{dateToDisplayString(r.date)}</td>
-                                                                    <td>{lists["tracks"]?.list?.find((t) => t.id === r.track)?.name ?? "[undefined: error]"}</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </Table>
-                                                </Col>
-                                            </Container>
-                                            :<>
-                                                Error... no points data found
-                                            </>
+                    //                     }
+                    //                     <Row>
+                    //                         <Col>
+                    //                             <Form.Check 
+                    //                                 label="Extra point for fastest lap?"
+                    //                                 type="checkbox" 
+                    //                                 checked={league?.extraPointForFastestLap} 
+                    //                                 disabled/>
+                    //                         </Col>
+                    //                     </Row>
+                    //                     </Container>
+                    //                 </Row>
+                    //                 <hr/>
+                    //                 <Row>
+                    //                     <b>Race Calendar:</b>
+                    //                     {
+                    //                         league.races?.length ?
+                    //                         <Container fluid="sm" className='text-center'>
+                    //                             <Col>
+                    //                                 <Table size="sm" striped bordered>
+                    //                                     <tbody>
+                    //                                         {league.races.map((r,i) => (
+                    //                                             <tr key={i}>
+                    //                                                 <td>{dateToDisplayString(r.date)}</td>
+                    //                                                 <td>{lists["tracks"]?.list?.find((t) => t.id === r.track)?.name ?? "[undefined: error]"}</td>
+                    //                                             </tr>
+                    //                                         ))}
+                    //                                     </tbody>
+                    //                                 </Table>
+                    //                             </Col>
+                    //                         </Container>
+                    //                         :<>
+                    //                             Error... no points data found
+                    //                         </>
                                             
-                                        }
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row>
-                                {
-                                    (league.races?.length && tableSeries) &&
-                                    <LineChart
-                                        // xAxis={[{ data: [1, 2, 3, 5, 8, 10, 12, 15, 16] }]}
-                                        xAxis={[
-                                            { 
-                                                data: league.races.map((r) => lists["tracks"]?.list?.find((t) => t.id === r.track)?.name),
-                                                scaleType: 'point',
-                                            }
-                                        ]}
-                                        series={tableSeries}
-                                        height={400}
-                                        margin={{ top: 100, bottom: 100, right: 250 }}
-                                        sx= {{
-                                            [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
-                                                transform: "rotateZ(-45deg) translate(-50px, 0px)"
-                                            }
-                                        }}
-                                        slotProps={{
-                                            legend: {
-                                              position: {
-                                                vertical: 'middle',
-                                                horizontal: 'right',
-                                              },
-                                              direction: 'column',
-                                              itemGap: 2,
-                                            }
-                                        }}
-                                        colors={cheerfulFiestaPalette}
-                                    />
-                                }
+                    //                     }
+                    //                 </Row>
+                    //             </Col>
+                    //         </Row>
+                    //         <Row>
+                    //             {
+                    //                 (league.races?.length && tableSeries) &&
+                    //                 <LineChart
+                    //                     // xAxis={[{ data: [1, 2, 3, 5, 8, 10, 12, 15, 16] }]}
+                    //                     xAxis={[
+                    //                         { 
+                    //                             data: league.races.map((r) => lists["tracks"]?.list?.find((t) => t.id === r.track)?.name),
+                    //                             scaleType: 'point',
+                    //                         }
+                    //                     ]}
+                    //                     series={tableSeries}
+                    //                     height={400}
+                    //                     margin={{ top: 100, bottom: 100, right: 250 }}
+                    //                     sx= {{
+                    //                         [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
+                    //                             transform: "rotateZ(-45deg) translate(-50px, 0px)"
+                    //                         }
+                    //                     }}
+                    //                     slotProps={{
+                    //                         legend: {
+                    //                           position: {
+                    //                             vertical: 'middle',
+                    //                             horizontal: 'right',
+                    //                           },
+                    //                           direction: 'column',
+                    //                           itemGap: 2,
+                    //                         }
+                    //                     }}
+                    //                     colors={cheerfulFiestaPalette}
+                    //                 />
+                    //             }
                             
-                            </Row>
-                            <hr/>
-                            <Row>
-                                {
-                                    showHistorySpinner &&
-                                    <div className="text-center mt-4">
-                                        <Spinner animation="border" role="status"/>
-                                        <div>
-                                            Loading Race Results...
-                                        </div>
-                                    </div>
-                                }
-                                {
-                                    leagueHistory && 
-                                    leagueHistory.map((h,i) => 
-                                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
-                                    )
-                                }
-                            </Row>
-                        </Container>
-                    </>
+                    //         </Row>
+                    //         <hr/>
+                    //         <Row>
+                    //             {
+                    //                 showHistorySpinner &&
+                    //                 <div className="text-center mt-4">
+                    //                     <Spinner animation="border" role="status"/>
+                    //                     <div>
+                    //                         Loading Race Results...
+                    //                     </div>
+                    //                 </div>
+                    //             }
+                    //             {
+                    //                 leagueHistory && 
+                    //                 leagueHistory.map((h,i) => 
+                    //                     <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                    //                 )
+                    //             }
+                    //         </Row>
+                    //     </Container>
+                    // </>
                 )
             }
 
