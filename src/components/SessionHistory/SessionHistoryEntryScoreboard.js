@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Modal, Button, Spinner, Container } from 'react-bootstrap';
+import { Modal, Button, Spinner } from 'react-bootstrap';
 import getAPIData from "../../utils/getAPIData";
-import { Table } from "@mui/material";
+import { Table, TableContainer } from "@mui/material";
 
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
@@ -133,7 +133,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
             :
             eventsData &&
                   eventsData.length > 0 ? 
-                    <Container>
+                    <TableContainer>
                       <h5>Lap Log</h5>
                       <Table>
                         <thead>
@@ -183,7 +183,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                           }
                         </tbody>
                       </Table>
-                    </Container>
+                    </TableContainer>
                   : <span>No event data found</span>
           }
           
@@ -194,61 +194,63 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
           </Button>
         </Modal.Footer>
       </Modal>
-    <Table >
-      <thead>
-        <tr>
-          <th>Finish Position</th>
-          <th>Name</th>
-          <th>Vehicle</th>
-          {
-            session === "race" ?
-            <th>Time</th> : <></>
-          }
-          <th>Fastest Lap</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {race && race.results && race.results.length ? (
-          race.results.sort((a,b) => a.RacePosition - b.RacePosition).map((res, i) => {
-            return (
-              <tr key={i}>
-                <td>{res.RacePosition}</td>
-                <td>{res.name}</td>
-                <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
-                {
-                  session === "race" 
-                    ?
-                  <td>
-                    { 
-                      res.TotalTime < winner.TotalTime || winner.Lap > res.Lap ?
-                      "+ " + (winner.Lap - res.Lap) + " lap" + (winner.Lap - res.Lap > 1 ? "s" : "")
-                      :
-                      (
-                        (i && winner.TotalTime) 
-                        ? 
-                        "+" + msToTime(res.TotalTime - winner.TotalTime) 
-                        : 
-                          msToTime(res.TotalTime)
-                      )
+      <TableContainer>
+        <Table className="session-score">
+          <thead>
+            <tr>
+              <th>Finish Position</th>
+              <th>Name</th>
+              <th>Vehicle</th>
+              {
+                session === "race" ?
+                <th>Time</th> : <></>
+              }
+              <th>Fastest Lap</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {race && race.results && race.results.length ? (
+              race.results.sort((a,b) => a.RacePosition - b.RacePosition).map((res, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{res.RacePosition}</td>
+                    <td>{res.name}</td>
+                    <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
+                    {
+                      session === "race" 
+                        ?
+                      <td>
+                        { 
+                          res.TotalTime < winner.TotalTime || winner.Lap > res.Lap ?
+                          "+ " + (winner.Lap - res.Lap) + " lap" + (winner.Lap - res.Lap > 1 ? "s" : "")
+                          :
+                          (
+                            (i && winner.TotalTime) 
+                            ? 
+                            "+" + msToTime(res.TotalTime - winner.TotalTime) 
+                            : 
+                              msToTime(res.TotalTime)
+                          )
+                        }
+                      </td>
+                      : <></>
                     }
-                  </td>
-                  : <></>
-                }
-                <td className={res.IsFastestLap ? "fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
-                <td className="justify-content-md-center display-flex">
-                  <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
-                    Details
-                  </Button> 
-                </td>
-              </tr>
-            )
-          })
-        ) : (
-          <></>
-        )}
-      </tbody>
-    </Table>
+                    <td className={res.IsFastestLap ? "fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
+                    <td className="justify-content-md-center display-flex">
+                      <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
+                        Details
+                      </Button> 
+                    </td>
+                  </tr>
+                )
+              })
+            ) : (
+              <></>
+            )}
+          </tbody>
+        </Table>
+      </TableContainer>
     </>
   );
 };

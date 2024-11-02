@@ -19,13 +19,12 @@ const SessionHistory = ({ enums, lists }) => {
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
 
   const radios = [
-    { name: 'Finished Only', filter: 'finished-only', variant: 'outline-success' },
+    { name: 'Completed Races', filter: 'finished-only', variant: 'outline-success' },
     { name: 'League Races', filter: 'league-only', variant: 'outline-info' },
     { name: 'All', filter: 'all', variant: 'outline-warning' },
   ];
 
   function handleFilters(e){
-    //console.log('setFilter:',e.currentTarget.value)
     setCurPage(1)
     setFilter(e.currentTarget.value)
   }
@@ -93,14 +92,13 @@ const SessionHistory = ({ enums, lists }) => {
                 <Row>
                   <Col sm>
                     <div>Filters:</div>
-                    <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
+                    <ToggleButtonGroup type="radio" name="options" defaultValue={true} value={filter}>
                       {filter && radios.map((radio, idx) => (
                         <ToggleButton
                           key={idx}
                           id={`radio-${idx}`}
                           variant={radio.variant}
                           value={radio.filter}
-                          checked={filter === radio.filter}
                           onChange={handleFilters}
                           className="text-nowrap"
                         >

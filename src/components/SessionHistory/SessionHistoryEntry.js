@@ -113,7 +113,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
           </OverlayTrigger>
         }
         <Row className="history-entry-data">
-          <Col lg="4">
+          <Col lg="4" className="history-entry-data-title">
             {lists["tracks"] ? (
               <>
                 <h5>

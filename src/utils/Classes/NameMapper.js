@@ -9,7 +9,6 @@ class NameMapper {
 
     }
     static fromVehicleClassId( vehicleClassId, classList ){
-        console.log('vehicle class:',vehicleClassId,classList)
         let mappedName = classList?.find((v) => v.value === vehicleClassId)?.name
         .replaceAll('Cat','Caterham')
         .replaceAll('F-','Formula ')

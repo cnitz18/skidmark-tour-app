@@ -9,7 +9,7 @@ export default function PageHeader({ title }) {
                 {
                   process.env.REACT_APP_ENV === "Skidmark Tour" ?
                   <div>
-                    <img src={logo} alt="The Skidmarks" /> 
+                    <img className="header-logo" src={logo} alt="The Skidmarks" /> 
                     <br/><br/>    
                   </div>: <></>
                 }

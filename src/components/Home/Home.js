@@ -76,9 +76,8 @@ export default function Home(){
                 {
                     imageInfo.map((img,i) => (
                         <Carousel.Item key={i} interval={3000} className='homepage-carousel-item'>
-                            <Carousel.Caption>
-                                <h3>Home of The {process.env.REACT_APP_ENV}</h3>
-                                <p>{img.caption}</p>
+                            <Carousel.Caption className='homepage-carousel-caption'>
+                                <h2>Home of The {process.env.REACT_APP_ENV}</h2>
                             </Carousel.Caption>
                             {
                                 img.href ?
@@ -88,6 +87,9 @@ export default function Home(){
                                     :
                                     <Image src={img.url} fluid/>
                             }
+                            <Carousel.Caption>
+                                <p>{img.caption}</p>
+                            </Carousel.Caption>
                         </Carousel.Item>
                     ))
                 }
