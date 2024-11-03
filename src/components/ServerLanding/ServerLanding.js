@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button } from "react-bootstrap"
-import PageHeader from "../shared/NewServerSetupPageHeader";
+import PageHeader from "../shared/PageHeader";
 
 const ServerLanding = ({ enums, lists }) => {
     return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
-import PageHeader from '../shared/NewServerSetupPageHeader';
+import PageHeader from '../shared/PageHeader';
 import getAPIData from '../../utils/getAPIData';
 import { useLocation } from "react-router-dom";
 import { Tabs, Tab, Box } from '@mui/material';

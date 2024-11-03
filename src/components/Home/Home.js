@@ -1,6 +1,6 @@
 import React from 'react'
 import { Container, Row, Carousel, Image, Button, Col } from 'react-bootstrap';
-import PageHeader from '../shared/NewServerSetupPageHeader'
+import PageHeader from '../shared/PageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 
 
@@ -67,18 +67,14 @@ export default function Home(){
             <Row>
                 {
                   process.env.REACT_APP_ENV === "Skidmark Tour" ?
-                  <PageHeader title=""/>: <></>
+                  <PageHeader title="Home of The Skidmark Tour"/>: <></>
                 }
-                
             </Row>
             <Row className='justify-content-md-center homepage-content'>
                 <Carousel className='homepage-carousel' fade>
                 {
                     imageInfo.map((img,i) => (
                         <Carousel.Item key={i} interval={3000} className='homepage-carousel-item'>
-                            <Carousel.Caption className='homepage-carousel-caption'>
-                                <h2>Home of The {process.env.REACT_APP_ENV}</h2>
-                            </Carousel.Caption>
                             {
                                 img.href ?
                                     <a href={img.href}>
@@ -102,7 +98,7 @@ export default function Home(){
             <Row lg="auto" className='social-list justify-content-md-center'>
                 {
                     socialInfo.map((soc,i) => (
-                        <Col>
+                        <Col key={i} >
                             <Button 
                                 key={i} 
                                 href={soc.link}

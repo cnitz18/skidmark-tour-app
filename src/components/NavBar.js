@@ -7,6 +7,7 @@ import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
 import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
+import logo from "../assets/skidmark-placeholder.png";
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -32,7 +33,15 @@ export default function NavBar({ enums, lists }) {
       <Navbar bg="dark" variant="dark" expand="lg">
           <Container>
             <Col>
-              <Navbar.Brand href="/">{process.env.REACT_APP_ENV}</Navbar.Brand>
+              <Navbar.Brand href="/">
+                <img
+                  alt=""
+                  src={logo}
+                  height="40"
+                  className="d-inline-block align-top"
+                />{' '}
+                {/* {process.env.REACT_APP_ENV} */}
+              </Navbar.Brand>
             </Col>
             <Col></Col>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />

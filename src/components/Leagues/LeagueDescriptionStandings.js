@@ -14,25 +14,6 @@ function StandingsRow(props){
 
     return (
         <Fragment>
-            {/*<OverlayTrigger
-                key={i}
-                placement="right"
-                overlay={(props) => (
-                    <Tooltip {...props}>More Stats
-                    {/* <span>
-                        Races Won: { ent.Wins }
-                        <br/>
-                        Pole Positions: { ent.Poles }
-                        <br/>
-                        Fastest Laps: { ent.FastestLaps }
-                        <br/>
-                        Podium Finishes: { ent.Podiums }
-                        <br/>
-                        Points Finishes: { ent.PointsFinishes }
-                    </span> 
-                    </Tooltip>
-                )} */}
-            {/* > */}
             <OverlayTrigger
                 key={i}
                 placement="right"

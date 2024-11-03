@@ -1,7 +1,7 @@
 //import { Container, Row, Col, Button, Modal, Form, Table, Card, Spinner } from "react-bootstrap";
  import { Container, Row, Col, Modal, Form, Table, Spinner, Button } from "react-bootstrap";
  import { Card, CardActions, CardContent, CardMedia, Chip } from "@mui/material";
-import PageHeader from "../shared/NewServerSetupPageHeader";
+import PageHeader from "../shared/PageHeader";
 import { useEffect, useState } from "react";
 import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";

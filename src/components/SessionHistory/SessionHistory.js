@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import getAPIData from "../../utils/getAPIData";
 import SessionHistoryEntry from "./SessionHistoryEntry";
-import PageHeader from "../shared/NewServerSetupPageHeader";
-import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination } from "react-bootstrap";
+import PageHeader from "../shared/PageHeader";
+import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination, Accordion } from "react-bootstrap";
 import LoadingOverlay from 'react-loading-overlay-ts';
 import UnavailablePage from "../NewServerSetup/NewServerUnavailablePage";
 
@@ -91,29 +91,35 @@ const SessionHistory = ({ enums, lists }) => {
               <Container>
                 <Row>
                   <Col sm>
-                    <div>Filters:</div>
-                    <ToggleButtonGroup type="radio" name="options" defaultValue={true} value={filter}>
-                      {filter && radios.map((radio, idx) => (
-                        <ToggleButton
-                          key={idx}
-                          id={`radio-${idx}`}
-                          variant={radio.variant}
-                          value={radio.filter}
-                          onChange={handleFilters}
-                          className="text-nowrap"
-                        >
-                          {radio.name}
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
-                  </Col>
-                  <Col></Col>
-                  <Col sm>
                     Order By:
                     <Form.Select aria-label="Default select example" onChange={handleSort}>
                       <option value="dateDesc">Date Descending</option>
                       <option value="dateAsc">Date Ascending</option>
                     </Form.Select>
+                  </Col>
+                  <Col></Col>
+                  <Col sm>
+                    <Accordion defaultActiveKey="0">
+                      <Accordion.Item eventKey="0">
+                        <Accordion.Header>Filters</Accordion.Header>
+                        <Accordion.Body>
+                          <ToggleButtonGroup type="radio" name="options" defaultValue={true} value={filter}>
+                            {filter && radios.map((radio, idx) => (
+                              <ToggleButton
+                                key={idx}
+                                id={`radio-${idx}`}
+                                variant={radio.variant}
+                                value={radio.filter}
+                                onChange={handleFilters}
+                                className="text-nowrap"
+                              >
+                                {radio.name}
+                              </ToggleButton>
+                            ))}
+                          </ToggleButtonGroup>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
                   </Col>
                 </Row>
                 {/* History List */}
