@@ -11297,3 +11297,30 @@ textarea.form-control-lg {
 .vh-50 {
   height: 50vh !important;
 }
+.schedule-table-div {
+  display:flex;
+  justify-content: center;
+}
+.schedule-table-div table {
+  max-width: 500px;
+  align-self: center;
+}
+.schedule-table-div td {
+  padding: 5px;
+  text-align: center;
+}
+.standings-chart {
+  max-width: 800px;
+  align-self: center;
+}
+.legend-checkbox {
+  justify-content: right;
+}
+.standings-table-div {
+  display:flex;
+  justify-content: center;
+  margin-top: 1vh;
+}
+.standings-header {
+  margin-bottom: 0;
+}

@@ -1,6 +1,6 @@
 //import { Container, Row, Col, Button, Modal, Form, Table, Card, Spinner } from "react-bootstrap";
- import { Container, Row, Col, Modal, Form, Table, Spinner } from "react-bootstrap";
- import { Card, CardActions, CardContent, CardMedia, Button, Chip } from "@mui/material";
+ import { Container, Row, Col, Modal, Form, Table, Spinner, Button } from "react-bootstrap";
+ import { Card, CardActions, CardContent, CardMedia, Chip } from "@mui/material";
 import PageHeader from "../shared/NewServerSetupPageHeader";
 import { useEffect, useState } from "react";
 import postAPIData from "../../utils/postAPIData";
@@ -111,7 +111,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                         to={`/league/${l.id}`}
                                         state={{ league: l }}
                                         >
-                                        <Button variant="outline-primary" size="sm">Details</Button>
+                                        <Button variant="outline-primary" size="sm">View Details</Button>
                                     </Link>
                                     <div className="league-display-badge">
                                         {

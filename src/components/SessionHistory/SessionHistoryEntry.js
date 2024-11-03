@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import NameMapper from "../../utils/Classes/NameMapper";
 
-const SessionHistoryEntry = ({ data, enums, lists }) => {
+const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [raceOne, setRaceOne] = useState();
@@ -94,7 +94,7 @@ const SessionHistoryEntry = ({ data, enums, lists }) => {
             to={`/league/${leagueId}`}
             state={{ leagueId }}
             >
-            <Badge bg="info" className="league-badge">League Info</Badge>
+              {showLeagueInfo && <Badge bg="info" className="league-badge">League Info</Badge>}
           </Link>
         }
         {
