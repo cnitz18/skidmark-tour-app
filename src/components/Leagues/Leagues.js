@@ -88,7 +88,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </Col>
                 </Row> : <></>
             }
-            <Row md={1} lg={2} className="g-4 justify-content-center leagues-container">
+            <Row xs={1} md={1} lg={2} className="g-4 justify-content-center leagues-container">
             {showSpinner ? (
 
                 <div className="text-center mt-4">
@@ -101,7 +101,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     leagues && leagues.map((l,i) => (
                         <Col key={i}>
                             <Card className="text-center" >
-                                <CardMedia image={l.img} height="140" component="img" alt="Photo Credit https://ams2cars.info/"/>
+                                <CardMedia image={l.img} height="200" component="img" alt="Photo Credit https://ams2cars.info/"/>
                                 <CardContent>
                                     <h5>{l.name}</h5>
                                     {/* <span>{l.description ?? "No description provided"}</span> */}
