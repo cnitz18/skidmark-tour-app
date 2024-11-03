@@ -1,4 +1,4 @@
-import { Spinner, Container, Col } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import SessionHistoryEntry from "../SessionHistory/SessionHistoryEntry";
 import NameMapper from "../../utils/Classes/NameMapper";
 import { Table, TableHead, TableBody, TableRow, TableCell, Chip } from "@mui/material";

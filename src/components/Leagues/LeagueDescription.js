@@ -1,10 +1,9 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
-import { Container, Spinner, Row, Col, Table, Form, Tooltip, OverlayTrigger} from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import PageHeader from '../shared/NewServerSetupPageHeader';
 import getAPIData from '../../utils/getAPIData';
 import { useLocation } from "react-router-dom";
-import SessionHistoryEntry from '../SessionHistory/SessionHistoryEntry';
 import { Tabs, Tab, Box } from '@mui/material';
 import LeagueDescriptionOverview from './LeagueDescriptionOverview';
 import LeagueDescriptionSchedule from './LeagueDescriptionSchedule';
@@ -49,12 +48,6 @@ const LeagueDescription = ({ enums, lists }) => {
     const [tableSeries, setTableSeries] = useState([])
     const { state } = useLocation();
 
-    function dateToDisplayString(dt){
-        let dtObj = new Date(dt);
-
-        dtObj.setMinutes(dtObj.getMinutes() + dtObj.getTimezoneOffset());
-        return dtObj.toLocaleDateString()+ " @ " + dtObj.toLocaleString("en",{timeStyle:'short'})
-    }
     useEffect(() => {
         if( leagueDetails.snapshot && leagueDetails.snapshot.length ){
             // Now we translate it into series data 

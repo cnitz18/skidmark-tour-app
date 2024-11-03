@@ -104,7 +104,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                 <CardMedia image={l.img} height="140" component="img" alt="Photo Credit https://ams2cars.info/"/>
                                 <CardContent>
                                     <h5>{l.name}</h5>
-                                    <span>{l.description ?? "No description provided"}</span>
+                                    {/* <span>{l.description ?? "No description provided"}</span> */}
                                 </CardContent>
                                 <CardActions className="league-cardactions">
                                     <Link
@@ -117,7 +117,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                         {
                                             l.completed ?
                                             <Chip size="small" label="Complete" color="success" variant="outlined"/>
-                                            : <Chip size="small" label="In Progress" color="primary" variant="outlined"/>
+                                            : <Chip size="small" label="In Progress" color="information" variant="outlined"/>
                                         }
                                     </div>
                                 </CardActions>
