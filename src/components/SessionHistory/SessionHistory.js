@@ -19,8 +19,8 @@ const SessionHistory = ({ enums, lists }) => {
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
 
   const radios = [
-    { name: 'Completed Races', filter: 'finished-only', variant: 'outline-success' },
-    { name: 'League Races', filter: 'league-only', variant: 'outline-info' },
+    { name: 'Completed', filter: 'finished-only', variant: 'outline-success' },
+    { name: 'League', filter: 'league-only', variant: 'outline-info' },
     { name: 'All', filter: 'all', variant: 'outline-warning' },
   ];
 
@@ -99,11 +99,11 @@ const SessionHistory = ({ enums, lists }) => {
                   </Col>
                   <Col></Col>
                   <Col sm>
-                    <Accordion defaultActiveKey="0">
+                    <Accordion>
                       <Accordion.Item eventKey="0">
                         <Accordion.Header>Filters</Accordion.Header>
                         <Accordion.Body>
-                          <ToggleButtonGroup type="radio" name="options" defaultValue={true} value={filter}>
+                          <ToggleButtonGroup type="radio" name="options" value={filter}>
                             {filter && radios.map((radio, idx) => (
                               <ToggleButton
                                 key={idx}
@@ -113,7 +113,7 @@ const SessionHistory = ({ enums, lists }) => {
                                 onChange={handleFilters}
                                 className="text-nowrap"
                               >
-                                {radio.name}
+                                {radio.name + ( filter === radio.filter ? " Races" : "" )}
                               </ToggleButton>
                             ))}
                           </ToggleButtonGroup>

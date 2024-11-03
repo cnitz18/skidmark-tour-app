@@ -43,11 +43,10 @@ export default function NavBar({ enums, lists }) {
                 {/* {process.env.REACT_APP_ENV} */}
               </Navbar.Brand>
             </Col>
-            <Col></Col>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Col sm>
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="me-auto">
+            <div className="ml-auto">
+              <Navbar.Collapse id="basic-navbar-nav my-navbar-collapse">
+                <Nav className="my-navbar-buttons">
                   {
                     navLinks.map((nLink,i) => (
                       <Nav.Link 
@@ -66,7 +65,7 @@ export default function NavBar({ enums, lists }) {
                   <Nav.Link href="/leagues">Leagues</Nav.Link> */}
                 </Nav>
               </Navbar.Collapse>
-            </Col>
+            </div>
           </Container>
       </Navbar>
       <Routes>

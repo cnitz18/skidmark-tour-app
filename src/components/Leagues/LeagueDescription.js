@@ -104,7 +104,7 @@ const LeagueDescription = ({ enums, lists }) => {
         }
     },[league])
     return (
-        <Container>
+        <div>
             <PageHeader title={league?.name}/>
             {showSpinner ? (
 
@@ -119,7 +119,12 @@ const LeagueDescription = ({ enums, lists }) => {
                     <Container className="league-desc-container">
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example" centered>
+                                <Tabs 
+                                    value={tabValue} 
+                                    onChange={handleChange} 
+                                    aria-label="basic tabs example" 
+                                    variant="scrollable"
+                                    scrollButtons="auto">
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
@@ -142,8 +147,7 @@ const LeagueDescription = ({ enums, lists }) => {
                     </Container>
                 )
             }
-
-        </Container>
+        </div>
     )
 }
  

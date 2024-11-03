@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function PageHeader({ title }) {
   return (
-    <header className="py-2 bg-light border-bottom mb-4">
+    <header className="py-2 bg-light border-bottom">
         <div className="container">
             <div className="text-center my-3">
                 {/* {

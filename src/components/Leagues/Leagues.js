@@ -104,7 +104,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                 <CardMedia image={l.img} height="200" component="img" alt="Photo Credit https://ams2cars.info/"/>
                                 <CardContent>
                                     <h5>{l.name}</h5>
-                                    {/* <span>{l.description ?? "No description provided"}</span> */}
                                 </CardContent>
                                 <CardActions className="league-cardactions">
                                     <Link

@@ -11324,3 +11324,10 @@ textarea.form-control-lg {
 .standings-header {
   margin-bottom: 0;
 }
+.my-navbar-collapse {
+  position: relative;
+}
+.my-navbar-button {
+  position: absolute;
+  right: 0;
+}
