@@ -12,6 +12,24 @@ const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists
     }
     return (
         <>
+            <h4>Results</h4>
+            {
+                !showHistorySpinner && leagueHistory && leagueHistory.length ? 
+                <div>
+                    {leagueHistory.sort((a,b) => a.end_time - b.end_time).map((h,i) => 
+                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                    )}
+                </div> : <></>
+            }
+            {
+                showHistorySpinner &&
+                <div className="text-center mt-4">
+                    <Spinner animation="border" role="status"/>
+                    <div>
+                        Loading Race Results...
+                    </div>
+                </div>
+            }
             <h4>Calendar</h4>
             {
                 league && league.races?.length ?
@@ -45,24 +63,6 @@ const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists
                     Error... no data found
                 </>
                 
-            }
-            {
-                leagueHistory && 
-                <div>
-                    <h4>Results</h4>
-                    {leagueHistory.sort((a,b) => a.end_time - b.end_time).map((h,i) => 
-                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
-                    )}
-                </div>
-            }
-            {
-                showHistorySpinner &&
-                <div className="text-center mt-4">
-                    <Spinner animation="border" role="status"/>
-                    <div>
-                        Loading Race Results...
-                    </div>
-                </div>
             }
         </>
     );

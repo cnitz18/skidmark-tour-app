@@ -35,7 +35,7 @@ function a11yProps(index) {
   
 
 const LeagueDescription = ({ enums, lists }) => {
-    const [tabValue, setTabValue] = React.useState(0);
+    const [tabValue, setTabValue] = React.useState(2);
 
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
