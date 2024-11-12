@@ -48,7 +48,7 @@ class NameMapper {
             case "GTOpen":
                 return "GT Open";
             default:
-                return mappedName.replace(/([A-Z])/g, ' $1').trim() ?? "<undefined>";
+                return mappedName?.replace(/([A-Z])/g, ' $1').trim() ?? "<undefined>";
         }
     }
     static positionFromNumber(n) {
