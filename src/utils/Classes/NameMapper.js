@@ -21,7 +21,7 @@ class NameMapper {
                         case 'Nat':
                             return 'National';
                         default:
-                            return seg.replace(/([A-Z])/g, ' $1').trim()
+                            return seg?.replace(/([A-Z])/g, ' $1').trim()
                     }
                 }).join(' ');
         }
