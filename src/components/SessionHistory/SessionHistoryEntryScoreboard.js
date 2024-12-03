@@ -119,7 +119,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     <>
       <Modal show={showModal} onHide={handleCloseModal} size="xl" className="race-event-modal">
         <Modal.Header closeButton>
-          <Modal.Title>Race Event Details</Modal.Title>
+          <Modal.Title>{session} Details for {selectedRacerName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {
@@ -175,7 +175,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                           {
                             eventsData.filter(evt => evt.event_name !== "Lap").map((evt,i) => (
                               <tr key={i}>
-                                <td>{(new Date(evt.time*1000)).toLocaleString()}</td>
+                                <td>{(new Date(evt.time*1000)).toLocaleTimeString()}</td>
                                 <td>{getEventName(evt.event_name)}</td>
                                 <td>{getEventDescription(evt)}</td>
                               </tr>
@@ -202,7 +202,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
               <th>Name</th>
               <th>Vehicle</th>
               {
-                session === "race" ?
+                session.toLowerCase() === "race" ?
                 <th>Time</th> : <></>
               }
               <th>Fastest Lap</th>
@@ -218,7 +218,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                     <td>{res.name}</td>
                     <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
                     {
-                      session === "race" 
+                      session.toLowerCase() === "race" 
                         ?
                       <td>
                         { 

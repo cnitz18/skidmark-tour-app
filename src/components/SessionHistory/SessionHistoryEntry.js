@@ -180,7 +180,7 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
                   <SessionHistoryEntryScoreboard
                     race={data.stages.practice1}
                     vehicles={lists["vehicles"].list}
-                    session="practice"
+                    session="Practice"
                   />
                 ) : (
                   <></>
@@ -201,7 +201,7 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
                   <SessionHistoryEntryScoreboard
                     race={data.stages.qualifying1}
                     vehicles={lists["vehicles"].list}
-                    session="qualifying"
+                    session="Qualifying"
                   />
                 ) : (
                   <></>
@@ -221,7 +221,7 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
                 race={data.stages.race1}
                 winner={firstPlace}
                 vehicles={lists["vehicles"].list}
-                session="race"
+                session="Race"
               />
             ) : (
               <></>
