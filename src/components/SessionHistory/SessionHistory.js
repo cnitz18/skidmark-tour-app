@@ -32,6 +32,13 @@ const SessionHistory = ({ enums, lists }) => {
     //console.log('setSortOptionSelected:',e.currentTarget.value)
     setSortOptionSelected(e.currentTarget.value)
   }
+  function renderPaginator(){
+    const rows = [];
+    for (let i = 1; i <= pageCount; i++) {
+        rows.push(<Pagination.Item key={i} active={i===curPage} onClick={() => setCurPage(i)}>{i}</Pagination.Item>);
+    }
+    setPaginators(rows);
+  }
   function fetchCurrentPage(){
     setShowMiniSpinner(true)
     getAPIData("/api/batchupload/sms_stats_data/pagecount/?filter=" + filter)
@@ -40,11 +47,6 @@ const SessionHistory = ({ enums, lists }) => {
       //console.log('setting paginators')
       if( parseInt(res) > -1 ){
         setPageCount(parseInt(res));
-        const rows = [];
-        for (let i = 1; i <= parseInt(res); i++) {
-            rows.push(<Pagination.Item key={i} active={i===curPage} onClick={() => setCurPage(i)}>{i}</Pagination.Item>);
-        }
-        setPaginators(rows);
       }
         
     })
@@ -73,7 +75,12 @@ const SessionHistory = ({ enums, lists }) => {
   useEffect(() => {
     fetchCurrentPage();
     // eslint-disable-next-line
-  },[curPage,pageCount,filter,sortOptionSelected])
+  },[])
+
+  useEffect(() => {
+    renderPaginator();
+    // eslint-disable-next-line
+  },[pageCount])
 
   return (
     <>
