@@ -16,7 +16,7 @@ const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists
             {
                 !showHistorySpinner && leagueHistory && leagueHistory.length ? 
                 <div>
-                    {leagueHistory.sort((a,b) => a.end_time - b.end_time).map((h,i) => 
+                    {leagueHistory.sort((a,b) => b.end_time - a.end_time).map((h,i) => 
                         <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
                     )}
                 </div> : <></>

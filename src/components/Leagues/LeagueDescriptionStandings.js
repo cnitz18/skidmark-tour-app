@@ -1,5 +1,5 @@
 import { Table, TableHead, TableBody, TableRow, TableCell,Switch, FormControlLabel, Stack, IconButton, Collapse } from "@mui/material";
-import { Tooltip, OverlayTrigger, Row, Container, Col, Card } from "react-bootstrap";
+import { Tooltip, OverlayTrigger, Row, Col, Card } from "react-bootstrap";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from "@mui/x-charts";
 import { cheerfulFiestaPalette } from '@mui/x-charts/colorPalettes';
@@ -39,9 +39,10 @@ function StandingsRow(props){
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={openRow} timeout="auto" unmountOnExit>
-                        <Container>
-                            <h6>Season Stats</h6>
-                            <Row>
+                        <Card>
+                            <Card.Header>Season Stats</Card.Header>
+                            <Card.Body>
+                                <Row>
                                 <Col>
                                     <Card>
                                         <Card.Header>Race Wins</Card.Header>
@@ -58,8 +59,6 @@ function StandingsRow(props){
                                         </Card.Body>
                                     </Card>
                                 </Col>
-                            </Row>
-                            <Row>
                                 <Col>
                                     <Card>
                                         <Card.Header>Podiums</Card.Header>
@@ -84,8 +83,9 @@ function StandingsRow(props){
                                         </Card.Body>
                                     </Card>
                                 </Col>
-                            </Row>
-                        </Container>
+                                </Row>
+                            </Card.Body>
+                        </Card>
                     </Collapse>
                 </TableCell>
             </TableRow> 

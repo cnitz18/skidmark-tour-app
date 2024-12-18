@@ -128,7 +128,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
-                                    <Tab label="Rules" {...a11yProps(3)}/>
+                                    <Tab label="Scoring" {...a11yProps(3)}/>
                                 </Tabs>
                             </Box>
                             <LeagueDescriptionTabPanel value={tabValue} index={0}>
