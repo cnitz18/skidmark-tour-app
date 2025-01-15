@@ -148,7 +148,15 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) =>
             (leagueDetails && leagueDetails?.scoreboard_entries) 
             && 
             <div className="schedule-table-div standings-table-div">
-                <Table size="sm">
+                <Table size="sm" sx={{
+                        '& .MuiTableCell-root': {
+                            padding: '12px',
+                            textAlign: 'center'
+                        },
+                        '& .MuiTableHead-root': {
+                            backgroundColor: '#f5f5f5'
+                        }
+                    }}>
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ textAlign:"center"}}><b>Position</b></TableCell>

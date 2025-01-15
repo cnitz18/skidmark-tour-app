@@ -255,3 +255,14 @@ hr {
   right: 0px;
   margin: 6px 16px;
 }
+.standings-row {
+  transition: all 0.2s ease-in-out;
+}
+
+.standings-row:hover {
+  background-color: rgba(0,0,0,0.04);
+}
+
+.row-expand-animation {
+  transition: all 0.3s ease-out;
+}

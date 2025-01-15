@@ -107,24 +107,30 @@ const LeagueDescription = ({ enums, lists }) => {
         <div>
             <PageHeader title={league?.name}/>
             {showSpinner ? (
-
-                <div className="text-center mt-4">
-                    <Spinner animation="border" role="status"/>
-                    <div>
-                        One moment please...
-                    </div>
-                </div>
-                ) : 
+                <Container className="text-center p-5">
+                    <Spinner animation="border" role="status" variant="primary"/>
+                    <p className="mt-3 text-muted">Loading league details...</p>
+                </Container>
+            ) : 
                 ( league &&
                     <Container className="league-desc-container">
                         <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Box>
                                 <Tabs 
                                     value={tabValue} 
-                                    onChange={handleChange} 
-                                    aria-label="basic tabs example" 
+                                    onChange={handleChange}
+                                    aria-label="league tabs"
                                     variant="scrollable"
-                                    scrollButtons="auto">
+                                    scrollButtons="auto"
+                                    sx={{
+                                        borderBottom: 1,
+                                        borderColor: 'divider',
+                                        '& .MuiTab-root': {
+                                            textTransform: 'none',
+                                            minWidth: 120,
+                                            fontWeight: 500
+                                        }
+                                    }}>
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
