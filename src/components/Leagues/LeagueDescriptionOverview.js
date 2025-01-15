@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import NameMapper from '../../utils/Classes/NameMapper';
 import msToTime from '../../utils/msToTime'
+import { BsTrophy, BsFlag, BsSpeedometer, BsClock } from 'react-icons/bs';
+import styles from './LeagueDescriptionOverview.module.css';
 
 const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => {
     // Add this near the top with other const declarations
@@ -20,60 +22,84 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
     
     return (
         <div className="league-dashboard">
-            <Card className="mb-4">
+            <Card className={`mb-4 ${styles.dashboardCard}`}>
                 <Card.Body>
-                    <Card.Title className="d-flex justify-content-between align-items-center">
-                        <h3>{league.name}</h3>
-                        <Badge bg={!league.completed ? "success" : "secondary"}>
+                    <Card.Title className="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <BsTrophy className="text-primary me-2" />
+                            <h3 className="d-inline">{league.name}</h3>
+                        </div>
+                        <Badge bg={!league.completed ? "success" : "secondary"} className="px-3 py-2">
                             {!league.completed ? "Active" : "Completed"}
                         </Badge>
                     </Card.Title>
-                    <Card.Text>{league.description}</Card.Text>
+                    <Card.Text className="lead">{league.description}</Card.Text>
                 </Card.Body>
             </Card>
 
             <Row className="g-4 mb-4">
                 <Col md={4}>
-                    <Card className="h-100">
+                    <Card className={styles.dashboardCard}>
                         <Card.Body>
-                            <Card.Title>Next Race</Card.Title>
+                            <div className={styles.cardTitle}>
+                                <BsFlag className="text-danger" />
+                                <h5 className="mb-0">Next Race</h5>
+                            </div>
                             {nextRace ? (
-                                <div style={{ textAlign: 'center' }}>
-                                    <h6>{NameMapper.fromTrackId(nextRace.track,lists["tracks"]?.list)}</h6>
-                                    <span>{format(new Date(nextRace.date), 'PPP')}</span>
-                                    <br/>
-                                    <span>Start Time: {format(new Date(nextRace.date), 'p')} (central)</span>
+                                <div className="text-center mt-3">
+                                    <h4 className="text-primary mb-3">
+                                        {NameMapper.fromTrackId(nextRace.track,lists["tracks"]?.list)}
+                                    </h4>
+                                    <div className="mb-2">
+                                        <BsClock className="me-2 text-muted" />
+                                        {format(new Date(nextRace.date), 'PPP')}
+                                    </div>
+                                    <div className="text-muted">
+                                        Start: {format(new Date(nextRace.date), 'p')} (central)
+                                    </div>
                                 </div>
                             ) : (
-                                <p>No upcoming races</p>
+                                <p className="text-muted text-center mt-3">No upcoming races</p>
                             )}
                         </Card.Body>
                     </Card>
                 </Col>
                 
                 <Col md={4}>
-                    <Card className="h-100">
+                    <Card className={styles.dashboardCard}>
                         <Card.Body>
-                            <Card.Title>Championship Leaders</Card.Title>
-                            {topDrivers.map((driver, index) => (
-                                <div key={index} className="d-flex justify-content-between mb-2">
-                                    <span>{driver.Position}. {driver.PlayerName}</span>
-                                    <span>{driver.Points} pts</span>
-                                </div>
-                            ))}
+                            <div className={styles.cardTitle}>
+                                <BsTrophy className="text-warning" />
+                                <h5 className="mb-0">Championship Leaders</h5>
+                            </div>
+                            <div className={styles.statsWrapper}>
+                                {topDrivers.map((driver, index) => (
+                                    <div key={index} className="d-flex justify-content-between mb-2">
+                                        <span>{driver.Position}. {driver.PlayerName}</span>
+                                        <span className="fw-bold">{driver.Points} pts</span>
+                                    </div>
+                                ))}
+                            </div>
                         </Card.Body>
                     </Card>
                 </Col>
 
                 <Col md={4}>
-                    <Card className="h-75">
+                    <Card className={styles.dashboardCard}>
                         <Card.Body>
-                            <Card.Title>League Progress</Card.Title>
-                            <ProgressBar 
-                                now={(league?.races.filter(race => new Date(race.date) < new Date()).length / league?.races.length) * 100} 
-                                className="mb-3"
-                            />
-                            <center>{league?.races.filter(race => new Date(race.date) < new Date()).length}/{league?.races.length} Races</center>
+                            <div className={styles.cardTitle}>
+                                <BsSpeedometer className="text-primary" />
+                                <h5 className="mb-0">League Progress</h5>
+                            </div>
+                            <div className={styles.progressSection}>
+                                <ProgressBar 
+                                    now={(league?.races.filter(race => new Date(race.date) < new Date()).length / league?.races.length) * 100} 
+                                    className="mb-3"
+                                />
+                                <div className="text-muted">
+                                    {league?.races.filter(race => new Date(race.date) < new Date()).length}/{league?.races.length} Races
+                                </div>
+                            </div>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -81,28 +107,34 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
 
             <Row className="g-4">
                 <Col md={6}>
-                    <Card>
+                    <Card className={styles.dashboardCard}>
                         <Card.Body>
-                            <Card.Title>Recent Results</Card.Title>
+                            <div className={styles.cardTitle}>
+                                <BsClock className="text-success" />
+                                <h5 className="mb-0">Recent Results</h5>
+                            </div>
                             {recentRaces?.length ? (
                                 recentRaces.map((race, index) => (
                                     <div key={race.id} className={`recent-race ${index !== 0 ? 'mt-3 pt-3 border-top' : ''}`}>
                                         <div className="d-flex justify-content-between align-items-center">
-                                            <h6 className="mb-0">{NameMapper.fromTrackId(race.setup.TrackId, lists["tracks"]?.list)}</h6>
+                                            <h6 className="mb-0">
+                                                <BsSpeedometer className="me-2 text-primary" />
+                                                {NameMapper.fromTrackId(race.setup.TrackId, lists["tracks"]?.list)}
+                                            </h6>
                                             <small className="text-muted">
                                                 {format((new Date(0)).setUTCSeconds(race.start_time), 'MMM d, yyyy')}
                                             </small>
                                         </div>
                                         {race.stages.race1?.results && (
                                             <>
-                                                <div className="winner">
-                                                    <strong>Winner: </strong>
+                                                <div className={`${styles.winnerHighlight} mt-2`}>
+                                                    <BsTrophy className="me-2" />
                                                     {race.stages.race1?.results[0]?.name}
-                                                    <span className="text-muted ms-2">
+                                                    <span className="text-muted ms-2 small">
                                                         ({msToTime(race.stages.race1?.results[0]?.FastestLapTime)}s)
                                                     </span>
                                                 </div>
-                                                <div className="d-flex justify-content-between small text-muted">
+                                                <div className="d-flex justify-content-between small text-muted mt-1">
                                                     <span>P2: {race.stages.race1?.results[1]?.name}</span>
                                                     <span>P3: {race.stages.race1?.results[2]?.name}</span>
                                                 </div>
@@ -117,9 +149,12 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                     </Card>
                 </Col>
                 <Col md={6}>
-                    <Card>
+                    <Card className={styles.dashboardCard}>
                         <Card.Body>
-                            <Card.Title>Points System</Card.Title>
+                            <div className={styles.cardTitle}>
+                                <BsClock className="text-success" />
+                                <h5 className="mb-0">Points System</h5>
+                            </div>
                             <Container fluid="sm">
                             {
                                 league && league.points?.length ?
