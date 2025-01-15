@@ -11323,6 +11323,7 @@ textarea.form-control-lg {
 }
 .standings-header {
   margin-bottom: 0;
+  text-align: center;
 }
 .my-navbar-collapse {
   position: relative;
