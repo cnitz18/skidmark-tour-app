@@ -33,15 +33,15 @@ const LeagueDescriptionRules = ({league}) => {
                 </>
             
             }
-            <Row>
-                <div className="schedule-table-div">
-                    <Form.Check 
-                        label="Extra point for fastest lap?"
-                        type="checkbox" 
-                        checked={league?.extraPointForFastestLap} 
-                        disabled/>
-                </div>
-            </Row>
+                <Row>
+                    <div className="schedule-table-div">
+                        <Form.Check 
+                            label="Extra point for fastest lap?"
+                            type="checkbox" 
+                            checked={league?.extraPointForFastestLap} 
+                            disabled/>
+                    </div>
+                </Row>
             </Container>
         </Row>
     </>);
