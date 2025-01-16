@@ -18,17 +18,12 @@ const navLinks = [
 
 
 export default function NavBar({ enums, lists }) {
-  const [selectedRoute,setSelectedRoute] = useState(null)
+  const [selectedRoute, setSelectedRoute] = useState(window.location.pathname);
 
-  function onSelectRoute(e){
-    // console.log('setting selectedRoute:',setSelectedRoute)
-    setSelectedRoute(e.currentTarget.value)
+  function onSelectRoute(e) {
+    setSelectedRoute(e.currentTarget.getAttribute('href'));
   }
-  useEffect(() => {
-    let href = window.location.href;
-    href = href.substring(href.lastIndexOf('/'))
-    setSelectedRoute(href)
-  },[]);
+
   return (
     <Router>
       <div className={styles.mainContent}>
@@ -57,7 +52,7 @@ export default function NavBar({ enums, lists }) {
                       href={nLink.href} 
                       active={selectedRoute === nLink.href}
                       onClick={onSelectRoute}
-                      className="nav-link">
+                      className={`nav-link ${selectedRoute === nLink.href ? styles.active : ''}`}>
                         {nLink.name}
                       </Nav.Link>
                   ))
