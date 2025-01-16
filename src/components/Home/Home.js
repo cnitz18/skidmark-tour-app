@@ -69,13 +69,9 @@ export default function Home() {
     useEffect(() => {
         const twitchUsernames = socialInfo
             .filter(social => social.platform === 'twitch')
-            .map(social => social.name);
-
-            console.log('twitchUsernames:',twitchUsernames)
-            
+            .map(social => social.name);            
         getLiveStreams(twitchUsernames)
             .then(streams => {
-                console.log('set livestreams:',streams)
                 setLiveStreams(streams)
             });
     }, []);
