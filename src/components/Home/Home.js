@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Carousel, Image, Button, Col } from 'react-bootstrap';
+import { Container, Row, Carousel, Image, Col } from 'react-bootstrap';
 import PageHeader from '../shared/PageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 import styles from './Home.module.css';

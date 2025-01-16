@@ -15,7 +15,6 @@ export default function LiveStreams({ streams }) {
                             <div className={styles.embedWrapper}>
                                 <iframe
                                     src={`https://player.twitch.tv/?channel=${stream.user_name}&parent=${window.location.hostname}&mute=true`}
-                                    frameBorder="0"
                                     allowFullScreen
                                     title={stream.user_name}
                                 />

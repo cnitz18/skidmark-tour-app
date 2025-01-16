@@ -111,6 +111,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) =>
                         legend: {
                             position: {
                                 vertical: 'bottom',
+                                horizontal: 'middle'
                             },
                             direction: 'row',
                             itemMarkWidth: 20,
