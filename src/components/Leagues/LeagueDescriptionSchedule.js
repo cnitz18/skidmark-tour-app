@@ -2,34 +2,11 @@ import { Spinner } from "react-bootstrap";
 import SessionHistoryEntry from "../SessionHistory/SessionHistoryEntry";
 import NameMapper from "../../utils/Classes/NameMapper";
 import { Table, TableHead, TableBody, TableRow, TableCell, Chip } from "@mui/material";
+import { format } from 'date-fns';
 
 const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists,league}) => {
-    function dateToDisplayString(dt){
-        let dtObj = new Date(dt);
-
-        dtObj.setMinutes(dtObj.getMinutes() + dtObj.getTimezoneOffset());
-        return dtObj.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})
-    }
     return (
         <>
-            <h4>Results</h4>
-            {
-                !showHistorySpinner && leagueHistory && leagueHistory.length ? 
-                <div>
-                    {leagueHistory.sort((a,b) => b.end_time - a.end_time).map((h,i) => 
-                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
-                    )}
-                </div> : <></>
-            }
-            {
-                showHistorySpinner &&
-                <div className="text-center mt-4">
-                    <Spinner animation="border" role="status"/>
-                    <div>
-                        Loading Race Results...
-                    </div>
-                </div>
-            }
             <h4>Calendar</h4>
             {
                 league && league.races?.length ?
@@ -43,9 +20,9 @@ const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {league.races.map((r,i) => (
+                            {league.races.sort((a,b) => new Date(b.date) - new Date(a.date)).map((r,i) => (
                                 <TableRow key={i}>
-                                    <TableCell>{dateToDisplayString(r.date)}</TableCell>
+                                    <TableCell>{format(r.date,'PPpp')}</TableCell>
                                     <TableCell>{ NameMapper.fromTrackId(r.track,lists["tracks"].list)}</TableCell>
                                     <TableCell>
                                         {
@@ -63,6 +40,24 @@ const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists
                     Error... no data found
                 </>
                 
+            }
+            <h4>Results</h4>
+            {
+                !showHistorySpinner && leagueHistory && leagueHistory.length ? 
+                <div>
+                    {leagueHistory.sort((a,b) => b.end_time - a.end_time).map((h,i) => 
+                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                    )}
+                </div> : <></>
+            }
+            {
+                showHistorySpinner &&
+                <div className="text-center mt-4">
+                    <Spinner animation="border" role="status"/>
+                    <div>
+                        Loading Race Results...
+                    </div>
+                </div>
             }
         </>
     );

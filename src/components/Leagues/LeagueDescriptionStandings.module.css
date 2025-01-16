@@ -1,0 +1,14 @@
+.statsGroup {
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.statItem {
+    text-align: center;
+    padding: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.statItem:hover {
+    transform: translateY(-2px);
+}
