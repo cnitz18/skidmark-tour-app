@@ -188,7 +188,7 @@ const SessionHistory = ({ enums, lists }) => {
                     {
                       history
                       .map((h, i) => 
-                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} showLeagueInfo={true}/>
                       ) 
                     }
                   

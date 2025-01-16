@@ -8,8 +8,9 @@ import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import NameMapper from "../../utils/Classes/NameMapper";
+import SessionHistoryDetailsModal from "./SessionHistoryDetailsModal";
 
-const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
+const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [raceOne, setRaceOne] = useState();
@@ -25,6 +26,7 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
   const [isHistorical, setIsHistorical] = useState(false);
   const [showLeague, setShowLeague] = useState(0);
   const [fullLeagueInfo,setFullLeagueInfo] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setStartTime(new Date(data.start_time * 1000));
@@ -63,7 +65,6 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
       setSessionFlags(raceSetup.Flags);
       let curValue = raceSetup.Flags;
       let flagStatus = {};
-      // console.log('lists?',lists)
       let flagInfo = lists?.flags?.session?.list;
       if (flagInfo) {
         flagInfo
@@ -74,13 +75,11 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
               (curValue - f.value >= 0 && f.name !== "COOLDOWNLAP") ||
               (f.name === "COOLDOWNLAP" && curValue < 0)
             ) {
-              //console.log('CHECKED:',f.name,f.value)
               curValue -= f.value;
               flagStatus[f.name].checked = true;
             }
           });
       }
-      //console.log('flagStatuses:',flagStatus)
       setTimedSession(flagStatus?.TIMED_RACE?.checked);
       setSessionLength(raceSetup.RaceLength);
     }
@@ -88,30 +87,6 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
   return (
     <Accordion>
         <Container className={ leagueId == null ? "history-entry" : "league-entry history-entry"}>
-        {
-          leagueId &&
-          <Link
-            to={`/league/${leagueId}`}
-            state={{ leagueId }}
-            >
-              {showLeagueInfo && <Badge bg="info" className="league-badge">League Info</Badge>}
-          </Link>
-        }
-        {
-          isHistorical &&
-          <OverlayTrigger 
-            placement="top"
-            overlay={(props) => (
-                <Tooltip {...props}>
-                    This information was manually entered based on historical screenshots. Not all information may be completely accurate.
-                </Tooltip>
-              )}
-          >
-            <div className="info-marker">
-              <IoInformationCircleOutline color="red"/>
-            </div>
-          </OverlayTrigger>
-        }
         <Row className="history-entry-data">
           <Col lg="4" className="history-entry-data-title">
             {lists["tracks"] ? (
@@ -167,7 +142,44 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
              <br/>
              <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
           </Col>
+          <Col lg="2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', top: '10px', right: '10px' }}>
+              {isHistorical ? (
+                <OverlayTrigger 
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip {...props}>
+                      This information was manually entered based on historical screenshots. Not all information may be completely accurate.
+                    </Tooltip>
+                  )}
+                >
+                  <div className="info-marker">
+                    <IoInformationCircleOutline color="red"/>
+                  </div>
+                </OverlayTrigger>
+              ) : (
+                <Link
+                  onClick={() => setShowModal(true)}
+                >
+                  <Badge bg="secondary" className="session-details-badge">Session Details</Badge>
+                </Link>
+              )}
+              {leagueId && (
+                <Link to={`/league/${leagueId}`} state={{ leagueId }}>
+                  {showLeagueInfo && <Badge bg="info" className="league-badge">League Info</Badge>}
+                </Link>
+              )}
+            </div>
+          </Col>
         </Row>
+        
+        <SessionHistoryDetailsModal 
+          show={showModal}
+          handleClose={() => setShowModal(false)}
+          setup={data.setup}
+          lists={lists}
+        />
+        
         {
           data.stages.practice1 && (
             <Accordion.Item eventKey={data.index + '_prac1'}>

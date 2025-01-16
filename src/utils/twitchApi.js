@@ -40,7 +40,6 @@ export async function getLiveStreams(usernames) {
         );
         const streamsData = await streamsResponse.json();
         
-        console.log('streamsData:',streamsData)
         return streamsData.data;
     } catch (error) {
         console.error('Error fetching streams:', error);
