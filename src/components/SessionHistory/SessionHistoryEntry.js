@@ -178,6 +178,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
           handleClose={() => setShowModal(false)}
           setup={data.setup}
           lists={lists}
+          enums={enums}
         />
         
         {

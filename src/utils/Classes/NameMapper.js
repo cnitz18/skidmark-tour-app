@@ -27,11 +27,11 @@ class NameMapper {
         //         }).join(' ');
         // }
     }
-    static fromVehicleId( vehicleId ){
-
+    static fromVehicleId( vehicleId, vehicleList ){
+        return vehicleList?.find((v) => v.id === vehicleId)?.name ?? "N/A";
     }
-    static fromVehicleClassId( vehicleClassId, classList ){
-        return classList?.find((v) => v.value === vehicleClassId)?.name ?? "<undefined>";
+    static fromVehicleClassId( vehicleClassId, classList, customMessage = "<undefined>" ){
+        return classList?.find((v) => v.value === vehicleClassId)?.name ?? customMessage;
         // .replaceAll('Cat','Caterham')
         // .replaceAll('F-','Formula ')
         // .replaceAll('_',' ');
@@ -56,6 +56,10 @@ class NameMapper {
         var s = ["th", "st", "nd", "rd"],
             v = n % 100;
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+    static fromWeatherSlot(slot, enums){
+        let weatherList = enums.weather?.list;
+        return weatherList?.find((w) => w.value === slot)?.name;
     }
 }
 export default NameMapper;
