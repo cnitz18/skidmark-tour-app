@@ -134,7 +134,10 @@ const SessionHistory = ({ enums, lists }) => {
 
   return (
     <>
-      <PageHeader title="Race History" />
+      <PageHeader 
+        title="Race History" 
+        subtitle="All of our weekly Automobilista 2 races."
+        />
       {showSpinner ? (
 
                 <div className="text-center mt-4">
