@@ -9,7 +9,7 @@ export default function Footer() {
       <Container>
         <Row className="align-items-center">
           <Col md={6}>
-            <p className={styles.copyright}>Casey Nitz &copy; 2022-25</p>
+            <p className={styles.copyright}>Casey Nitz &copy; {new Date().getFullYear()}</p>
           </Col>
           <Col md={6}>
             <div className={styles.socialLinks}>

@@ -113,12 +113,10 @@ export default function Home() {
                     </Row>
                 </Container>
             </div>
-
-            {liveStreams.length > 0 && (
-                <Container>
-                    <LiveStreams streams={liveStreams} />
-                </Container>
-            )}
+            
+            <Container>
+                <LiveStreams streams={liveStreams} />
+            </Container>
 
             <Container className={styles.socialsSection}>
                 <Row className="text-center mb-4">

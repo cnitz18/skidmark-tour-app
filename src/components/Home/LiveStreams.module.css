@@ -1,5 +1,7 @@
 .streamCard {
-    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem;
     border: none;
     border-radius: 12px;
     overflow: hidden;
@@ -13,7 +15,8 @@
 
 .embedWrapper {
     position: relative;
-    padding-bottom: 56.25%;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
     height: 0;
     overflow: hidden;
 }
@@ -24,4 +27,5 @@
     left: 0;
     width: 100%;
     height: 100%;
+    border: none;
 }
