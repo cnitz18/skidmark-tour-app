@@ -74,6 +74,7 @@ const SessionHistoryDetailsModal = ({ show, handleClose, setup, lists, enums }) 
   }
 
   useEffect(() => {
+    console.log('lists:',lists)
     translateFlags();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[setup])
