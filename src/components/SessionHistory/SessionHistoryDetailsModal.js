@@ -144,7 +144,7 @@ const SessionHistoryDetailsModal = ({ show, handleClose, setup, lists, enums }) 
               </Col>
               <Col md={6}>
                 <div className={styles.detailItem}>
-                  <strong>Damage Scale:</strong> {getDamageScale(setup.DamageScale)}%
+                  <strong>Damage Scale:</strong> {getDamageScale(setup.DamageScale)}
                 </div>
               </Col>
             </Row>
