@@ -26,7 +26,6 @@ const App = () => {
         vehicles: carResponse,
         flags: flagResponse,
       };
-      console.log('setting lists:',curLists)
       setLists({ ...curLists });
     }
 

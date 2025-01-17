@@ -75,9 +75,12 @@ const SessionHistoryDetailsModal = ({ show, handleClose, setup, lists, enums }) 
 
   useEffect(() => {
     console.log('lists:',lists)
-    translateFlags();
+    if( Object.keys(lists).length && Object.keys(setup).length ){
+      translateFlags();
+    }
+    // translateFlags();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[setup])
+  },[setup,lists])
 
   return (
     <Modal show={show} onHide={handleClose} size="lg">
