@@ -23,6 +23,16 @@ const SessionHistoryDetailsModal = ({ show, handleClose, setup, lists, enums }) 
     }
   };
 
+  function getDamageScale(type){
+    switch(type) {
+      case 0: return "Low";
+      case 1: return "Medium";
+      case 2: return "High";
+      case 3: return "Max";
+      default: return "Unknown";
+    }
+  }
+
   function formatDate(year, month, day, hour) {
     return new Date(year, month-1, day, hour).toLocaleString('en-US', {
       year: 'numeric',
@@ -134,7 +144,7 @@ const SessionHistoryDetailsModal = ({ show, handleClose, setup, lists, enums }) 
               </Col>
               <Col md={6}>
                 <div className={styles.detailItem}>
-                  <strong>Damage Scale:</strong> {setup.DamageScale * 100}%
+                  <strong>Damage Scale:</strong> {getDamageScale(setup.DamageScale)}%
                 </div>
               </Col>
             </Row>
