@@ -1,0 +1,77 @@
+.navbar {
+  background: rgba(33, 37, 41, 0.95);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  padding: 0.75rem 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar :global(.navbar-toggler) {
+  border: 1px solid rgba(255,255,255,0.5);
+  padding: 0.5rem;
+}
+
+.navbar :global(.navbar-toggler-icon) {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navbar :global(.navbar-toggler:hover) {
+  background: rgba(255,255,255,0.1);
+}
+
+.navbar :global(.navbar-toggler:focus) {
+  box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.2);
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #fff !important;
+  transition: opacity 0.2s ease;
+}
+
+.brand:hover {
+  opacity: 0.9;
+}
+
+.logo {
+  height: 30px;
+  margin-right: 0.75rem;
+}
+
+.navLinks {
+  margin-left: auto;
+}
+
+.navLinks a {
+  color: rgba(255,255,255,0.8) !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  margin: 0 0.25rem;
+}
+
+.navLinks a:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1);
+}
+
+.navLinks a.active {
+  color: #fff !important;
+  background: rgba(255,255,255,0.15);
+}
+
+.mainContent {
+  padding-top: 70px; /* Adjust based on navbar height */
+}
+
+.active {
+  color: #fff !important;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+}

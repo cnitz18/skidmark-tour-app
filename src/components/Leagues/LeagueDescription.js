@@ -8,7 +8,6 @@ import { Tabs, Tab, Box } from '@mui/material';
 import LeagueDescriptionOverview from './LeagueDescriptionOverview';
 import LeagueDescriptionSchedule from './LeagueDescriptionSchedule';
 import LeagueDescriptionStandings from './LeagueDescriptionStandings';
-import LeagueDescriptionRules from './LeagueDescriptionRules';
   
 function LeagueDescriptionTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -35,7 +34,7 @@ function a11yProps(index) {
   
 
 const LeagueDescription = ({ enums, lists }) => {
-    const [tabValue, setTabValue] = React.useState(2);
+    const [tabValue, setTabValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
@@ -107,32 +106,38 @@ const LeagueDescription = ({ enums, lists }) => {
         <div>
             <PageHeader title={league?.name}/>
             {showSpinner ? (
-
-                <div className="text-center mt-4">
-                    <Spinner animation="border" role="status"/>
-                    <div>
-                        One moment please...
-                    </div>
-                </div>
-                ) : 
+                <Container className="text-center p-5">
+                    <Spinner animation="border" role="status" variant="primary"/>
+                    <p className="mt-3 text-muted">Loading league details...</p>
+                </Container>
+            ) : 
                 ( league &&
                     <Container className="league-desc-container">
                         <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Box>
                                 <Tabs 
                                     value={tabValue} 
-                                    onChange={handleChange} 
-                                    aria-label="basic tabs example" 
+                                    onChange={handleChange}
+                                    aria-label="league tabs"
                                     variant="scrollable"
-                                    scrollButtons="auto">
+                                    scrollButtons="auto"
+                                    sx={{
+                                        borderBottom: 1,
+                                        borderColor: 'divider',
+                                        '& .MuiTab-root': {
+                                            textTransform: 'none',
+                                            minWidth: 120,
+                                            fontWeight: 500
+                                        }
+                                    }}>
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
-                                    <Tab label="Scoring" {...a11yProps(3)}/>
+                                    {/* <Tab label="Scoring" {...a11yProps(3)}/> */}
                                 </Tabs>
                             </Box>
                             <LeagueDescriptionTabPanel value={tabValue} index={0}>
-                                <LeagueDescriptionOverview {...{league}}/>
+                                <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries,lists,leagueHistory}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={1}>
                                 <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league}}/>
@@ -140,9 +145,10 @@ const LeagueDescription = ({ enums, lists }) => {
                             <LeagueDescriptionTabPanel value={tabValue} index={2}>
                                 <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists}}/>
                             </LeagueDescriptionTabPanel>
-                            <LeagueDescriptionTabPanel value={tabValue} index={3}>
+                            {/* Redundant panel now that points are included in the dashboard */}
+                            {/* <LeagueDescriptionTabPanel value={tabValue} index={3}>
                                 <LeagueDescriptionRules {...{league}}/>
-                            </LeagueDescriptionTabPanel>
+                            </LeagueDescriptionTabPanel> */}
                         </Box>
                     </Container>
                 )

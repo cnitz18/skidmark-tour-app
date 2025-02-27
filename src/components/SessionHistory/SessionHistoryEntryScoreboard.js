@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Spinner } from 'react-bootstrap';
 import getAPIData from "../../utils/getAPIData";
 import { Table, TableContainer } from "@mui/material";
+import msToTime from "../../utils/msToTime";
 
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
@@ -18,28 +19,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     setShowModal(false)
   };
   const handleShowModal = () => setShowModal(true);
-
-  function msToTime(s) {
-    // Pad to 2 or 3 digits, default is 2
-    function pad(n, z) {
-      z = z || 2;
-      return ('00' + n).slice(-z);
-    }
-  
-    var ms = s % 1000;
-    s = (s - ms) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-
-    var str = pad(secs) + '.' + pad(ms, 3);
-    if( mins )
-      str = pad(mins) + ':' + str;
-    if( hrs )
-      str = pad(hrs) + ':' + str;
-    return str;
-  }
 
   function rowClick(res){
     //console.log('click:',res)

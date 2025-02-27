@@ -166,6 +166,18 @@ div {
   outline-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
   color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
 }
+
+.session-details-badge {
+  float: right;
+}
+
+.session-details-badge:hover {
+  outline-style: solid;
+  outline-width: 1px;
+  background-color: white !important;
+  outline-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity));
+  color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity));
+}
 .info-marker {
   float: right;
   padding: 0px;
@@ -254,4 +266,15 @@ hr {
   position: absolute;
   right: 0px;
   margin: 6px 16px;
+}
+.standings-row {
+  transition: all 0.2s ease-in-out;
+}
+
+.standings-row:hover {
+  background-color: rgba(0,0,0,0.04);
+}
+
+.row-expand-animation {
+  transition: all 0.3s ease-out;
 }

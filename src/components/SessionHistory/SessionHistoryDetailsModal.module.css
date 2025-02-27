@@ -1,0 +1,28 @@
+.modalContent {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.listItem {
+    padding: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.listItem:hover {
+    background-color: rgba(13, 110, 253, 0.03);
+}
+
+.modalHeader {
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.detailItem {
+    padding: 0.5rem 0;
+    color: #495057;
+}
+
+.detailItem strong {
+    color: #212529;
+    margin-right: 0.5rem;
+}

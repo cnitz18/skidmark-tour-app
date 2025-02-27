@@ -25,6 +25,7 @@ const SessionHistory = ({ enums, lists }) => {
   ];
 
   function handleFilters(e){
+    console.log('handle filters!')
     setCurPage(1)
     setFilter(e.currentTarget.value)
   }
@@ -32,11 +33,59 @@ const SessionHistory = ({ enums, lists }) => {
     //console.log('setSortOptionSelected:',e.currentTarget.value)
     setSortOptionSelected(e.currentTarget.value)
   }
-  function renderPaginator(){
+  // Replace the renderPaginator function with:
+  function renderPaginator() {
     const rows = [];
-    for (let i = 1; i <= pageCount; i++) {
-        rows.push(<Pagination.Item key={i} active={i===curPage} onClick={() => setCurPage(i)}>{i}</Pagination.Item>);
+    const maxVisible = 5;
+    let startPage = Math.max(1, curPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(pageCount, startPage + maxVisible - 1);
+
+    // Adjust start if we're near the end
+    if (endPage - startPage + 1 < maxVisible) {
+      startPage = Math.max(1, endPage - maxVisible + 1);
     }
+
+    // First page
+    if (startPage > 1) {
+      rows.push(
+        <Pagination.First key="first" onClick={() => setCurPage(1)} />,
+        <Pagination.Prev 
+          key="prev" 
+          onClick={() => setCurPage(p => Math.max(1, p - 1))}
+        />
+      );
+      if (startPage > 2) {
+        rows.push(<Pagination.Ellipsis key="ellipsis1" disabled />);
+      }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+      rows.push(
+        <Pagination.Item 
+          key={i} 
+          active={i === curPage}
+          onClick={() => setCurPage(i)}
+        >
+          {i}
+        </Pagination.Item>
+      );
+    }
+
+    // Last page
+    if (endPage < pageCount) {
+      if (endPage < pageCount - 1) {
+        rows.push(<Pagination.Ellipsis key="ellipsis2" disabled />);
+      }
+      rows.push(
+        <Pagination.Next 
+          key="next" 
+          onClick={() => setCurPage(p => Math.min(pageCount, p + 1))}
+        />,
+        <Pagination.Last key="last" onClick={() => setCurPage(pageCount)} />
+      );
+    }
+
     setPaginators(rows);
   }
   function fetchCurrentPage(){
@@ -59,7 +108,8 @@ const SessionHistory = ({ enums, lists }) => {
     .then((res) => {
       if (res) {
         setShowErrorPage(false);
-        //console.log('setting history')
+        // console.log('setting history',res)
+        // console.log('cur page?',curPage)
         setHistory([...res]);
         setShowMiniSpinner(false);
         setShowSpinner(false);
@@ -75,16 +125,19 @@ const SessionHistory = ({ enums, lists }) => {
   useEffect(() => {
     fetchCurrentPage();
     // eslint-disable-next-line
-  },[])
+  },[curPage])
 
   useEffect(() => {
     renderPaginator();
     // eslint-disable-next-line
-  },[pageCount])
+  },[pageCount,curPage])
 
   return (
     <>
-      <PageHeader title="Race History" />
+      <PageHeader 
+        title="Race History" 
+        subtitle="All of our weekly Automobilista 2 races."
+        />
       {showSpinner ? (
 
                 <div className="text-center mt-4">
@@ -138,7 +191,7 @@ const SessionHistory = ({ enums, lists }) => {
                     {
                       history
                       .map((h, i) => 
-                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} />
+                        <SessionHistoryEntry key={i} data={h} enums={enums} lists={lists} showLeagueInfo={true}/>
                       ) 
                     }
                   
@@ -147,9 +200,9 @@ const SessionHistory = ({ enums, lists }) => {
                 <Row>
                   <Col></Col>
                   <Col className="justify-content-md-center display-flex">
-                      <Pagination>
-                        {paginators}
-                      </Pagination>
+                  <Pagination className="justify-content-center my-4">
+                    {paginators}
+                  </Pagination>
                   </Col>
                   <Col></Col>
                 </Row>
