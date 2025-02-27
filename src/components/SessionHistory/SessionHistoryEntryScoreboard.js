@@ -32,7 +32,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     s = (s - secs) / 60;
     var mins = s % 60;
     var hrs = (s - mins) / 60;
-    var str = pad(mins) + ':' + pad(secs) + '.' + pad(ms, 3);
+
+    var str = pad(secs) + '.' + pad(ms, 3);
+    if( mins )
+      str = pad(mins) + ':' + str;
     if( hrs )
       str = pad(hrs) + ':' + str;
     return str;
@@ -206,7 +209,12 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                 <th>Time</th> : <></>
               }
               <th>Fastest Lap</th>
-              <th></th>
+              <th>
+                {
+                  session.toLowerCase() === "qualifying" ?
+                  <th>Delta</th> : <></>
+                }
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -237,6 +245,13 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       : <></>
                     }
                     <td className={res.IsFastestLap ? "fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
+                    {
+                      session.toLowerCase() === "qualifying" ?
+                      <td>
+                        {i && winner?.FastestLapTime ? " (+" + msToTime(res.FastestLapTime - winner.FastestLapTime) + ")":<></>}
+                      </td>
+                      :<></>
+                    }
                     <td className="justify-content-md-center display-flex">
                       <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
                         Details

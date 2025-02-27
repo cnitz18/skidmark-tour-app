@@ -201,6 +201,7 @@ const SessionHistoryEntry = ({ data, enums, lists,showLeagueInfo }) => {
                   <SessionHistoryEntryScoreboard
                     race={data.stages.qualifying1}
                     vehicles={lists["vehicles"].list}
+                    winner={polePosition}
                     session="Qualifying"
                   />
                 ) : (
