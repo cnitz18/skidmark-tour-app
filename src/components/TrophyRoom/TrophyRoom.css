@@ -1,0 +1,13 @@
+.trophy-room {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.canvas-container {
+    width: 100%;
+    height: 600px;
+    background-color: #f0f0f0;
+    position: relative;
+    overflow: hidden;
+}
