@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import NameMapper from '../../utils/Classes/NameMapper';
 import msToTime from '../../utils/msToTime'
 import { BsTrophy, BsFlag, BsSpeedometer, BsClock, BsStopwatch } from 'react-icons/bs';
+import { LuCrown } from "react-icons/lu";
+
 import styles from './LeagueDescriptionOverview.module.css';
 
 const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => {
@@ -12,6 +14,8 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
     const [showRecentRacesSpinner, setShowRecentRacesSpinner] = useState(true);
     const nextRace = league?.races.find(race => new Date(race.date) > new Date());
     const topDrivers = standings?.slice(0, 3) || [];
+    // Get the champion (first in standings)
+    const champion = standings?.[0];
 
     useEffect(() => {
         // Neecd to add filter for finished races?
@@ -27,7 +31,51 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
     
     return (
         <div className="league-dashboard">
-            <Card className={`mb-4 ${styles.dashboardCard}`}>
+            {/* Champion Celebration Card - more compact version */}
+            {league.completed && champion ? (
+                <Card className={`mb-4 ${styles.championCard}`}>
+                    <Card.Body className="py-3">
+                        <Row className="align-items-center">
+                            <Col xs={12} md={4} className="text-center text-md-start mb-3 mb-md-0">
+                                <div className="d-flex align-items-center">
+                                    <div className={styles.crownIcon}>
+                                        <LuCrown size={32} className="text-warning" />
+                                    </div>
+                                    <div className="ms-3">
+                                        <h5 className="mb-0">Season Champion</h5>
+                                        <h2 className="mb-0 mt-1">{champion.PlayerName}</h2>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={12} md={3} className="text-center mb-3 mb-md-0">
+                                <span className="badge bg-warning text-dark p-2 px-3">
+                                    <BsTrophy className="me-2" />
+                                    {champion.Points} Points
+                                </span>
+                            </Col>
+                            <Col xs={12} md={5}>
+                                <div className={styles.championStatCompact}>
+                                    <div className="d-flex justify-content-around">
+                                        <div className={styles.statItem}>
+                                            <div className={styles.statValue}>{champion.Wins || 0}</div>
+                                            <div className={styles.statLabel}>Wins</div>
+                                        </div>
+                                        <div className={styles.statItem}>
+                                            <div className={styles.statValue}>{champion.Podiums || 0}</div>
+                                            <div className={styles.statLabel}>Podiums</div>
+                                        </div>
+                                        <div className={styles.statItem}>
+                                            <div className={styles.statValue}>{champion.FastestLaps || 0}</div>
+                                            <div className={styles.statLabel}>Fastest Laps</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Card.Body>
+                </Card>
+            ) : (
+                <Card className={`mb-4 ${styles.dashboardCard}`}>
                 <Card.Body>
                     <Card.Title className="d-flex justify-content-between align-items-center mb-4">
                         <div>
@@ -41,6 +89,8 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                     <Card.Text className="lead">{league.description}</Card.Text>
                 </Card.Body>
             </Card>
+            )
+        }
 
             <Row className="g-4 mb-4">
                 <Col md={4}>
@@ -137,18 +187,18 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                                 {format((new Date(0)).setUTCSeconds(race.start_time), 'MMM d, yyyy')}
                                             </small>
                                         </div>
-                                        {race.stages.race1?.results && (
+                                        {race?.results && (
                                             <>
                                                 <div className={`${styles.winnerHighlight} mt-2`}>
                                                     <BsTrophy className="me-2" />
-                                                    {race.stages.race1?.results[0]?.name}
+                                                    {race?.results.find((r) => r.RacePosition === 1)?.name}
                                                     <span className="text-muted ms-2 small">
-                                                        ({msToTime(race.stages.race1?.results[0]?.FastestLapTime)}s)
+                                                        ({msToTime(race?.results.find((r) => r.RacePosition === 1)?.FastestLapTime)}s)
                                                     </span>
                                                 </div>
                                                 <div className="d-flex justify-content-between small text-muted mt-1">
-                                                    <span>P2: {race.stages.race1?.results[1]?.name}</span>
-                                                    <span>P3: {race.stages.race1?.results[2]?.name}</span>
+                                                    <span>P2: {race?.results.find((r) => r.RacePosition === 2)?.name}</span>
+                                                    <span>P3: {race?.results.find((r) => r.RacePosition === 3)?.name}</span>
                                                 </div>
                                             </>
                                         )}
