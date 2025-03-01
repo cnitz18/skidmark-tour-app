@@ -28,10 +28,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     //console.log(stage_id,participant_id)
     //TODO: set actual loading signal
     //console.log('loading...')
-    getAPIData(`/api/batchupload/sms_stats_data/entries/?stage_id=${stage_id}&participant_id=${participant_id}`)
+    getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${stage_id}&participant_id=${participant_id}`)
     .then((res) => {
       //console.log('api response:',res)
-      setEventsData(res)
+      setEventsData(res);
       setShowSpinner(false);
     }).catch((e) => {
       setShowSpinner(false);
