@@ -5,12 +5,14 @@ import NameMapper from '../../utils/Classes/NameMapper';
 import msToTime from '../../utils/msToTime'
 import { BsTrophy, BsFlag, BsSpeedometer, BsClock, BsStopwatch } from 'react-icons/bs';
 import { LuCrown } from "react-icons/lu";
+import getAPIData from "../../utils/getAPIData";
 
 import styles from './LeagueDescriptionOverview.module.css';
 
 const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => {
     // Add this near the top with other const declarations
     const [recentRaces, setRecentRaces] = useState([]);
+    const [recentRaceResults, setRecentRaceResults] = useState({});
     const [showRecentRacesSpinner, setShowRecentRacesSpinner] = useState(true);
     const nextRace = league?.races.find(race => new Date(race.date) > new Date());
     const topDrivers = standings?.slice(0, 3) || [];
@@ -28,6 +30,32 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[leagueHistory])
+
+    useEffect(() => {
+        // Only fetch results when we have races
+        if (recentRaces?.length) {
+            // Create promises array for all race results
+            const fetchPromises = recentRaces.map(race => {
+                return getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${race.stages.race1.id}`)
+                .then(res => ({ raceId: race.id, results: res }))
+                .catch(err => {
+                    console.error(`Error fetching results for race ${race.id}:`, err);
+                    return { raceId: race.id, results: null };
+                });
+            });
+            
+            // Execute all promises and update state
+            Promise.all(fetchPromises)
+            .then(resultsArray => {
+                const newResults = {};
+                resultsArray.forEach(item => {
+                    newResults[item.raceId] = item.results;
+                });
+                setRecentRaceResults(newResults);
+                setShowRecentRacesSpinner(false);
+            });
+        }
+    }, [recentRaces]);
     
     return (
         <div className="league-dashboard">
@@ -176,34 +204,43 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                 </Container>
                             ) :
                             recentRaces?.length ? (
-                                recentRaces.map((race, index) => (
-                                    <div key={race.id} className={`recent-race ${index !== 0 ? 'mt-3 pt-3 border-top' : ''}`}>
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            <h6 className="mb-0">
-                                                <BsSpeedometer className="me-2 text-primary" />
-                                                {NameMapper.fromTrackId(race.setup.TrackId, lists["tracks"]?.list)}
-                                            </h6>
-                                            <small className="text-muted">
-                                                {format((new Date(0)).setUTCSeconds(race.start_time), 'MMM d, yyyy')}
-                                            </small>
+                                recentRaces.map((race, index) => {
+                                    // Get the results for this specific race from our state
+                                    const raceResults = recentRaceResults[race.id];
+                                    
+                                    return (
+                                        <div key={race.id} className={`recent-race ${index !== 0 ? 'mt-3 pt-3 border-top' : ''}`}>
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <h6 className="mb-0">
+                                                    <BsSpeedometer className="me-2 text-primary" />
+                                                    {NameMapper.fromTrackId(race.setup.TrackId, lists["tracks"]?.list)}
+                                                </h6>
+                                                <small className="text-muted">
+                                                    {format((new Date(0)).setUTCSeconds(race.start_time), 'MMM d, yyyy')}
+                                                </small>
+                                            </div>
+                                            {raceResults ? (
+                                                <>
+                                                    <div className={`${styles.winnerHighlight} mt-2`}>
+                                                        <BsTrophy className="me-2" />
+                                                        {raceResults.find((r) => r.RacePosition === 1)?.name}
+                                                        <span className="text-muted ms-2 small">
+                                                            ({msToTime(raceResults.find((r) => r.RacePosition === 1)?.FastestLapTime)}s)
+                                                        </span>
+                                                    </div>
+                                                    <div className="d-flex justify-content-between small text-muted mt-1">
+                                                        <span>P2: {raceResults.find((r) => r.RacePosition === 2)?.name}</span>
+                                                        <span>P3: {raceResults.find((r) => r.RacePosition === 3)?.name}</span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="text-muted mt-2 text-center">
+                                                    <small>Results loading...</small>
+                                                </div>
+                                            )}
                                         </div>
-                                        {race?.results && (
-                                            <>
-                                                <div className={`${styles.winnerHighlight} mt-2`}>
-                                                    <BsTrophy className="me-2" />
-                                                    {race?.results.find((r) => r.RacePosition === 1)?.name}
-                                                    <span className="text-muted ms-2 small">
-                                                        ({msToTime(race?.results.find((r) => r.RacePosition === 1)?.FastestLapTime)}s)
-                                                    </span>
-                                                </div>
-                                                <div className="d-flex justify-content-between small text-muted mt-1">
-                                                    <span>P2: {race?.results.find((r) => r.RacePosition === 2)?.name}</span>
-                                                    <span>P3: {race?.results.find((r) => r.RacePosition === 3)?.name}</span>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <p className="text-muted mb-0">No completed races yet</p>
                             )}
