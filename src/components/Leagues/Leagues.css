@@ -1,0 +1,59 @@
+.league-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.league-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* New styling for champion ribbon */
+.champion-ribbon {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(255,215,0,0.05) 100%);
+  border-left: 3px solid #d4af37;
+  border-radius: 4px;
+}
+
+.champion-header {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.champion-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.champion-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.champion-icon {
+  color: #d4af37;
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.champion-name {
+  font-weight: 600;
+  color: #222;
+  font-size: 1rem;
+}
+
+.league-cardactions {
+  justify-content: space-between;
+  padding: 8px 16px !important;
+}
