@@ -9,7 +9,7 @@ import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
 import logo from "../assets/skidmark-placeholder.png";
 import styles from './NavBar.module.css';
-import TrophyRoom from './TrophyRoom/TrophyRoom';
+import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -67,7 +67,7 @@ export default function NavBar({ enums, lists }) {
           <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
-          <Route path="/trophyroom" element={<TrophyRoom/>}/>
+          <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
           <Route
             exact
             path="/league/:id"

@@ -2,6 +2,8 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
 .canvas-container {
@@ -10,4 +12,213 @@
     background-color: #f0f0f0;
     position: relative;
     overflow: hidden;
+}
+
+.section-header {
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.section-icon {
+  font-size: 2rem;
+}
+
+/* Trophy Cards Styling */
+.trophy-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trophy-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.trophy-icon, .champion-crown {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+}
+
+.trophy-icon {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+.champion-crown {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.trophy-title, .champion-name {
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.achievement-position {
+  font-weight: 600;
+  color: #198754;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.trophy-details {
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+  padding: 0.75rem 0;
+  margin: 1rem 0;
+  width: 100%;
+  text-align: center;
+}
+
+.trophy-details p {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.highlight-box {
+  background-color: #f8f9fa;
+  border-left: 3px solid #ffc107;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.highlight-icon {
+  color: #ffc107;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Champion cards styling */
+.champion-card {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.champion-season {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.champion-championship {
+  font-weight: 600;
+  color: #0d6efd;
+  margin-bottom: 0.75rem;
+}
+
+.champion-stats {
+  font-size: 0.9rem;
+  color: #6c757d;
+  background-color: rgba(13, 110, 253, 0.05);
+  border-radius: 50px;
+  padding: 0.4rem 1rem;
+  display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .section-icon {
+    margin-bottom: 10px;
+  }
+}
+
+/* Add to TrophyRoom.css */
+.members-box {
+  margin-top: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px 15px;
+  border-left: 3px solid #0d6efd;
+  text-align: center; /* Center the content */
+}
+
+.members-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the header */
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center; /* Center the badges */
+}
+
+.member-badge {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid #dee2e6;
+  font-weight: 400;
+}
+
+.member-icon {
+  margin-right: 5px;
+  opacity: 0.7;
+}
+
+/* Add this to center the Special Event descriptions */
+.trophy-card .card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Make sure descriptions are centered */
+.trophy-card .card-text {
+  text-align: center;
+  width: 100%;
+}
+
+/* Add to TrophyRoom.css */
+.champion-link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.champion-link:hover {
+  transform: translateY(-5px);
+  color: inherit;
+}
+
+.champion-link:hover .trophy-card {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.champion-link .trophy-card {
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
 }
