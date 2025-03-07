@@ -4,14 +4,20 @@ import { useEffect, useState } from 'react';
 import NameMapper from '../../utils/Classes/NameMapper';
 import msToTime from '../../utils/msToTime'
 import { BsTrophy, BsFlag, BsSpeedometer, BsClock, BsStopwatch } from 'react-icons/bs';
+import { LuCrown } from "react-icons/lu";
+import getAPIData from "../../utils/getAPIData";
+
 import styles from './LeagueDescriptionOverview.module.css';
 
 const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => {
     // Add this near the top with other const declarations
     const [recentRaces, setRecentRaces] = useState([]);
+    const [recentRaceResults, setRecentRaceResults] = useState({});
     const [showRecentRacesSpinner, setShowRecentRacesSpinner] = useState(true);
     const nextRace = league?.races.find(race => new Date(race.date) > new Date());
     const topDrivers = standings?.slice(0, 3) || [];
+    // Get the champion (first in standings)
+    const champion = standings?.[0];
 
     useEffect(() => {
         // Neecd to add filter for finished races?
@@ -24,10 +30,80 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[leagueHistory])
+
+    useEffect(() => {
+        // Only fetch results when we have races
+        if (recentRaces?.length) {
+            // Create promises array for all race results
+            const fetchPromises = recentRaces.map(race => {
+                return getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${race.stages.race1.id}`)
+                .then(res => ({ raceId: race.id, results: res }))
+                .catch(err => {
+                    console.error(`Error fetching results for race ${race.id}:`, err);
+                    return { raceId: race.id, results: null };
+                });
+            });
+            
+            // Execute all promises and update state
+            Promise.all(fetchPromises)
+            .then(resultsArray => {
+                const newResults = {};
+                resultsArray.forEach(item => {
+                    newResults[item.raceId] = item.results;
+                });
+                setRecentRaceResults(newResults);
+                setShowRecentRacesSpinner(false);
+            });
+        }
+    }, [recentRaces]);
     
     return (
         <div className="league-dashboard">
-            <Card className={`mb-4 ${styles.dashboardCard}`}>
+            {/* Champion Celebration Card - more compact version */}
+            {league.completed && champion ? (
+                <Card className={`mb-4 ${styles.championCard}`}>
+                    <Card.Body className="py-3">
+                        <Row className="align-items-center">
+                            <Col xs={12} md={4} className="text-center text-md-start mb-3 mb-md-0">
+                                <div className="d-flex align-items-center">
+                                    <div className={styles.crownIcon}>
+                                        <LuCrown size={32} className="text-warning" />
+                                    </div>
+                                    <div className="ms-3">
+                                        <h5 className="mb-0">Season Champion</h5>
+                                        <h2 className="mb-0 mt-1">{champion.PlayerName}</h2>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={12} md={3} className="text-center mb-3 mb-md-0">
+                                <span className="badge bg-warning text-dark p-2 px-3">
+                                    <BsTrophy className="me-2" />
+                                    {champion.Points} Points
+                                </span>
+                            </Col>
+                            <Col xs={12} md={5}>
+                                <div className={styles.championStatCompact}>
+                                    <div className="d-flex justify-content-around">
+                                        <div className={styles.statItem}>
+                                            <div className={styles.statValue}>{champion.Wins || 0}</div>
+                                            <div className={styles.statLabel}>Wins</div>
+                                        </div>
+                                        <div className={styles.statItem}>
+                                            <div className={styles.statValue}>{champion.Podiums || 0}</div>
+                                            <div className={styles.statLabel}>Podiums</div>
+                                        </div>
+                                        <div className={styles.statItem}>
+                                            <div className={styles.statValue}>{champion.FastestLaps || 0}</div>
+                                            <div className={styles.statLabel}>Fastest Laps</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Card.Body>
+                </Card>
+            ) : (
+                <Card className={`mb-4 ${styles.dashboardCard}`}>
                 <Card.Body>
                     <Card.Title className="d-flex justify-content-between align-items-center mb-4">
                         <div>
@@ -41,6 +117,8 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                     <Card.Text className="lead">{league.description}</Card.Text>
                 </Card.Body>
             </Card>
+            )
+        }
 
             <Row className="g-4 mb-4">
                 <Col md={4}>
@@ -126,34 +204,43 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                 </Container>
                             ) :
                             recentRaces?.length ? (
-                                recentRaces.map((race, index) => (
-                                    <div key={race.id} className={`recent-race ${index !== 0 ? 'mt-3 pt-3 border-top' : ''}`}>
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            <h6 className="mb-0">
-                                                <BsSpeedometer className="me-2 text-primary" />
-                                                {NameMapper.fromTrackId(race.setup.TrackId, lists["tracks"]?.list)}
-                                            </h6>
-                                            <small className="text-muted">
-                                                {format((new Date(0)).setUTCSeconds(race.start_time), 'MMM d, yyyy')}
-                                            </small>
+                                recentRaces.map((race, index) => {
+                                    // Get the results for this specific race from our state
+                                    const raceResults = recentRaceResults[race.id];
+                                    
+                                    return (
+                                        <div key={race.id} className={`recent-race ${index !== 0 ? 'mt-3 pt-3 border-top' : ''}`}>
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <h6 className="mb-0">
+                                                    <BsSpeedometer className="me-2 text-primary" />
+                                                    {NameMapper.fromTrackId(race.setup.TrackId, lists["tracks"]?.list)}
+                                                </h6>
+                                                <small className="text-muted">
+                                                    {format((new Date(0)).setUTCSeconds(race.start_time), 'MMM d, yyyy')}
+                                                </small>
+                                            </div>
+                                            {raceResults ? (
+                                                <>
+                                                    <div className={`${styles.winnerHighlight} mt-2`}>
+                                                        <BsTrophy className="me-2" />
+                                                        {raceResults.find((r) => r.RacePosition === 1)?.name}
+                                                        <span className="text-muted ms-2 small">
+                                                            ({msToTime(raceResults.find((r) => r.RacePosition === 1)?.FastestLapTime)}s)
+                                                        </span>
+                                                    </div>
+                                                    <div className="d-flex justify-content-between small text-muted mt-1">
+                                                        <span>P2: {raceResults.find((r) => r.RacePosition === 2)?.name}</span>
+                                                        <span>P3: {raceResults.find((r) => r.RacePosition === 3)?.name}</span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="text-muted mt-2 text-center">
+                                                    <small>Results loading...</small>
+                                                </div>
+                                            )}
                                         </div>
-                                        {race.stages.race1?.results && (
-                                            <>
-                                                <div className={`${styles.winnerHighlight} mt-2`}>
-                                                    <BsTrophy className="me-2" />
-                                                    {race.stages.race1?.results[0]?.name}
-                                                    <span className="text-muted ms-2 small">
-                                                        ({msToTime(race.stages.race1?.results[0]?.FastestLapTime)}s)
-                                                    </span>
-                                                </div>
-                                                <div className="d-flex justify-content-between small text-muted mt-1">
-                                                    <span>P2: {race.stages.race1?.results[1]?.name}</span>
-                                                    <span>P3: {race.stages.race1?.results[2]?.name}</span>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <p className="text-muted mb-0">No completed races yet</p>
                             )}

@@ -15,13 +15,12 @@ const SessionHistory = ({ enums, lists }) => {
   const [showErrorPage, setShowErrorPage] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const [showMiniSpinner, setShowMiniSpinner] = useState(false);
-  const [filter, setFilter] = useState('finished-only');
+  const [filter, setFilter] = useState('all');
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
 
   const radios = [
-    { name: 'Completed', filter: 'finished-only', variant: 'outline-success' },
-    { name: 'League', filter: 'league-only', variant: 'outline-info' },
     { name: 'All', filter: 'all', variant: 'outline-warning' },
+    { name: 'League', filter: 'league-only', variant: 'outline-info' },
   ];
 
   function handleFilters(e){
@@ -90,27 +89,14 @@ const SessionHistory = ({ enums, lists }) => {
   }
   function fetchCurrentPage(){
     setShowMiniSpinner(true)
-    getAPIData("/api/batchupload/sms_stats_data/pagecount/?filter=" + filter)
-    .then((res) => {
-      setShowErrorPage(false);
-      //console.log('setting paginators')
-      if( parseInt(res) > -1 ){
-        setPageCount(parseInt(res));
-      }
-        
-    })
-    .catch((err) => {
-      console.error(err);
-      setShowErrorPage(true);
-      setShowSpinner(false);
-    })
     getAPIData("/api/batchupload/sms_stats_data/?page=" + curPage + "&filter=" + filter + "&sort=" + (sortOptionSelected === "dateAsc" ? "asc" : "desc"))
     .then((res) => {
       if (res) {
         setShowErrorPage(false);
         // console.log('setting history',res)
         // console.log('cur page?',curPage)
-        setHistory([...res]);
+        setHistory([...res.data]);
+        setPageCount(parseInt(res.pages));
         setShowMiniSpinner(false);
         setShowSpinner(false);
       }
@@ -125,7 +111,7 @@ const SessionHistory = ({ enums, lists }) => {
   useEffect(() => {
     fetchCurrentPage();
     // eslint-disable-next-line
-  },[curPage])
+  },[curPage,filter,sortOptionSelected])
 
   useEffect(() => {
     renderPaginator();

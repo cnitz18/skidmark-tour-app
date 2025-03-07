@@ -1,11 +1,12 @@
-//import { Container, Row, Col, Button, Modal, Form, Table, Card, Spinner } from "react-bootstrap";
- import { Container, Row, Col, Modal, Form, Table, Spinner, Button } from "react-bootstrap";
- import { Card, CardActions, CardContent, CardMedia, Chip } from "@mui/material";
+import { Container, Row, Col, Modal, Form, Table, Spinner, Button } from "react-bootstrap";
+import { Card, CardActions, CardContent, CardMedia, Chip } from "@mui/material";
 import PageHeader from "../shared/PageHeader";
 import { useEffect, useState } from "react";
 import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
+import { BsTrophy } from "react-icons/bs";
+import './Leagues.css';
 
 const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [showModal, setShowModal] = useState(false);
@@ -15,8 +16,10 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [description,setDescription] = useState("");
     const [newFastestLapPoint,setNewFastestLapPoint] = useState(false);
     const [leagues,setLeagues] = useState([]);
+    const [leagueStandings, setLeagueStandings] = useState({});
     const [showSpinner, setShowSpinner] = useState(true);
 
+    // Existing functions remain the same
     const handleCloseModal = () => {
         setNewPositions([{ position: 1, points: 1 }]);
         setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: (new Date()).toISOString().slice(0,16) }])
@@ -72,11 +75,30 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
 
     useEffect(() => {
         setShowSpinner(true);
-        getAPIData('/leagues/get/').then((res) => {
+        getAPIData('/leagues/get/').then(async (res) => {
+            setLeagues([...res]);
+            
+            // Fetch standings for completed leagues
+            const completedLeagues = res.filter(league => league.completed);
+            const standingsData = {};
+            
+            for (const league of completedLeagues) {
+                try {
+                    const standings = await getAPIData(`/leagues/get/stats/?id=${league.id}`);
+                    if (standings && standings.scoreboard_entries?.length > 0) {
+                        standings.champion = standings.scoreboard_entries.find((ent) => ent.Position === 1)?.PlayerName;
+                        standingsData[league.id] = standings;
+                    }
+                } catch (err) {
+                    console.error(`Failed to fetch standings for league ${league.id}`, err);
+                }
+            }
+
+            setLeagueStandings(standingsData);
             setShowSpinner(false);
-            setLeagues([...res])
-        })
-    },[])
+        });
+    }, []);
+    
     return (
         <Container>
             <PageHeader title="Leagues"/>
@@ -90,7 +112,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
             }
             <Row xs={1} md={1} lg={2} className="g-4 justify-content-center leagues-container">
             {showSpinner ? (
-
                 <div className="text-center mt-4">
                     <Spinner animation="border" role="status"/>
                     <div>
@@ -98,35 +119,48 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </div>
                 </div>
                 ) : (
-                    leagues && leagues.map((l,i) => (
-                        <Col key={i}>
-                            <Card className="text-center" >
-                                <CardMedia image={l.img} height="200" component="img" alt="Photo Credit https://ams2cars.info/"/>
-                                <CardContent>
-                                    <h5>{l.name}</h5>
-                                </CardContent>
-                                <CardActions className="league-cardactions">
-                                    <Link
-                                        to={`/league/${l.id}`}
-                                        state={{ league: l }}
-                                        >
-                                        <Button variant="outline-primary" size="sm">View Details</Button>
-                                    </Link>
-                                    <div className="league-display-badge">
-                                        {
-                                            l.completed ?
-                                            <Chip size="small" label="Complete" color="success" variant="outlined"/>
-                                            : <Chip size="small" label="In Progress" color="information" variant="outlined"/>
-                                        }
-                                    </div>
-                                </CardActions>
-                            </Card>
-                        </Col>
-                    ))
+                    (leagues && leagueStandings) && leagues.map((l, i) => {
+                        const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
+                        return (
+                            <Col key={i}>
+                                <Card className="text-center league-card">
+                                    <CardMedia image={l.img} height="200" component="img" alt="Photo Credit https://ams2cars.info/"/>
+                                    <CardContent>
+                                        <h5>{l.name}</h5>
+                                        {l.completed && champion && (
+                                            <div className="champion-ribbon">
+                                                <div className="champion-header">Season Champion</div>
+                                                <div className="champion-details">
+                                                    <BsTrophy className="champion-icon" />
+                                                    <span className="champion-name">{champion}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                    <CardActions className="league-cardactions">
+                                        <Link
+                                            to={`/league/${l.id}`}
+                                            state={{ league: l }}
+                                            >
+                                            <Button variant="outline-primary" size="sm">View Details</Button>
+                                        </Link>
+                                        <div className="league-display-badge">
+                                            {
+                                                l.completed ?
+                                                <Chip size="small" label="Complete" color="success" variant="outlined"/>
+                                                : <Chip size="small" label="In Progress" color="information" variant="outlined"/>
+                                            }
+                                        </div>
+                                    </CardActions>
+                                </Card>
+                            </Col>
+                        );
+                    })
                 )
             }
             </Row>
-            {/* Modal */}
+            
+            {/* Modal code remains unchanged */}
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>New League</Modal.Title>

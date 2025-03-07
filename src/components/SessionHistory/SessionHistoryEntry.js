@@ -12,40 +12,34 @@ import SessionHistoryDetailsModal from "./SessionHistoryDetailsModal";
 
 const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
+  const [practiceOne, setPracticeOne] = useState();
+  const [qualiOne, setQualiOne] = useState();
   const [raceOne, setRaceOne] = useState();
   const [polePosition, setPolePosition] = useState("");
   const [firstPlace, setFirstPlace] = useState("");
   const [secondPlace, setSecondPlace] = useState("");
   const [thirdPlace, setThirdPlace] = useState("");
-  const [sessionFlags, setSessionFlags] = useState(0);
-  const [sessionFlagToggles, setSessionFlagToggles] = useState({});
   const [sessionLength, setSessionLength] = useState(0);
   const [timedSession, setTimedSession] = useState(false);
   const [leagueId, setLeagueId] = useState(null);
   const [isHistorical, setIsHistorical] = useState(false);
-  const [showLeague, setShowLeague] = useState(0);
-  const [fullLeagueInfo,setFullLeagueInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    setStartTime(new Date(data.start_time * 1000));
-    setEndTime(new Date(data.end_time * 1000));
-
-    setLeagueId(data.league)
-    setIsHistorical(data.isHistoricalOrIncomplete ?? false)
-
-    let race1 = data?.stages?.race1;
-    let quali1 = data?.stages?.qualifying1;
-    if (race1 && race1?.results?.length) {
+    if( raceOne && !raceOne.results?.length ){
+      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceOne.id}`)
+      .then((res) => setRaceOne({...raceOne, results: res}))
+      .catch((err) => console.log(err));
+    }
+    if (raceOne && raceOne?.results?.length) {
       setFirstPlace({
-        ...race1?.results?.find((m) => m?.RacePosition === 1),
+        ...raceOne?.results?.find((m) => m?.RacePosition === 1),
       });
       setSecondPlace({
-        ...race1?.results?.find((m) => m?.RacePosition === 2),
+        ...raceOne?.results?.find((m) => m?.RacePosition === 2),
       });
       setThirdPlace({
-        ...race1?.results?.find((m) => m?.RacePosition === 3),
+        ...raceOne?.results?.find((m) => m?.RacePosition === 3),
       });
     }
     else{
@@ -53,16 +47,43 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
       setSecondPlace("");
       setThirdPlace();
     }
-    if( quali1 ){
+  },[raceOne]);
+
+  useEffect(() => {
+    if( qualiOne && !qualiOne?.results?.length ){
+      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiOne.id}`)
+      .then((res) => setQualiOne({...qualiOne, results: res}))
+      .catch((err) => console.log(err));
+    }
+    else if( qualiOne && qualiOne.results?.length ){
       setPolePosition({
-        ...quali1?.results?.find((m) => m?.RacePosition === 1),
+        ...qualiOne?.results?.find((m) => m?.RacePosition === 1),
       });
     }else{
       setPolePosition("")
     }
+  },[qualiOne]);
+
+  useEffect(() => {
+    if( practiceOne && !practiceOne?.results?.length ){
+      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${practiceOne.id}`)
+      .then((res) => setPracticeOne({...practiceOne, results: res}))
+      .catch((err) => console.log(err));
+    } 
+  },[practiceOne]);
+
+  useEffect(() => {
+    setStartTime(new Date(data.start_time * 1000));
+
+    setLeagueId(data.league)
+    setIsHistorical(data.isHistoricalOrIncomplete ?? false)
+
+    setRaceOne(data?.stages?.race1);
+    setQualiOne(data?.stages?.qualifying1);
+    setPracticeOne(data?.stages?.practice1);
+
     let raceSetup = data?.setup;
     if (raceSetup) {
-      setSessionFlags(raceSetup.Flags);
       let curValue = raceSetup.Flags;
       let flagStatus = {};
       let flagInfo = lists?.flags?.session?.list;
@@ -182,7 +203,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
         />
         
         {
-          data.stages.practice1 && (
+          practiceOne && (
             <Accordion.Item eventKey={data.index + '_prac1'}>
               <Accordion.Header>Practice Details:</Accordion.Header>
               <Accordion.Body>
@@ -191,7 +212,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                             */}
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
-                    race={data.stages.practice1}
+                    race={practiceOne}
                     vehicles={lists["vehicles"].list}
                     session="Practice"
                   />
@@ -203,7 +224,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
           )
         }
         {
-          data.stages.qualifying1 && (
+          qualiOne && (
             <Accordion.Item eventKey={data.index + '_qual1'}>
               <Accordion.Header>Qualifying Details:</Accordion.Header>
               <Accordion.Body>
@@ -212,7 +233,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                             */}
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
-                    race={data.stages.qualifying1}
+                    race={qualiOne}
                     vehicles={lists["vehicles"].list}
                     winner={polePosition}
                     session="Qualifying"
@@ -232,7 +253,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                         */}
             {lists["vehicles"] ? (
               <SessionHistoryEntryScoreboard
-                race={data.stages.race1}
+                race={raceOne}
                 winner={firstPlace}
                 vehicles={lists["vehicles"].list}
                 session="Race"

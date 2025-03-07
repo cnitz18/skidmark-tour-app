@@ -97,7 +97,7 @@ const LeagueDescription = ({ enums, lists }) => {
             }).catch((err) => { console.error(err); setShowSpinner(false) })
             getAPIData('/api/batchupload/sms_stats_data/?league=' + league.id)
             .then((res) => {
-                setLeagueHistory([...res])
+                setLeagueHistory([...res.data])
                 setShowHistorySpinner(false)
             }).catch((err) => { console.error(err); setShowHistorySpinner(false) })
         }
