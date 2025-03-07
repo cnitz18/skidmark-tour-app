@@ -42,7 +42,7 @@ const TrophyRoomBasic = () => {
             season: "Spring 2023",
             championship: "GT4 Challenge",
             stats: "Season stats have been lost to history :(",
-            description: "The very first Skidmark Racing champion, a true pioneer"
+            description: "The very first Skidmark Tour champion, a true pioneer"
         }
     ];
 
@@ -62,7 +62,7 @@ const TrophyRoomBasic = () => {
             date: "January 11, 2025",
             position: "Podium Finish",
             team: "Solo Entry",
-            description: "3rd in TCR class - the first solo Special Event podium for Skidmark Racing",
+            description: "3rd in TCR class - the first solo Special Event podium for the Skidmark Tour",
             members: ["Gilles"]
         },
         {
