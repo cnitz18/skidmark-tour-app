@@ -25,9 +25,7 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
         .sort((a, b) => (new Date()).setUTCSeconds(b.start_time) - (new Date()).setUTCSeconds(a.start_time))
         .slice(0, 3)
         setRecentRaces(_recentRaces);
-        if( _recentRaces.length ){
-            setShowRecentRacesSpinner(false);
-        }
+        setShowRecentRacesSpinner(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[leagueHistory])
 
@@ -157,12 +155,35 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                 <h5 className="mb-0">Championship Leaders</h5>
                             </div>
                             <div className={styles.statsWrapper}>
-                                {topDrivers.map((driver, index) => (
-                                    <div key={index} className="d-flex justify-content-between mb-2">
-                                        <span>{driver.Position}. {driver.PlayerName}</span>
-                                        <span className="fw-bold">{driver.Points} pts</span>
+                                {topDrivers.length > 0 ? (
+                                    // Show actual leaders if available
+                                    topDrivers.map((driver, index) => (
+                                        <div key={index} className="d-flex justify-content-between mb-2">
+                                            <span>{driver.Position}. {driver.PlayerName}</span>
+                                            <span className="fw-bold">{driver.Points} pts</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    // Placeholder when no races have been completed
+                                    <div className="text-center py-3">
+                                        <div className="mb-3 text-muted">
+                                            <BsFlag className="me-2" />
+                                            No races completed yet
+                                        </div>
+                                        
+                                        {/* Placeholder standings with faded styling */}
+                                        {[1, 2, 3].map((pos) => (
+                                            <div key={pos} className="d-flex justify-content-between mb-2 text-muted opacity-50">
+                                                <span>{pos}. Driver</span>
+                                                <span className="fw-bold">0 pts</span>
+                                            </div>
+                                        ))}
+                                        
+                                        <div className="mt-3 small text-muted">
+                                            Standings will appear after the first race
+                                        </div>
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </Card.Body>
                     </Card>
@@ -242,7 +263,13 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                     );
                                 })
                             ) : (
-                                <p className="text-muted mb-0">No completed races yet</p>
+                                // Placeholder UI for when no races have been completed
+                                <div className="text-center py-4">
+                                    <div className="mb-3">
+                                        <BsFlag className="text-muted" style={{ fontSize: "1.5rem" }} />
+                                    </div>
+                                    <p className="text-muted mb-3">No races completed yet</p>
+                                </div>
                             )}
                         </Card.Body>
                     </Card>

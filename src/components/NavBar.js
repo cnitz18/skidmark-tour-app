@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import { useState } from "react";
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
@@ -68,10 +68,15 @@ export default function NavBar({ enums, lists }) {
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
           <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
+          
+          {/* Special redirect for "/league/spring25" to "/league/28" */}
+          <Route path="/league/spring25" element={<Navigate to="/league/28" replace />} />
+          
+          {/* Regular league route */}
           <Route
             exact
             path="/league/:id"
-            element={<LeagueDescription  enums={enums} lists={lists}/>}
+            element={<LeagueDescription enums={enums} lists={lists}/>}
           />
         </Routes>
       </div>
