@@ -1,0 +1,115 @@
+.server-status-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.server-status-container h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.status-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  animation: pulse 2s infinite;
+}
+
+.status-dot.online {
+  background-color: #28a745;
+}
+
+.status-dot.offline {
+  background-color: #dc3545;
+  animation: none;
+}
+
+.status-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.config-link-container {
+  margin: 2rem 0;
+}
+
+.config-link-container p {
+  margin-bottom: 0.75rem;
+  color: #666;
+}
+
+.config-button {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.config-button:hover {
+  background-color: #0069d9;
+  text-decoration: none;
+  color: white;
+}
+
+.last-updated {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 1.5rem;
+  font-style: italic;
+}
+
+.server-status-loading,
+.server-status-error {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.server-status-error {
+  color: #dc3545;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .server-status-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .status-text {
+    font-size: 1rem;
+  }
+}

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import { useState } from "react";
-import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom'
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
@@ -10,12 +10,14 @@ import LeagueDescription from './Leagues/LeagueDescription';
 import logo from "../assets/skidmark-placeholder.png";
 import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
+import ServerStatus from './ServerStatus/ServerStatus';
 
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Race History', href: '/history' },
   { name: 'Leagues', href: '/leagues'},
-  { name: 'Trophy Room', href: '/trophyroom'}
+  { name: 'Trophy Room', href: '/trophyroom'},
+  { name: 'Server', href: '/server' },
 ]
 
 
@@ -68,15 +70,11 @@ export default function NavBar({ enums, lists }) {
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
           <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
-          
-          {/* Special redirect for "/league/spring25" to "/league/28" */}
-          <Route path="/league/spring25" element={<Navigate to="/league/28" replace />} />
-          
-          {/* Regular league route */}
+          <Route path="/server" element={<ServerStatus/>} />
           <Route
             exact
             path="/league/:id"
-            element={<LeagueDescription enums={enums} lists={lists}/>}
+            element={<LeagueDescription  enums={enums} lists={lists}/>}
           />
         </Routes>
       </div>
