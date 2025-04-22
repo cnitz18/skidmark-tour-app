@@ -1,59 +1,63 @@
 .server-status-container {
   background-color: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 2rem;
-  max-width: 600px;
-  margin: 2rem auto;
+  margin: 2rem 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.server-status-container h2 {
-  color: #333;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
+.status-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.status-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
 .status-indicator {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: 1rem 0;
 }
 
 .status-dot {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   margin-right: 0.75rem;
-  animation: pulse 2s infinite;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .status-dot.online {
   background-color: #28a745;
+  animation: pulse 2s infinite;
 }
 
 .status-dot.offline {
   background-color: #dc3545;
-  animation: none;
 }
 
 .status-text {
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .config-link-container {
-  margin: 2rem 0;
-}
-
-.config-link-container p {
-  margin-bottom: 0.75rem;
-  color: #666;
+  padding: 1rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
 .config-button {
@@ -64,31 +68,83 @@
   border-radius: 4px;
   text-decoration: none;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
 }
 
 .config-button:hover {
-  background-color: #0069d9;
-  text-decoration: none;
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   color: white;
+  text-decoration: none;
+}
+
+.server-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.info-card {
+  flex: 0 0 calc(50% - 0.75rem);
+  min-width: 200px;
+  max-width: calc(50% - 0.75rem);
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+}
+
+.info-card h4 {
+  color: #495057;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #f8f9fa;
+  padding-bottom: 0.75rem;
+}
+
+.info-card p, .info-card .weather-slots {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .last-updated {
   font-size: 0.85rem;
   color: #888;
-  margin-top: 1.5rem;
   font-style: italic;
+  margin-top: 2rem;
 }
 
 .server-status-loading,
 .server-status-error {
   text-align: center;
-  padding: 2rem;
-  color: #666;
+  padding: 5rem 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 2rem 0;
 }
 
 .server-status-error {
   color: #dc3545;
+  border: 1px solid #f5c6cb;
+  background-color: #f8d7da;
+}
+
+.server-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes pulse {
@@ -104,12 +160,144 @@
 }
 
 @media (max-width: 768px) {
-  .server-status-container {
-    padding: 1.5rem;
-    margin: 1rem;
+  .info-card, .fixed-width-card {
+    flex: 0 0 100%;
+    max-width: 100%;
   }
-  
-  .status-text {
-    font-size: 1rem;
-  }
+}
+
+.weather-card {
+  /* Add more space for multiple weather slots */
+  min-height: 150px;
+}
+
+.weather-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.weather-slot {
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.weather-slot-number {
+  font-weight: 600;
+  color: #17a2b8;
+}
+
+/* Weather card specific styles */
+.fixed-width-card {
+  flex: 0 0 calc(50% - 0.75rem);
+  max-width: calc(50% - 0.75rem);
+}
+
+/* Participants list styles */
+.participants-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+}
+
+.participants-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.participants-container h4 {
+  display: flex;
+  align-items: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.participants-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.participants-table th {
+  text-align: left;
+  padding: 0.75rem;
+  color: #666;
+  font-weight: 600;
+  border-bottom: 2px solid #eee;
+}
+
+.participants-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.participants-table tr:last-child td {
+  border-bottom: none;
+}
+
+.participants-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.driver-name {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.ai-badge {
+  background-color: #6c757d;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.status-badge.driving {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.pitting {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.status-badge.spectating {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.status-badge.disconnected {
+  background-color: #dc3545;
+  color: white;
+}
+
+.status-badge.unknown {
+  background-color: #6c757d;
+  color: white;
+}
+
+.ai-driver {
+  background-color: rgba(108, 117, 125, 0.05);
+}
+
+.no-participants {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 2rem 0;
 }

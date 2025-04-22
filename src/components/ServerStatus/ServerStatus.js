@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
+import { FaCar, FaUsers, FaClock, FaCloudRain, FaServer } from 'react-icons/fa';
+import NameMapper from '../../utils/Classes/NameMapper';
 import PageHeader from '../shared/PageHeader';
 import './ServerStatus.css';
 
-const ServerStatus = () => {
+const ServerStatus = ({ enums, lists }) => {
   const [isServerLive, setIsServerLive] = useState(false);
   const [configLink, setConfigLink] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isSessionActive, setIsSessionActive] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [serverInfo, setServerInfo] = useState({
+    serverName: 'Skidmark Tour Server',
+    currentTrack: 'Unknown Track',
+    currentVehicle: 'Unknown Vehicle',
+    playerCount: '0',
+    sessionType: 'Unknown',
+    weatherCondition: 'Unknown'
+  });
 
   useEffect(() => {
     const fetchServerStatus = async () => {
@@ -17,10 +29,31 @@ const ServerStatus = () => {
         if (!statusResponse.ok) {
           throw new Error(`Status error: ${statusResponse.status}`);
         }
-        
-        const statusData = await statusResponse.json();
-        console.log('Server status data:', statusData);
         setIsServerLive(statusResponse.ok);
+        
+        let statusData = await statusResponse.json();
+        if( statusData.result === 'ok')
+          statusData = statusData.response;
+
+        console.log('Server status data:', statusData);
+        setIsSessionActive(statusData.state === 'Running');
+        setMembers(statusData.members || []);
+
+        // Update server info if available
+        if (statusData && statusData.attributes) {
+          let weatherArray = [];
+          for( let i = 0; i < statusData.attributes.RaceWeatherSlots; i++){
+            weatherArray.push(NameMapper.fromWeatherSlot(statusData.attributes["RaceWeatherSlot" + (i+1)], enums));
+          }
+          setServerInfo({
+            serverName: statusData.attributes.name || 'Skidmark Tour Server',
+            currentTrack:  NameMapper.fromTrackId(statusData.attributes.TrackId,lists["tracks"]?.list) || 'Unknown Track',
+            currentVehicle: NameMapper.fromVehicleClassId(statusData.attributes.VehicleClassId,lists['vehicle_classes']?.list) || 'Unknown Vehicle',
+            playerCount: statusData.members.length || '0',
+            sessionType: 'Race',
+            weatherCondition: weatherArray || 'Dynamic'
+          });
+        }
         
         setConfigLink(process.env.REACT_APP_SERVER_LOC + 'sessionConfig');
         
@@ -40,42 +73,158 @@ const ServerStatus = () => {
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
 
-  if (loading) {
-    return <div className="server-status-loading">Loading server status...</div>;
-  }
+  useEffect(() => {
+    console.log('Members updated:', members);
+    console.log(members.map((member) => {
+      return {
+        name: member.name || 'Unknown Driver',
+        vehicle: member.vehicle || 'Unknown Vehicle',
+        status: member.status || 'Unknown',
+        isAI: member.isAI || false
+      };
+    }));
+  },[members])
+  useEffect(() => {
+    console.log('Server info updated:', serverInfo);
+  },[serverInfo])
 
-  if (error) {
-    return <div className="server-status-error">{error}</div>;
-  }
+  // Weather component to handle displaying multiple weather slots
+  const WeatherDisplay = ({ weatherCondition }) => {
+    // If weatherCondition is a string, display it directly
+    if (typeof weatherCondition === 'string') {
+      return <p>{weatherCondition}</p>;
+    }
+    
+    // If weatherCondition is an array, display each slot
+    if (Array.isArray(weatherCondition) && weatherCondition.length > 0) {
+      return (
+        <div className="weather-slots">
+          {weatherCondition.map((weather, index) => (
+            <div key={index} className="weather-slot">
+              <span className="weather-slot-number">Slot {index + 1}:</span> {weather}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    // Fallback
+    return <p>Dynamic</p>;
+  };
+
+  // New Participants list component
+  const ParticipantsList = ({ members }) => {
+    if (!members || members.length === 0) {
+      return <p className="no-participants">No drivers currently connected</p>;
+    }
+
+    return (
+      <div className="participants-container">
+        <h4><FaUsers size={24} className="me-2" color="#28a745" /> Current Participants</h4>
+        <div className="participants-list">
+          <table className="participants-table">
+            <thead>
+              <tr>
+                <th>Driver</th>
+                <th>Vehicle</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {members?.length && members.map((member, index) => (
+                <tr key={index} className={member.isAI ? 'ai-driver' : ''}>
+                  <td className="driver-name">
+                    {member.isAI && <span className="ai-badge">AI</span>}
+                    {member.name}
+                  </td>
+                  <td>{member.vehicle || 'Unknown'}</td>
+                  <td>
+                    <span className={`status-badge ${member.status ? member.status.toLowerCase() : 'unknown'}`}>
+                      {member.status || 'Unknown'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Container>
       <PageHeader title="Automobilista 2 Server Status"/>
       <Row>
-        <div className="server-status-container">          
-          <div className="status-indicator">
-            <div className={`status-dot ${isServerLive ? 'online' : 'offline'}`}></div>
-            <span className="status-text">Server is currently {isServerLive ? 'ONLINE' : 'OFFLINE'}</span>
-          </div>
-          
-          {isServerLive && configLink && (
-            <div className="config-link-container">
-              <p>Configure your session:</p>
-              <a 
-                href={configLink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="config-button"
-              >
-                Session Configuration Portal
-              </a>
+        <Col lg={8} className="mx-auto">
+          <div className="server-status-container">
+            <div className="status-card">
+              <FaServer size={48} color={isServerLive ? "#28a745" : "#dc3545"} />
+              <h3 className="mt-3">{serverInfo.serverName}</h3>
+              
+              <div className="status-indicator">
+                <div className={`status-dot ${isServerLive ? 'online' : 'offline'}`}></div>
+                <span className="status-text">Server is currently {isServerLive ? 'ONLINE' : 'OFFLINE'}</span>
+              </div>
+              
+              {isServerLive && configLink && (
+                <div className="config-link-container">
+                  <a 
+                    href={configLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="config-button"
+                  >
+                    Session Configuration Portal
+                  </a>
+                </div>
+              )}
             </div>
-          )}
-          
-          <div className="last-updated">
-            Last updated: {new Date().toLocaleTimeString()}
+            
+            {/* Only show server info when there's an active session */}
+            {isServerLive && isSessionActive ? (
+              <>
+                <div className="server-info">
+                  <div className="info-card">
+                    <FaCar size={24} color="#007bff" />
+                    <h4>Current Track</h4>
+                    <p>{serverInfo.currentTrack}</p>
+                  </div>
+                  
+                  <div className="info-card">
+                    <FaCar size={24} color="#ffc107" />
+                    <h4>Current Vehicle Class</h4>
+                    <p>{serverInfo.currentVehicle}</p>
+                  </div>
+
+                  {/* Weather component with fixed width */}
+                  <div className="info-card weather-card fixed-width-card">
+                    <FaCloudRain size={24} color="#17a2b8" />
+                    <h4>Weather</h4>
+                    <WeatherDisplay weatherCondition={serverInfo.weatherCondition} />
+                  </div>
+                </div>
+
+                {/* Add new Participants component */}
+                <div className="participants-section">
+                  <ParticipantsList members={serverInfo.playerCount || []} />
+                </div>
+              </>
+            ) : isServerLive ? (
+              <div className="no-session-message mt-4">
+                <p>The server is online but there is no active session currently in progress.</p>
+                <p>You can configure a new session using the configuration portal above.</p>
+              </div>
+            ) : (
+              <div className="offline-message mt-4">
+                <p>The server is currently offline. Please check back later or contact Casey for help.</p>
+              </div>
+            )}
+            <div className="last-updated">
+              Last updated: {new Date().toLocaleTimeString()}
+            </div>
           </div>
-        </div>
+        </Col>
       </Row>
     </Container>
   );
