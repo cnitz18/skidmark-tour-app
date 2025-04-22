@@ -70,6 +70,42 @@
   padding-top: 70px; /* Adjust based on navbar height */
 }
 
+/* Make navbar items responsive */
+@media (max-width: 991px) {
+  .navLinks {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .navLinks a {
+    padding: 0.5rem 0.25rem !important;
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  .logo {
+    height: 30px; /* Make logo smaller on mobile */
+  }
+  
+  /* Override Bootstrap's default navbar collapse behavior */
+  .navbar button.navbar-toggler {
+    display: none;
+  }
+  
+  .navbar .navbar-collapse {
+    display: flex !important;
+  }
+}
+
+/* Even smaller screens */
+@media (max-width: 400px) {
+  .navLinks a {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.2rem !important;
+  }
+}
+
 .active {
   color: #fff !important;
   background: rgba(255,255,255,0.15);
