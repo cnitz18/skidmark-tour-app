@@ -21,6 +21,15 @@
   background-color: rgba(13, 110, 253, 0.03);
 }
 
+@media (max-width: 991px) {
+  .winnerHighlight {
+    text-align: center;
+  }
+}
+
+.podiumHighlight {
+  text-align: center;
+}
 .winnerHighlight {
   color: #198754;
   font-weight: 500;
