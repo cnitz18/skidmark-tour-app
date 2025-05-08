@@ -231,6 +231,7 @@
 }
 
 .participants-table td {
+  text-align: left;
   padding: 0.75rem;
   border-bottom: 1px solid #f1f1f1;
 }
@@ -271,22 +272,22 @@
   color: white;
 }
 
-.status-badge.pitting {
+.status-badge.pitting, .status-badge.ingarage, .status-badge.enteringpits, .status-badge.exitingpits {
   background-color: #ffc107;
   color: #212529;
 }
 
-.status-badge.spectating {
+.status-badge.connected, .status-badge.racing {
   background-color: #17a2b8;
   color: white;
 }
 
-.status-badge.disconnected {
+.status-badge.disconnected, .status-badge.dnf, .status-badge.disqualified, .status-badge.retired {
   background-color: #dc3545;
   color: white;
 }
 
-.status-badge.unknown {
+.status-badge.unknown, .status-badge.finished {
   background-color: #6c757d;
   color: white;
 }

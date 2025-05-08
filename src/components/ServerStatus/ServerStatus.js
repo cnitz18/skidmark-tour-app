@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { FaCar, FaUsers, FaCloudRain, FaServer } from 'react-icons/fa';
+import { FaCar, FaUsers, FaCloudRain, FaServer, FaPlayCircle } from 'react-icons/fa';
 import NameMapper from '../../utils/Classes/NameMapper';
 import PageHeader from '../shared/PageHeader';
 import './ServerStatus.css';
@@ -16,7 +16,6 @@ const ServerStatus = ({ enums, lists }) => {
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
   const [isSessionActive, setIsSessionActive] = useState(false);
-  const [participants, setParticipants] = useState([]);
   const [serverInfo, setServerInfo] = useState({
     serverName: 'Skidmark Tour Server',
     currentTrack: 'Unknown Track',
@@ -40,9 +39,7 @@ const ServerStatus = ({ enums, lists }) => {
         if( statusData.result === 'ok')
           statusData = statusData.response;
 
-        // console.log('Server status data:', statusData);
         setIsSessionActive(statusData.state === 'Running');
-        setParticipants(statusData.participants || []);
 
         // Update server info if available
         if (statusData && statusData.attributes) {
@@ -50,20 +47,16 @@ const ServerStatus = ({ enums, lists }) => {
           for( let i = 0; i < statusData.attributes.RaceWeatherSlots; i++){
             weatherArray.push(NameMapper.fromWeatherSlot(statusData.attributes["RaceWeatherSlot" + (i+1)], enums));
           }
-          // console.log('set server info:',{
-          //   serverName: statusData.attributes.name || 'Skidmark Tour Server',
-          //   currentTrack:  NameMapper.fromTrackId(statusData.attributes.TrackId,lists["tracks"]?.list) || 'Unknown Track',
-          //   currentVehicle: NameMapper.fromVehicleClassId(statusData.attributes.VehicleClassId,lists['vehicle_classes']?.list) || 'Unknown Vehicle',
-          //   playerCount: statusData.participants.length || '0',
-          //   sessionType: 'Race',
-          //   weatherCondition: weatherArray || 'Dynamic'
-          // })
+
           setServerInfo({
-            serverName: statusData.attributes.name || 'Skidmark Tour Server',
+            serverName: statusData.name || 'Skidmark Tour Server',
             currentTrack:  NameMapper.fromTrackId(statusData.attributes.TrackId,lists["tracks"]?.list) || 'Unknown Track',
             currentVehicle: NameMapper.fromVehicleClassId(statusData.attributes.VehicleClassId,lists['vehicle_classes']?.list) || 'Unknown Vehicle',
-            playerCount: statusData.participants.length || '0',
-            sessionType: 'Race',
+            playerCount: statusData.members.length || '0',
+            members : statusData.members,
+            participants : statusData.participants,
+            sessionType: statusData.attributes.SessionStage || 'Unknown',
+            sessionState: statusData.attributes.SessionState,
             weatherCondition: weatherArray || 'Dynamic'
           });
         }
@@ -85,15 +78,7 @@ const ServerStatus = ({ enums, lists }) => {
     
     return () => clearInterval(intervalId); // Clean up on unmount
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // useEffect(() => {
-  //   console.log('Members updated:', participants);
-  //   console.log(participants.map((member) => {
-  //     return member.attributes.Name.indexOf("(AI)") !== -1 ? 'AI' : "NotAI";
-  //   }));
-  // },[participants])
-
+  }, [lists]);
 
   // Weather component to handle displaying multiple weather slots
   const WeatherDisplay = ({ weatherCondition }) => {
@@ -138,20 +123,20 @@ const ServerStatus = ({ enums, lists }) => {
               </tr>
             </thead>
             <tbody>
-              {participants?.length && participants.map((member, index) => (
-                <tr key={index} className={member.attributes.Name.indexOf("(AI)") !== -1 ? 'ai-driver' : ''}>
+              {members?.length ? members.map((member, index) => (
+                <tr key={index} className={(member.name ?? member.attributes.Name).indexOf("(AI)") !== -1 ? 'ai-driver' : ''}>
                   <td>
-                    <span className={`status-badge ${member.status ? member.status.toLowerCase() : 'unknown'}`}>
-                      {member.attributes.State || 'Unknown'}
+                    <span className={`status-badge ${member.state ? member.state.toLowerCase() : member.attributes.State.toLowerCase()}`}>
+                      {member.state ? member.state : member.attributes.State}
                     </span>
                   </td>
                   <td className="driver-name">
                     {member.isAI && <span className="ai-badge">AI</span>}
-                    {member.attributes.Name}
+                    {member.name ?? member.attributes.Name}
                   </td>
                   <td>{NameMapper.fromVehicleId(member.attributes.VehicleId,lists['vehicles']?.list) || 'Unknown'}</td>
                 </tr>
-              ))}
+              )) : null}
             </tbody>
           </table>
         </div>
@@ -172,9 +157,8 @@ const ServerStatus = ({ enums, lists }) => {
               <div className="status-indicator">
                 <div className={`status-dot ${isServerLive ? 'online' : 'offline'}`}></div>
                 <span className="status-text">Server is currently {isServerLive ? 'ONLINE' : 'OFFLINE'}</span>
-              </div>
-              
-              {isServerLive && configLink && (
+              </div>              
+              {(isServerLive && configLink) && (
                 <div className="config-link-container">
                   <a 
                     href={configLink} 
@@ -189,9 +173,16 @@ const ServerStatus = ({ enums, lists }) => {
             </div>
             
             {/* Only show server info when there's an active session */}
-            {isServerLive && isSessionActive ? (
+            {(isServerLive && isSessionActive && Object.keys(serverInfo).length > 0) ? (
               <>
                 <div className="server-info">
+                  {/* Add Session Status card */}
+                  <div className="info-card">
+                    <FaPlayCircle size={24} color="#dc3545" />
+                    <h4>Session Status</h4>
+                    <p>{serverInfo.sessionState || 'Unknown'}</p>
+                  </div>
+
                   <div className="info-card">
                     <FaCar size={24} color="#007bff" />
                     <h4>Track</h4>
@@ -214,7 +205,7 @@ const ServerStatus = ({ enums, lists }) => {
 
                 {/* Add new Participants component */}
                 <div className="participants-section">
-                  <ParticipantsList members={serverInfo.playerCount || []} />
+                  <ParticipantsList members={serverInfo.sessionState === "Lobby" ? serverInfo.members : serverInfo.participants} />
                 </div>
               </>
             ) : isServerLive ? (
