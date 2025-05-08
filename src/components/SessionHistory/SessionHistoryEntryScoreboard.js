@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { Modal, Button, Spinner } from 'react-bootstrap';
+import { Modal, Button, Spinner, Nav, Tab, Badge, Card } from 'react-bootstrap';
 import getAPIData from "../../utils/getAPIData";
-import { Table, TableContainer } from "@mui/material";
+import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
-
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+// eslint-disable-next-line no-unused-vars
+import styles from "./SessionHistoryEntryScoreboard.css";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
   const [showModal, setShowModal] = useState(false);
-  const [eventsData, setEventsData] = useState("")
-  const [selectedRacerName, setSelectedRacerName] = useState("")
+  const [eventsData, setEventsData] = useState([]);
+  const [selectedRacerName, setSelectedRacerName] = useState("");
   const [participantsMap, setParticipantsMap] = useState({});
   const [showSpinner, setShowSpinner] = useState(true);
-  const [minSectors,setMinSectors] = useState({});
+  const [minSectors, setMinSectors] = useState({});
+  const [activeTab, setActiveTab] = useState("lapLog");
 
   const handleCloseModal = () => {
     setEventsData([]);
@@ -39,18 +42,18 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     handleShowModal()
   }
 
-  function getEventName( event_name ){
-    switch( event_name ){
-      case 'CutTrackStart':
-        return "Off-Track Start";
-      case 'CutTrackEnd':
-        return "Off-Track End";
-      case 'State':
-        return "State Change";
-      default:
-        return event_name;
-    }
-  }
+  // function getEventName( event_name ){
+  //   switch( event_name ){
+  //     case 'CutTrackStart':
+  //       return "Off-Track Start";
+  //     case 'CutTrackEnd':
+  //       return "Off-Track End";
+  //     case 'State':
+  //       return "State Change";
+  //     default:
+  //       return event_name;
+  //   }
+  // }
 
   function getEventDescription( evt ){
     switch( evt.event_name ){
@@ -70,6 +73,38 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
         return "Uh oh - no output generated for this event type";
     }
   }
+
+  // Format lap data for the chart
+  const formatLapDataForChart = () => {
+    if (!eventsData || eventsData.length === 0) return [];
+    
+    return eventsData
+      .filter(evt => evt.event_name === "Lap")
+      .map((evt, index) => ({
+        lap: index + 1,
+        lapTime: evt.attributes_LapTime / 1000,
+        s1: evt.attributes_Sector1Time / 1000,
+        s2: evt.attributes_Sector2Time / 1000,
+        s3: evt.attributes_Sector3Time / 1000,
+        position: evt.attributes_RacePosition
+      }));
+  };
+
+  // Get event type with appropriate badge styling
+  const getEventBadge = (eventName) => {
+    switch(eventName) {
+      case 'Impact':
+        return <Badge bg="danger">Contact</Badge>;
+      case 'CutTrackStart':
+        return <Badge bg="warning" text="dark">Off-Track Start</Badge>;
+      case 'CutTrackEnd':
+        return <Badge bg="warning" text="dark">Off-Track End</Badge>;
+      case 'State':
+        return <Badge bg="info">State Change</Badge>;
+      default:
+        return <Badge bg="secondary">{eventName}</Badge>;
+    }
+  };
 
   useEffect(() => {
     if( race?.results?.length ){
@@ -100,74 +135,160 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   return (
     <>
       <Modal show={showModal} onHide={handleCloseModal} size="xl" className="race-event-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>{session} Details for {selectedRacerName}</Modal.Title>
+        <Modal.Header closeButton className="border-bottom-0 pb-0">
+          <Modal.Title className="d-flex align-items-center">
+            <span className="fs-4">{session} Details</span>
+            <span className="badge bg-primary ms-3 fs-6">{selectedRacerName}</span>
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          {
-            showSpinner ?
-            <div className="text-center mt-4">
-              <Spinner animation="border" role="status"/>
-                <div>
-                  Loading event data...
-                </div>
+        <Modal.Body className="pt-2">
+          {showSpinner ? (
+            <div className="text-center my-5 py-5">
+              <Spinner animation="border" role="status" variant="primary"/>
+              <div className="mt-3 text-muted">
+                Loading event data...
+              </div>
             </div>
-            :
-            eventsData &&
-                  eventsData.length > 0 ? 
-                    <TableContainer>
-                      <h5>Lap Log</h5>
+          ) : eventsData && eventsData.length > 0 ? (
+            <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
+              <Nav variant="tabs" className="mb-3 nav-fill">
+                <Nav.Item>
+                  <Nav.Link eventKey="lapLog" className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-stopwatch me-2"></i>
+                    Lap Times
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="lapChart" className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-graph-up me-2"></i>
+                    Lap Analysis
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-exclamation-triangle me-2"></i>
+                    Race Events
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+              
+              <Tab.Content>
+                <Tab.Pane eventKey="lapLog">
+                  <Paper elevation={0} className="p-3 mb-4 border">
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                      <h5 className="mb-2 mb-md-0">Lap Times</h5>
+                      <div className="legend-container">
+                        <span className="personal-fastest-lap-legend me-3">
+                          <span className="color-box"></span> Best Lap
+                        </span>
+                        <span className="personal-fastest-sector-legend">
+                          <span className="color-box"></span> Best Sector
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="lap-time-table">
                       <Table>
                         <thead>
                           <tr>
-                            <th>#</th>
+                            <th className="text-center">#</th>
                             <th>Time</th>
-                            <th>Sector 1</th>
-                            <th>Sector 2</th>
-                            <th>Sector 3</th>
-                            <th>Position</th>
+                            <th>S1</th>
+                            <th>S2</th>
+                            <th>S3</th>
+                            <th className="text-center">Pos</th>
                           </tr>
                         </thead>
                         <tbody>  
                           {
-                            eventsData.filter(evt => evt.event_name === "Lap").map((evt,i) => (
-                              <tr key = {i}>
-                                <td>{i+1}</td>                            
-                                <td className={evt.attributes_LapTime === minSectors.total ? "personal-fastest-lap-highlight" : ""}>{msToTime(evt.attributes_LapTime)}</td>
-                                <td className={evt.attributes_Sector1Time === minSectors.sector1 ? "personal-fastest-sector-highlight" : ""}>{msToTime(evt.attributes_Sector1Time)}</td>
-                                <td className={evt.attributes_Sector2Time === minSectors.sector2 ? "personal-fastest-sector-highlight" : ""}>{msToTime(evt.attributes_Sector2Time)}</td>
-                                <td className={evt.attributes_Sector3Time === minSectors.sector3 ? "personal-fastest-sector-highlight" : ""}>{msToTime(evt.attributes_Sector3Time)}</td>
-                                <td>{evt.attributes_RacePosition}</td>
+                            eventsData.filter(evt => evt.event_name === "Lap").map((evt, i) => (
+                              <tr key={i} className={i % 2 === 0 ? "even-row" : ""}>
+                                <td className="text-center">{i+1}</td>                            
+                                <td className={evt.attributes_LapTime === minSectors.total ? "personal-fastest-lap-highlight" : ""}>
+                                  {msToTime(evt.attributes_LapTime)}
+                                </td>
+                                <td className={evt.attributes_Sector1Time === minSectors.sector1 ? "personal-fastest-sector-highlight" : ""}>
+                                  {msToTime(evt.attributes_Sector1Time)}
+                                </td>
+                                <td className={evt.attributes_Sector2Time === minSectors.sector2 ? "personal-fastest-sector-highlight" : ""}>
+                                  {msToTime(evt.attributes_Sector2Time)}
+                                </td>
+                                <td className={evt.attributes_Sector3Time === minSectors.sector3 ? "personal-fastest-sector-highlight" : ""}>
+                                  {msToTime(evt.attributes_Sector3Time)}
+                                </td>
+                                <td className="text-center position-cell">
+                                  <span className="position-badge">P{evt.attributes_RacePosition}</span>
+                                </td>
                               </tr>
                             ))
                           }
                         </tbody>
                       </Table>
-                      <hr/>
-                      <h5>Other Events</h5>
-                      <Table>
-                        <thead>
-                          <tr>
-                            <th>Session Timestamp</th>
-                            <th>Event Type</th>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>  
-                          {
-                            eventsData.filter(evt => evt.event_name !== "Lap").map((evt,i) => (
-                              <tr key={i}>
-                                <td>{(new Date(evt.time*1000)).toLocaleTimeString()}</td>
-                                <td>{getEventName(evt.event_name)}</td>
-                                <td>{getEventDescription(evt)}</td>
-                              </tr>
-                            ))
-                          }
-                        </tbody>
-                      </Table>
-                    </TableContainer>
-                  : <span>No event data found</span>
-          }
+                    </div>
+                  </Paper>
+                </Tab.Pane>
+                
+                <Tab.Pane eventKey="lapChart">
+                  <Paper elevation={0} className="p-3 mb-4 border">
+                    <h5 className="mb-3">Lap Time Progression</h5>
+                    <div style={{ height: "400px" }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={formatLapDataForChart()}
+                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
+                          <YAxis label={{ value: 'Time (sec)', angle: -90, position: 'insideLeft' }} />
+                          <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                          <Legend />
+                          <Line type="monotone" dataKey="lapTime" stroke="#8884d8" name="Lap Time" strokeWidth={2} />
+                          <Line type="monotone" dataKey="s1" stroke="#82ca9d" name="Sector 1" />
+                          <Line type="monotone" dataKey="s2" stroke="#ffc658" name="Sector 2" />
+                          <Line type="monotone" dataKey="s3" stroke="#ff8042" name="Sector 3" />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Paper>
+                </Tab.Pane>
+                
+                <Tab.Pane eventKey="events">
+                  <Paper elevation={0} className="p-3 mb-4 border">
+                    <h5 className="mb-3">Race Events</h5>
+                    <div className="events-container">
+                      {eventsData.filter(evt => evt.event_name !== "Lap").map((evt, i) => (
+                        <Card key={i} className="event-card mb-2">
+                          <Card.Body className="p-3">
+                            <div className="d-flex align-items-center">
+                              <div className="event-time me-3">
+                                {(new Date(evt.time*1000)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}
+                              </div>
+                              <div className="event-badge me-3">
+                                {getEventBadge(evt.event_name)}
+                              </div>
+                              <div className="event-description">
+                                {getEventDescription(evt)}
+                              </div>
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      ))}
+                      {eventsData.filter(evt => evt.event_name !== "Lap").length === 0 && (
+                        <div className="text-center py-4 text-muted">
+                          No events recorded for this session
+                        </div>
+                      )}
+                    </div>
+                  </Paper>
+                </Tab.Pane>
+              </Tab.Content>
+            </Tab.Container>
+          ) : (
+            <div className="text-center py-4 text-muted">
+              <i className="bi bi-calendar-x fs-1 d-block mb-2"></i>
+              No event data found for this session
+            </div>
+          )}
           
         </Modal.Body>
         <Modal.Footer>
@@ -176,7 +297,8 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
           </Button>
         </Modal.Footer>
       </Modal>
-      <TableContainer>
+      
+      <TableContainer className="lap-time-table">
         <Table className="session-score">
           <thead>
             <tr>
@@ -188,11 +310,11 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                 <th>Time</th> : <></>
               }
               <th>Fastest Lap</th>
-              <th>
                 {
                   session.toLowerCase() === "qualifying" ?
                   <th>Delta</th> : <></>
                 }
+              <th>
               </th>
             </tr>
           </thead>
@@ -215,7 +337,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                           (
                             (i && winner.TotalTime) 
                             ? 
-                            "+" + msToTime(res.TotalTime - winner.TotalTime) 
+                            "+"+ msToTime(res.TotalTime - winner.TotalTime) 
                             : 
                               msToTime(res.TotalTime)
                           )
@@ -223,7 +345,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       </td>
                       : <></>
                     }
-                    <td className={res.IsFastestLap ? "fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
+                    <td className={res.IsFastestLap ? "race-fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
                     {
                       session.toLowerCase() === "qualifying" ?
                       <td>

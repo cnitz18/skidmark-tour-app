@@ -1,0 +1,198 @@
+/* Add to index.css or your component-specific CSS file */
+
+/* Session details modal styling */
+.race-event-modal .modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.race-event-modal .modal-header {
+  background-color: #f8f9fa;
+}
+
+/* Lap time table styling */
+.lap-time-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lap-time-table .MuiTable-root th {
+  font-weight: 600;
+  color: #495057;
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  border-bottom: 2px solid #e9ecef;
+  font-size: 14px;
+}
+
+.lap-time-table .MuiTable-root td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+}
+
+.lap-time-table .MuiTable-root tr.even-row {
+  background-color: #f8f9fa;
+}
+
+/* Position indicator */
+.position-cell {
+  background-color: rgba(0,0,0,0.02);
+}
+
+.position-badge {
+  display: inline-block;
+  background: #e9ecef;
+  color: #495057;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Best time highlights */
+.race-fastest-lap-highlight {
+  background-color: rgba(128, 0, 128, 0.08) !important;
+  color: #5a189a;
+  font-weight: 600;
+  position: relative;
+}
+
+.race-fastest-lap-highlight::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #8a2be2;
+}
+
+.personal-fastest-lap-highlight {
+  background-color: rgba(40, 167, 69, 0.08) !important;
+  color: #155724;
+  font-weight: 600;
+  position: relative;
+}
+
+.personal-fastest-lap-highlight::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #28a745;
+}
+
+.personal-fastest-sector-highlight {
+  background-color: rgba(255, 193, 7, 0.08) !important;
+  color: #856404;
+  font-weight: 600;
+  position: relative;
+}
+
+.personal-fastest-sector-highlight::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #ffc107;
+}
+
+.personal-fastest-lap-legend, .personal-fastest-sector-legend {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.color-box {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border-radius: 3px;
+}
+
+.personal-fastest-lap-legend .color-box {
+  background-color: #d4edda;
+}
+
+.personal-fastest-sector-legend .color-box {
+  background-color: #fff3cd;
+}
+
+/* Event cards styling */
+.event-card {
+  border-left: 4px solid #6c757d;
+  transition: transform 0.15s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+}
+
+.event-card[data-event="Impact"] {
+  border-left-color: #dc3545;
+}
+
+.event-card[data-event="CutTrackStart"],
+.event-card[data-event="CutTrackEnd"] {
+  border-left-color: #ffc107;
+}
+
+.event-card[data-event="State"] {
+  border-left-color: #17a2b8;
+}
+
+.event-time {
+  color: #6c757d;
+  font-size: 13px;
+  font-family: monospace;
+  min-width: 80px;
+}
+
+/* Tab styling */
+.nav-tabs .nav-link {
+  color: #495057;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.nav-tabs .nav-link:hover {
+  background-color: #f8f9fa;
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+  color: #007bff;
+  background-color: white;
+  border-color: #dee2e6 #dee2e6 white;
+}
+
+/* Mobile responsive styling */
+@media (max-width: 768px) {
+  .lap-time-table {
+    overflow-x: auto !important;
+  }
+  .event-card .card-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .event-time, .event-badge {
+    margin-bottom: 8px;
+  }
+  
+  .lap-time-table .MuiTable-root th,
+  .lap-time-table .MuiTable-root td {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
