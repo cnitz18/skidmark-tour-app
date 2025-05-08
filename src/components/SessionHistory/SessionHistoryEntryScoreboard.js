@@ -4,6 +4,7 @@ import getAPIData from "../../utils/getAPIData";
 import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import SessionHistoryHeadToHeadComparison from './SessionHistoryHeadToHeadComparison';
 // eslint-disable-next-line no-unused-vars
 import styles from "./SessionHistoryEntryScoreboard.css";
 
@@ -24,16 +25,11 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   const handleShowModal = () => setShowModal(true);
 
   function rowClick(res){
-    //console.log('click:',res)
     let stage_id = res["stage"]
     let participant_id = res["participantid"]
     setSelectedRacerName(res["name"])
-    //console.log(stage_id,participant_id)
-    //TODO: set actual loading signal
-    //console.log('loading...')
     getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${stage_id}&participant_id=${participant_id}`)
     .then((res) => {
-      //console.log('api response:',res)
       setEventsData(res);
       setShowSpinner(false);
     }).catch((e) => {
@@ -41,19 +37,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     })
     handleShowModal()
   }
-
-  // function getEventName( event_name ){
-  //   switch( event_name ){
-  //     case 'CutTrackStart':
-  //       return "Off-Track Start";
-  //     case 'CutTrackEnd':
-  //       return "Off-Track End";
-  //     case 'State':
-  //       return "State Change";
-  //     default:
-  //       return event_name;
-  //   }
-  // }
 
   function getEventDescription( evt ){
     switch( evt.event_name ){
@@ -74,7 +57,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     }
   }
 
-  // Format lap data for the chart
   const formatLapDataForChart = () => {
     if (!eventsData || eventsData.length === 0) return [];
     
@@ -90,7 +72,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
       }));
   };
 
-  // Get event type with appropriate badge styling
   const getEventBadge = (eventName) => {
     switch(eventName) {
       case 'Impact':
@@ -162,6 +143,12 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Nav.Link eventKey="lapChart" className="d-flex align-items-center justify-content-center">
                     <i className="bi bi-graph-up me-2"></i>
                     Lap Analysis
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="headToHead" className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-people me-2"></i>
+                    Driver Comparison
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -249,6 +236,22 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
+                  </Paper>
+                </Tab.Pane>
+                
+                <Tab.Pane eventKey="headToHead">
+                  <Paper elevation={0} className="p-3 mb-4 border">
+                    <SessionHistoryHeadToHeadComparison 
+                      race={race}
+                      session={session}
+                      selectedDriver={{
+                        name: selectedRacerName,
+                        participantid: race.results.find(r => r.name === selectedRacerName)?.participantid,
+                        stage: race.results.find(r => r.name === selectedRacerName)?.stage,
+                        RacePosition: race.results.find(r => r.name === selectedRacerName)?.RacePosition,
+                        FastestLapTime: race.results.find(r => r.name === selectedRacerName)?.FastestLapTime
+                      }}
+                    />
                   </Paper>
                 </Tab.Pane>
                 
