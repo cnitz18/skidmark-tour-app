@@ -126,6 +126,12 @@
 }
 
 /* Event cards styling */
+.events-container {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
 .event-card {
   border-left: 4px solid #6c757d;
   transition: transform 0.15s ease;
@@ -146,6 +152,14 @@
 
 .event-card[data-event="State"] {
   border-left-color: #17a2b8;
+}
+
+.event-description {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
 }
 
 .event-time {
@@ -184,10 +198,25 @@
   .event-card .card-body {
     flex-direction: column;
     align-items: flex-start;
+    padding: 10px !important;
+  }
+  
+  .event-card .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    width: 100%;
   }
   
   .event-time, .event-badge {
     margin-bottom: 8px;
+    margin-right: 0 !important;
+    width: 100%;
+  }
+  
+  .event-description {
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.4;
   }
   
   .lap-time-table .MuiTable-root th,
