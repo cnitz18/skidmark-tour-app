@@ -81,7 +81,7 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                             </Col>
                             <Col xs={12} md={5}>
                                 <div className={styles.championStatCompact}>
-                                    <div className="d-flex justify-content-around">
+                                    <div className="d-flex justify-content-center">
                                         <div className={styles.statItem}>
                                             <div className={styles.statValue}>{champion.Wins || 0}</div>
                                             <div className={styles.statLabel}>Wins</div>
@@ -249,7 +249,7 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                                             ({msToTime(raceResults.find((r) => r.RacePosition === 1)?.FastestLapTime)}s)
                                                         </span>
                                                     </div>
-                                                    <div className="d-flex justify-content-between small text-muted mt-1">
+                                                    <div className={`${styles.podiumHighlight} d-flex justify-content-between small text-muted mt-1`}>
                                                         <span>P2: {raceResults.find((r) => r.RacePosition === 2)?.name}</span>
                                                         <span>P3: {raceResults.find((r) => r.RacePosition === 3)?.name}</span>
                                                     </div>
