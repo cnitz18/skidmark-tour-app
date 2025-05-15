@@ -5,6 +5,8 @@ import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import SessionHistoryHeadToHeadComparison from './SessionHistoryHeadToHeadComparison';
+import AdvancedLapAnalysis from './AdvancedLapAnalysis';
+import ConsistencyTracker from './ConsistencyTracker';
 // eslint-disable-next-line no-unused-vars
 import styles from "./SessionHistoryEntryScoreboard.css";
 
@@ -139,10 +141,16 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                     Lap Times
                   </Nav.Link>
                 </Nav.Item>
-                <Nav.Item>
+                {/* <Nav.Item>
                   <Nav.Link eventKey="lapChart" className="d-flex align-items-center justify-content-center">
                     <i className="bi bi-graph-up me-2"></i>
                     Lap Analysis
+                  </Nav.Link>
+                </Nav.Item> */}
+                <Nav.Item>
+                  <Nav.Link eventKey="advancedAnalysis" className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-speedometer2 me-2"></i>
+                    Advanced Lap Analysis
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -155,6 +163,12 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
                     <i className="bi bi-exclamation-triangle me-2"></i>
                     Race Events
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
+                    <i className="bi bi-lightning-charge me-2"></i>
+                    Performance Insights
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
@@ -215,7 +229,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   </Paper>
                 </Tab.Pane>
                 
-                <Tab.Pane eventKey="lapChart">
+                {/* <Tab.Pane eventKey="lapChart">
                   <Paper elevation={0} className="p-3 mb-4 border">
                     <h5 className="mb-3">Lap Time Progression</h5>
                     <div style={{ height: "400px" }}>
@@ -236,6 +250,16 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
+                  </Paper>
+                </Tab.Pane> */}
+                
+                <Tab.Pane eventKey="advancedAnalysis">
+                  <Paper elevation={0} className="p-3 mb-4 border">
+                    <AdvancedLapAnalysis 
+                      eventsData={eventsData}
+                      race={race}
+                      selectedRacerName={selectedRacerName}
+                    />
                   </Paper>
                 </Tab.Pane>
                 
@@ -282,6 +306,15 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                         </div>
                       )}
                     </div>
+                  </Paper>
+                </Tab.Pane>
+                
+                <Tab.Pane eventKey="performanceInsights">
+                  <Paper elevation={0} className="p-3 mb-4 border">
+                    <h5 className="mb-4">Performance Analytics</h5>
+                    
+                    <ConsistencyTracker eventsData={eventsData} />
+                    
                   </Paper>
                 </Tab.Pane>
               </Tab.Content>

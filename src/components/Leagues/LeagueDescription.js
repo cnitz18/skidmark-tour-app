@@ -8,6 +8,7 @@ import { Tabs, Tab, Box } from '@mui/material';
 import LeagueDescriptionOverview from './LeagueDescriptionOverview';
 import LeagueDescriptionSchedule from './LeagueDescriptionSchedule';
 import LeagueDescriptionStandings from './LeagueDescriptionStandings';
+import LeagueDescriptionPerformance from './LeagueDescriptionPerformance';
   
 function LeagueDescriptionTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -133,6 +134,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
+                                    <Tab label="Performance Analytics" {...a11yProps(3)} />
                                     {/* <Tab label="Scoring" {...a11yProps(3)}/> */}
                                 </Tabs>
                             </Box>
@@ -145,10 +147,9 @@ const LeagueDescription = ({ enums, lists }) => {
                             <LeagueDescriptionTabPanel value={tabValue} index={2}>
                                 <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists}}/>
                             </LeagueDescriptionTabPanel>
-                            {/* Redundant panel now that points are included in the dashboard */}
-                            {/* <LeagueDescriptionTabPanel value={tabValue} index={3}>
-                                <LeagueDescriptionRules {...{league}}/>
-                            </LeagueDescriptionTabPanel> */}
+                            <LeagueDescriptionTabPanel value={tabValue} index={3}>
+                                <LeagueDescriptionPerformance {...{league, leagueHistory, leagueDetails, lists}} />
+                            </LeagueDescriptionTabPanel>
                         </Box>
                     </Container>
                 )
