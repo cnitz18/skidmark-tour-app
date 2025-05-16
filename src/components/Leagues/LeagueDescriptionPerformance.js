@@ -668,11 +668,11 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                       </div>
                     </div>
                     
-                    {/* Performance Trend - More distinct */}
+                    {/* Performance Trend - Add proper spacing */}
                     <div className="stats-item mb-3 pb-3" style={{borderBottom: '1px solid rgba(0,0,0,0.08)'}}>
                       <div className="d-flex justify-content-between align-items-center">
-                        <span className="stats-label">Season Trend</span>
-                        <span className="stats-value">
+                        <span className="stats-label" style={{marginRight: '12px', flexShrink: 0}}>Season Trend</span>
+                        <span className="stats-value" style={{textAlign: 'right'}}>
                           {selectedDriverFormData.length >= 2 && 
                             (selectedDriverFormData[selectedDriverFormData.length - 1].position < 
                             selectedDriverFormData[0].position ? 
@@ -685,7 +685,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                     
                     {/* Recent Momentum - Better spacing */}
                     <div className="stats-item mb-3">
-                      <span className="stats-label d-block mb-2">Recent Momentum</span>
+                      <span className="stats-label mb-2">Recent Momentum</span>
                       <div className="position-badges d-flex justify-content-center">
                         {selectedDriverFormData.slice(-3).map((race, idx) => (
                           <div key={idx} className="text-center mx-2">
@@ -703,11 +703,11 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                     </div>
                     
                     {/* Recent Races - Better visual separation */}
-                    <div className="mt-3 pt-3" style={{borderTop: '1px solid rgba(0,0,0,0.08)'}}>
-                      <Typography variant="subtitle2" className="mb-2">
+                    <div className="pt-3">
+                      <span className="stats-label mb-2">
                         <i className="bi bi-flag me-1"></i> Recent Races
-                      </Typography>
-                      <div className="race-list" style={{maxHeight: '150px'}}>
+                      </span>
+                      <div className="race-list">
                         {selectedDriverFormData.slice(-5).reverse().map((race, idx) => (
                           <div key={idx} className="race-item d-flex justify-content-between align-items-center py-2">
                             <span className="race-track d-flex align-items-center">

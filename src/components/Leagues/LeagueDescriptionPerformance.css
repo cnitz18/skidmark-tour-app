@@ -76,7 +76,6 @@
 
 /* Recent races list */
 .race-list {
-  max-height: 200px;
   overflow-y: auto;
 }
 
