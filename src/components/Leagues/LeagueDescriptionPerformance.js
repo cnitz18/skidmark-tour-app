@@ -213,9 +213,9 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     const eventGroups = {};
     
     history.forEach((event,i,arr) => {
-      eventGroups[arr.length - i] = event;
+      eventGroups[event.RaceWeek] = event;
     });
-    console.log('Event Groups:', eventGroups);
+    console.log('processFormTrackingData Event Groups:', eventGroups);
     // Get the last 5 race weeks (or all if less than 5)
     const raceWeeks = Object.keys(eventGroups)
       .map(Number)
@@ -225,7 +225,6 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
 
       // console.log('raceWeeks:', raceWeeks);
     
-    var maxIndex = 4;
     // Format data for the form chart
     const formData = raceWeeks.map(week => {
       const weekEvents = eventGroups[week] || [];
@@ -461,8 +460,6 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
 
         const driverRaceEvent = weekRaceResults.find((res) => res.name === driver);
         const driverQualiEvent = weekQualiResults?.find((res) => res.name === driver);
-        if( driver === "Kirtis")
-          console.log('driverRaceEvent',driverRaceEvent,driverQualiEvent)
         
         if (driverRaceEvent && driverRaceEvent.QualifyingPosition && driverRaceEvent.RacePosition) {
           const positionsDelta = driverRaceEvent.QualifyingPosition - driverRaceEvent.RacePosition;
@@ -618,15 +615,21 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                         label={{ value: 'Race', position: 'insideBottomRight', offset: -10 }} 
                       />
                       <YAxis 
-                        domain={[1, 'auto']} 
+                        domain={[1, dataMax => Math.max(dataMax, 10)]} 
                         reversed 
                         label={{ value: 'Position', angle: -90, position: 'insideLeft' }} 
                       />
-                      <Tooltip 
-                        formatter={(value) => [`P${value}`, 'Position']}
-                        labelFormatter={(label) => `${label}`} 
-                        contentStyle={{ borderRadius: '4px' }}
-                      />
+                    <Tooltip 
+                      formatter={(value) => [`P${value}`, 'Position']}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload.length > 0) {
+                          const dataPoint = payload[0].payload;
+                          return `${label} - ${dataPoint.track}`;
+                        }
+                        return label;
+                      }}
+                      contentStyle={{ borderRadius: '4px' }}
+                    />
                       <Legend content={renderCustomLegend} />
                       <ReferenceLine y={3.5} strokeDasharray="5 5" stroke="#4CAF50" />
                       <Line 
@@ -876,16 +879,18 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                 <StatsCardHeader>
                   <Typography variant="h6">League Consistency Rankings</Typography>
                 </StatsCardHeader>
-                <div style={{ height: '400px', width: '100%' }}>
+                <div style={{ height: '600px', width: '100%' }}>
                   <ResponsiveContainer>
                     <BarChart
                       data={formattedData.consistencyRatings.sort((a, b) => b.consistency - a.consistency)}
                       layout="vertical"
                       margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
+                      barSize={20}
+                      barGap={8}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" domain={[0, 10]} />
-                      <YAxis dataKey="name" type="category" width={80} />
+                      <YAxis dataKey="name" type="category" width={80} interval={0} />
                       <Tooltip formatter={(value) => [`${value}/10`, 'Consistency']} />
                       <Legend />
                       <Bar 
@@ -1125,11 +1130,11 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                         <BarChart
                           data={formattedData.comebackFactors.driverComebacks?.sort((a, b) => b.value - a.value)}
                           layout="vertical"
-                          margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
+                          margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis type="number" />
-                          <YAxis dataKey="name" type="category" width={80} />
+                          <YAxis dataKey="name" type="category" width={100} />
                           <Tooltip formatter={(value) => [`${value > 0 ? '+' : ''}${value} positions`, 'Avg Gained/Lost']} />
                           <Bar dataKey="value" name="Comeback Factor" radius={[0, 4, 4, 0]}>
                             {formattedData.comebackFactors.driverComebacks?.map((entry, index) => (
