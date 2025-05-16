@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Badge, ButtonGroup, Button, Nav, Tab } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, ButtonGroup, Button } from 'react-bootstrap';
 import { 
-  ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, 
+  ResponsiveContainer, ComposedChart, Line, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ReferenceLine, Scatter
 } from 'recharts';
 import msToTime from '../../utils/msToTime';
@@ -24,6 +24,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     if (eventsData && eventsData.length > 0) {
       processEventData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventsData, analysisMode]);
 
   const processEventData = () => {
@@ -32,7 +33,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       .filter(event => event.event_name === "Lap")
       .sort((a, b) => a.attributes_Lap - b.attributes_Lap);
       
-      console.log('lapEvents:',lapEvents)
+      // console.log('lapEvents:',lapEvents)
     if (lapEvents.length === 0) return;
 
     // Find best lap time
@@ -81,14 +82,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       };
     }).filter(Boolean);
 
-    console.log('setting processed data:', {
-      lapEvents,
-      bestLap,
-      bestSectors,
-      lapTimeStats,
-      lapComparisons,
-      pitLaps
-    });
     setProcessedData({
       lapEvents,
       bestLap,
@@ -280,16 +273,16 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   };
 
   // Generate delta colors based on time difference
-  const getDeltaColor = (delta) => {
-    if (delta === 0) return 'text-muted';
-    return delta < 0 ? 'text-success' : 'text-danger';
-  };
+  // const getDeltaColor = (delta) => {
+  //   if (delta === 0) return 'text-muted';
+  //   return delta < 0 ? 'text-success' : 'text-danger';
+  // };
 
-  // Format delta time with sign
-  const formatDelta = (delta) => {
-    const prefix = delta < 0 ? '-' : '+';
-    return `${prefix}${msToTime(Math.abs(delta))}`;
-  };
+  // // Format delta time with sign
+  // const formatDelta = (delta) => {
+  //   const prefix = delta < 0 ? '-' : '+';
+  //   return `${prefix}${msToTime(Math.abs(delta))}`;
+  // };
 
   // Calculate ideal lap
   const calculateIdealLap = () => {

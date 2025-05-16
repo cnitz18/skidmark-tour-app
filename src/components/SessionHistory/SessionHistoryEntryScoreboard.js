@@ -3,12 +3,12 @@ import { Modal, Button, Spinner, Nav, Tab, Badge, Card } from 'react-bootstrap';
 import getAPIData from "../../utils/getAPIData";
 import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import SessionHistoryHeadToHeadComparison from './SessionHistoryHeadToHeadComparison';
 import AdvancedLapAnalysis from './AdvancedLapAnalysis';
 import ConsistencyTracker from './ConsistencyTracker';
 // eslint-disable-next-line no-unused-vars
-import styles from "./SessionHistoryEntryScoreboard.css";
+import "./SessionHistoryEntryScoreboard.css";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
   const [showModal, setShowModal] = useState(false);
@@ -59,20 +59,20 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     }
   }
 
-  const formatLapDataForChart = () => {
-    if (!eventsData || eventsData.length === 0) return [];
+  // const formatLapDataForChart = () => {
+  //   if (!eventsData || eventsData.length === 0) return [];
     
-    return eventsData
-      .filter(evt => evt.event_name === "Lap")
-      .map((evt, index) => ({
-        lap: index + 1,
-        lapTime: evt.attributes_LapTime / 1000,
-        s1: evt.attributes_Sector1Time / 1000,
-        s2: evt.attributes_Sector2Time / 1000,
-        s3: evt.attributes_Sector3Time / 1000,
-        position: evt.attributes_RacePosition
-      }));
-  };
+  //   return eventsData
+  //     .filter(evt => evt.event_name === "Lap")
+  //     .map((evt, index) => ({
+  //       lap: index + 1,
+  //       lapTime: evt.attributes_LapTime / 1000,
+  //       s1: evt.attributes_Sector1Time / 1000,
+  //       s2: evt.attributes_Sector2Time / 1000,
+  //       s3: evt.attributes_Sector3Time / 1000,
+  //       position: evt.attributes_RacePosition
+  //     }));
+  // };
 
   const getEventBadge = (eventName) => {
     switch(eventName) {
