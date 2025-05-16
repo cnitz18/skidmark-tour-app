@@ -148,8 +148,6 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
             var stageId = res[0]?.stage;
             racesObj[stageId] = res;
           })
-          console.log('Fetched results data:', racesObj);
-          console.log('also quali obj?', qualiObj);
           setRaceResultsObject(racesObj);
           setQualiResultsObject(qualiObj);
         });
@@ -174,7 +172,6 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
       comebackFactors: processComebackData(leagueHistory, driverList)
     };
     
-    console.log('Processed Data:', processedData);
     setFormattedData(processedData);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [raceResultsObject]);
@@ -196,7 +193,6 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     // Format data for the form chart
     const formData = raceWeeks.map(week => {
       const weekEvents = eventGroups[week] || [];
-      console.log('weekEvents:', weekEvents);
       const result = {
         name: `Week ${week}`,
         track: NameMapper.fromTrackId(weekEvents.setup.TrackId,lists["tracks"]?.list) || `Race ${week}`
@@ -247,7 +243,6 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
           if( result.QualifyingPosition ){
             driverStats[driver].qualifying.push(result.QualifyingPosition)
             var thisQualiPercentile = (numRacersQualified - (result.QualifyingPosition-1) ) / numRacersQualified * 100;
-            // console.log('total qualifying events:',totalQualifyingEvents);
             var avgQualiPercentile = totalQualifyingEvents > 1 ?
               ((driverStats[driver].avgQualiPercentile * totalQualifyingEvents) + thisQualiPercentile) / (totalQualifyingEvents + 1) :
               thisQualiPercentile;
