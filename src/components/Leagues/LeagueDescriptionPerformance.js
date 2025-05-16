@@ -9,7 +9,8 @@ import { Box, Tabs, Tab, Paper, Divider, Typography, Avatar } from '@mui/materia
 import { styled } from '@mui/material/styles';
 import getAPIData from "../../utils/getAPIData";
 import NameMapper from '../../utils/Classes/NameMapper';
-import { If } from 'three/tsl';
+import './LeagueDescriptionPerformance.css';
+import { parse } from 'date-fns';
 
 // Custom tab panel component for nested tabs
 function PerformanceTabPanel(props) {
@@ -84,7 +85,8 @@ const renderCustomLegend = (props) => {
 const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, lists }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [driverList, setDriverList] = useState([]);
-  const [resultsObject, setResultsObject] = useState({});
+  const [raceResultsObject, setRaceResultsObject] = useState({});
+  const [qualiResultsObject, setQualiResultsObject] = useState({});
   const [selectedDriver, setSelectedDriver] = useState('');
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState({
@@ -110,21 +112,27 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
         }
 
         var fetchRacesArray = [], fetchQualiArray = [];
-        console.log('leagueHistorymapping:', leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id]));
-        leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id]).forEach(([raceId,qualiId], i) => { 
+        var racesObj = {}, qualiObj = {};
+        // console.log('leagueHistorymapping:', leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id]));
+        leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id])
+        .forEach(([raceId,qualiId], i) => { 
           if( raceId ){
             fetchRacesArray.push(
               getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceId}`)
-              .then((res) => {
-                res = res.map((e) => {
+              .then((raceRes) => {
+                raceRes = raceRes.map((e) => {
                   e.RaceWeek = leagueHistory.length - i;
                   return e;
                 });
                 if( qualiId ){
                   return getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiId}`)
                   .then((qualiRes) => {
+                    var stageId = qualiRes[0]?.stage;
+                    // console.log('qualiRes:',qualiRes,stageId);
+                    qualiObj[stageId] = qualiRes.map((e) => { e.RaceWeek = leagueHistory.length - i; return e; });
                     // console.log('lets map:',res,qualiRes);
-                    res = res.map((r) => {
+                    // console.log('checking qualiObj:',qualiObj);
+                    raceRes = raceRes.map((r) => {
                       var qualiPerformance = qualiRes.find(q => q.participantid === r.participantid);
                       if( qualiPerformance ){
                         r.QualifyingPosition = qualiPerformance.RacePosition;
@@ -132,10 +140,10 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                       // r.RaceWeek = leagueHistory.length - i;
                       return r;
                     })
-                    return res;
+                    return raceRes;
                   });
                 }
-                return res;
+                return raceRes;
               })
             )
           }
@@ -155,7 +163,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
         });
 
         // Promise.all(fetchQualiArray).then((qualiRes) => {
-        var racesObj = {};
+        
         //   qualiRes.forEach((res) => {
         //     var stageId = res[0]?.stage;
         //     qualiObj[stageId] = res;
@@ -168,7 +176,9 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
             racesObj[stageId] = res;
           })
           console.log('Fetched results data:', racesObj);
-          setResultsObject(racesObj);
+          console.log('also quali obj?', qualiObj);
+          setRaceResultsObject(racesObj);
+          setQualiResultsObject(qualiObj);
         });
           //qualifying
         // });
@@ -182,7 +192,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
 
   useEffect(() => {
     // Process data for each visualization
-    if (!resultsObject || Object.keys(resultsObject).length === 0 ) return;
+    if (!raceResultsObject || Object.keys(raceResultsObject).length === 0 ) return;
     
     // console.log('processing',resultsObject)
     const processedData = {
@@ -195,7 +205,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     
     console.log('Processed Data:', processedData);
     setFormattedData(processedData);
-  }, [resultsObject]);
+  }, [raceResultsObject]);
 
   // useEffect(() =>  {
   //   console.log('eh?', (!formattedData.peakPerformances || Object.keys(formattedData.peakPerformances).length === 0),Object.keys(formattedData.peakPerformances).length,formattedData.peakPerformances)
@@ -263,7 +273,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
 
       // Add position for each driver
       drivers.forEach(driver => {
-        var results = resultsObject[weekEvents.stages?.race1?.id];
+        var results = raceResultsObject[weekEvents.stages?.race1?.id];
         const driverEvent = results.find(e => e.name === driver);
         result[driver] = driverEvent ? driverEvent.RacePosition : null;
       });
@@ -282,22 +292,44 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     drivers.forEach(driver => {
       driverStats[driver] = {
         positions: [],
+        qualifying: [],
         dnfs: 0,
-        incidents: 0,
-        totalRaces: 0
+        totalRaces: 0,
+        avgQualiPercentile: 0,
       };
     });
-    // console.log('history:', history);
-    // console.log('resultsObject:', resultsObject);
 
-    // Collect race positions for each driver
-    Object.values(resultsObject).forEach(event => {
+    // Collect race positions and DNFs for each driver
+    var totalQualifyingEvents = 0;
+    Object.values(raceResultsObject).forEach(event => {
+      // console.log('event:', event);
+      var racersQualified = Object.values(qualiResultsObject).find((res) => res[0].RaceWeek === event[0].RaceWeek)?.map((e) => e.name);
+      var numRacersQualified = racersQualified?.length ?? 0;
+      if( numRacersQualified > 0 ){
+        totalQualifyingEvents++;
+      }
+      // console.log('racersQualified:', racersQualified);
       event.forEach((result) => {
         const driver = result.name
-
+        racersQualified?.splice(racersQualified.indexOf(driver), 1);
         if (driverStats[driver]) {
+          if( result.QualifyingPosition ){
+            driverStats[driver].qualifying.push(result.QualifyingPosition)
+            var thisQualiPercentile = (numRacersQualified - (result.QualifyingPosition-1) ) / numRacersQualified * 100;
+            // console.log('total qualifying events:',totalQualifyingEvents);
+            var avgQualiPercentile = totalQualifyingEvents > 1 ?
+              ((driverStats[driver].avgQualiPercentile * totalQualifyingEvents) + thisQualiPercentile) / (totalQualifyingEvents + 1) :
+              thisQualiPercentile;
+            
+            if( driver == "verydystrbd" ){
+              console.log('qualified:',result.QualifyingPosition,'of',numRacersQualified,'thisQualiPercentile:', thisQualiPercentile);
+              console.log('new avg:',avgQualiPercentile);
+            }
+            driverStats[driver].avgQualiPercentile = avgQualiPercentile;
+          }
           driverStats[driver].positions.push(result.RacePosition);
           driverStats[driver].totalRaces++;
+
           
           if (event.State == "Retired") {
             driverStats[driver].dnfs++;
@@ -308,6 +340,22 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
           // }
         }
       })
+      // if a racer qualified but didn't finish the race, count it as a DNF
+      racersQualified?.forEach((driver) => {
+        if( driverStats[driver] ){
+          driverStats[driver].totalRaces++;
+          driverStats[driver].dnfs++;
+        }else {
+          driverStats[driver] = {
+            positions: [],
+            qualifying: [],
+            dnfs: 1,
+            totalRaces: 1,
+            avgQualiPercentile: 0,
+          };
+        }
+      });
+      // console.log('racersQualified remaining:', racersQualified);
     });
     
     // Collect positions for each driver
@@ -334,41 +382,56 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     return drivers.map(driver => {
       const stats = driverStats[driver];
       
-      if (stats.positions.length === 0) {
+      if (stats.totalRaces === 0) {
         return {
           name: driver,
           consistency: 0,
           finishRate: 0,
-          cleanRacing: 0,
-          avgPosition: 0
+          avgPosition: 0,
+          races: 0
         };
       }
       
-      // Calculate standard deviation of positions
-      const avgPosition = stats.positions.reduce((sum, pos) => sum + pos, 0) / stats.positions.length;
-      const variance = stats.positions.reduce((sum, pos) => sum + Math.pow(pos - avgPosition, 2), 0) / stats.positions.length;
+      // Calculate standard deviation of positions for completed races
+      const avgPosition = stats.positions.length > 0 ? 
+        stats.positions.reduce((sum, pos) => sum + pos, 0) / stats.positions.length : 
+        0;
+
+      const avgQuali = stats.qualifying.length > 0 ? 
+        stats.qualifying.reduce((sum, pos) => sum + pos, 0) / stats.qualifying.length : 
+        0;
+      
+      const variance = stats.positions.length > 0 ?
+        stats.positions.reduce((sum, pos) => sum + Math.pow(pos - avgPosition, 2), 0) / stats.positions.length :
+        0;
+      
       const stdDev = Math.sqrt(variance);
       
       // Normalize to a 0-10 scale where lower stdDev is better
-      // Max stdDev expected would be around 10-15 positions
       const maxStdDev = 10;
-      const consistencyScore = Math.max(0, 10 - (stdDev / maxStdDev * 10));
+      const baseConsistencyScore = Math.max(0, 10 - (stdDev / maxStdDev * 10));
+      
+      // Apply DNF penalty - more DNFs means lower consistency
+      const dnfRatio = stats.dnfs / stats.totalRaces;
+      
+      // Calculate final consistency score with DNF penalty
+      // This formula reduces the consistency score based on DNF ratio
+      // A driver with 50% DNFs would lose 50% of their consistency score
+      const consistencyScore = baseConsistencyScore * (1 - (dnfRatio * 0.8));
       
       // Finish rate (non-DNF)
       const finishRate = (stats.totalRaces - stats.dnfs) / stats.totalRaces * 10;
-      
-      // Clean racing score (fewer incidents is better)
-      const avgIncidents = stats.incidents / stats.totalRaces;
-      const cleanRacingScore = Math.max(0, 10 - (avgIncidents / 4 * 10)); // Assuming 4+ incidents per race is poor
       
       return {
         name: driver,
         consistency: parseFloat(consistencyScore.toFixed(1)),
         finishRate: parseFloat(finishRate.toFixed(1)),
-        cleanRacing: parseFloat(cleanRacingScore.toFixed(1)), 
         avgPosition: parseFloat(avgPosition.toFixed(1)),
-        incidents: stats.incidents,
-        races: stats.totalRaces
+        races: stats.totalRaces,
+        dnfs: stats.dnfs,
+        qualifying: parseFloat(avgQuali.toFixed(1)),
+        qualifyingPercentile: stats.avgQualiPercentile,
+        baseScore: parseFloat(baseConsistencyScore.toFixed(1)) // Optional: Keep track of base score before DNF penalty
       };
     });
   };
@@ -383,7 +446,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       driverBests[driver] = {};
     });
     
-    // console.log('resultsObject:', Object.keys(resultsObject));
+    // console.log('raceResultsObject:', Object.keys(raceResultsObject));
     // Group by track and find best performances
     history.forEach((event,i) => {
       // const driver = event.PlayerName;
@@ -395,7 +458,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       if (!tracks[track]) {
         tracks[track] = { name: track, events: [] };
       }
-      var resultsArray = resultsObject[event.stages?.race1?.id];
+      var resultsArray = raceResultsObject[event.stages?.race1?.id];
       // console.log('resultsArray:', resultsArray);
       tracks[track].events.push(...resultsArray);
       
@@ -447,7 +510,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       
       drivers.forEach(driver => {
         // const driverEvent = events.find(e => e.PlayerName === driver);
-        const weekResults = Object.values(resultsObject).find((res) => {
+        const weekResults = Object.values(raceResultsObject).find((res) => {
           return res[0].RaceWeek === week
         })
         const driverEvent = weekResults.find((res) => res.name === driver);
@@ -517,7 +580,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     return formattedData.consistencyRatings.find(d => d.name === selectedDriver) || {
       consistency: 0,
       finishRate: 0,
-      cleanRacing: 0
+      qualifying: 0
     };
   }, [formattedData.consistencyRatings, selectedDriver]);
   
@@ -732,13 +795,13 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                     <RadarChart outerRadius={150} width={500} height={500} data={[
                       { subject: 'Consistency', A: selectedDriverConsistency.consistency, fullMark: 10 },
                       { subject: 'Finish Rate', A: selectedDriverConsistency.finishRate, fullMark: 10 },
-                      { subject: 'Clean Racing', A: selectedDriverConsistency.cleanRacing, fullMark: 10 },
-                      { subject: 'Adaptability', A: Math.random() * 3 + 7, fullMark: 10 }, // Placeholder
-                      { subject: 'Qualifying', A: Math.random() * 3 + 7, fullMark: 10 }, // Placeholder
+                      // { subject: 'Clean Racing', A: selectedDriverConsistency.cleanRacing, fullMark: 10 },
+                      // { subject: 'Adaptability', A: Math.random() * 3 + 7, fullMark: 10 }, // Placeholder
+                      { subject: 'Qualifying', A: selectedDriverConsistency.qualifyingPercentile / 10, fullMark: 10 }, // Placeholder
                     ]}>
                       <PolarGrid />
                       <PolarAngleAxis dataKey="subject" />
-                      <PolarRadiusAxis angle={30} domain={[0, 10]} />
+                      <PolarRadiusAxis angle={90} domain={[0, 10]} />
                       <Radar name={selectedDriver} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
                       <Legend />
                     </RadarChart>
@@ -800,6 +863,22 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                           </td>
                         </tr>
                         <tr>
+                          <td>Average Qualifying</td>
+                          <td className="text-end">
+                            <strong>
+                              P{selectedDriverConsistency.qualifying || 0}
+                            </strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Average Qualifying Percentile</td>
+                          <td className="text-end">
+                            <strong>
+                              {(selectedDriverConsistency.qualifyingPercentile).toFixed(1)}%
+                            </strong>
+                          </td>
+                        </tr>
+                        {/* <tr>
                           <td>Clean Racing Score</td>
                           <td className="text-end">
                             <Badge bg={getCleanRacingColor(selectedDriverConsistency.cleanRacing)}>
@@ -822,7 +901,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                                 '0.0'}
                             </strong>
                           </td>
-                        </tr>
+                        </tr> */}
                       </tbody>
                     </Table>
                   </StatsCard>
