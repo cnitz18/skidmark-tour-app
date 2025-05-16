@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Row, Col, Card, Table, Form, Spinner, Badge } from 'react-bootstrap';
+import { useState, useEffect, useMemo } from 'react';
+import { Container, Row, Col, Table, Form, Spinner, Badge } from 'react-bootstrap';
 import { 
   LineChart, Line, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, 
   Radar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
-  ReferenceLine, ScatterChart, Scatter, Cell 
+  ReferenceLine, Cell 
 } from 'recharts';
-import { Box, Tabs, Tab, Paper, Divider, Typography, Avatar } from '@mui/material';
+import { Box, Tabs, Tab, Paper, Divider, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import getAPIData from "../../utils/getAPIData";
 import NameMapper from '../../utils/Classes/NameMapper';
 import './LeagueDescriptionPerformance.css';
-import { parse } from 'date-fns';
 
 // Custom tab panel component for nested tabs
 function PerformanceTabPanel(props) {
@@ -24,7 +23,7 @@ function PerformanceTabPanel(props) {
       aria-labelledby={`performance-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }
@@ -82,7 +81,7 @@ const renderCustomLegend = (props) => {
   );
 };
 
-const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, lists }) => {
+const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistory, leagueDetails, lists }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [driverList, setDriverList] = useState([]);
   const [raceResultsObject, setRaceResultsObject] = useState({});
@@ -111,9 +110,8 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
           setSelectedDriver(drivers[0]);
         }
 
-        var fetchRacesArray = [], fetchQualiArray = [];
+        var fetchRacesArray = [];
         var racesObj = {}, qualiObj = {};
-        // console.log('leagueHistorymapping:', leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id]));
         leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id])
         .forEach(([raceId,qualiId], i) => { 
           if( raceId ){
@@ -128,16 +126,12 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                   return getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiId}`)
                   .then((qualiRes) => {
                     var stageId = qualiRes[0]?.stage;
-                    // console.log('qualiRes:',qualiRes,stageId);
                     qualiObj[stageId] = qualiRes.map((e) => { e.RaceWeek = leagueHistory.length - i; return e; });
-                    // console.log('lets map:',res,qualiRes);
-                    // console.log('checking qualiObj:',qualiObj);
                     raceRes = raceRes.map((r) => {
                       var qualiPerformance = qualiRes.find(q => q.participantid === r.participantid);
                       if( qualiPerformance ){
                         r.QualifyingPosition = qualiPerformance.RacePosition;
                       }
-                      // r.RaceWeek = leagueHistory.length - i;
                       return r;
                     })
                     return raceRes;
@@ -147,31 +141,10 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
               })
             )
           }
-          // if( qualiId ){
-          //   fetchQualiArray.push(
-          //     getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiId}`)
-          //     .then((res) => {
-          //       res = res.map((e) => {
-          //         e.RaceWeek = leagueHistory.length - i;
-          //         return e;
-          //       });
-          //       console.log('returning res:',res);
-          //       return res;
-          //     })
-          //   )
-          // }
         });
 
-        // Promise.all(fetchQualiArray).then((qualiRes) => {
-        
-        //   qualiRes.forEach((res) => {
-        //     var stageId = res[0]?.stage;
-        //     qualiObj[stageId] = res;
-        //   })
         Promise.all(fetchRacesArray).then((raceRes) => {
           raceRes.forEach((res) => {
-            // var qualiPerformance = qualiRes.find(e => e.RaceWeek === res[0]?.RaceWeek && );
-            // console.log('qualiPerformance:',qualiPerformance);
             var stageId = res[0]?.stage;
             racesObj[stageId] = res;
           })
@@ -180,21 +153,19 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
           setRaceResultsObject(racesObj);
           setQualiResultsObject(qualiObj);
         });
-          //qualifying
-        // });
       } catch (error) {
         console.error("Error processing performance data:", error);
       }
       
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leagueHistory, leagueDetails]);
 
   useEffect(() => {
     // Process data for each visualization
     if (!raceResultsObject || Object.keys(raceResultsObject).length === 0 ) return;
     
-    // console.log('processing',resultsObject)
     const processedData = {
       drivers: driverList,
       formTracking: processFormTrackingData(leagueHistory, driverList),
@@ -205,6 +176,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     
     console.log('Processed Data:', processedData);
     setFormattedData(processedData);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [raceResultsObject]);
   
   // Generate data for Form Tracker
@@ -213,22 +185,18 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     const eventGroups = {};
     
     history.forEach((event,i,arr) => {
-      eventGroups[event.RaceWeek] = event;
+      eventGroups[history.length-i] = event;
     });
-    console.log('processFormTrackingData Event Groups:', eventGroups);
-    // Get the last 5 race weeks (or all if less than 5)
+
     const raceWeeks = Object.keys(eventGroups)
       .map(Number)
       .sort((a, b) => b - a)
-      // .slice(0, 5)
       .reverse();
-
-      // console.log('raceWeeks:', raceWeeks);
     
     // Format data for the form chart
     const formData = raceWeeks.map(week => {
       const weekEvents = eventGroups[week] || [];
-      // console.log('weekEvents:', weekEvents);
+      console.log('weekEvents:', weekEvents);
       const result = {
         name: `Week ${week}`,
         track: NameMapper.fromTrackId(weekEvents.setup.TrackId,lists["tracks"]?.list) || `Race ${week}`
@@ -240,7 +208,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
         const driverEvent = results.find(e => e.name === driver);
         result[driver] = driverEvent ? driverEvent.RacePosition : null;
       });
-      // console.log('Form Data for week:', week, result);
+
       return result;
     });
     
@@ -265,13 +233,13 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     // Collect race positions and DNFs for each driver
     var totalQualifyingEvents = 0;
     Object.values(raceResultsObject).forEach(event => {
-      // console.log('event:', event);
       var racersQualified = Object.values(qualiResultsObject).find((res) => res[0].RaceWeek === event[0].RaceWeek)?.map((e) => e.name);
       var numRacersQualified = racersQualified?.length ?? 0;
+
       if( numRacersQualified > 0 ){
         totalQualifyingEvents++;
       }
-      // console.log('racersQualified:', racersQualified);
+
       event.forEach((result) => {
         const driver = result.name
         racersQualified?.splice(racersQualified.indexOf(driver), 1);
@@ -289,15 +257,12 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
           driverStats[driver].totalRaces++;
 
           
-          if (event.State == "Retired") {
+          if (event.State === "Retired") {
             driverStats[driver].dnfs++;
           }
-          
-          // if (event.Incidents) {
-          //   driverStats[driver].incidents += event.Incidents;
-          // }
         }
       })
+
       // if a racer qualified but didn't finish the race, count it as a DNF
       racersQualified?.forEach((driver) => {
         if( driverStats[driver] ){
@@ -313,11 +278,8 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
           };
         }
       });
-      // console.log('racersQualified remaining:', racersQualified);
     });
 
-    // console.log('Driver Stats:', driverStats);
-    
     // Calculate consistency metrics
     return drivers.map(driver => {
       const stats = driverStats[driver];
@@ -386,20 +348,17 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       driverBests[driver] = {};
     });
     
-    // console.log('raceResultsObject:', Object.keys(raceResultsObject));
     // Group by track and find best performances
     history.forEach((event,i) => {
-      // const driver = event.PlayerName;
       const trackId = event.setup.TrackId;
       const track = NameMapper.fromTrackId(trackId, lists["tracks"]?.list);
       const weekId = history.length - i;
-      // console.log('hsitory event track:',track,'week id:',weekId);
 
       if (!tracks[track]) {
         tracks[track] = { name: track, events: [] };
       }
+
       var resultsArray = raceResultsObject[event.stages?.race1?.id];
-      // console.log('resultsArray:', resultsArray);
       tracks[track].events.push(...resultsArray);
       
       drivers.forEach((driver) => {
@@ -431,7 +390,6 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     })
     
     history.forEach((event,i) => {
-      // var RaceWeek = history.length - i;
       const key = `${event.RaceWeek}-${NameMapper.fromTrackId(event.setup.TrackId, lists["tracks"]?.list)}`;
       if (!eventGroups[key]) {
         eventGroups[key] = [];
@@ -439,15 +397,12 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       eventGroups[key].push(event);
     });
     
-    console.log('eventGrups:',eventGroups)
     // Calculate qualifying to finish position deltas
     Object.values(eventGroups).reverse().forEach(events => {
       if (events.length === 0) return;
       
       const track = NameMapper.fromTrackId(events[0].setup.TrackId, lists["tracks"]?.list);
       const week = events[0].RaceWeek;
-      console.log('trackweek:',track,week)
-
       
       drivers.forEach(driver => {
         // const driverEvent = events.find(e => e.PlayerName === driver);
@@ -559,419 +514,449 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
 
   return (
     <Container fluid className="performance-analytics p-0">
-      <Row className="mb-4">
+      <Row>
         <Col xs={12}>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h4 className="m-0">Performance Analytics</h4>
-            <Form.Select 
-              value={selectedDriver} 
-              onChange={handleDriverChange}
-              style={{ width: 'auto' }}
-            >
-              {formattedData.drivers.map(driver => (
-                <option key={driver} value={driver}>{driver}</option>
-              ))}
-            </Form.Select>
+            {
+              !showHistorySpinner && 
+              <Form.Select 
+                value={selectedDriver} 
+                onChange={handleDriverChange}
+                style={{ width: 'auto' }}
+              >
+                {formattedData.drivers.map(driver => (
+                  <option key={driver} value={driver}>{driver}</option>
+                ))}
+              </Form.Select>
+            }
           </div>
           <Divider />
         </Col>
       </Row>
 
-      {/* Main Content */}
-      <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs 
-            value={selectedTab} 
-            onChange={handleTabChange} 
-            aria-label="performance metrics tabs"
-            variant="scrollable"
-            scrollButtons="auto"
-          >
-            <Tab label="Form Tracker" />
-            <Tab label="Consistency Rating" />
-            <Tab label="Peak Performance" />
-            <Tab label="Comeback Factor" />
-          </Tabs>
-        </Box>
+      {showHistorySpinner ?
+        <div className="text-center mt-4">
+            <Spinner animation="border" role="status"/>
+            <div>
+                This may take a moment...
+            </div>
+        </div>
+        :
+        <>
+          {/* Main Content */}
+          <Box sx={{ width: '100%'}}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Tabs 
+                value={selectedTab} 
+                onChange={handleTabChange} 
+                aria-label="performance metrics tabs"
+                variant="scrollable"
+                scrollButtons="auto"
+                TabIndicatorProps={{ style: { display: 'none' } }}
+                sx={{
+                  '& .MuiTabs-flexContainer': {
+                    justifyContent: 'center',
+                  },
+                  '& .MuiTab-root': {
+                    textTransform: 'none',
+                    minWidth: 120,
+                    fontWeight: 500,
+                    margin: '0 4px',
+                    borderRadius: '20px',
+                    transition: 'all 0.2s',
+                    '&.Mui-selected': {
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                    }
+                  }
+                }}
+              >
+                <Tab label="Form Tracker" />
+                <Tab label="Consistency Rating" />
+                <Tab label="Peak Performance" />
+                <Tab label="Comeback Factor" />
+              </Tabs>
+            </Box>
+          </Box>
 
-        {/* Form Tracker Tab */}
-        <PerformanceTabPanel value={selectedTab} index={0}>
-          <Row>
-            <Col lg={8}>
-              <StatsCard>
-                <StatsCardHeader>
-                  <Typography variant="h6">Recent Form: {selectedDriver}</Typography>
-                  <DriverBadge bg="primary">Last {selectedDriverFormData.length} Races Finished</DriverBadge>
-                </StatsCardHeader>
-                <div style={{ height: '400px', width: '100%' }}>
-                  <ResponsiveContainer>
-                    <LineChart
-                      data={selectedDriverFormData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="name" 
-                        label={{ value: 'Race', position: 'insideBottomRight', offset: -10 }} 
-                      />
-                      <YAxis 
-                        domain={[1, dataMax => Math.max(dataMax, 10)]} 
-                        reversed 
-                        label={{ value: 'Position', angle: -90, position: 'insideLeft' }} 
-                      />
-                    <Tooltip 
-                      formatter={(value) => [`P${value}`, 'Position']}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload.length > 0) {
-                          const dataPoint = payload[0].payload;
-                          return `${label} - ${dataPoint.track}`;
-                        }
-                        return label;
-                      }}
-                      contentStyle={{ borderRadius: '4px' }}
-                    />
-                      <Legend content={renderCustomLegend} />
-                      <ReferenceLine y={3.5} strokeDasharray="5 5" stroke="#4CAF50" />
-                      <Line 
-                        type="monotone" 
-                        dataKey="position" 
-                        name={selectedDriver} 
-                        stroke="#8884d8" 
-                        strokeWidth={3}
-                        activeDot={{ r: 8 }} 
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </StatsCard>
-            </Col>
-            <Col lg={4}>
-              <StatsCard>
-                <StatsCardHeader>
-                  <Typography variant="h6">Form Analysis</Typography>
-                </StatsCardHeader>
-                
-                {selectedDriverFormData.length > 0 ? (
-                  <>
-                    {/* Key Stats Section - Visual upgrade */}
-                    <div className="key-stats-container p-2 mb-3" style={{background: 'rgba(0,0,0,0.02)', borderRadius: '8px'}}>
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <div className="text-center flex-grow-1">
-                          <div className="stats-value" style={{fontSize: '1.5rem', fontWeight: '600'}}>
-                            P{Math.min(...selectedDriverFormData.map(race => race.position))}
-                          </div>
-                          <div className="stats-label text-muted" style={{fontSize: '0.8rem'}}>Best Result</div>
-                        </div>
-                        <div className="text-center flex-grow-1">
-                          <div className="stats-value" style={{fontSize: '1.5rem', fontWeight: '600'}}>
-                            P{(selectedDriverFormData.reduce((sum, race) => sum + race.position, 0) / selectedDriverFormData.length).toFixed(1)}
-                          </div>
-                          <div className="stats-label text-muted" style={{fontSize: '0.8rem'}}>Average</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Performance Trend - Add proper spacing */}
-                    <div className="stats-item mb-3 pb-3" style={{borderBottom: '1px solid rgba(0,0,0,0.08)'}}>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span className="stats-label" style={{marginRight: '12px', flexShrink: 0}}>Season Trend</span>
-                        <span className="stats-value" style={{textAlign: 'right'}}>
-                          {selectedDriverFormData.length >= 2 && 
-                            (selectedDriverFormData[selectedDriverFormData.length - 1].position < 
-                            selectedDriverFormData[0].position ? 
-                              <Badge bg="success" style={{padding: '0.4rem 0.8rem'}}>Improving</Badge> : 
-                              <Badge bg="warning" text="dark" style={{padding: '0.4rem 0.8rem'}}>Declining</Badge>)
-                          }
-                        </span>
-                      </div>
-                    </div>
-                    
-                    {/* Recent Momentum - Better spacing */}
-                    <div className="stats-item mb-3">
-                      <span className="stats-label mb-2">Recent Momentum</span>
-                      <div className="position-badges d-flex justify-content-center">
-                        {selectedDriverFormData.slice(-3).map((race, idx) => (
-                          <div key={idx} className="text-center mx-2">
-                            <span 
-                              className={`position-badge ${race.position <= 3 ? 'podium' : 
-                                          race.position <= 10 ? 'points' : 'outside-points'}`}
-                              style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}
-                            >
-                              P{race.position}
-                            </span>
-                            <div className="small text-muted mt-1" style={{fontSize: '0.7rem'}}>{race.track.split(' ')[0]}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Recent Races - Better visual separation */}
-                    <div className="pt-3">
-                      <span className="stats-label mb-2">
-                        <i className="bi bi-flag me-1"></i> Recent Races
-                      </span>
-                      <div className="race-list">
-                        {selectedDriverFormData.slice(-5).reverse().map((race, idx) => (
-                          <div key={idx} className="race-item d-flex justify-content-between align-items-center py-2">
-                            <span className="race-track d-flex align-items-center">
-                              <span className="race-number me-2" style={{
-                                width: '18px', 
-                                height: '18px', 
-                                borderRadius: '50%', 
-                                background: 'rgba(0,0,0,0.05)', 
-                                fontSize: '0.7rem',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                              }}>
-                                {idx+1}
-                              </span>
-                              <small>{race.track}</small>
-                            </span>
-                            <span className={`race-result ${race.position <= 3 ? 'podium' : race.position <= 10 ? 'points' : ''}`}>
-                              P{race.position}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-4">
-                    <p className="text-muted">No recent race data available</p>
-                  </div>
-                )}
-              </StatsCard>
-            </Col>
-          </Row>
-        </PerformanceTabPanel>
-
-        {/* Consistency Rating Tab */}
-        <PerformanceTabPanel value={selectedTab} index={1}>
-          <Row>
-            <Col md={6}>
-              <StatsCard>
-                <StatsCardHeader>
-                  <Typography variant="h6">{selectedDriver} Consistency Profile</Typography>
-                </StatsCardHeader>
-                <div style={{ height: '400px', width: '100%' }}>
-                  <ResponsiveContainer>
-                    <RadarChart outerRadius={150} width={500} height={500} data={[
-                      { subject: 'Consistency', A: selectedDriverConsistency.consistency, fullMark: 10 },
-                      { subject: 'Finish Rate', A: selectedDriverConsistency.finishRate, fullMark: 10 },
-                      // { subject: 'Clean Racing', A: selectedDriverConsistency.cleanRacing, fullMark: 10 },
-                      // { subject: 'Adaptability', A: Math.random() * 3 + 7, fullMark: 10 }, // Placeholder
-                      { subject: 'Qualifying', A: selectedDriverConsistency.qualifyingPercentile / 10, fullMark: 10 }, // Placeholder
-                    ]}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="subject" />
-                      <PolarRadiusAxis angle={90} domain={[0, 10]} />
-                      <Radar name={selectedDriver} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                      <Legend />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </div>
-              </StatsCard>
-            </Col>
-            <Col md={6}>
+          <Box sx={{ width: '100%' }}>
+            {/* Form Tracker Tab */}
+            <PerformanceTabPanel value={selectedTab} index={0}>
               <Row>
-                <Col xs={12}>
-                  <StatsCard sx={{ mb: 3 }}>
+                <Col lg={8}>
+                  <StatsCard>
                     <StatsCardHeader>
-                      <Typography variant="h6">Consistency Rating</Typography>
+                      <Typography variant="h6">Recent Form: {selectedDriver}</Typography>
+                      <DriverBadge bg="primary">Last {selectedDriverFormData.length} Races Finished</DriverBadge>
                     </StatsCardHeader>
-                    <div className="consistency-score-container">
-                      <div className="score-circle" style={{ 
-                        background: `conic-gradient(
-                          ${getConsistencyColor(selectedDriverConsistency.consistency)} 
-                          ${selectedDriverConsistency.consistency * 10}%, 
-                          #e0e0e0 0
-                        )`
-                      }}>
-                        <div className="score-inner">
-                          <span>{selectedDriverConsistency.consistency}</span>
-                          <small>/10</small>
-                        </div>
-                      </div>
-                      <div className="score-explanation">
-                        <Typography variant="subtitle1" className="mb-2">
-                          {getConsistencyRating(selectedDriverConsistency.consistency)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Based on position variance across {selectedDriverConsistency.races || 0} races.
-                          A higher score indicates more consistent finishing positions.
-                        </Typography>
-                      </div>
+                    <div style={{ height: '400px', width: '100%' }}>
+                      <ResponsiveContainer>
+                        <LineChart
+                          data={selectedDriverFormData}
+                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="name" 
+                            label={{ value: 'Race', position: 'insideBottomRight', offset: -10 }} 
+                          />
+                          <YAxis 
+                            domain={[1, dataMax => Math.max(dataMax, 10)]} 
+                            reversed 
+                            label={{ value: 'Position', angle: -90, position: 'insideLeft' }} 
+                          />
+                        <Tooltip 
+                          formatter={(value) => [`P${value}`, 'Position']}
+                          labelFormatter={(label, payload) => {
+                            if (payload && payload.length > 0) {
+                              const dataPoint = payload[0].payload;
+                              return `${label} - ${dataPoint.track}`;
+                            }
+                            return label;
+                          }}
+                          contentStyle={{ borderRadius: '4px' }}
+                        />
+                          <Legend content={renderCustomLegend} />
+                          <ReferenceLine y={3.5} strokeDasharray="5 5" stroke="#4CAF50" />
+                          <Line 
+                            type="monotone" 
+                            dataKey="position" 
+                            name={selectedDriver} 
+                            stroke="#8884d8" 
+                            strokeWidth={3}
+                            activeDot={{ r: 8 }} 
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
                     </div>
                   </StatsCard>
                 </Col>
-                <Col xs={12}>
+                <Col lg={4}>
                   <StatsCard>
                     <StatsCardHeader>
-                      <Typography variant="h6">Performance Stats</Typography>
+                      <Typography variant="h6">Form Analysis</Typography>
                     </StatsCardHeader>
-                    <Table bordered hover size="sm" className="mb-0">
-                      <tbody>
-                        <tr>
-                          <td>Average Position</td>
-                          <td className="text-end">
-                            <strong>P{selectedDriverConsistency.avgPosition || 0}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Finish Rate</td>
-                          <td className="text-end">
-                            <strong>
-                              {(selectedDriverConsistency.finishRate / 10 * 100).toFixed(1)}%
-                            </strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Average Qualifying</td>
-                          <td className="text-end">
-                            <strong>
-                              P{selectedDriverConsistency.qualifying || 0}
-                            </strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Average Qualifying Percentile</td>
-                          <td className="text-end">
-                            <strong>
-                              {(selectedDriverConsistency.qualifyingPercentile)?.toFixed(1)}%
-                            </strong>
-                          </td>
-                        </tr>
-                        {/* <tr>
-                          <td>Clean Racing Score</td>
-                          <td className="text-end">
-                            <Badge bg={getCleanRacingColor(selectedDriverConsistency.cleanRacing)}>
-                              {selectedDriverConsistency.cleanRacing}/10
-                            </Badge>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Total Incidents</td>
-                          <td className="text-end">
-                            <strong>{selectedDriverConsistency.incidents || 0}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Incidents per Race</td>
-                          <td className="text-end">
-                            <strong>
-                              {selectedDriverConsistency.races ? 
-                                (selectedDriverConsistency.incidents / selectedDriverConsistency.races).toFixed(1) : 
-                                '0.0'}
-                            </strong>
-                          </td>
-                        </tr> */}
-                      </tbody>
-                    </Table>
+                    
+                    {selectedDriverFormData.length > 0 ? (
+                      <>
+                        {/* Key Stats Section - Visual upgrade */}
+                        <div className="key-stats-container p-2 mb-3" style={{background: 'rgba(0,0,0,0.02)', borderRadius: '8px'}}>
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <div className="text-center flex-grow-1">
+                              <div className="stats-value" style={{fontSize: '1.5rem', fontWeight: '600'}}>
+                                P{Math.min(...selectedDriverFormData.map(race => race.position))}
+                              </div>
+                              <div className="stats-label text-muted" style={{fontSize: '0.8rem'}}>Best Result</div>
+                            </div>
+                            <div className="text-center flex-grow-1">
+                              <div className="stats-value" style={{fontSize: '1.5rem', fontWeight: '600'}}>
+                                P{(selectedDriverFormData.reduce((sum, race) => sum + race.position, 0) / selectedDriverFormData.length).toFixed(1)}
+                              </div>
+                              <div className="stats-label text-muted" style={{fontSize: '0.8rem'}}>Average</div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Performance Trend - Add proper spacing */}
+                        <div className="stats-item mb-3 pb-3" style={{borderBottom: '1px solid rgba(0,0,0,0.08)'}}>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <span className="stats-label" style={{marginRight: '12px', flexShrink: 0}}>Season Trend</span>
+                            <span className="stats-value" style={{textAlign: 'right'}}>
+                              {selectedDriverFormData.length >= 2 && 
+                                (selectedDriverFormData[selectedDriverFormData.length - 1].position < 
+                                selectedDriverFormData[0].position ? 
+                                  <Badge bg="success" style={{padding: '0.4rem 0.8rem'}}>Improving</Badge> : 
+                                  <Badge bg="warning" text="dark" style={{padding: '0.4rem 0.8rem'}}>Declining</Badge>)
+                              }
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {/* Recent Momentum - Better spacing */}
+                        <div className="stats-item mb-3">
+                          <span className="stats-label mb-2">Recent Momentum</span>
+                          <div className="position-badges d-flex justify-content-center">
+                            {selectedDriverFormData.slice(-3).map((race, idx) => (
+                              <div key={idx} className="text-center mx-2">
+                                <span 
+                                  className={`position-badge ${race.position <= 3 ? 'podium' : 
+                                              race.position <= 10 ? 'points' : 'outside-points'}`}
+                                  style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}
+                                >
+                                  P{race.position}
+                                </span>
+                                <div className="small text-muted mt-1" style={{fontSize: '0.7rem'}}>{race.track.split(' ')[0]}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Recent Races - Better visual separation */}
+                        <div className="pt-3">
+                          <span className="stats-label mb-2">
+                            <i className="bi bi-flag me-1"></i> Recent Races
+                          </span>
+                          <div className="race-list">
+                            {selectedDriverFormData.slice(-5).reverse().map((race, idx) => (
+                              <div key={idx} className="race-item d-flex justify-content-between align-items-center py-2">
+                                <span className="race-track d-flex align-items-center">
+                                  <span className="race-number me-2" style={{
+                                    width: '18px', 
+                                    height: '18px', 
+                                    borderRadius: '50%', 
+                                    background: 'rgba(0,0,0,0.05)', 
+                                    fontSize: '0.7rem',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                  }}>
+                                    {idx+1}
+                                  </span>
+                                  <small>{race.track}</small>
+                                </span>
+                                <span className={`race-result ${race.position <= 3 ? 'podium' : race.position <= 10 ? 'points' : ''}`}>
+                                  P{race.position}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center py-4">
+                        <p className="text-muted">No recent race data available</p>
+                      </div>
+                    )}
                   </StatsCard>
                 </Col>
               </Row>
-            </Col>
-          </Row>
-          <Row className="mt-4">
-            <Col xs={12}>
-              <StatsCard>
-                <StatsCardHeader>
-                  <Typography variant="h6">League Consistency Rankings</Typography>
-                </StatsCardHeader>
-                <div style={{ height: '600px', width: '100%' }}>
-                  <ResponsiveContainer>
-                    <BarChart
-                      data={formattedData.consistencyRatings.sort((a, b) => b.consistency - a.consistency)}
-                      layout="vertical"
-                      margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
-                      barSize={20}
-                      barGap={8}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" domain={[0, 10]} />
-                      <YAxis dataKey="name" type="category" width={80} interval={0} />
-                      <Tooltip formatter={(value) => [`${value}/10`, 'Consistency']} />
-                      <Legend />
-                      <Bar 
-                        dataKey="consistency" 
-                        name="Consistency Rating" 
-                        fill="#8884d8" 
-                        radius={[0, 4, 4, 0]}
-                      >
-                        {formattedData.consistencyRatings
-                          .sort((a, b) => b.consistency - a.consistency)
-                          .map((entry, index) => (
-                            <Cell 
-                              key={`cell-${index}`} 
-                              fill={entry.name === selectedDriver ? '#ff7300' : '#8884d8'} 
-                            />
-                          ))
-                        }
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </StatsCard>
-            </Col>
-          </Row>
-        </PerformanceTabPanel>
+            </PerformanceTabPanel>
 
-        {/* Peak Performance Tab */}
-        <PerformanceTabPanel value={selectedTab} index={2}>
-          <Row>
-            <Col lg={8}>
-              <StatsCard>
-                <StatsCardHeader>
-                  <Typography variant="h6">{selectedDriver} Peak Performances</Typography>
-                </StatsCardHeader>
-                <div className="track-performances">
-                  <Table hover responsive className="mb-0">
-                    <thead>
-                      <tr>
-                        <th>Track</th>
-                        <th className="text-center">Best Finish</th>
-                        <th className="text-center">Date</th>
-                        <th className="text-end">Qualifying</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {formattedData.peakPerformances.tracks && formattedData.peakPerformances.tracks.map((track, idx) => {
-                        const bestPerformance = formattedData.peakPerformances.driverBests[selectedDriver]?.[track.name];
-                        if (!bestPerformance) return null;
-                        
-                        return (
-                          <tr key={idx}>
-                            <td>{track.name}</td>
-                            <td className="text-center">
-                              <span className={`position-highlight ${bestPerformance.RacePosition <= 3 ? 'podium' : 
-                                             bestPerformance.RacePosition <= 10 ? 'points' : ''}`}>
-                                P{bestPerformance.RacePosition}
-                              </span>
-                            </td>
-                            <td className="text-center">Week {bestPerformance.RaceWeek}</td>
-                            <td className="text-end">
-                              P{bestPerformance.QualifyingPosition || '-'}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
-                </div>
-              </StatsCard>
-            </Col>
-            <Col lg={4}>
+            {/* Consistency Rating Tab */}
+            <PerformanceTabPanel value={selectedTab} index={1}>
               <Row>
+                <Col md={6}>
+                  <StatsCard>
+                    <StatsCardHeader>
+                      <Typography variant="h6">{selectedDriver} Consistency Profile</Typography>
+                    </StatsCardHeader>
+                    <div style={{ height: '400px', width: '100%' }}>
+                      <ResponsiveContainer>
+                        <RadarChart outerRadius={150} width={500} height={500} data={[
+                          { subject: 'Consistency', A: selectedDriverConsistency.consistency, fullMark: 10 },
+                          { subject: 'Finish Rate', A: selectedDriverConsistency.finishRate, fullMark: 10 },
+                          // { subject: 'Clean Racing', A: selectedDriverConsistency.cleanRacing, fullMark: 10 },
+                          // { subject: 'Adaptability', A: Math.random() * 3 + 7, fullMark: 10 }, // Placeholder
+                          { subject: 'Qualifying', A: selectedDriverConsistency.qualifyingPercentile / 10, fullMark: 10 }, // Placeholder
+                        ]}>
+                          <PolarGrid />
+                          <PolarAngleAxis dataKey="subject" />
+                          <PolarRadiusAxis angle={90} domain={[0, 10]} />
+                          <Radar name={selectedDriver} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                          <Legend />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </StatsCard>
+                </Col>
+                <Col md={6}>
+                  <Row>
+                    <Col xs={12}>
+                      <StatsCard sx={{ mb: 3 }}>
+                        <StatsCardHeader>
+                          <Typography variant="h6">Consistency Rating</Typography>
+                        </StatsCardHeader>
+                        <div className="consistency-score-container">
+                          <div className="score-circle" style={{ 
+                            background: `conic-gradient(
+                              ${getConsistencyColor(selectedDriverConsistency.consistency)} 
+                              ${selectedDriverConsistency.consistency * 10}%, 
+                              #e0e0e0 0
+                            )`
+                          }}>
+                            <div className="score-inner">
+                              <span>{selectedDriverConsistency.consistency}</span>
+                              <small>/10</small>
+                            </div>
+                          </div>
+                          <div className="score-explanation">
+                            <Typography variant="subtitle1" className="mb-2">
+                              {getConsistencyRating(selectedDriverConsistency.consistency)}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Based on position variance across {selectedDriverConsistency.races || 0} races.
+                              A higher score indicates more consistent finishing positions.
+                            </Typography>
+                          </div>
+                        </div>
+                      </StatsCard>
+                    </Col>
+                    <Col xs={12}>
+                      <StatsCard>
+                        <StatsCardHeader>
+                          <Typography variant="h6">Performance Stats</Typography>
+                        </StatsCardHeader>
+                        <Table bordered hover size="sm" className="mb-0">
+                          <tbody>
+                            <tr>
+                              <td>Average Position</td>
+                              <td className="text-end">
+                                <strong>P{selectedDriverConsistency.avgPosition || 0}</strong>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Finish Rate</td>
+                              <td className="text-end">
+                                <strong>
+                                  {(selectedDriverConsistency.finishRate / 10 * 100).toFixed(1)}%
+                                </strong>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Average Qualifying</td>
+                              <td className="text-end">
+                                <strong>
+                                  P{selectedDriverConsistency.qualifying || 0}
+                                </strong>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Average Qualifying Percentile</td>
+                              <td className="text-end">
+                                <strong>
+                                  {(selectedDriverConsistency.qualifyingPercentile)?.toFixed(1)}%
+                                </strong>
+                              </td>
+                            </tr>
+                            {/* <tr>
+                              <td>Clean Racing Score</td>
+                              <td className="text-end">
+                                <Badge bg={getCleanRacingColor(selectedDriverConsistency.cleanRacing)}>
+                                  {selectedDriverConsistency.cleanRacing}/10
+                                </Badge>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Total Incidents</td>
+                              <td className="text-end">
+                                <strong>{selectedDriverConsistency.incidents || 0}</strong>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Incidents per Race</td>
+                              <td className="text-end">
+                                <strong>
+                                  {selectedDriverConsistency.races ? 
+                                    (selectedDriverConsistency.incidents / selectedDriverConsistency.races).toFixed(1) : 
+                                    '0.0'}
+                                </strong>
+                              </td>
+                            </tr> */}
+                          </tbody>
+                        </Table>
+                      </StatsCard>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row className="mt-4">
                 <Col xs={12}>
-                  <StatsCard sx={{ mb: 3 }}>
+                  <StatsCard>
+                    <StatsCardHeader>
+                      <Typography variant="h6">League Consistency Rankings</Typography>
+                    </StatsCardHeader>
+                    <div style={{ height: '600px', width: '100%' }}>
+                      <ResponsiveContainer>
+                        <BarChart
+                          data={formattedData.consistencyRatings.sort((a, b) => b.consistency - a.consistency)}
+                          layout="vertical"
+                          margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                          barSize={20}
+                          barGap={8}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis type="number" domain={[0, 10]} />
+                          <YAxis dataKey="name" type="category" width={150} interval={0} />
+                          <Tooltip formatter={(value) => [`${value}/10`, 'Consistency']} />
+                          <Legend />
+                          <Bar 
+                            dataKey="consistency" 
+                            name="Consistency Rating" 
+                            fill="#8884d8" 
+                            radius={[0, 4, 4, 0]}
+                          >
+                            {formattedData.consistencyRatings
+                              .sort((a, b) => b.consistency - a.consistency)
+                              .map((entry, index) => (
+                                <Cell 
+                                  key={`cell-${index}`} 
+                                  fill={entry.name === selectedDriver ? '#ff7300' : '#8884d8'} 
+                                />
+                              ))
+                            }
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </StatsCard>
+                </Col>
+              </Row>
+            </PerformanceTabPanel>
+
+            {/* Peak Performance Tab */}
+            <PerformanceTabPanel value={selectedTab} index={2}>
+              <Row>
+                <Col lg={8}>
+                  <StatsCard>
+                    <StatsCardHeader>
+                      <Typography variant="h6">{selectedDriver} Peak Performances</Typography>
+                    </StatsCardHeader>
+                    <div className="track-performances">
+                      <Table hover responsive className="mb-0">
+                        <thead>
+                          <tr>
+                            <th>Track</th>
+                            <th className="text-center">Best Finish</th>
+                            <th className="text-center">Date</th>
+                            <th className="text-end">Qualifying</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {formattedData.peakPerformances.tracks && formattedData.peakPerformances.tracks.map((track, idx) => {
+                            const bestPerformance = formattedData.peakPerformances.driverBests[selectedDriver]?.[track.name];
+                            if (!bestPerformance) return null;
+                            
+                            return (
+                              <tr key={idx}>
+                                <td>{track.name}</td>
+                                <td className="text-center">
+                                  <span className={`position-highlight ${bestPerformance.RacePosition <= 3 ? 'podium' : 
+                                                bestPerformance.RacePosition <= 10 ? 'points' : ''}`}>
+                                    P{bestPerformance.RacePosition}
+                                  </span>
+                                </td>
+                                <td className="text-center">Week {bestPerformance.RaceWeek}</td>
+                                <td className="text-end">
+                                  P{bestPerformance.QualifyingPosition || '-'}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </StatsCard>
+                </Col>
+                <Col lg={4}>
+                  <StatsCard>
                     <StatsCardHeader>
                       <Typography variant="h6">Specialist Tracks</Typography>
                     </StatsCardHeader>
                     <div className="specialist-tracks">
                       {formattedData.peakPerformances.tracks && 
-                       formattedData.peakPerformances.driverBests[selectedDriver] && 
-                       Object.entries(formattedData.peakPerformances.driverBests[selectedDriver])
+                      formattedData.peakPerformances.driverBests[selectedDriver] && 
+                      Object.entries(formattedData.peakPerformances.driverBests[selectedDriver])
                         .filter(([track,performance]) => performance !== undefined)
                         .sort((a, b) => a[1].RacePosition - b[1].RacePosition)
                         .slice(0, 3)
@@ -988,173 +973,214 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                     </div>
                   </StatsCard>
                 </Col>
+              </Row>
+              <Row className="mt-3">
                 <Col xs={12}>
                   <StatsCard>
                     <StatsCardHeader>
                       <Typography variant="h6">Performance Distribution</Typography>
                     </StatsCardHeader>
-                    <div className="performance-distribution">
-                      {calculatePositionDistribution(formattedData.peakPerformances, selectedDriver).map((count, position) => (
-                        <div key={position} className="position-bar-container">
-                          <div className="position-label">P{position + 1}</div>
-                          <div className="position-bar-wrapper">
-                            <div 
-                              className={`position-bar ${position < 3 ? 'podium' : position < 10 ? 'points' : ''}`}
-                              style={{ width: `${count * 20}%` }}
-                            ></div>
-                            <span className="position-count">{count}</span>
+                    <div className="performance-distribution d-flex justify-content-center align-items-end" 
+                        style={{ padding: '20px 10px 10px' }}>
+                      {calculatePositionDistribution(formattedData.peakPerformances, selectedDriver).map((count, position) => {
+                        const barHeight = count > 0 ? Math.max(count * 25, 30) : 0;
+                        const showCountInside = barHeight > 40;
+                        
+                        return (
+                          <div key={position} className="d-flex flex-column align-items-center" style={{ width: '40px' }}>
+                            <div className="position-relative" style={{ height: barHeight + (showCountInside ? 0 : 20), width: '100%' }}>
+                              {count > 0 && !showCountInside && (
+                                <div className="position-count" style={{
+                                  position: 'absolute',
+                                  top: '-20px',
+                                  left: '0',
+                                  width: '100%',
+                                  textAlign: 'center',
+                                  fontSize: '0.9rem',
+                                  fontWeight: '500'
+                                }}>
+                                  {count}
+                                </div>
+                              )}
+                              <div 
+                                className={`position-bar ${position < 3 ? 'podium' : position < 10 ? 'points' : ''}`}
+                                style={{ 
+                                  height: `${barHeight}px`,
+                                  width: '20px',
+                                  position: 'absolute',
+                                  bottom: '0',
+                                  left: '50%',
+                                  transform: 'translateX(-50%)'
+                                }}
+                              >
+                                {count > 0 && showCountInside && (
+                                  <div className="position-count" style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: '0.9rem'
+                                  }}>
+                                    {count}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="position-label mt-1" style={{ textAlign: 'center', width: '100%' }}>P{position + 1}</div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </StatsCard>
                 </Col>
               </Row>
-            </Col>
-          </Row>
-        </PerformanceTabPanel>
+            </PerformanceTabPanel>
 
-        {/* Comeback Factor Tab */}
-        <PerformanceTabPanel value={selectedTab} index={3}>
-          <Row>
-            <Col md={6}>
-              <StatsCard>
-                <StatsCardHeader>
-                  <Typography variant="h6">Comeback Factor: {selectedDriver}</Typography>
-                </StatsCardHeader>
-                <div className="comeback-factor mt-3">
-                  <div className="d-flex justify-content-center align-items-center mb-4">
-                    <div className="comeback-score-container">
-                      {formattedData.comebackFactors.driverComebacks && 
-                        formattedData.comebackFactors.driverComebacks
-                          .find(d => d.name === selectedDriver)?.value > 0 ? (
-                        <div className="comeback-score positive">
-                          <span>+{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.value || 0}</span>
-                          <small>positions</small>
-                        </div>
-                      ) : (
-                        <div className="comeback-score negative">
-                          <span>{formattedData.comebackFactors.driverComebacks?.find(d => d.name === selectedDriver)?.value || 0}</span>
-                          <small>positions</small>
-                        </div>
-                      )}
-                    </div>
-                    <div className="comeback-explanation ms-3">
-                      <Typography variant="body1">
-                        {getComebackRating(formattedData.comebackFactors.driverComebacks?.find(d => d.name === selectedDriver)?.value || 0)}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Average positions gained from qualifying to finish
-                      </Typography>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Typography variant="subtitle2" className="mb-2">Race-by-Race Comebacks</Typography>
-                    <div style={{ height: '300px', width: '100%' }}>
-                      <ResponsiveContainer>
-                        <BarChart
-                          data={selectedDriverComebacks}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="track" />
-                          <YAxis label={{ value: 'Positions Gained/Lost', angle: -90, position: 'insideLeft' }} />
-                          <Tooltip 
-                            formatter={(value) => [`${value > 0 ? '+' : ''}${value} positions`, 'Change']}
-                            labelFormatter={(label) => `${label}`} 
-                          />
-                          <ReferenceLine y={0} stroke="#000" />
-                          <Bar 
-                            dataKey="delta" 
-                            name="Positions Gained" 
-                            fill={(data) => data.delta > 0 ? "#4CAF50" : "#FF5722"}
-                          >
-                            {selectedDriverComebacks.map((entry, index) => (
-                              <Cell 
-                                key={`cell-${index}`} 
-                                fill={entry.delta > 0 ? "#4CAF50" : "#FF5722"} 
-                              />
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                </div>
-              </StatsCard>
-            </Col>
-            <Col md={6}>
+            {/* Comeback Factor Tab */}
+            <PerformanceTabPanel value={selectedTab} index={3}>
               <Row>
-                <Col xs={12}>
-                  <StatsCard sx={{ mb: 3 }}>
-                    <StatsCardHeader>
-                      <Typography variant="h6">Best Comeback</Typography>
-                    </StatsCardHeader>
-                    <div className="best-comeback">
-                      {formattedData.comebackFactors.driverComebacks && 
-                       formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.delta > 0 ? (
-                        <div className="d-flex align-items-center">
-                          <div className="comeback-highlight">
-                            <span className="positions-gained">
-                              +{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.delta || 0}
-                            </span>
-                          </div>
-                          <div className="comeback-details ms-3">
-                            <div className="track-name">
-                              {formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.track}
-                            </div>
-                            <div className="position-change">
-                              <span className="text-muted me-1">From</span>
-                              <span className="qualifying-position">P{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.qualifying}</span>
-                              <span className="text-muted mx-1">to</span>
-                              <span className="finish-position">P{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.finish}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-center py-3">
-                          <Typography variant="body1" color="text.secondary">No notable comebacks recorded</Typography>
-                        </div>
-                      )}
-                    </div>
-                  </StatsCard>
-                </Col>
-                <Col xs={12}>
+                <Col md={6}>
                   <StatsCard>
                     <StatsCardHeader>
-                      <Typography variant="h6">League Comeback Rankings</Typography>
+                      <Typography variant="h6">Comeback Factor: {selectedDriver}</Typography>
                     </StatsCardHeader>
-                    <div style={{ height: '280px', width: '100%' }}>
-                      <ResponsiveContainer>
-                        <BarChart
-                          data={formattedData.comebackFactors.driverComebacks?.sort((a, b) => b.value - a.value)}
-                          layout="vertical"
-                          margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis type="number" />
-                          <YAxis dataKey="name" type="category" width={100} />
-                          <Tooltip formatter={(value) => [`${value > 0 ? '+' : ''}${value} positions`, 'Avg Gained/Lost']} />
-                          <Bar dataKey="value" name="Comeback Factor" radius={[0, 4, 4, 0]}>
-                            {formattedData.comebackFactors.driverComebacks?.map((entry, index) => (
-                              <Cell 
-                                key={`cell-${index}`} 
-                                fill={entry.name === selectedDriver ? '#ff7300' : 
-                                      entry.value > 0 ? '#4CAF50' : '#FF5722'} 
+                    <div className="comeback-factor mt-3">
+                      <div className="d-flex justify-content-center align-items-center mb-4">
+                        <div className="comeback-score-container">
+                          {formattedData.comebackFactors.driverComebacks && 
+                            formattedData.comebackFactors.driverComebacks
+                              .find(d => d.name === selectedDriver)?.value > 0 ? (
+                            <div className="comeback-score positive">
+                              <span>+{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.value || 0}</span>
+                              <small>positions</small>
+                            </div>
+                          ) : (
+                            <div className="comeback-score negative">
+                              <span>{formattedData.comebackFactors.driverComebacks?.find(d => d.name === selectedDriver)?.value || 0}</span>
+                              <small>positions</small>
+                            </div>
+                          )}
+                        </div>
+                        <div className="comeback-explanation ms-3">
+                          <Typography variant="body1">
+                            {getComebackRating(formattedData.comebackFactors.driverComebacks?.find(d => d.name === selectedDriver)?.value || 0)}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Average positions gained from qualifying to finish
+                          </Typography>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Typography variant="subtitle2" className="mb-2">Race-by-Race Comebacks</Typography>
+                        <div style={{ height: '300px', width: '100%' }}>
+                          <ResponsiveContainer>
+                            <BarChart
+                              data={selectedDriverComebacks}
+                              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis dataKey="track" />
+                              <YAxis label={{ value: 'Positions Gained/Lost', angle: -90, position: 'insideLeft' }} />
+                              <Tooltip 
+                                formatter={(value) => [`${value > 0 ? '+' : ''}${value} positions`, 'Change']}
+                                labelFormatter={(label) => `${label}`} 
                               />
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
+                              <ReferenceLine y={0} stroke="#000" />
+                              <Bar 
+                                dataKey="delta" 
+                                name="Positions Gained" 
+                                fill={(data) => data.delta > 0 ? "#4CAF50" : "#FF5722"}
+                              >
+                                {selectedDriverComebacks.map((entry, index) => (
+                                  <Cell 
+                                    key={`cell-${index}`} 
+                                    fill={entry.delta > 0 ? "#4CAF50" : "#FF5722"} 
+                                  />
+                                ))}
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
                     </div>
                   </StatsCard>
                 </Col>
+                <Col md={6}>
+                  <Row>
+                    <Col xs={12}>
+                      <StatsCard sx={{ mb: 3 }}>
+                        <StatsCardHeader>
+                          <Typography variant="h6">Best Comeback</Typography>
+                        </StatsCardHeader>
+                        <div className="best-comeback">
+                          {formattedData.comebackFactors.driverComebacks && 
+                          formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.delta > 0 ? (
+                            <div className="d-flex align-items-center">
+                              <div className="comeback-highlight">
+                                <span className="positions-gained">
+                                  +{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.delta || 0}
+                                </span>
+                              </div>
+                              <div className="comeback-details ms-3">
+                                <div className="track-name">
+                                  {formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.track}
+                                </div>
+                                <div className="position-change">
+                                  <span className="text-muted me-1">From</span>
+                                  <span className="qualifying-position">P{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.qualifying}</span>
+                                  <span className="text-muted mx-1">to</span>
+                                  <span className="finish-position">P{formattedData.comebackFactors.driverComebacks.find(d => d.name === selectedDriver)?.bestComeback?.finish}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center py-3">
+                              <Typography variant="body1" color="text.secondary">No notable comebacks recorded</Typography>
+                            </div>
+                          )}
+                        </div>
+                      </StatsCard>
+                    </Col>
+                    <Col xs={12}>
+                      <StatsCard>
+                        <StatsCardHeader>
+                          <Typography variant="h6">League Comeback Rankings</Typography>
+                        </StatsCardHeader>
+                        <div style={{ height: '280px', width: '100%' }}>
+                          <ResponsiveContainer>
+                            <BarChart
+                              data={formattedData.comebackFactors.driverComebacks?.sort((a, b) => b.value - a.value)}
+                              layout="vertical"
+                              margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis type="number" />
+                              <YAxis dataKey="name" type="category" width={100} />
+                              <Tooltip formatter={(value) => [`${value > 0 ? '+' : ''}${value} positions`, 'Avg Gained/Lost']} />
+                              <Bar dataKey="value" name="Comeback Factor" radius={[0, 4, 4, 0]}>
+                                {formattedData.comebackFactors.driverComebacks?.map((entry, index) => (
+                                  <Cell 
+                                    key={`cell-${index}`} 
+                                    fill={entry.name === selectedDriver ? '#ff7300' : 
+                                          entry.value > 0 ? '#4CAF50' : '#FF5722'} 
+                                  />
+                                ))}
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </StatsCard>
+                    </Col>
+                  </Row>
+                </Col>
               </Row>
-            </Col>
-          </Row>
-        </PerformanceTabPanel>
-      </Box>
+            </PerformanceTabPanel>
+          </Box>
+        </>
+      }
     </Container>
   );
 };
@@ -1177,12 +1203,12 @@ const getConsistencyRating = (score) => {
 };
 
 // Helper function to get color for clean racing score
-const getCleanRacingColor = (score) => {
-  if (score >= 8) return 'success';
-  if (score >= 6) return 'primary';
-  if (score >= 4) return 'warning';
-  return 'danger';
-};
+// const getCleanRacingColor = (score) => {
+//   if (score >= 8) return 'success';
+//   if (score >= 6) return 'primary';
+//   if (score >= 4) return 'warning';
+//   return 'danger';
+// };
 
 // Helper function to get comeback rating
 const getComebackRating = (score) => {

@@ -148,7 +148,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                 <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={3}>
-                                <LeagueDescriptionPerformance {...{league, leagueHistory, leagueDetails, lists}} />
+                                <LeagueDescriptionPerformance {...{showHistorySpinner,league, leagueHistory, leagueDetails, lists}} />
                             </LeagueDescriptionTabPanel>
                         </Box>
                     </Container>
