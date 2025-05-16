@@ -241,16 +241,17 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     history.forEach((event,i,arr) => {
       eventGroups[arr.length - i] = event;
     });
-    // console.log('Event Groups:', eventGroups);
+    console.log('Event Groups:', eventGroups);
     // Get the last 5 race weeks (or all if less than 5)
     const raceWeeks = Object.keys(eventGroups)
       .map(Number)
       .sort((a, b) => b - a)
-      .slice(0, 5)
+      // .slice(0, 5)
       .reverse();
 
       // console.log('raceWeeks:', raceWeeks);
     
+    var maxIndex = 4;
     // Format data for the form chart
     const formData = raceWeeks.map(week => {
       const weekEvents = eventGroups[week] || [];
@@ -579,7 +580,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
               <StatsCard>
                 <StatsCardHeader>
                   <Typography variant="h6">Recent Form: {selectedDriver}</Typography>
-                  <DriverBadge bg="primary">Last 5 Races</DriverBadge>
+                  <DriverBadge bg="primary">Last {selectedDriverFormData.length} Races Finished</DriverBadge>
                 </StatsCardHeader>
                 <div style={{ height: '400px', width: '100%' }}>
                   <ResponsiveContainer>
@@ -622,69 +623,97 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                 <StatsCardHeader>
                   <Typography variant="h6">Form Analysis</Typography>
                 </StatsCardHeader>
-                <div className="stats-list">
-                  {selectedDriverFormData.length > 0 ? (
-                    <>
-                      <div className="stats-item">
-                        <span className="stats-label">Average Position</span>
-                        <span className="stats-value">
-                          P{(selectedDriverFormData.reduce((sum, race) => sum + race.position, 0) / selectedDriverFormData.length).toFixed(1)}
-                        </span>
+                
+                {selectedDriverFormData.length > 0 ? (
+                  <>
+                    {/* Key Stats Section - Visual upgrade */}
+                    <div className="key-stats-container p-2 mb-3" style={{background: 'rgba(0,0,0,0.02)', borderRadius: '8px'}}>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="text-center flex-grow-1">
+                          <div className="stats-value" style={{fontSize: '1.5rem', fontWeight: '600'}}>
+                            P{Math.min(...selectedDriverFormData.map(race => race.position))}
+                          </div>
+                          <div className="stats-label text-muted" style={{fontSize: '0.8rem'}}>Best Result</div>
+                        </div>
+                        <div className="text-center flex-grow-1">
+                          <div className="stats-value" style={{fontSize: '1.5rem', fontWeight: '600'}}>
+                            P{(selectedDriverFormData.reduce((sum, race) => sum + race.position, 0) / selectedDriverFormData.length).toFixed(1)}
+                          </div>
+                          <div className="stats-label text-muted" style={{fontSize: '0.8rem'}}>Average</div>
+                        </div>
                       </div>
-                      <div className="stats-item">
-                        <span className="stats-label">Best Result</span>
-                        <span className="stats-value">
-                          P{Math.min(...selectedDriverFormData.map(race => race.position))}
-                        </span>
-                      </div>
-                      <div className="stats-item">
-                        <span className="stats-label">Trend</span>
+                    </div>
+                    
+                    {/* Performance Trend - More distinct */}
+                    <div className="stats-item mb-3 pb-3" style={{borderBottom: '1px solid rgba(0,0,0,0.08)'}}>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <span className="stats-label">Season Trend</span>
                         <span className="stats-value">
                           {selectedDriverFormData.length >= 2 && 
                             (selectedDriverFormData[selectedDriverFormData.length - 1].position < 
-                             selectedDriverFormData[0].position ? 
-                              <Badge bg="success">Improving</Badge> : 
-                              <Badge bg="warning" text="dark">Declining</Badge>)
+                            selectedDriverFormData[0].position ? 
+                              <Badge bg="success" style={{padding: '0.4rem 0.8rem'}}>Improving</Badge> : 
+                              <Badge bg="warning" text="dark" style={{padding: '0.4rem 0.8rem'}}>Declining</Badge>)
                           }
                         </span>
                       </div>
-                      <div className="stats-item">
-                        <span className="stats-label">Recent Momentum</span>
-                        <div className="position-badges">
-                          {selectedDriverFormData.slice(-3).map((race, idx) => (
+                    </div>
+                    
+                    {/* Recent Momentum - Better spacing */}
+                    <div className="stats-item mb-3">
+                      <span className="stats-label d-block mb-2">Recent Momentum</span>
+                      <div className="position-badges d-flex justify-content-center">
+                        {selectedDriverFormData.slice(-3).map((race, idx) => (
+                          <div key={idx} className="text-center mx-2">
                             <span 
-                              key={idx}
                               className={`position-badge ${race.position <= 3 ? 'podium' : 
-                                           race.position <= 10 ? 'points' : 'outside-points'}`}
+                                          race.position <= 10 ? 'points' : 'outside-points'}`}
+                              style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}
                             >
                               P{race.position}
                             </span>
-                          ))}
-                        </div>
+                            <div className="small text-muted mt-1" style={{fontSize: '0.7rem'}}>{race.track.split(' ')[0]}</div>
+                          </div>
+                        ))}
                       </div>
-                    </>
-                  ) : (
-                    <div className="text-center py-4">
-                      <p className="text-muted">No recent race data available</p>
                     </div>
-                  )}
-                </div>
-                <div className="recent-races mt-auto pt-3">
-                  <Typography variant="subtitle2" className="mb-2">Recent Races</Typography>
-                  <div className="race-list">
-                    {selectedDriverFormData.slice(-5).reverse().map((race, idx) => (
-                      <div key={idx} className="race-item d-flex justify-content-between align-items-center">
-                        <span className="race-track">
-                          <small>{race.track}</small>
-                        </span>
-                        <span className={`race-result ${race.position <= 3 ? 'podium' : 
-                                       race.position <= 10 ? 'points' : ''}`}>
-                          P{race.position}
-                        </span>
+                    
+                    {/* Recent Races - Better visual separation */}
+                    <div className="mt-3 pt-3" style={{borderTop: '1px solid rgba(0,0,0,0.08)'}}>
+                      <Typography variant="subtitle2" className="mb-2">
+                        <i className="bi bi-flag me-1"></i> Recent Races
+                      </Typography>
+                      <div className="race-list" style={{maxHeight: '150px'}}>
+                        {selectedDriverFormData.slice(-5).reverse().map((race, idx) => (
+                          <div key={idx} className="race-item d-flex justify-content-between align-items-center py-2">
+                            <span className="race-track d-flex align-items-center">
+                              <span className="race-number me-2" style={{
+                                width: '18px', 
+                                height: '18px', 
+                                borderRadius: '50%', 
+                                background: 'rgba(0,0,0,0.05)', 
+                                fontSize: '0.7rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                              }}>
+                                {idx+1}
+                              </span>
+                              <small>{race.track}</small>
+                            </span>
+                            <span className={`race-result ${race.position <= 3 ? 'podium' : race.position <= 10 ? 'points' : ''}`}>
+                              P{race.position}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-muted">No recent race data available</p>
                   </div>
-                </div>
+                )}
               </StatsCard>
             </Col>
           </Row>
