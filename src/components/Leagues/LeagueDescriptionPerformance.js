@@ -206,42 +206,6 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
     console.log('Processed Data:', processedData);
     setFormattedData(processedData);
   }, [raceResultsObject]);
-
-  // useEffect(() =>  {
-  //   console.log('eh?', (!formattedData.peakPerformances || Object.keys(formattedData.peakPerformances).length === 0),Object.keys(formattedData.peakPerformances).length,formattedData.peakPerformances)
-  //   if (!formattedData.formTracking || !formattedData.consistencyRatings || (!formattedData.peakPerformances || Object.keys(formattedData.peakPerformances).length === 0) || !selectedDriver ) return;
-  //   console.log('Formatted Data inspect:', formattedData);  
-  //   console.log(formattedData.peakPerformances?.tracks)
-  //   console.log(formattedData.peakPerformances?.driverBests[selectedDriver]) 
-  //   Object.entries(formattedData.peakPerformances?.driverBests[selectedDriver])
-  //      .filter(ent => ent !== undefined)
-  //      .sort((a, b) => a[1]?.RacePosition - b[1]?.RacePosition)
-  //      .slice(0, 3)
-  //      .forEach(([track, performance], idx) => (
-  //         console.log(`Track: ${track}, Best Finish: P${performance.RacePosition}, Date: Week ${performance.RaceWeek}, Qualifying: P${performance.QualifyingPosition || '-'}`)
-  //      )) 
-  // }, [formattedData,selectedDriver]);
-  // useEffect(() => {
-  //   console.log('~~~~~~Selected Driver:', selectedDriver);
-  //   if( selectedDriver === '') return;
-
-  //   var fetchArray = [];
-  //   leagueHistory.map((hist) => hist.stages?.race1?.id).forEach((stageId, i) => { 
-  //     fetchArray.push(
-  //       getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${stageId}&participant_name=${selectedDriver}`)
-  //     )
-  //   });
-  //   Promise.all(fetchArray).then((responses) => {
-  //     console.log('Fetched event data for driver:', selectedDriver);
-  //     setEventList(responses.flat());
-  //   });
-  // },[selectedDriver])
-
-  // useEffect(() => {
-  //   if( driverList.length === 0 || eventList.length === 0) return;
-  //   console.log('~~~~~~Driver List:', driverList);
-  //   console.log('~~~~~~Event List:', eventList);
-  // },[driverList,eventList])
   
   // Generate data for Form Tracker
   const processFormTrackingData = (history, drivers) => {
@@ -320,11 +284,6 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
             var avgQualiPercentile = totalQualifyingEvents > 1 ?
               ((driverStats[driver].avgQualiPercentile * totalQualifyingEvents) + thisQualiPercentile) / (totalQualifyingEvents + 1) :
               thisQualiPercentile;
-            
-            if( driver == "verydystrbd" ){
-              console.log('qualified:',result.QualifyingPosition,'of',numRacersQualified,'thisQualiPercentile:', thisQualiPercentile);
-              console.log('new avg:',avgQualiPercentile);
-            }
             driverStats[driver].avgQualiPercentile = avgQualiPercentile;
           }
           driverStats[driver].positions.push(result.RacePosition);
@@ -357,24 +316,6 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       });
       // console.log('racersQualified remaining:', racersQualified);
     });
-    
-    // Collect positions for each driver
-    // history.forEach(event => {
-    //   const driver = event.PlayerName;
-      
-    //   if (driverStats[driver]) {
-    //     driverStats[driver].positions.push(event.Position);
-    //     driverStats[driver].totalRaces++;
-        
-    //     if (event.DNF) {
-    //       driverStats[driver].dnfs++;
-    //     }
-        
-    //     if (event.Incidents) {
-    //       driverStats[driver].incidents += event.Incidents;
-    //     }
-    //   }
-    // });
 
     // console.log('Driver Stats:', driverStats);
     
@@ -499,32 +440,52 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
       eventGroups[key].push(event);
     });
     
-    // console.log('eventGrups:',eventGroups)
+    console.log('eventGrups:',eventGroups)
     // Calculate qualifying to finish position deltas
-    Object.values(eventGroups).forEach(events => {
+    Object.values(eventGroups).reverse().forEach(events => {
       if (events.length === 0) return;
       
       const track = NameMapper.fromTrackId(events[0].setup.TrackId, lists["tracks"]?.list);
       const week = events[0].RaceWeek;
-      // console.log('trackweek:',track,week)
+      console.log('trackweek:',track,week)
+
       
       drivers.forEach(driver => {
         // const driverEvent = events.find(e => e.PlayerName === driver);
-        const weekResults = Object.values(raceResultsObject).find((res) => {
+        const weekRaceResults = Object.values(raceResultsObject).find((res) => {
           return res[0].RaceWeek === week
         })
-        const driverEvent = weekResults.find((res) => res.name === driver);
-        // console.log('driverEvent',driverEvent)
+        const weekQualiResults = Object.values(qualiResultsObject).find((res) => {
+          return res[0].RaceWeek === week
+        });
+
+        const driverRaceEvent = weekRaceResults.find((res) => res.name === driver);
+        const driverQualiEvent = weekQualiResults?.find((res) => res.name === driver);
+        if( driver === "Kirtis")
+          console.log('driverRaceEvent',driverRaceEvent,driverQualiEvent)
         
-        if (driverEvent && driverEvent.QualifyingPosition && driverEvent.RacePosition) {
-          const positionsDelta = driverEvent.QualifyingPosition - driverEvent.RacePosition;
+        if (driverRaceEvent && driverRaceEvent.QualifyingPosition && driverRaceEvent.RacePosition) {
+          const positionsDelta = driverRaceEvent.QualifyingPosition - driverRaceEvent.RacePosition;
           
           comebacks.push({
             driver,
             track,
             week,
-            qualifying: driverEvent.QualifyingPosition,
-            finish: driverEvent.RacePosition,
+            qualifying: driverRaceEvent.QualifyingPosition,
+            finish: driverRaceEvent.RacePosition,
+            delta: positionsDelta
+          });
+        }
+        // DNFs, when the player leaves, do not register as race events
+        else if( driverQualiEvent && !driverRaceEvent ) {
+          const positionsDelta = driverQualiEvent.RacePosition - weekQualiResults.length;
+
+          comebacks.push({
+            driver,
+            track,
+            week,
+            qualifying: driverQualiEvent.RacePosition,
+            finish: weekQualiResults.length,
             delta: positionsDelta
           });
         }
@@ -874,7 +835,7 @@ const LeagueDescriptionPerformance = ({ league, leagueHistory, leagueDetails, li
                           <td>Average Qualifying Percentile</td>
                           <td className="text-end">
                             <strong>
-                              {(selectedDriverConsistency.qualifyingPercentile).toFixed(1)}%
+                              {(selectedDriverConsistency.qualifyingPercentile)?.toFixed(1)}%
                             </strong>
                           </td>
                         </tr>
@@ -1236,7 +1197,7 @@ const calculatePositionDistribution = (peakData, driver) => {
   }
 
   Object.values(peakData.driverBests[driver]).filter(ent => ent !== undefined).forEach(performance => {
-    const position = performance.Position - 1;  // 0-based index
+    const position = performance.RacePosition - 1;  // 0-based index
     if (position >= 0 && position < distribution.length) {
       distribution[position]++;
     }
