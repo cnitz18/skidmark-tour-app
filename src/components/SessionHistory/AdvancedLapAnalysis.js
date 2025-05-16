@@ -16,12 +16,13 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     lapComparisons: [],
     pitLaps: []
   });
-  const [analysisMode, setAnalysisMode] = useState('clean'); // 'clean', 'all'
+  const [analysisMode, setAnalysisMode] = useState('all'); // 'clean', 'all'
   const [dataInsights, setDataInsights] = useState([]);
 
   // Process event data when it changes
   useEffect(() => {
     if (eventsData && eventsData.length > 0) {
+      console.log('analyzing... analysisMode:',analysisMode)
       processEventData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,20 +50,28 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       sector3: Math.min(...lapEvents.map(lap => lap.attributes_Sector3Time)),
     };
 
+    // Detect pit stops
+    const pitLaps = detectPitStops(eventsData, lapEvents);
+
     // Calculate overall stats
     let validLaps = lapEvents;
     if (analysisMode === 'clean') {
-      // Filter out first lap and potential outliers (very slow laps)
-      const medianLapTime = calculateMedianLapTime(lapEvents.slice(1));
-      validLaps = lapEvents.filter((lap, i) => 
-        i > 0 && lap.attributes_LapTime < medianLapTime * 1.2
-      );
+      // Filter out first lap and laps with incidents
+      validLaps = lapEvents.filter((lap, i) => {
+        if ( !i ) return false; // Skip first lap
+        var invalidLapEvents = eventsData.filter(e => 
+          e.attributes_Lap === lap.attributes_Lap 
+          && ( e.event_name === "Impact" 
+            || e.event_name === "CutTrackStart"
+            || e.event_name === "CutTrackEnd"
+            || pitLaps.includes(lap.attributes_Lap)
+          ));
+        return invalidLapEvents.length === 0;
+      });
+      console.log('lapEvents:',lapEvents,'validLaps:',validLaps)
     }
 
-    const lapTimeStats = calculateLapTimeStats(validLaps);
-
-    // Detect pit stops
-    const pitLaps = detectPitStops(eventsData, lapEvents);
+    const lapTimeStats = calculateLapTimeStats(validLaps,pitLaps);
 
     // Generate lap comparisons between consecutive laps
     const lapComparisons = lapEvents.map((lap, index) => {
@@ -83,7 +92,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     }).filter(Boolean);
 
     setProcessedData({
-      lapEvents,
+      lapEvents : analysisMode === 'clean' ? validLaps : lapEvents,
       bestLap,
       bestSectors,
       lapTimeStats,
@@ -107,13 +116,12 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   };
 
   // Calculate various statistics about lap times
-  const calculateLapTimeStats = (laps) => {
+  const calculateLapTimeStats = (laps,pitLaps) => {
     if (laps.length === 0) return {};
-    const medianLapTime = calculateMedianLapTime(laps);
-    
-    const lapTimes = laps.filter((lap) => lap.attributes_LapTime < medianLapTime + 30000).map(lap => lap.attributes_LapTime);
+
+    const lapTimes = laps.filter((lap) => pitLaps.indexOf(lap.attributes_Lap) === -1 ).map(lap => lap.attributes_LapTime);
     const avgLapTime = lapTimes.reduce((sum, time) => sum + time, 0) / lapTimes.length;
-    
+
     // Calculate standard deviation for consistency
     const squaredDiffs = lapTimes.map(time => Math.pow(time - avgLapTime, 2));
     const avgSquaredDiff = squaredDiffs.reduce((sum, diff) => sum + diff, 0) / squaredDiffs.length;
@@ -121,7 +129,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     
     // Calculate coefficient of variation (normalized standard deviation)
     const cv = stdDev / avgLapTime;
-    
+
     return {
       min: Math.min(...lapTimes),
       max: Math.max(...lapTimes),
@@ -130,18 +138,20 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       stdDev,
       cv,
       range: Math.max(...lapTimes) - Math.min(...lapTimes),
-      consistency: (10 - Math.min(10, cv * 2000)).toFixed(1) // Convert CV to a 0-10 scale
+      consistency: (10 - Math.min(10, cv * 100)).toFixed(1) // Convert CV to a 0-10 scale
     };
   };
 
   // Detect pit stops by analyzing lap time anomalies
   const detectPitStops = (events, laps) => {
     const pitLaps = [];
-    const medianLapTime = calculateMedianLapTime(laps);
-    
     for (let i = 1; i < laps.length; i++) {
       const currentLap = laps[i];
-      if (currentLap.attributes_LapTime > medianLapTime + 30000) { // 30 seconds threshold
+      const lapEvents = eventsData.filter(e => e.attributes_Lap === currentLap.attributes_Lap)
+      const pittedIn = lapEvents.some(e => e.event_name === "State" && e.attributes_NewState === "EnteringPits");
+      const pittedOut = lapEvents.some(e => e.event_name === "State" && e.attributes_NewState === "ExitingPits");
+
+      if ( lapEvents && (pittedIn || pittedOut) ) {
         pitLaps.push(currentLap.attributes_Lap);
       }
     }
@@ -319,16 +329,16 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
                 <div className="mode-selector">
                   <ButtonGroup size="sm">
                     <Button
-                      variant={analysisMode === 'clean' ? 'primary' : 'outline-primary'}
-                      onClick={() => setAnalysisMode('clean')}
-                    >
-                      Clean Laps
-                    </Button>
-                    <Button
                       variant={analysisMode === 'all' ? 'primary' : 'outline-primary'}
                       onClick={() => setAnalysisMode('all')}
                     >
                       All Laps
+                    </Button>
+                    <Button
+                      variant={analysisMode === 'clean' ? 'primary' : 'outline-primary'}
+                      onClick={() => setAnalysisMode('clean')}
+                    >
+                      Clean Laps
                     </Button>
                   </ButtonGroup>
                 </div>
@@ -469,6 +479,10 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
                     <div className="stat-row">
                       <span>Worst Lap</span>
                       <span>{msToTime(processedData.lapTimeStats.max || 0)}</span>
+                    </div>
+                    <div className="stat-row">
+                      <span>Standard Deviation</span>
+                      <span>{msToTime(processedData.lapTimeStats.stdDev || 0)}s</span>
                     </div>
                     <div className="stat-row">
                       <span>Range</span>
