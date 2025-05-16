@@ -1,0 +1,160 @@
+.advanced-lap-analysis {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Control panel styles */
+.analysis-controls .mode-selector {
+  display: flex;
+  align-items: center;
+}
+
+/* Insights styling */
+.insights-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-card {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.insight-card:last-child {
+  border-bottom: none;
+}
+
+.insight-card.positive {
+  border-left: 4px solid #28a745;
+}
+
+.insight-card.negative {
+  border-left: 4px solid #dc3545;
+}
+
+.insight-card.opportunity {
+  border-left: 4px solid #17a2b8;
+}
+
+.insight-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 12px;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.insight-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.insight-description {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Tooltip styling */
+.custom-tooltip {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.tooltip-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.tooltip-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.tooltip-label {
+  color: #666;
+  margin-right: 12px;
+}
+
+.tooltip-value {
+  font-weight: 500;
+}
+
+.tooltip-pit-indicator {
+  margin-top: 8px;
+  padding: 2px 6px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.tooltip-best-indicator {
+  margin-top: 8px;
+  padding: 2px 6px;
+  background-color: #28a745;
+  color: white;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* Consistency meter */
+.consistency-indicator {
+  height: 6px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.consistency-bar {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.consistency-score {
+  font-weight: 600;
+}
+
+/* Statistics styling */
+.lap-time-stats .stat-row,
+.sector-box .sector-title,
+.ideal-lap-container .sector-row,
+.ideal-lap-container .comparison-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.lap-time-stats .stat-row:last-child,
+.sector-box .sector-title:last-child,
+.ideal-lap-container .sector-row:last-child,
+.ideal-lap-container .comparison-row:last-child {
+  border-bottom: none;
+}
+
+.sector-box .sector-title span:first-child,
+.lap-time-stats .stat-row span:first-child,
+.ideal-lap-container .sector-row span:first-child,
+.ideal-lap-container .comparison-row span:first-child {
+  color: #666;
+}
+
+.sector-row.total,
+.comparison-row.improvement {
+  font-weight: 600;
+  border-top: 1px solid #ddd;
+  padding-top: 6px;
+}
