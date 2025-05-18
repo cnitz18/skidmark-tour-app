@@ -32,6 +32,20 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     setSelectedRacerName(res["name"])
     getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${stage_id}&participant_id=${participant_id}`)
     .then((res) => {
+      var lapTracker = 1;
+      res = res.map((evt) => {
+        if( evt.event_name === "Lap" ){
+          lapTracker = evt.attributes_Lap + 1;
+        }
+        else if( evt.attributes_Lap ){
+          lapTracker = evt.attributes_Lap;
+        }
+        else{
+          evt.attributes_Lap = lapTracker;
+        }
+        return evt;
+      });
+      console.log('res', res);
       setEventsData(res);
       setShowSpinner(false);
     }).catch((e) => {
@@ -48,7 +62,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
       case 'CutTrackStart':
         return `Lap ${evt.attributes_Lap} (+${msToTime(evt.attributes_LapTime)}), Running P${evt.attributes_RacePosition}`;
       case 'CutTrackEnd':
-        let str = `Elapsed time: ${msToTime(evt.attributes_ElapsedTime)}, Positions Gained: ${evt.attributes_PlaceGain}, Penalty Applied: ${evt.attributes_PenaltyValue}`;
+        let str = `Elapsed time: ${msToTime(evt.attributes_ElapsedTime)}, Gained ${evt.attributes_PlaceGain} Positions, ${evt.attributes_PenaltyValue ? "" : "No"} Penalty Applied`;
         if( evt.attributes_PlaceGain > 0 )
           str += ". Naughty naughty!!"
         return str;
@@ -150,7 +164,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                 <Nav.Item>
                   <Nav.Link eventKey="advancedAnalysis" className="d-flex align-items-center justify-content-center">
                     <i className="bi bi-speedometer2 me-2"></i>
-                    Advanced Lap Analysis
+                    Lap Analysis
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -285,10 +299,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                     <div className="events-container">
                       {eventsData.filter(evt => evt.event_name !== "Lap").map((evt, i) => (
                         <Card key={i} className="event-card mb-2">
-                          <Card.Body className="p-3">
+                          <Card.Body>
                             <div className="d-flex align-items-center">
                               <div className="event-time me-3">
-                                {(new Date(evt.time*1000)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}
+                                Lap {evt.attributes_Lap}
                               </div>
                               <div className="event-badge me-3">
                                 {getEventBadge(evt.event_name)}

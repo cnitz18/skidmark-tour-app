@@ -189,6 +189,9 @@
   background-color: white;
   border-color: #dee2e6 #dee2e6 white;
 }
+.event-card .card-body {
+  padding: 0;
+}
 
 /* Mobile responsive styling */
 @media (max-width: 768px) {
