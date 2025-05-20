@@ -43,10 +43,9 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
           var lapTracker = 1;
           res = res.map((evt) => {
             if( evt.event_name === "Lap" ){
-              // console.log("Event LAP: ",evt)
               // Lap events start at 0
               evt.attributes_Lap = evt.attributes_Lap + 1
-              lapTracker = evt.attributes_Lap;
+              lapTracker = evt.attributes_Lap + 1;
             }
             else if( evt.attributes_Lap ){
               lapTracker = evt.attributes_Lap;

@@ -78,10 +78,12 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   // Process the data to identify battles, gaps, and stats
   const processHeadToHeadData = () => {
     // Filter lap events for both drivers
-    const primaryLaps = primaryDriverData.filter(evt => evt.event_name === "Lap");
-    const comparisonLaps = comparisonDriverData.filter(evt => evt.event_name === "Lap");
-    
-    // Calculate statistics for both drivers
+    const primaryLaps = primaryDriverData.filter(evt => evt.event_name === "Lap")
+      .map(evt => { evt.attributes_Lap = evt.attributes_Lap + 1; return evt; });
+    const comparisonLaps = comparisonDriverData.filter(evt => evt.event_name === "Lap")
+      .map(evt => { evt.attributes_Lap = evt.attributes_Lap + 1; return evt; });
+
+      // Calculate statistics for both drivers
     const primaryStats = calculateDriverStats(primaryLaps);
     const comparisonStats = calculateDriverStats(comparisonLaps);
     
