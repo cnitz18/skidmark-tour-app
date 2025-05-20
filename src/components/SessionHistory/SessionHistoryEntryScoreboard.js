@@ -208,124 +208,135 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                 
                 <Tab.Content>
                   <Tab.Pane eventKey="lapLog">
-                    <Paper elevation={0} className="p-3 mb-4 border">
-                      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-                        <h5 className="mb-2 mb-md-0">Lap Times</h5>
-                        <div className="legend-container">
-                          <span className="personal-fastest-lap-legend me-3">
-                            <span className="color-box"></span> Best Lap
-                          </span>
-                          <span className="personal-fastest-sector-legend">
-                            <span className="color-box"></span> Best Sector
-                          </span>
+                    {activeTab === "lapLog" && (
+                      <Paper elevation={0} className="p-3 mb-4 border">
+                        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                          <h5 className="mb-2 mb-md-0">Lap Times</h5>
+                          <div className="legend-container">
+                            <span className="personal-fastest-lap-legend me-3">
+                              <span className="color-box"></span> Best Lap
+                            </span>
+                            <span className="personal-fastest-sector-legend">
+                              <span className="color-box"></span> Best Sector
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="lap-time-table">
-                        <Table>
-                          <thead>
-                            <tr>
-                              <th className="text-center">#</th>
-                              <th>Time</th>
-                              <th>S1</th>
-                              <th>S2</th>
-                              <th>S3</th>
-                              <th className="text-center">Pos</th>
-                            </tr>
-                          </thead>
-                          <tbody>  
-                            {
-                              eventsData.filter(evt => evt.event_name === "Lap").map((evt, i) => (
-                                <tr key={i} className={i % 2 === 0 ? "even-row" : ""}>
-                                  <td className="text-center">{i+1}</td>                            
-                                  <td className={evt.attributes_LapTime === minSectors.total ? "personal-fastest-lap-highlight" : ""}>
-                                    {msToTime(evt.attributes_LapTime)}
-                                  </td>
-                                  <td className={evt.attributes_Sector1Time === minSectors.sector1 ? "personal-fastest-sector-highlight" : ""}>
-                                    {msToTime(evt.attributes_Sector1Time)}
-                                  </td>
-                                  <td className={evt.attributes_Sector2Time === minSectors.sector2 ? "personal-fastest-sector-highlight" : ""}>
-                                    {msToTime(evt.attributes_Sector2Time)}
-                                  </td>
-                                  <td className={evt.attributes_Sector3Time === minSectors.sector3 ? "personal-fastest-sector-highlight" : ""}>
-                                    {msToTime(evt.attributes_Sector3Time)}
-                                  </td>
-                                  <td className="text-center position-cell">
-                                    <span className="position-badge">P{evt.attributes_RacePosition}</span>
-                                  </td>
-                                </tr>
-                              ))
-                            }
-                          </tbody>
-                        </Table>
-                      </div>
-                    </Paper>
+                        
+                        <div className="lap-time-table">
+                          <Table>
+                            <thead>
+                              <tr>
+                                <th className="text-center">#</th>
+                                <th>Time</th>
+                                <th>S1</th>
+                                <th>S2</th>
+                                <th>S3</th>
+                                <th className="text-center">Pos</th>
+                              </tr>
+                            </thead>
+                            <tbody>  
+                              {
+                                eventsData.filter(evt => evt.event_name === "Lap").map((evt, i) => (
+                                  <tr key={i} className={i % 2 === 0 ? "even-row" : ""}>
+                                    <td className="text-center">{i+1}</td>                            
+                                    <td className={evt.attributes_LapTime === minSectors.total ? "personal-fastest-lap-highlight" : ""}>
+                                      {msToTime(evt.attributes_LapTime)}
+                                    </td>
+                                    <td className={evt.attributes_Sector1Time === minSectors.sector1 ? "personal-fastest-sector-highlight" : ""}>
+                                      {msToTime(evt.attributes_Sector1Time)}
+                                    </td>
+                                    <td className={evt.attributes_Sector2Time === minSectors.sector2 ? "personal-fastest-sector-highlight" : ""}>
+                                      {msToTime(evt.attributes_Sector2Time)}
+                                    </td>
+                                    <td className={evt.attributes_Sector3Time === minSectors.sector3 ? "personal-fastest-sector-highlight" : ""}>
+                                      {msToTime(evt.attributes_Sector3Time)}
+                                    </td>
+                                    <td className="text-center position-cell">
+                                      <span className="position-badge">P{evt.attributes_RacePosition}</span>
+                                    </td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </Table>
+                        </div>
+                      </Paper>
+                    )}
                   </Tab.Pane>
                   
                   <Tab.Pane eventKey="advancedAnalysis">
                     <Paper elevation={0} className="p-3 mb-4 border">
-                      <AdvancedLapAnalysis 
-                        eventsData={eventsData}
-                        race={race}
-                        selectedRacerName={selectedRacerName}
-                      />
+                      {activeTab === "advancedAnalysis" && (
+                        <AdvancedLapAnalysis 
+                          eventsData={eventsData}
+                          race={race}
+                          selectedRacerName={selectedRacerName}
+                        />
+                      )}
                     </Paper>
                   </Tab.Pane>
                   
                   <Tab.Pane eventKey="headToHead">
                     <Paper elevation={0} className="p-3 mb-4 border">
-                      <SessionHistoryHeadToHeadComparison 
-                        eventsData={eventsData}
-                        race={race}
-                        session={session}
-                        selectedDriver={{
-                          name: selectedRacerName,
-                          participantid: race.results.find(r => r.name === selectedRacerName)?.participantid,
-                          stage: race.results.find(r => r.name === selectedRacerName)?.stage,
-                          RacePosition: race.results.find(r => r.name === selectedRacerName)?.RacePosition,
-                          FastestLapTime: race.results.find(r => r.name === selectedRacerName)?.FastestLapTime
-                        }}
-                      />
+                      {activeTab === "headToHead" && (
+                        <SessionHistoryHeadToHeadComparison 
+                          eventsData={eventsData}
+                          race={race}
+                          session={session}
+                          selectedDriver={{
+                            name: selectedRacerName,
+                            participantid: race.results.find(r => r.name === selectedRacerName)?.participantid,
+                            stage: race.results.find(r => r.name === selectedRacerName)?.stage,
+                            RacePosition: race.results.find(r => r.name === selectedRacerName)?.RacePosition,
+                            FastestLapTime: race.results.find(r => r.name === selectedRacerName)?.FastestLapTime
+                          }}
+                        />
+                      )}
                     </Paper>
                   </Tab.Pane>
                   
                   <Tab.Pane eventKey="events">
-                    <Paper elevation={0} className="p-3 mb-4 border">
-                      <h5 className="mb-3">Race Events</h5>
-                      <div className="events-container">
-                        {eventsData.filter(evt => evt.event_name !== "Lap").map((evt, i) => (
-                          <Card key={i} className="event-card mb-2">
-                            <Card.Body>
-                              <div className="d-flex align-items-center">
-                                <div className="event-time me-3">
-                                  Lap {evt.attributes_Lap}
+                    {activeTab === "events" && (
+                      <Paper elevation={0} className="p-3 mb-4 border">
+                        <h5 className="mb-3">Race Events</h5>
+                        <div className="events-container">
+                          {eventsData.filter(evt => evt.event_name !== "Lap").map((evt, i) => (
+                            <Card key={i} className="event-card mb-2">
+                              <Card.Body>
+                                <div className="d-flex align-items-center">
+                                  <div className="event-time me-3">
+                                    Lap {evt.attributes_Lap}
+                                  </div>
+                                  <div className="event-badge me-3">
+                                    {getEventBadge(evt.event_name)}
+                                  </div>
+                                  <div className="event-description">
+                                    {getEventDescription(evt)}
+                                  </div>
                                 </div>
-                                <div className="event-badge me-3">
-                                  {getEventBadge(evt.event_name)}
-                                </div>
-                                <div className="event-description">
-                                  {getEventDescription(evt)}
-                                </div>
-                              </div>
-                            </Card.Body>
-                          </Card>
-                        ))}
-                        {eventsData.filter(evt => evt.event_name !== "Lap").length === 0 && (
-                          <div className="text-center py-4 text-muted">
-                            No events recorded for this session
-                          </div>
-                        )}
-                      </div>
-                    </Paper>
+                              </Card.Body>
+                            </Card>
+                          ))}
+                          {eventsData.filter(evt => evt.event_name !== "Lap").length === 0 && (
+                            <div className="text-center py-4 text-muted">
+                              No events recorded for this session
+                            </div>
+                          )}
+                        </div>
+                      </Paper>
+                    )}
                   </Tab.Pane>
                   
                   <Tab.Pane eventKey="performanceInsights">
-                    <Paper elevation={0} className="p-3 mb-4 border">
-                      <h5 className="mb-4">Performance Analytics</h5>
-                      
-                      <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
-                      
-                    </Paper>
+                    {activeTab === "performanceInsights" && (
+                      <Paper elevation={0} className="p-3 mb-4 border">
+                        <h5 className="mb-4">Performance Analytics</h5>
+                        
+                        {activeTab === "performanceInsights" && (
+                          <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
+                        )}
+                      </Paper>
+                    )}
                   </Tab.Pane>
                 </Tab.Content>
               </Tab.Container>
