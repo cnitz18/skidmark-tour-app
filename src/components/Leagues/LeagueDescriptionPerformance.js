@@ -181,7 +181,9 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     // Group races by event and order chronologically
     const eventGroups = {};
     
-    history.forEach((event,i,arr) => {
+    history
+    .sort((a,b) => b.end_time - a.end_time)
+    .forEach((event,i) => {
       eventGroups[history.length-i] = event;
     });
 
