@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, ProgressBar } from 'react-bootstrap';
 import msToTime from '../../utils/msToTime';
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
-
+import './ConsistencyTracker.css';
 
 const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
   const [analyticsData,setAnalyticsData] = useState();
@@ -174,7 +174,7 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                     <div className="sector-stats">
                       <div className="stat-row d-flex justify-content-between mb-2">
                         <span>Consistency:</span>
-                        <span className="fw-bold">{sectorAnalysis.sector2.consistencyScore.toFixed(1)}/10</span>
+                        <span className="fw-bold">{analyticsData?.consistencyS2}/10</span>
                       </div>
                       <div className="stat-row d-flex justify-content-between">
                         <span>vs. Race Avg:</span>
@@ -197,7 +197,7 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                     <div className="sector-stats">
                       <div className="stat-row d-flex justify-content-between mb-2">
                         <span>Consistency:</span>
-                        <span className="fw-bold">{sectorAnalysis.sector3.consistencyScore.toFixed(1)}/10</span>
+                        <span className="fw-bold">{analyticsData?.consistencyS3}/10</span>
                       </div>
                       <div className="stat-row d-flex justify-content-between">
                         <span>vs. Race Avg:</span>

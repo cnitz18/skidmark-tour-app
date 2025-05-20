@@ -43,7 +43,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
           var lapTracker = 1;
           res = res.map((evt) => {
             if( evt.event_name === "Lap" ){
-              lapTracker = evt.attributes_Lap + 1;
+              // console.log("Event LAP: ",evt)
+              // Lap events start at 0
+              evt.attributes_Lap = evt.attributes_Lap + 1
+              lapTracker = evt.attributes_Lap;
             }
             else if( evt.attributes_Lap ){
               lapTracker = evt.attributes_Lap;
@@ -259,30 +262,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       </div>
                     </Paper>
                   </Tab.Pane>
-                  
-                  {/* <Tab.Pane eventKey="lapChart">
-                    <Paper elevation={0} className="p-3 mb-4 border">
-                      <h5 className="mb-3">Lap Time Progression</h5>
-                      <div style={{ height: "400px" }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart
-                            data={formatLapDataForChart()}
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                          >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                            <YAxis label={{ value: 'Time (sec)', angle: -90, position: 'insideLeft' }} />
-                            <Tooltip formatter={(value) => msToTime(value * 1000)} />
-                            <Legend />
-                            <Line type="monotone" dataKey="lapTime" stroke="#8884d8" name="Lap Time" strokeWidth={2} />
-                            <Line type="monotone" dataKey="s1" stroke="#82ca9d" name="Sector 1" />
-                            <Line type="monotone" dataKey="s2" stroke="#ffc658" name="Sector 2" />
-                            <Line type="monotone" dataKey="s3" stroke="#ff8042" name="Sector 3" />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </Paper>
-                  </Tab.Pane> */}
                   
                   <Tab.Pane eventKey="advancedAnalysis">
                     <Paper elevation={0} className="p-3 mb-4 border">

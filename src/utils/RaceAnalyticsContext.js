@@ -24,8 +24,8 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
       raceData.results.forEach(driver => {
         const driverEvents = eventsData.find(evt => evt[0].participantid === driver.participantid);
         if (driverEvents) {
-          // Extract lap events
-          const lapEvents = driverEvents.filter(evt => evt.event_name === "Lap");
+          // Extract lap events, don't include first lap or pit laps
+          const lapEvents = driverEvents.filter((evt,i) => i !== 0 && (evt.event_name === "Lap"));
           console.log('Lap Events:', lapEvents);
           const pitLaps = detectPitStops(driverEvents, lapEvents);
           
@@ -104,7 +104,7 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
       Object.values(analytics).forEach(d => {
 
       })
-
+      console.log('Analytics:', analytics);
       setDriverAnalytics(analytics);
     }
   }, [raceData, eventsData]);
