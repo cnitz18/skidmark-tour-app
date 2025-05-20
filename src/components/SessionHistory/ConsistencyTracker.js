@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, ProgressBar } from 'react-bootstrap';
 import msToTime from '../../utils/msToTime';
+import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
 
-const ConsistencyTracker = ({ eventsData }) => {
+
+const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
+  const [analyticsData,setAnalyticsData] = useState();
+  const { driverAnalytics } = useRaceAnalytics();
+
+  useEffect(() => {
+    console.log("Analytics Data: ", analyticsData);
+  },[analyticsData]);
+  
+  useEffect(() => {
+    const driverData = driverAnalytics[selectedParticipantId];
+    if( driverData ){
+      setAnalyticsData(driverData);
+    }
+  },[driverAnalytics,selectedParticipantId])
+  
   // Get only lap events
   const lapEvents = eventsData.filter(evt => evt.event_name === "Lap");
   
   // Skip first lap as it's usually outlier (formation lap or incomplete)
   const raceLaps = lapEvents.length > 1 ? lapEvents.slice(1) : lapEvents;
-  
-  // Calculate consistency metrics
-  const metrics = calculateConsistencyMetrics(raceLaps);
-  
+    
   // Get improvement trend (are lap times improving over the race?)
   const improvementTrend = calculateImprovementTrend(raceLaps);
   
@@ -29,32 +42,32 @@ const ConsistencyTracker = ({ eventsData }) => {
               <div className="consistency-rating mb-4">
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <span className="rating-label">Consistency Score</span>
-                  <span className="rating-value">{metrics.consistencyScore.toFixed(1)}/10</span>
+                  <span className="rating-value">{analyticsData?.consistency}/10</span>
                 </div>
                 <ProgressBar 
-                  now={metrics.consistencyScore * 10} 
-                  variant={getVariantForScore(metrics.consistencyScore)}
+                  now={parseFloat(analyticsData?.consistency) * 10} 
+                  variant={getVariantForScore(parseInt(analyticsData?.consistency))}
                   style={{ height: "10px" }}
                   className="mb-1"
                 />
                 <small className="text-muted">
-                  {getConsistencyMessage(metrics.consistencyScore)}
+                  {getConsistencyMessage(analyticsData?.consistency)}
                 </small>
               </div>
               
               <div className="consistency-details">
                 <div className="detail-row d-flex justify-content-between mb-2">
                   <span>Standard Deviation:</span>
-                  <span className="fw-bold">{msToTime(metrics.standardDeviation)}</span>
+                  <span className="fw-bold">{msToTime(analyticsData?.stdDev)}</span>
                 </div>
                 <div className="detail-row d-flex justify-content-between mb-2">
                   <span>Lap Time Spread:</span>
-                  <span className="fw-bold">{msToTime(metrics.spread)} <small className="text-muted">(fastest to slowest)</small></span>
+                  <span className="fw-bold">{msToTime(analyticsData?.spread)} <small className="text-muted">(fastest to slowest)</small></span>
                 </div>
                 <div className="detail-row d-flex justify-content-between">
                   <span>Consistency vs Field Avg:</span>
-                  <span className={`fw-bold ${metrics.fieldComparison >= 0 ? 'text-success' : 'text-danger'}`}>
-                    {metrics.fieldComparison > 0 ? '+' : ''}{metrics.fieldComparison.toFixed(1)}%
+                  <span className={`fw-bold ${analyticsData?.fieldComparison >= 0 ? 'text-success' : 'text-danger'}`}>
+                    {analyticsData?.fieldComparison > 0 ? '+' : ''}{analyticsData?.fieldComparison.toFixed(1)}%
                   </span>
                 </div>
               </div>
@@ -138,7 +151,7 @@ const ConsistencyTracker = ({ eventsData }) => {
                     <div className="sector-stats">
                       <div className="stat-row d-flex justify-content-between mb-2">
                         <span>Consistency:</span>
-                        <span className="fw-bold">{sectorAnalysis.sector1.consistencyScore.toFixed(1)}/10</span>
+                        <span className="fw-bold">{analyticsData?.consistencyS1}/10</span>
                       </div>
                       <div className="stat-row d-flex justify-content-between">
                         <span>vs. Race Avg:</span>
@@ -212,54 +225,6 @@ const ConsistencyTracker = ({ eventsData }) => {
       </Row>
     </div>
   );
-};
-
-// Calculate consistency metrics from lap data
-const calculateConsistencyMetrics = (laps) => {
-  if (laps.length <= 1) {
-    return {
-      standardDeviation: 0,
-      consistencyScore: 5.0, // neutral score for insufficient data
-      spread: 0,
-      fieldComparison: 0 // neutral comparison
-    };
-  }
-  
-  // Get array of lap times
-  const lapTimes = laps.map(lap => lap.attributes_LapTime);
-  
-  // Calculate average lap time
-  const avgLapTime = lapTimes.reduce((sum, time) => sum + time, 0) / lapTimes.length;
-  
-  // Calculate standard deviation
-  const squaredDiffs = lapTimes.map(time => Math.pow(time - avgLapTime, 2));
-  const avgSquaredDiff = squaredDiffs.reduce((sum, diff) => sum + diff, 0) / squaredDiffs.length;
-  const standardDeviation = Math.sqrt(avgSquaredDiff);
-  
-  // Calculate the spread (fastest to slowest)
-  const spread = Math.max(...lapTimes) - Math.min(...lapTimes);
-  
-  // Calculate coefficient of variation (CV) - normalized measure of dispersion
-  const cv = standardDeviation / avgLapTime;
-  
-  // The lower the CV, the better the consistency
-  // Map this to a 0-10 scale where 10 is perfect consistency
-  
-  // Typically, a CV under 0.5% is excellent for racing
-  // A CV over 2-3% indicates inconsistent driving
-  let consistencyScore = 10 - (cv * 2000);
-  consistencyScore = Math.max(0, Math.min(10, consistencyScore));
-  
-  // For simulation purposes, generate a field comparison
-  // In a real implementation, this would come from comparing to other drivers
-  const fieldComparison = (Math.random() * 20) - 10; // -10% to +10% 
-  
-  return {
-    standardDeviation,
-    consistencyScore,
-    spread,
-    fieldComparison
-  };
 };
 
 // Calculate if lap times are improving, steady, or declining

@@ -3,10 +3,13 @@ import { Row, Col, Form, Button, Card, Badge, Table } from 'react-bootstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import msToTime from '../../utils/msToTime';
 import getAPIData from "../../utils/getAPIData";
+import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
 // eslint-disable-next-line no-unused-vars
-import styles from './SessionHistoryHeadToHeadComparison.css';
+import './SessionHistoryHeadToHeadComparison.css';
 
 const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) => {
+  const { driverAnalytics } = useRaceAnalytics();
+
   const [comparisonDriver, setComparisonDriver] = useState(null);
   const [drivers, setDrivers] = useState([]);
   const [primaryDriverData, setPrimaryDriverData] = useState([]);
@@ -38,11 +41,11 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
 
   // Load data when drivers change
   useEffect(() => {
-    if (selectedDriver && comparisonDriver) {
+    if (selectedDriver && comparisonDriver && driverAnalytics) {
       loadDriverData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDriver, comparisonDriver]);
+  }, [selectedDriver, comparisonDriver,driverAnalytics]);
 
   // Process data to calculate battles and stats when both datasets are available
   useEffect(() => {
@@ -99,34 +102,14 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   // Calculate statistics for a driver
   const calculateDriverStats = (laps) => {
     if (!laps.length) return { avgLapTime: 0, bestLapTime: 0, consistency: 0 };
-    
-    // Skip lap 1 for stats if we have enough laps (often outliers due to race start)
-    const relevantLaps = laps.length > 3 ? laps.slice(1) : laps;
-    
-    // Calculate average lap time
-    const lapTimes = relevantLaps.map(lap => lap.attributes_LapTime);
-    const validLapTimes = lapTimes.filter(time => time > 0);
-    const avgLapTime = validLapTimes.reduce((sum, time) => sum + time, 0) / validLapTimes.length;
-    
-    // Find best lap time
-    const bestLapTime = Math.min(...validLapTimes);
-    
-    // Calculate consistency (standard deviation of lap times)
-    const squaredDiffs = validLapTimes.map(time => Math.pow(time - avgLapTime, 2));
-    const avgSquaredDiff = squaredDiffs.reduce((sum, diff) => sum + diff, 0) / squaredDiffs.length;
-    const stdDev = Math.sqrt(avgSquaredDiff);
-    
-    // Calculate consistency score (lower standard deviation = higher consistency)
-    // Convert to a 0-10 scale where 10 is perfect consistency
-    const cv = stdDev / avgLapTime;
-    let consistencyScore = 10 - (cv * 2000);
-    consistencyScore = Math.max(0, Math.min(10, consistencyScore));
-    
+    var driverData = driverAnalytics[laps[0].participantid];
+    if (!driverData) return { avgLapTime: 0, bestLapTime: 0, consistency: 0 };
     return {
-      avgLapTime,
-      bestLapTime,
-      consistency: consistencyScore
+      avgLapTime: driverData.avgLapTimeFullRace,
+      bestLapTime: driverData.bestLapTime,
+      consistency: driverData.consistency
     };
+
   };
 
   // Generate gap data between drivers for each lap
@@ -319,7 +302,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       </tr>
                       <tr>
                         <td>Consistency:</td>
-                        <td className="text-end fw-bold">{stats.primary.consistency.toFixed(1)}/10</td>
+                        <td className="text-end fw-bold">{stats.primary.consistency}/10</td>
                         <td>
                           {stats.primary.consistency >= stats.comparison.consistency ? 
                             <Badge bg="success">Better</Badge> : 
@@ -357,7 +340,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       </tr>
                       <tr>
                         <td>Consistency:</td>
-                        <td className="text-end fw-bold">{stats.comparison.consistency.toFixed(1)}/10</td>
+                        <td className="text-end fw-bold">{stats.comparison.consistency}/10</td>
                         <td>
                           {stats.comparison.consistency >= stats.primary.consistency ? 
                             <Badge bg="success">Better</Badge> : 
