@@ -20,17 +20,22 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
   useEffect(() => {
     if (raceData && raceData.results) {
       const analytics = {};
-      // Process all drivers
+      
+      // First pass: Calculate individual driver stats and find best sector times
+      let sessionBestS1Time = Infinity;
+      let sessionBestS2Time = Infinity;
+      let sessionBestS3Time = Infinity;
+      
       raceData.results.forEach(driver => {
         const driverEvents = eventsData.find(evt => evt[0].participantid === driver.participantid);
         if (driverEvents) {
           // Extract lap events, don't include first lap or pit laps
-          const lapEvents = driverEvents.filter((evt,i) => i !== 0 && (evt.event_name === "Lap"));
-          console.log('Lap Events:', lapEvents);
+          const allLapEvents = driverEvents.filter(evt => evt.event_name === "Lap");
+          const lapEvents = allLapEvents.filter((evt,i) => i !== 0);
           const pitLaps = detectPitStops(driverEvents, lapEvents);
           
           // Calculate lap times
-          const avgLapTimeFullRace = lapEvents.reduce((sum, lap) => sum + lap.attributes_LapTime, 0) / lapEvents.length;
+          const avgLapTimeFullRace = allLapEvents.reduce((sum, lap) => sum + lap.attributes_LapTime, 0) / allLapEvents.length;
           const lapTimes = lapEvents.filter((lap) => pitLaps.indexOf(lap.attributes_Lap) === -1 ).map(lap => lap.attributes_LapTime);
           const spread = Math.max(...lapTimes) - Math.min(...lapTimes);
           const avgLapTime = lapTimes.reduce((sum, time) => sum + time, 0) / lapTimes.length;
@@ -43,9 +48,18 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
           const avgSector1Time = sector1Times.reduce((sum, time) => sum + time, 0) / sector1Times.length;
           const avgSector2Time = sector2Times.reduce((sum, time) => sum + time, 0) / sector2Times.length;
           const avgSector3Time = sector3Times.reduce((sum, time) => sum + time, 0) / sector3Times.length;
-          // const vsAverageS1 = ;
+          
+          // Calculate best sector times for this driver
+          const bestSector1Time = Math.min(...sector1Times);
+          const bestSector2Time = Math.min(...sector2Times);
+          const bestSector3Time = Math.min(...sector3Times);
+          
+          // Update session bests if needed
+          sessionBestS1Time = Math.min(sessionBestS1Time, bestSector1Time);
+          sessionBestS2Time = Math.min(sessionBestS2Time, bestSector2Time);
+          sessionBestS3Time = Math.min(sessionBestS3Time, bestSector3Time);
 
-          var calculateStandardDeviation = (lapOrSectorTimes,avgLapOrSectorTime) => {
+          var calculateStandardDeviation = (lapOrSectorTimes, avgLapOrSectorTime) => {
             const squaredDiffs = lapOrSectorTimes.map(time => Math.pow(time - avgLapOrSectorTime, 2));
             const avgSquaredDiff = squaredDiffs.reduce((sum, diff) => sum + diff, 0) / squaredDiffs.length;
 
@@ -80,30 +94,47 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
             consistency,
             consistencyS1,
             avgSector1Time,
+            bestSector1Time,
             consistencyS2,
             avgSector2Time,
+            bestSector2Time,
             consistencyS3,
             avgSector3Time,
+            bestSector3Time,
             spread,
           };
-          //  = metrics;
         }
       });
+      
+      // Second pass: Calculate gaps to session bests
+      for (const participantid in analytics) {
+        const driver = analytics[participantid];
+        
+        // Calculate gaps to session best
+        driver.gapToSessionBestS1 = driver.bestSector1Time - sessionBestS1Time;
+        driver.gapToSessionBestS2 = driver.bestSector2Time - sessionBestS2Time;
+        driver.gapToSessionBestS3 = driver.bestSector3Time - sessionBestS3Time;
+        
+        // Store session best times for reference
+        driver.sessionBestS1Time = sessionBestS1Time;
+        driver.sessionBestS2Time = sessionBestS2Time;
+        driver.sessionBestS3Time = sessionBestS3Time;
+        
+        // Is this driver the holder of any session best sectors?
+        driver.hasSessionBestS1 = driver.bestSector1Time === sessionBestS1Time;
+        driver.hasSessionBestS2 = driver.bestSector2Time === sessionBestS2Time;
+        driver.hasSessionBestS3 = driver.bestSector3Time === sessionBestS3Time;
+      }
 
       // Calculate field comparison values
       const fieldConsistencyAvg = Object.values(analytics).reduce((sum, val) => sum + parseFloat(val.consistency), 0) / Object.values(analytics).length;
-      for( const participantid in analytics) {
-        var d = analytics[participantid]  // Consistency vs Field avg
-        // console.log('Field Consistency Avg:', fieldConsistencyAvg);
+      for (const participantid in analytics) {
+        var d = analytics[participantid];  // Consistency vs Field avg
         var meVsField = parseFloat(d.consistency) / fieldConsistencyAvg;
-        // console.log('Me vs Field:', meVsField);
         var fieldComparison = (meVsField - 1) * 100;
-        // console.log('Field Comparison:', fieldComparison,'for participant:', d.participantid);
         analytics[participantid].fieldComparison = fieldComparison;
       }
-      Object.values(analytics).forEach(d => {
-
-      })
+      
       console.log('Analytics:', analytics);
       setDriverAnalytics(analytics);
     }

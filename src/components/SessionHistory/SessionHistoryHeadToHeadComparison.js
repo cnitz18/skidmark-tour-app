@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button, Card, Badge, Table } from 'react-bootstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import msToTime from '../../utils/msToTime';
-import getAPIData from "../../utils/getAPIData";
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
-// eslint-disable-next-line no-unused-vars
 import './SessionHistoryHeadToHeadComparison.css';
+import getStandardizedEventData from '../../utils/getStandardizedEventData';
 
 const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) => {
   const { driverAnalytics } = useRaceAnalytics();
@@ -61,11 +60,11 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     
     try {
       // Fetch data for primary driver
-      const primaryData = await getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${selectedDriver.stage}&participant_id=${selectedDriver.participantid}`);
+      const primaryData = await getStandardizedEventData(selectedDriver.stage, selectedDriver.participantid);
       setPrimaryDriverData(primaryData);
       
       // Fetch data for comparison driver
-      const comparisonData = await getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${comparisonDriver.stage}&participant_id=${comparisonDriver.participantid}`);
+      const comparisonData = await getStandardizedEventData(comparisonDriver.stage, comparisonDriver.participantid);
       setComparisonDriverData(comparisonData);
       
     } catch (error) {
@@ -79,9 +78,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   const processHeadToHeadData = () => {
     // Filter lap events for both drivers
     const primaryLaps = primaryDriverData.filter(evt => evt.event_name === "Lap")
-      .map(evt => { evt.attributes_Lap = evt.attributes_Lap + 1; return evt; });
     const comparisonLaps = comparisonDriverData.filter(evt => evt.event_name === "Lap")
-      .map(evt => { evt.attributes_Lap = evt.attributes_Lap + 1; return evt; });
 
       // Calculate statistics for both drivers
     const primaryStats = calculateDriverStats(primaryLaps);
@@ -111,7 +108,6 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
       bestLapTime: driverData.bestLapTime,
       consistency: driverData.consistency
     };
-
   };
 
   // Generate gap data between drivers for each lap
@@ -126,7 +122,6 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     for (let lap = 1; lap <= maxLaps; lap++) {
       const primaryLap = primaryLaps.find(l => l.attributes_Lap === lap);
       const comparisonLap = comparisonLaps.find(l => l.attributes_Lap === lap);
-      
       if (primaryLap && comparisonLap) {
         // Calculate position gap
         const posGap = primaryLap.attributes_RacePosition - comparisonLap.attributes_RacePosition;

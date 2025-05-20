@@ -56,6 +56,21 @@
   border-left: 4px solid #007bff;
 }
 
+/* Add to your CSS file */
+.text-purple {
+  color: #8e44ad !important;
+}
+
+.bg-purple {
+  background-color: #8e44ad !important;
+  color: white;
+}
+
+.sector-card-best {
+  border-left: 4px solid #8e44ad;
+  background-color: rgba(142, 68, 173, 0.05);
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .sector-card {

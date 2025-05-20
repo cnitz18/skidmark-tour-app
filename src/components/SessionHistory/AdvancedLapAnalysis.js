@@ -23,7 +23,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   // Process event data when it changes
   useEffect(() => {
     if (eventsData && eventsData.length > 0) {
-      console.log('analyzing... analysisMode:',analysisMode)
       processEventData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +34,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       .filter(event => event.event_name === "Lap")
       .sort((a, b) => a.attributes_Lap - b.attributes_Lap);
       
-      // console.log('lapEvents:',lapEvents)
     if (lapEvents.length === 0) return;
 
     // Find best lap time
@@ -69,7 +67,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
           ));
         return invalidLapEvents.length === 0;
       });
-      console.log('lapEvents:',lapEvents,'validLaps:',validLaps)
     }
 
     const lapTimeStats = calculateLapTimeStats(validLaps,pitLaps);

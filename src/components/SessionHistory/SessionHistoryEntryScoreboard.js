@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Spinner, Nav, Tab, Badge, Card } from 'react-bootstrap';
-import getAPIData from "../../utils/getAPIData";
 import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -10,6 +9,7 @@ import ConsistencyTracker from './ConsistencyTracker';
 // eslint-disable-next-line no-unused-vars
 import "./SessionHistoryEntryScoreboard.css";
 import { RaceAnalyticsProvider } from "../../utils/RaceAnalyticsContext";
+import getStandardizedEventData from "../../utils/getStandardizedEventData";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
   const [showModal, setShowModal] = useState(false);
@@ -38,13 +38,13 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     var promiseArr = [], playerEvents = [];;
     race.results.forEach((racer) => {
       promiseArr.push(
-        getAPIData(`/api/batchupload/sms_stats_data/events/?stage_id=${stage_id}&participant_id=${racer.participantid}`)
+        getStandardizedEventData(stage_id, racer.participantid)
         .then((res) => {
           var lapTracker = 1;
           res = res.map((evt) => {
             if( evt.event_name === "Lap" ){
               // Lap events start at 0
-              evt.attributes_Lap = evt.attributes_Lap + 1
+              // evt.attributes_Lap = evt.attributes_Lap + 1
               lapTracker = evt.attributes_Lap + 1;
             }
             else if( evt.attributes_Lap ){
