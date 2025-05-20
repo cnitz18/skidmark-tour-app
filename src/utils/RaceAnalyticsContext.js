@@ -135,7 +135,6 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
         analytics[participantid].fieldComparison = fieldComparison;
       }
       
-      console.log('Analytics:', analytics);
       setDriverAnalytics(analytics);
     }
   }, [raceData, eventsData]);
