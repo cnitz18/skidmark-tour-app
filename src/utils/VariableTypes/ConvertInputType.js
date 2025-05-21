@@ -62,7 +62,6 @@ function ConvertInputType(field) {
       return "number";
     default:
       if (fieldName) {
-        //console.log('fieldName:',fieldName)
         if (
           fieldName.includes("WeatherSlot") ||
           fieldName.includes("LiveTrackPreset")

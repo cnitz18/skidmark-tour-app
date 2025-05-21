@@ -19,13 +19,11 @@ export default function ServerConfig({ lists }) {
       { members: true },
       true
     );
-    //console.log("status:", status);
     setCurPlayerList(status?.members);
   }
   async function getCurrentConfig() {
     let res = await getAPIData("/config");
     if (res) setCurConfig({ ...res });
-    //console.log("getCurrentConfig:", res);
   }
 
   useEffect(() => {

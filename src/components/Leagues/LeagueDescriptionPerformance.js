@@ -181,7 +181,9 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     // Group races by event and order chronologically
     const eventGroups = {};
     
-    history.forEach((event,i,arr) => {
+    history
+    .sort((a,b) => b.end_time - a.end_time)
+    .forEach((event,i) => {
       eventGroups[history.length-i] = event;
     });
 
@@ -586,7 +588,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                       <DriverBadge bg="primary">Last {selectedDriverFormData.length} Races Finished</DriverBadge>
                     </StatsCardHeader>
                     <div style={{ height: '400px', width: '100%' }}>
-                      <ResponsiveContainer>
+                      <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                           data={selectedDriverFormData}
                           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -737,7 +739,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                       <Typography variant="h6">{selectedDriver} Consistency Profile</Typography>
                     </StatsCardHeader>
                     <div style={{ height: '400px', width: '100%' }}>
-                      <ResponsiveContainer>
+                      <ResponsiveContainer width="100%" height="100%">
                         <RadarChart outerRadius={150} width={500} height={500} data={[
                           { subject: 'Consistency', A: selectedDriverConsistency.consistency, fullMark: 10 },
                           { subject: 'Finish Rate', A: selectedDriverConsistency.finishRate, fullMark: 10 },
@@ -862,7 +864,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                       <Typography variant="h6">League Consistency Rankings</Typography>
                     </StatsCardHeader>
                     <div style={{ height: '600px', width: '100%' }}>
-                      <ResponsiveContainer>
+                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={formattedData.consistencyRatings.sort((a, b) => b.consistency - a.consistency)}
                           layout="vertical"
@@ -1071,7 +1073,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                       <div>
                         <Typography variant="subtitle2" className="mb-2">Race-by-Race Comebacks</Typography>
                         <div style={{ height: '300px', width: '100%' }}>
-                          <ResponsiveContainer>
+                          <ResponsiveContainer width="100%" height="100%">
                             <BarChart
                               data={selectedDriverComebacks}
                               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -1145,7 +1147,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                           <Typography variant="h6">League Comeback Rankings</Typography>
                         </StatsCardHeader>
                         <div style={{ height: '280px', width: '100%' }}>
-                          <ResponsiveContainer>
+                          <ResponsiveContainer width="100%" height="100%">
                             <BarChart
                               data={formattedData.comebackFactors.driverComebacks?.sort((a, b) => b.value - a.value)}
                               layout="vertical"

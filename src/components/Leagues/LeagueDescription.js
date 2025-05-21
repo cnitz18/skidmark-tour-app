@@ -92,7 +92,6 @@ const LeagueDescription = ({ enums, lists }) => {
         if( league && league.id ){
             getAPIData('/leagues/get/stats/?id=' + league.id)
             .then((res) => {
-                //console.log('setting league details:',res)
                 setLeagueDetails({...res})
                 setShowSpinner(false)
             }).catch((err) => { console.error(err); setShowSpinner(false) })

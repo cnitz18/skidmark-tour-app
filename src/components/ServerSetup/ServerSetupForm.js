@@ -81,10 +81,6 @@ const ServerSetupForm = ({ enums, lists }) => {
       setMultiClassNumSlots({
         ...inputInfo.find((x) => x.name === "MultiClassSlots"),
       });
-      // console.log('setting slots attrs:',inputInfo.filter(
-      //   (x) =>
-      //     x.name.startsWith("MultiClassSlot") && x.name !== "MultiClassSlots"
-      // ))
       setMultiClassSlotsAttrs([
         ...inputInfo.filter(
           (x) =>
@@ -96,7 +92,6 @@ const ServerSetupForm = ({ enums, lists }) => {
       if (lists && Object.keys(lists).length) {
         let curList = [...lists["vehicle_classes"].list];
         let sortedList = curList.sort((a, b) => a.name.localeCompare(b.name));
-        // console.log('setting sorted vehicle:',sortedList)
         setSortedVehicleList([...sortedList]);
       }
     }
@@ -104,11 +99,9 @@ const ServerSetupForm = ({ enums, lists }) => {
   async function loadPresetList() {
     let list = await getAPIData("/db/racepresets");
     setPresetList([...list]);
-    //console.log("list length:", list.length, list);
   }
 
   function updateState(fieldName, val) {
-    //console.log("updateState:", fieldName, val);
     setState((prevState) => {
       let updState = Object.assign({}, prevState);
       updState[fieldName] = val;
@@ -137,14 +130,12 @@ const ServerSetupForm = ({ enums, lists }) => {
       .then((res) => {
         if (res.status === 200) {
           setDifficultyError(false);
-          //console.log("showing toast....");
           setToastVariant("Success");
           setToastMessage("Server settings saved");
           setToastBody("");
           setShowToast(true);
           setShowSpinner(false);
           setDisableFields(false);
-          //window.alert("Session settings sent, response: " + res.statusText);
         } else {
           setDifficultyError(true);
           setToastVariant("Danger");
@@ -153,9 +144,7 @@ const ServerSetupForm = ({ enums, lists }) => {
           setShowToast(true);
           setShowSpinner(false);
           setDisableFields(false);
-          // window.alert(
-          //   `Session setting load failed with code "${res.status}" and reason: "${res.statusText}"`
-          // );
+
           console.error(res);
         }
       })
@@ -171,7 +160,6 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   function handleLoadPreset(preset, e) {
     e.preventDefault();
-    // console.log("loadig...", preset);
     let newStateUpdated = {};
     let postState = {};
     for (let field in preset) {
@@ -193,7 +181,6 @@ const ServerSetupForm = ({ enums, lists }) => {
         window.alert(
           `Preset load failed with code ${res.status} and reason ${res.statusText}`
         );
-      //console.log("post response:", res);
       handleCloseLoad();
     });
   }
@@ -201,17 +188,14 @@ const ServerSetupForm = ({ enums, lists }) => {
     e.preventDefault();
 
     let postState = {};
-    //console.log("handleSavePreset:", Object.keys(state).length);
     for (let field in state) {
       postState[field] = state[field];
     }
-    //console.log("postState:'", JSON.stringify(postState));
 
     WebServerCommands.savePreset(PresetName, postState, serverFieldList).then(
       (res) => {
         handleCloseSave();
         setPresetName("");
-        //console.log("post response:", res);
       }
     );
   }
@@ -224,11 +208,8 @@ const ServerSetupForm = ({ enums, lists }) => {
     });
   }
   function sendServerMessage() {
-    //console.log('Sending message:',serverMessage)
     postAPIData("/api/session/send_chat", { message: serverMessage }).then(
       (res) => {
-        //window.alert('Message Sent');
-        //console.log("message sent");
       }
     );
   }
@@ -243,8 +224,6 @@ const ServerSetupForm = ({ enums, lists }) => {
   }
   useEffect(() => {
     loadServerSetup();
-    // console.log('multiClassSlotsAttrs:',multiClassSlotsAttrs);
-    // console.log('sortedVehicleList:',sortedVehicleList)
   }, [lists]);
 
   return (

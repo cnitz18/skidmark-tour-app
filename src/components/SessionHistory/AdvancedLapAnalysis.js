@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import msToTime from '../../utils/msToTime';
 import './AdvancedLapAnalysis.css';
+import detectPitStops from '../../utils/detectPitStops';
 
 const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   const [processedData, setProcessedData] = useState({
@@ -22,7 +23,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   // Process event data when it changes
   useEffect(() => {
     if (eventsData && eventsData.length > 0) {
-      console.log('analyzing... analysisMode:',analysisMode)
       processEventData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,7 +34,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       .filter(event => event.event_name === "Lap")
       .sort((a, b) => a.attributes_Lap - b.attributes_Lap);
       
-      // console.log('lapEvents:',lapEvents)
     if (lapEvents.length === 0) return;
 
     // Find best lap time
@@ -68,7 +67,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
           ));
         return invalidLapEvents.length === 0;
       });
-      console.log('lapEvents:',lapEvents,'validLaps:',validLaps)
     }
 
     const lapTimeStats = calculateLapTimeStats(validLaps,pitLaps);
@@ -140,23 +138,6 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
       range: Math.max(...lapTimes) - Math.min(...lapTimes),
       consistency: (10 - Math.min(10, cv * 100)).toFixed(1) // Convert CV to a 0-10 scale
     };
-  };
-
-  // Detect pit stops by analyzing lap time anomalies
-  const detectPitStops = (events, laps) => {
-    const pitLaps = [];
-    for (let i = 1; i < laps.length; i++) {
-      const currentLap = laps[i];
-      const lapEvents = eventsData.filter(e => e.attributes_Lap === currentLap.attributes_Lap)
-      const pittedIn = lapEvents.some(e => e.event_name === "State" && e.attributes_NewState === "EnteringPits");
-      const pittedOut = lapEvents.some(e => e.event_name === "State" && e.attributes_NewState === "ExitingPits");
-
-      if ( lapEvents && (pittedIn || pittedOut) ) {
-        pitLaps.push(currentLap.attributes_Lap);
-      }
-    }
-    
-    return pitLaps;
   };
 
   // Generate insights based on lap data

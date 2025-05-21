@@ -4,10 +4,8 @@ import ServerConfigHandler from "./ServerConfigHandler";
 class WebServerCommands {
   static async savePreset(name, preset, fields) {
     try {
-      //console.log('pres:',preset)
       let validatedData = ServerConfigHandler.trimExtraFields(preset, fields);
       validatedData.PresetName = name;
-      //console.log('validated:',validatedData)
       let res = await postAPIData("/db/racepresets/add", validatedData);
       return { status: res.status, statusText: res.statusText };
     } catch (err) {
@@ -17,7 +15,6 @@ class WebServerCommands {
   }
   static async deletePreset(id) {
     try {
-      //console.log("delete:", id);
       let res = await fetch(process.env.REACT_APP_AMS2API + "/db/racepresets/" + id, {
         method: "DELETE",
       });
