@@ -78,25 +78,25 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                 <div className="phase-indicator">
                   {improvementTrend.trend === 'improving' && (
                     <div className="d-flex align-items-center text-success mb-2">
-                      <i className="bi bi-arrow-down me-2"></i>
+                      <span className="arrow-icon text-success me-2">↑</span>
                       <span>Improving lap times</span>
                     </div>
                   )}
                   {improvementTrend.trend === 'steady' && (
                     <div className="d-flex align-items-center text-primary mb-2">
-                      <i className="bi bi-arrow-right me-2"></i>
+                      <span className="arrow-icon text-primary me-2">→</span>
                       <span>Consistent lap times</span>
                     </div>
                   )}
                   {improvementTrend.trend === 'declining' && (
                     <div className="d-flex align-items-center text-warning mb-2">
-                      <i className="bi bi-arrow-up me-2"></i>
+                      <span className="arrow-icon text-warning me-2">↓</span>
                       <span>Declining lap times</span>
                     </div>
                   )}
                   {improvementTrend.trend === 'mixed' && (
                     <div className="d-flex align-items-center text-secondary mb-2">
-                      <i className="bi bi-shuffle me-2"></i>
+                      <span className="arrow-icon text-secondary me-2">↔</span>
                       <span>Mixed lap times</span>
                     </div>
                   )}
