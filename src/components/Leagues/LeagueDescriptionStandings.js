@@ -10,6 +10,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Typography } from "@mui/material";
 import { BsTrophy, BsFlag, BsStopwatch, BsBarChart, BsAward } from "react-icons/bs";
 import styles from "./LeagueDescriptionStandings.module.css";
+import { useEffect } from "react";
 
 const TABLE_HEIGHT = 400;
 const TABLE_MARGIN = 250;
@@ -95,7 +96,9 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) =>
                 
                     xAxis={[
                         { 
-                            data: league.races.map((r) => NameMapper.fromTrackId(r.track,lists["tracks"]?.list)),
+                            data: league.races
+                                    .sort((a,b) => new Date(a.date) - new Date(b.date))
+                                    .map((r) => NameMapper.fromTrackId(r.track,lists["tracks"]?.list)),
                             scaleType: 'point',
                         }
                     ]}
