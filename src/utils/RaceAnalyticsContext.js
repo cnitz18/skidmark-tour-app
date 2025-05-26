@@ -34,8 +34,6 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
           var lapEvents = allLapEvents.filter((evt,i) => i !== 0);
           const pitLaps = detectPitStops(driverEvents, lapEvents);
           lapEvents = lapEvents.filter((lap) => pitLaps.indexOf(lap.attributes_Lap) === -1 );
-          console.log("Pit Laps: ", pitLaps);
-          console.log("Lap Events: ", allLapEvents);
           
           // Calculate lap times
           const avgLapTimeFullRace = allLapEvents.reduce((sum, lap) => sum + lap.attributes_LapTime, 0) / allLapEvents.length;
