@@ -12,9 +12,9 @@ const imageInfo = [
         caption: "Karting Fall '24"
     },
     {
-        url: "homepage/ginettas.jpg",
-        caption: "Ginetta GT5s @ Daytona Roval (link)",
-        href: "https://youtu.be/WpYystD5N-U?si=OCRXFccgjdf_C6AL"
+        url: "homepage/arccamaros.jpg",
+        caption: "ARC Camaros @ Autódromo Yahuarcocha (link)",
+        href: "https://www.youtube.com/watch?v=4KDvMUHPLDw"
     },
     {
         url: "homepage/kartsontrack.jpg",
@@ -32,7 +32,12 @@ const imageInfo = [
     {
         url: "homepage/mustangs.png",
         caption: "Team practice for iRacing Spa 24"
-    }
+    },
+    {
+        url: "homepage/ginettas.jpg",
+        caption: "Ginetta GT5s @ Daytona Roval (link)",
+        href: "https://youtu.be/WpYystD5N-U?si=OCRXFccgjdf_C6AL"
+    },
 ]
 
 const socialInfo = [

@@ -180,7 +180,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       Lap Analysis
                     </Nav.Link>
                   </Nav.Item> */}
-                  <Nav.Item>
+                  {/* <Nav.Item>
                     <Nav.Link eventKey="advancedAnalysis" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-speedometer2 me-2"></i>
                       Lap Analysis
@@ -191,19 +191,19 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       <i className="bi bi-people me-2"></i>
                       Driver Comparison
                     </Nav.Link>
-                  </Nav.Item>
+                  </Nav.Item> */}
                   <Nav.Item>
                     <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-exclamation-triangle me-2"></i>
                       Race Events
                     </Nav.Link>
                   </Nav.Item>
-                  <Nav.Item>
+                  {/* <Nav.Item>
                     <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-lightning-charge me-2"></i>
                       Performance Insights
                     </Nav.Link>
-                  </Nav.Item>
+                  </Nav.Item> */}
                 </Nav>
                 
                 <Tab.Content>
