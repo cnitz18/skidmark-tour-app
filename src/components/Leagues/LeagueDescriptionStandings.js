@@ -10,7 +10,6 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Typography } from "@mui/material";
 import { BsTrophy, BsFlag, BsStopwatch, BsBarChart, BsAward } from "react-icons/bs";
 import styles from "./LeagueDescriptionStandings.module.css";
-import { useEffect } from "react";
 
 const TABLE_HEIGHT = 400;
 const TABLE_MARGIN = 250;

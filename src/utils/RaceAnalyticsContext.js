@@ -35,7 +35,6 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
           const pitLaps = detectPitStops(driverEvents, lapEvents);
           lapEvents = lapEvents.filter((lap) => pitLaps.indexOf(lap.attributes_Lap) === -1 );
           
-          let git_repo = false;
           // Calculate lap times
           const avgLapTimeFullRace = allLapEvents.reduce((sum, lap) => sum + lap.attributes_LapTime, 0) / allLapEvents.length;
           const lapTimes = lapEvents.map(lap => lap.attributes_LapTime);
@@ -74,11 +73,11 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
             // Get consistency score using best scaling factor (100 instead of 2000)
             const consistency = (10 - Math.min(10, cv * 100)).toFixed(1); // Convert CV to a 0-10 scale
             if(print){
-              console.log("Lap/Sector Times: ", lapOrSectorTimes);
-              console.log("Avg Lap/Sector Time: ", avgLapOrSectorTime);
-              console.log("Standard Deviation: ", stdDev);
-              console.log("Coefficient of Variation: ", cv);
-              console.log("Consistency: ", consistency);
+              // console.log("Lap/Sector Times: ", lapOrSectorTimes);
+              // console.log("Avg Lap/Sector Time: ", avgLapOrSectorTime);
+              // console.log("Standard Deviation: ", stdDev);
+              // console.log("Coefficient of Variation: ", cv);
+              // console.log("Consistency: ", consistency);
             }
             return [stdDev, cv, consistency];
           }
@@ -142,7 +141,7 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
         var fieldComparison = (meVsField - 1) * 100;
         analytics[participantid].fieldComparison = fieldComparison;
       }
-      console.log('analytics', analytics);
+      // console.log('analytics', analytics);
       
       setDriverAnalytics(analytics);
     }
