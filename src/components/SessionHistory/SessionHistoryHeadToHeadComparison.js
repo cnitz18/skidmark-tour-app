@@ -464,9 +464,31 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       dataKey="timeGap" 
                       name="Time Gap" 
                       stroke="#ff7300" 
-                      dot={{ r: 3 }}
+                      dot={(props) => {
+                        const { cx, cy, payload } = props;
+                        return (
+                          <circle 
+                            cx={cx} 
+                            cy={cy} 
+                            r={3} 
+                            fill={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
+                            stroke={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
+                          />
+                        );
+                      }}
                       strokeWidth={2}
-                      activeDot={{ r: 6 }}
+                      activeDot={(props) => {
+                        const { cx, cy, payload } = props;
+                        return (
+                          <circle 
+                            cx={cx} 
+                            cy={cy} 
+                            r={6} 
+                            fill={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
+                            stroke={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
+                          />
+                        );
+                      }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
