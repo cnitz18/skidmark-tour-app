@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, Button, Card, Badge, Table } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Badge, Table, Nav } from 'react-bootstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import msToTime from '../../utils/msToTime';
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
@@ -21,6 +21,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     primary: { avgLapTime: 0, bestLapTime: 0, consistency: 0 },
     comparison: { avgLapTime: 0, bestLapTime: 0, consistency: 0 }
   });
+  const [selectedSector, setSelectedSector] = useState(1);
 
   // Initialize available drivers for comparison
   useEffect(() => {
@@ -203,6 +204,11 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   // Handle battle selection
   const handleBattleSelect = (battle) => {
     setSelectedBattle(battle);
+  };
+
+  // Handle sector tab selection
+  const handleSectorSelect = (sectorNumber) => {
+    setSelectedSector(sectorNumber);
   };
 
   // Custom tooltip for gap chart
@@ -496,6 +502,101 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
             </Card.Body>
           </Card>
 
+          {/* Sector comparison */}
+          <Card className="mb-4">
+            <Card.Header>
+              <h5 className="mb-0">Sector Analysis</h5>
+            </Card.Header>
+            <Card.Body>
+              <Nav variant="tabs" className="mb-3">
+                <Nav.Item>
+                  <Nav.Link 
+                    active={selectedSector === 1} 
+                    onClick={() => handleSectorSelect(1)}
+                  >
+                    Sector 1
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link 
+                    active={selectedSector === 2} 
+                    onClick={() => handleSectorSelect(2)}
+                  >
+                    Sector 2
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link 
+                    active={selectedSector === 3} 
+                    onClick={() => handleSectorSelect(3)}
+                  >
+                    Sector 3
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+              
+              <div className="sector-analysis">
+                {selectedSector === 1 && (
+                  <div style={{ height: "250px" }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={gapData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
+                        <YAxis label={{ value: 'Sector 1 Time (sec)', angle: -90, position: 'insideLeft' }} />
+                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                        <Legend />
+                        <Line type="monotone" dataKey="primaryS1" stroke="#007bff" name={selectedDriver?.name} />
+                        <Line type="monotone" dataKey="comparisonS1" stroke="#6f42c1" name={comparisonDriver?.name} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+
+                {selectedSector === 2 && (
+                  <div style={{ height: "250px" }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={gapData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
+                        <YAxis label={{ value: 'Sector 2 Time (sec)', angle: -90, position: 'insideLeft' }} />
+                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                        <Legend />
+                        <Line type="monotone" dataKey="primaryS2" stroke="#007bff" name={selectedDriver?.name} />
+                        <Line type="monotone" dataKey="comparisonS2" stroke="#6f42c1" name={comparisonDriver?.name} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+
+                {selectedSector === 3 && (
+                  <div style={{ height: "250px" }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={gapData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
+                        <YAxis label={{ value: 'Sector 3 Time (sec)', angle: -90, position: 'insideLeft' }} />
+                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                        <Legend />
+                        <Line type="monotone" dataKey="primaryS3" stroke="#007bff" name={selectedDriver?.name} />
+                        <Line type="monotone" dataKey="comparisonS3" stroke="#6f42c1" name={comparisonDriver?.name} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </div>
+            </Card.Body>
+          </Card>
+
+          
           {/* Battle timeline */}
           {battles.length > 0 && (
             <Card className="mb-4 battle-card">
@@ -571,71 +672,6 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
               </Card.Body>
             </Card>
           )}
-
-          {/* Sector comparison */}
-          <Card className="mb-4">
-            <Card.Header>
-              <h5 className="mb-0">Sector Analysis</h5>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                <Col md={4} className="mb-3">
-                  <h6>Sector 1</h6>
-                  <div style={{ height: "200px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={gapData}
-                        margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="lap" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
-                        <Line type="monotone" dataKey="primaryS1" stroke="#007bff" name={selectedDriver?.name} />
-                        <Line type="monotone" dataKey="comparisonS1" stroke="#6f42c1" name={comparisonDriver?.name} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Col>
-                <Col md={4} className="mb-3">
-                  <h6>Sector 2</h6>
-                  <div style={{ height: "200px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={gapData}
-                        margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="lap" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
-                        <Line type="monotone" dataKey="primaryS2" stroke="#007bff" name={selectedDriver?.name} />
-                        <Line type="monotone" dataKey="comparisonS2" stroke="#6f42c1" name={comparisonDriver?.name} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Col>
-                <Col md={4} className="mb-3">
-                  <h6>Sector 3</h6>
-                  <div style={{ height: "200px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={gapData}
-                        margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="lap" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
-                        <Line type="monotone" dataKey="primaryS3" stroke="#007bff" name={selectedDriver?.name} />
-                        <Line type="monotone" dataKey="comparisonS3" stroke="#6f42c1" name={comparisonDriver?.name} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
         </>
       )}
     </div>
