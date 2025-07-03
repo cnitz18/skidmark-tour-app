@@ -15,7 +15,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     bestSectors: {},
     lapTimeStats: {},
     lapComparisons: [],
-    pitLaps: []
+    pitLaps: { in : [], out: [] }
   });
   const [analysisMode, setAnalysisMode] = useState('all'); // 'clean', 'all'
   const [dataInsights, setDataInsights] = useState([]);
@@ -55,15 +55,15 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     // Calculate overall stats
     let validLaps = lapEvents;
     if (analysisMode === 'clean') {
+      console.log('pitLaps:', pitLaps);
       // Filter out first lap and laps with incidents
       validLaps = lapEvents.filter((lap, i) => {
         if ( !i ) return false; // Skip first lap
         var invalidLapEvents = eventsData.filter(e => 
           e.attributes_Lap === lap.attributes_Lap 
-          && ( e.event_name === "Impact" 
-            || e.event_name === "CutTrackStart"
-            || e.event_name === "CutTrackEnd"
-            || pitLaps.includes(lap.attributes_Lap)
+          && ( 
+            pitLaps.in.includes(lap.attributes_Lap)
+            || pitLaps.out.includes(lap.attributes_Lap)
           ));
         return invalidLapEvents.length === 0;
       });
@@ -85,7 +85,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
         sector1Delta: lap.attributes_Sector1Time - prevLap.attributes_Sector1Time,
         sector2Delta: lap.attributes_Sector2Time - prevLap.attributes_Sector2Time,
         sector3Delta: lap.attributes_Sector3Time - prevLap.attributes_Sector3Time,
-        isPitLap: pitLaps.includes(lap.attributes_Lap)
+        isPitLap: pitLaps.in.includes(lap.attributes_Lap) || pitLaps.out.includes(lap.attributes_Lap),
       };
     }).filter(Boolean);
 
@@ -117,7 +117,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   const calculateLapTimeStats = (laps,pitLaps) => {
     if (laps.length === 0) return {};
 
-    const lapTimes = laps.filter((lap) => pitLaps.indexOf(lap.attributes_Lap) === -1 ).map(lap => lap.attributes_LapTime);
+    const lapTimes = laps.filter((lap) => pitLaps.in.indexOf(lap.attributes_Lap) === -1 && pitLaps.out.indexOf(lap.attributes_Lap) === -1 ).map(lap => lap.attributes_LapTime);
     const avgLapTime = lapTimes.reduce((sum, time) => sum + time, 0) / lapTimes.length;
 
     // Calculate standard deviation for consistency
@@ -164,7 +164,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
     
     // Check for improvement over race
     const cleanLaps = lapEvents.filter(
-      lap => !pitLaps.includes(lap.attributes_Lap)
+      lap => !pitLaps.in.includes(lap.attributes_Lap) && !pitLaps.out.includes(lap.attributes_Lap)
     );
     if (cleanLaps.length >= 6) {
       const firstThird = cleanLaps.slice(0, Math.floor(cleanLaps.length / 3));
@@ -204,7 +204,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
   // Format data for charts
   const formatLapDataForChart = () => {
     return processedData.lapEvents.map(lap => {
-      const isPit = processedData.pitLaps.includes(lap.attributes_Lap);
+      const isPit = processedData.pitLaps.in.includes(lap.attributes_Lap) || processedData.pitLaps.out.includes(lap.attributes_Lap);
       const isBest = lap.attributes_LapTime === processedData.bestLap?.attributes_LapTime;
       
       return {
@@ -319,7 +319,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
                       variant={analysisMode === 'clean' ? 'primary' : 'outline-primary'}
                       onClick={() => setAnalysisMode('clean')}
                     >
-                      Clean Laps
+                      Exclude Pits
                     </Button>
                   </ButtonGroup>
                 </div>
@@ -350,7 +350,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
                     <Legend />
                     
                     {/* Pit stop reference lines */}
-                    {processedData.pitLaps.map(lapNum => (
+                    {processedData.pitLaps.in.map(lapNum => (
                       <ReferenceLine
                         key={`pit-${lapNum}`}
                         x={lapNum}
@@ -398,7 +398,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
                     />
                     
                     <Scatter
-                      name="Pit Stop"
+                      name="Pit In/Out"
                       dataKey="pitStop"
                       fill="#dc3545"
                       shape="triangle"

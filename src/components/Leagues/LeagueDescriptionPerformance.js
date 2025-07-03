@@ -664,7 +664,10 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                                 (selectedDriverFormData[selectedDriverFormData.length - 1].position < 
                                 selectedDriverFormData[0].position ? 
                                   <Badge bg="success" style={{padding: '0.4rem 0.8rem'}}>Improving</Badge> : 
-                                  <Badge bg="warning" text="dark" style={{padding: '0.4rem 0.8rem'}}>Declining</Badge>)
+                                    selectedDriverFormData[selectedDriverFormData.length - 1].position === 
+                                    selectedDriverFormData[0].position ?
+                                    <Badge bg="info" style={{padding: '0.4rem 0.8rem'}}>Steady</Badge> :
+                                    <Badge bg="warning" text="dark" style={{padding: '0.4rem 0.8rem'}}>Declining</Badge>)
                               }
                             </span>
                           </div>

@@ -85,6 +85,8 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
         return str;
       case 'State':
         return `Now ${evt.attributes_NewState.replace(/([A-Z])/g, ' $1').trim()}`;
+      case 'Lap':
+        return `Lap ${evt.attributes_Lap} complete - Time: ${msToTime(evt.attributes_LapTime)}`;
       default:
         return "Uh oh - no output generated for this event type";
     }
@@ -180,7 +182,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       Lap Analysis
                     </Nav.Link>
                   </Nav.Item> */}
-                  {/* <Nav.Item>
+                  <Nav.Item>
                     <Nav.Link eventKey="advancedAnalysis" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-speedometer2 me-2"></i>
                       Lap Analysis
@@ -191,19 +193,19 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       <i className="bi bi-people me-2"></i>
                       Driver Comparison
                     </Nav.Link>
-                  </Nav.Item> */}
+                  </Nav.Item>
                   <Nav.Item>
                     <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-exclamation-triangle me-2"></i>
                       Race Events
                     </Nav.Link>
                   </Nav.Item>
-                  {/* <Nav.Item>
+                  <Nav.Item>
                     <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-lightning-charge me-2"></i>
                       Performance Insights
                     </Nav.Link>
-                  </Nav.Item> */}
+                  </Nav.Item>
                 </Nav>
                 
                 <Tab.Content>
@@ -295,12 +297,13 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                     </Paper>
                   </Tab.Pane>
                   
+                  {/* Race Events tab pane */}
                   <Tab.Pane eventKey="events">
                     {activeTab === "events" && (
                       <Paper elevation={0} className="p-3 mb-4 border">
                         <h5 className="mb-3">Race Events</h5>
                         <div className="events-container">
-                          {eventsData.filter(evt => evt.event_name !== "Lap").map((evt, i) => (
+                          {eventsData.map((evt, i) => (
                             <Card key={i} className="event-card mb-2">
                               <Card.Body>
                                 <div className="d-flex align-items-center">
