@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, Button, Card, Badge, Table, Nav } from 'react-bootstrap';
+import { Row, Col, Form, Button, Card, Badge, Table, Nav, ButtonGroup } from 'react-bootstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import msToTime from '../../utils/msToTime';
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
 import './SessionHistoryHeadToHeadComparison.css';
 import getStandardizedEventData from '../../utils/getStandardizedEventData';
+import detectPitStops from '../../utils/detectPitStops';
 
 const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) => {
   const { driverAnalytics } = useRaceAnalytics();
@@ -22,6 +23,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     comparison: { avgLapTime: 0, bestLapTime: 0, consistency: 0 }
   });
   const [selectedSector, setSelectedSector] = useState(1);
+  const [analysisMode, setAnalysisMode] = useState('all'); // 'all' or 'clean'
 
   // Initialize available drivers for comparison
   useEffect(() => {
@@ -53,7 +55,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
       processHeadToHeadData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [primaryDriverData, comparisonDriverData]);
+  }, [primaryDriverData, comparisonDriverData, analysisMode]); // Add analysisMode to dependency array
 
   // Load data for both selected drivers
   const loadDriverData = async () => {
@@ -78,12 +80,34 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   // Process the data to identify battles, gaps, and stats
   const processHeadToHeadData = () => {
     // Filter lap events for both drivers
-    const primaryLaps = primaryDriverData.filter(evt => evt.event_name === "Lap")
-    const comparisonLaps = comparisonDriverData.filter(evt => evt.event_name === "Lap")
+    const primaryLaps = primaryDriverData.filter(evt => evt.event_name === "Lap");
+    const comparisonLaps = comparisonDriverData.filter(evt => evt.event_name === "Lap");
 
-      // Calculate statistics for both drivers
-    const primaryStats = calculateDriverStats(primaryLaps);
-    const comparisonStats = calculateDriverStats(comparisonLaps);
+    // Detect pit stops
+    const primaryPitLaps = detectPitStops(primaryDriverData, primaryLaps);
+    const comparisonPitLaps = detectPitStops(comparisonDriverData, comparisonLaps);
+
+    // Filter laps based on analysis mode
+    let filteredPrimaryLaps = primaryLaps;
+    let filteredComparisonLaps = comparisonLaps;
+
+    if (analysisMode === 'clean') {
+      filteredPrimaryLaps = primaryLaps.filter(lap => 
+        lap.attributes_Lap > 1 &&
+        !primaryPitLaps.in.includes(lap.attributes_Lap) && 
+        !primaryPitLaps.out.includes(lap.attributes_Lap)
+      );
+      
+      filteredComparisonLaps = comparisonLaps.filter(lap => 
+        lap.attributes_Lap > 1 &&
+        !comparisonPitLaps.in.includes(lap.attributes_Lap) && 
+        !comparisonPitLaps.out.includes(lap.attributes_Lap)
+      );
+    }
+
+    // Calculate statistics for both drivers
+    const primaryStats = calculateDriverStats(filteredPrimaryLaps);
+    const comparisonStats = calculateDriverStats(filteredComparisonLaps);
     
     setStats({
       primary: primaryStats,
@@ -91,7 +115,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     });
     
     // Generate gap data for visualization
-    const gapsByLap = generateGapData(primaryLaps, comparisonLaps);
+    const gapsByLap = generateGapData(filteredPrimaryLaps, filteredComparisonLaps);
     setGapData(gapsByLap);
     
     // Identify battles (when drivers are within 2 seconds of each other for multiple laps)
@@ -211,13 +235,18 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     setSelectedSector(sectorNumber);
   };
 
+  // Handle analysis mode change
+  const handleAnalysisModeChange = (mode) => {
+    setAnalysisMode(mode);
+  };
+
   // Custom tooltip for gap chart
   const GapTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip bg-dark text-light p-2 rounded">
           <p className="mb-1"><strong>Lap {label}</strong></p>
-          <p className="mb-1">Time Gap: {payload[0].value.toFixed(3)}s</p>
+          {/* <p className="mb-1">Time Gap: {payload[0].value.toFixed(3)}s</p> */}
           <p className="mb-0">
             {payload[0].value > 0 ? 
               `${comparisonDriver?.name} faster by ${Math.abs(payload[0].value).toFixed(3)}s` : 
@@ -355,6 +384,32 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                   </Table>
                 </Col>
               </Row>
+            </Card.Body>
+          </Card>
+
+          <Card className="mb-4">
+            <Card.Body className="d-flex flex-wrap justify-content-between align-items-center py-2">
+              <div className="mb-2 mb-md-0">
+                <h6 className="mb-0">Graph Settings</h6>
+              </div>
+              <div className="d-flex align-items-center">
+                <div className="mode-selector">
+                  <ButtonGroup size="sm">
+                    <Button
+                      variant={analysisMode === 'all' ? 'primary' : 'outline-primary'}
+                      onClick={() => handleAnalysisModeChange('all')}
+                    >
+                      All Laps
+                    </Button>
+                    <Button
+                      variant={analysisMode === 'clean' ? 'primary' : 'outline-primary'}
+                      onClick={() => handleAnalysisModeChange('clean')}
+                    >
+                      Exclude Pits
+                    </Button>
+                  </ButtonGroup>
+                </div>
+              </div>
             </Card.Body>
           </Card>
 
