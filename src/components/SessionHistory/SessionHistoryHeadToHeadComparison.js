@@ -516,8 +516,21 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                         dataMin => Math.min(-0.5, Math.floor(dataMin)),
                         dataMax => Math.max(0.5, Math.ceil(dataMax))
                       ]}
+                      labelFormatter={(label) => `Lap ${label}`}
                     />
-                    <Tooltip content={<GapTooltip />} />
+                    <Tooltip 
+                      formatter={(value, name) => {
+                        if (name === "Time Gap") {
+                          return [
+                            (value > 0 
+                              ? `+` : ``) +  `${value.toFixed(3)}s`,
+                            "Gap"
+                          ];
+                        }
+                        return [value, name];
+                      }}
+                      labelFormatter={(label) => `Lap ${label}`}
+                    />
                     <Legend />
                     <ReferenceLine y={0} stroke="#666" strokeWidth={1} />
                     <Line 
@@ -600,8 +613,12 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                        <YAxis label={{ value: 'Sector 1 Time (sec)', angle: -90, position: 'insideLeft' }} />
-                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                        <YAxis 
+                          label={{ value: 'Sector 1 Time (sec)', angle: -90, position: 'insideLeft' }} 
+                          domain={['dataMin - 0.5', 'dataMax + 0.5']}/>
+                        <Tooltip 
+                          labelFormatter={(label) => `Lap ${label}`}
+                          formatter={(value) => msToTime(value * 1000)} />
                         <Legend />
                         <Line type="monotone" dataKey="primaryS1" stroke="#007bff" name={selectedDriver?.name} />
                         <Line type="monotone" dataKey="comparisonS1" stroke="#6f42c1" name={comparisonDriver?.name} />
@@ -619,8 +636,12 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                        <YAxis label={{ value: 'Sector 2 Time (sec)', angle: -90, position: 'insideLeft' }} />
-                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                        <YAxis 
+                          label={{ value: 'Sector 2 Time (sec)', angle: -90, position: 'insideLeft' }} 
+                          domain={['dataMin - 0.5', 'dataMax + 0.5']}/>
+                        <Tooltip 
+                          labelFormatter={(label) => `Lap ${label}`}
+                          formatter={(value) => msToTime(value * 1000)} />
                         <Legend />
                         <Line type="monotone" dataKey="primaryS2" stroke="#007bff" name={selectedDriver?.name} />
                         <Line type="monotone" dataKey="comparisonS2" stroke="#6f42c1" name={comparisonDriver?.name} />
@@ -638,8 +659,12 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                        <YAxis label={{ value: 'Sector 3 Time (sec)', angle: -90, position: 'insideLeft' }} />
-                        <Tooltip formatter={(value) => msToTime(value * 1000)} />
+                        <YAxis 
+                          label={{ value: 'Sector 3 Time (sec)', angle: -90, position: 'insideLeft' }} 
+                          domain={['dataMin - 0.5', 'dataMax + 0.5']}/>
+                        <Tooltip 
+                          labelFormatter={(label) => `Lap ${label}`}
+                          formatter={(value) => msToTime(value * 1000)} />
                         <Legend />
                         <Line type="monotone" dataKey="primaryS3" stroke="#007bff" name={selectedDriver?.name} />
                         <Line type="monotone" dataKey="comparisonS3" stroke="#6f42c1" name={comparisonDriver?.name} />
