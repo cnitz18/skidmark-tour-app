@@ -11,10 +11,10 @@ function msToTime(s) {
     s = (s - secs) / 60;
     var mins = s % 60;
     var hrs = (s - mins) / 60;
-    var str = pad(mins) + ':' + pad(secs) + '.' + pad(ms, 3);
+    var str = pad(secs) + '.' + pad(ms, 3);
     if( mins )
       str = pad(mins) + ':' + str;
-    if( hrs )
+    else if( hrs )
       str = pad(hrs) + ':' + str;
     return str;
   }

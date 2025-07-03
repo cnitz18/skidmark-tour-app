@@ -95,7 +95,9 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) =>
                 
                     xAxis={[
                         { 
-                            data: league.races.map((r) => NameMapper.fromTrackId(r.track,lists["tracks"]?.list)),
+                            data: league.races
+                                    .sort((a,b) => new Date(a.date) - new Date(b.date))
+                                    .map((r) => NameMapper.fromTrackId(r.track,lists["tracks"]?.list)),
                             scaleType: 'point',
                         }
                     ]}

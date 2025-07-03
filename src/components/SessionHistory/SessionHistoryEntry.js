@@ -159,9 +159,9 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                 Not Finished
               </Button>
             )}
-             <small>{startTime.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric'}) }</small>
-             <br/>
-             <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
+            <small>{startTime.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric'}) }</small>
+            <br/>
+            <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
           </Col>
           <Col lg="2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', top: '10px', right: '10px' }}>
@@ -249,7 +249,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
           <Accordion.Header>Race Details:</Accordion.Header>
           <Accordion.Body>
             {/* 
-                         add some more details about the server/race here
+                        add some more details about the server/race here
                         */}
             {lists["vehicles"] ? (
               <SessionHistoryEntryScoreboard

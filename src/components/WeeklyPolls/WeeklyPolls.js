@@ -17,22 +17,18 @@ export default function WeeklyPolls({ lists, navigateToTab }) {
     setShowModal(false);
   };
   const handleShowModal = () => {
-    // console.log("handleShowmodal");
     setShowModal(true);
   };
   async function refreshSavedPolls() {
     let res = await getAPIData("/db/polls");
     if (res && res.length) setSavedPolls([...res.reverse()]);
     return res;
-    //console.log('from savedPolls:',res);
   }
   async function incrementPolls(states, pollID) {
     let poll = savedPolls.find((p) => p._id === pollID);
-    // console.log("savedPolls poll:", poll);
     if (poll) {
       let updatedPoll = { ...poll };
       let updatedRaces = [...updatedPoll.races];
-      // console.log("races:", updatedRaces);
       let wasUpdated = false;
       for (let id in states) {
         let raceIndex = updatedRaces.findIndex((r) => r.id === id);
@@ -45,7 +41,6 @@ export default function WeeklyPolls({ lists, navigateToTab }) {
       }
       if (wasUpdated) {
         await postAPIData("/db/polls/update/" + updatedPoll._id, updatedPoll);
-        // console.log("update poll res:", res);
       }
     }
   }

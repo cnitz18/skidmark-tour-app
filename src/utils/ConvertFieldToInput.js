@@ -3,7 +3,6 @@ const EnumToListName = require("./EnumToListName");
 const ListTypeToListName = require("./ListTypeToListName");
 const ConvertInputType = require("./VariableTypes/ConvertInputType").default;
 function isEnumField(f) {
-  //console.log('isEnum?:',f,Enums.default);
   if (Enums.default.includes(f)) return true;
   else if (f.includes("WeatherSlot") && !f.includes("WeatherSlots"))
     //if is a weather field but doesn't define the number of slots
@@ -17,7 +16,6 @@ function readableName(str) {
 function enumListName(f) {
   if (f.includes("Weather")) f = "Weather";
   else if (f.includes("LiveTrackPreset")) f = "LiveTrackPreset";
-  //console.log('name:',f,'enums:',EnumToListName.default[f]);
   return EnumToListName.default[f];
 }
 function listTypeListName(f) {
@@ -68,7 +66,6 @@ function ConvertFieldToInput(field, curState) {
         curField.max = 100;
     }
   }
-  // console.log('converted:',curField);
   return curField;
 }
 export default ConvertFieldToInput;

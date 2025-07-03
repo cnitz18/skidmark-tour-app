@@ -65,10 +65,8 @@ export default function NewServerSetupPage({ enums, lists }) {
           { attributes: true },
           true
         );
-        //console.log('server state:',status.state)
       }catch(err){
         console.error(err);
-        //console.log('lets put up a thing here!')
         setServerState('unavailable');
         return;
       }
@@ -101,10 +99,7 @@ export default function NewServerSetupPage({ enums, lists }) {
         setMultiClassNumSlots({
           ...inputInfo.find((x) => x.name === "MultiClassSlots"),
         });
-        // console.log('setting slots attrs:',inputInfo.filter(
-        //   (x) =>
-        //     x.name.startsWith("MultiClassSlot") && x.name !== "MultiClassSlots"
-        // ))
+
         setMultiClassSlotsAttrs([
           ...inputInfo.filter(
             (x) =>
@@ -116,7 +111,6 @@ export default function NewServerSetupPage({ enums, lists }) {
         if (lists && Object.keys(lists).length) {
           let curList = [...lists["vehicle_classes"].list];
           let sortedList = curList.sort((a, b) => a.name.localeCompare(b.name));
-          // console.log('setting sorted vehicle:',sortedList)
           setSortedVehicleList([...sortedList]);
         }
       }
@@ -124,11 +118,9 @@ export default function NewServerSetupPage({ enums, lists }) {
     async function loadPresetList() {
       let list = await getAPIData("/db/racepresets");
       setPresetList([...list]);
-      //console.log("list length:", list.length, list);
     }
   
     function updateState(fieldName, val) {
-      //console.log("updateState:", fieldName, val);
       setState((prevState) => {
         let updState = Object.assign({}, prevState);
         updState[fieldName] = val;
@@ -157,14 +149,12 @@ export default function NewServerSetupPage({ enums, lists }) {
         .then((res) => {
           if (res.status === 200) {
             setDifficultyError(false);
-            //console.log("showing toast....");
             setToastVariant("Success");
             setToastMessage("Server settings saved");
             setToastBody("");
             setShowToast(true);
             setShowSpinner(false);
             setDisableFields(false);
-            //window.alert("Session settings sent, response: " + res.statusText);
           } else {
             setDifficultyError(true);
             setToastVariant("Danger");
@@ -173,9 +163,6 @@ export default function NewServerSetupPage({ enums, lists }) {
             setShowToast(true);
             setShowSpinner(false);
             setDisableFields(false);
-            // window.alert(
-            //   `Session setting load failed with code "${res.status}" and reason: "${res.statusText}"`
-            // );
             console.error(res);
           }
         })
@@ -191,7 +178,6 @@ export default function NewServerSetupPage({ enums, lists }) {
     }
     function handleLoadPreset(preset, e) {
       e.preventDefault();
-      // console.log("loadig...", preset);
       let newStateUpdated = {};
       let postState = {};
       for (let field in preset) {
@@ -213,7 +199,6 @@ export default function NewServerSetupPage({ enums, lists }) {
           window.alert(
             `Preset load failed with code ${res.status} and reason ${res.statusText}`
           );
-        //console.log("post response:", res);
         handleCloseLoad();
       });
     }
@@ -221,17 +206,14 @@ export default function NewServerSetupPage({ enums, lists }) {
       e.preventDefault();
   
       let postState = {};
-      //console.log("handleSavePreset:", Object.keys(state).length);
       for (let field in state) {
         postState[field] = state[field];
       }
-      //console.log("postState:'", JSON.stringify(postState));
   
       WebServerCommands.savePreset(PresetName, postState, serverFieldList).then(
         (res) => {
           handleCloseSave();
           setPresetName("");
-          //console.log("post response:", res);
         }
       );
     }
@@ -244,10 +226,8 @@ export default function NewServerSetupPage({ enums, lists }) {
       });
     }
     function handleViewPreset(preset, e){
-      //('handleViewPreset');
       setPresetForViewing(preset);
       handleShowOffcanvas();
-      //console.log(preset);
     }
     function translateField( fieldName, fieldValue ){
       if( fieldName === 'TrackId' ){
@@ -259,12 +239,10 @@ export default function NewServerSetupPage({ enums, lists }) {
         if( list && list.list ) 
           return list.list.find((t) => t.value === fieldValue)?.name?.replaceAll('_',' ')
       } else if( fieldName === 'VehicleModelId' || fieldName === "MultiClassSlot1" || fieldName === "MultiClassSlot2" || fieldName === "MultiClassSlot3" || fieldName === "MultiClassSlot4" || fieldName === "MultiClassSlot5" || fieldName === "MultiClassSlot6" || fieldName === "MultiClassSlot7" || fieldName === "MultiClassSlot8" || fieldName === "MultiClassSlot9" ){
-        //console.log(fieldValue)
         let list = lists.vehicles;
         if( list && list.list ) 
           return list.list.find((t) => t.id === fieldValue)?.name?.replaceAll('_',' ')
       } else if( fieldName === 'PracticeWeatherSlot1' || fieldName === 'PracticeWeatherSlot2' || fieldName === 'PracticeWeatherSlot3' || fieldName === 'PracticeWeatherSlot4' || fieldName === 'QualifyWeatherSlot1' || fieldName === 'QualifyWeatherSlot2' || fieldName === 'QualifyWeatherSlot3' || fieldName === 'QualifyWeatherSlot4'){
-        //console.log(enums); 
         let list = enums.weather;
         if( list && list.list ) 
           return list.list.find((t) => t.value === fieldValue)?.name?.replaceAll('_',' ')
@@ -272,11 +250,8 @@ export default function NewServerSetupPage({ enums, lists }) {
       else return fieldValue;
     }
     function sendServerMessage() {
-      //console.log('Sending message:',serverMessage)
       postAPIData("/api/session/send_chat", { message: serverMessage }).then(
         (res) => {
-          //window.alert('Message Sent');
-          //console.log("message sent");
         }
       );
     }
@@ -291,8 +266,6 @@ export default function NewServerSetupPage({ enums, lists }) {
     }
     useEffect(() => {
       loadServerSetup();
-      // console.log('multiClassSlotsAttrs:',multiClassSlotsAttrs);
-      // console.log('sortedVehicleList:',sortedVehicleList)
     }, [lists]);
   
   return (

@@ -28,7 +28,6 @@ const PlayerStatsEntry = ({ player, lists }) => {
           curMax = dist;
         }
       }
-      //console.log('setting fav:',type,curFavorite)
       if (type === "track_distances") setFavTrack(curFavorite);
       else setFavCar(curFavorite);
     });

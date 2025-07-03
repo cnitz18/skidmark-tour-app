@@ -12,14 +12,12 @@ const ServerStats = ({ lists }) => {
     getAPIData("/sms_stats_data/stats/server")
       .then((res) => {
         if (res) {
-          //console.log('setting server stats!')
           setServerStats({ ...res });
         }
       })
       .then(() => getAPIData("/sms_stats_data/stats/session"))
       .then((res) => {
         if (res) {
-          //console.log('setting session stats!');
           setSessionStats({ ...res });
           if (Object.keys(lists).length) {
             ["track_distances", "vehicle_distances"].forEach((type) => {
@@ -44,7 +42,6 @@ const ServerStats = ({ lists }) => {
                 type === "track_distances"
                   ? lists.tracks.list
                   : lists.vehicles.list;
-              //console.log('list:',list)
               for (let id in res.counts[type]) {
                 let dist = res.counts[type][id];
                 let name = list.find((i) => i.id === parseInt(id)).name;

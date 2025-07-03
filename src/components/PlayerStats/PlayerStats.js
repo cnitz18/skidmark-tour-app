@@ -8,7 +8,6 @@ const PlayerStats = ({ lists }) => {
   useEffect(() => {
     getAPIData("/sms_stats_data/stats/players").then((res) => {
       if (res) {
-        //console.log('setting player stats!')
         setStats({ ...res });
       }
     });

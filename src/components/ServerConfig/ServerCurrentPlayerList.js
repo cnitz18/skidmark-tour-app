@@ -24,7 +24,6 @@ export default function ServerCurrentPlayerList({
     setShow(false);
   }
   async function refreshLocalList() {
-    //console.log('refreshLocalList();')
     refreshPlayerList();
   }
 
@@ -33,7 +32,6 @@ export default function ServerCurrentPlayerList({
 
   const handleClose = () => setShow(false);
   const showKickPlayer = async (refid) => {
-    //console.log('showKick:',refid)
     setCurrentToKick(refid);
     setShow(true);
   };

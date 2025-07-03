@@ -1,0 +1,199 @@
+.race-timeline .timeline-container {
+  height: 100px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  position: relative;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.race-timeline .timeline-track {
+  position: relative;
+  height: 60px;
+  margin-top: 20px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  width: 100%;
+  min-width: 100%;
+}
+
+.race-timeline .timeline-event {
+  position: absolute;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.race-timeline .event-marker {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Event type styling */
+.race-timeline .event-lap .event-marker {
+  background-color: #28a745;
+  color: white;
+}
+
+.race-timeline .event-incident .event-marker {
+  background-color: #dc3545;
+  color: white;
+}
+
+.race-timeline .event-state .event-marker {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.race-timeline .event-pit .event-marker {
+  background-color: #6f42c1;
+  color: white;
+}
+
+.race-timeline .event-position .event-marker {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.race-timeline .event-other .event-marker {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Selected event styling */
+.race-timeline .timeline-event.selected .event-marker {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  z-index: 20;
+}
+
+/* Hover effect */
+.race-timeline .timeline-event:hover .event-marker {
+  transform: scale(1.2);
+}
+
+/* Timeline segments */
+.race-timeline .timeline-segment {
+  position: absolute;
+  height: 12px;
+  top: -14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.race-timeline .timeline-segment:hover {
+  transform: scaleY(1.2);
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.race-timeline .segment-incident-cluster {
+  background-color: rgba(220, 53, 69, 0.6);
+}
+
+.race-timeline .segment-pit-stop {
+  background-color: rgba(111, 66, 193, 0.6);
+}
+
+/* Buttons for filters */
+.race-timeline .btn-purple {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+  color: white;
+}
+
+.race-timeline .btn-outline-purple {
+  color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.race-timeline .btn-outline-purple:hover {
+  background-color: #6f42c1;
+  color: white;
+}
+
+/* Position chart styling */
+.race-timeline .position-chart-tooltip {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.race-timeline .position-chart-tooltip .tooltip-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 3px;
+}
+
+.race-timeline .tooltip-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.race-timeline .tooltip-item.highlighted {
+  font-weight: bold;
+}
+
+.race-timeline .tooltip-item .color-box {
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+}
+
+.race-timeline .tooltip-item .driver-name {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.race-timeline .tooltip-item .position-value {
+  font-weight: 500;
+}
+
+/* Event details styling */
+.race-timeline .sector-times {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.race-timeline .sector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.race-timeline .sector-name {
+  font-weight: bold;
+  color: #495057;
+}
+
+.race-timeline .sector-time {
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .race-timeline .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .race-timeline .event-details .row {
+    flex-direction: column;
+  }
+  
+  .race-timeline .sector-times {
+    margin-top: 15px;
+  }
+}
