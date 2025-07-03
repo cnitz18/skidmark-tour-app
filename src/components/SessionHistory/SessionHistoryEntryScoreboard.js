@@ -254,7 +254,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                                       {msToTime(evt.attributes_Sector3Time)}
                                     </td>
                                     <td className="text-center position-cell">
-                                      <span className="position-badge">P{evt.attributes_RacePosition}</span>
+                                      <span className={`position-badge ${evt.attributes_RacePosition <= 3 ? `position-${evt.attributes_RacePosition}` : ''}`}>P{evt.attributes_RacePosition}</span>
                                     </td>
                                   </tr>
                                 ))

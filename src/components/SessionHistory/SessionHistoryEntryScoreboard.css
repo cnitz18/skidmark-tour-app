@@ -20,13 +20,13 @@
   font-weight: 600;
   color: #495057;
   background-color: #f8f9fa;
-  padding: 12px 16px;
+  padding: 6px 10px;
   border-bottom: 2px solid #e9ecef;
   font-size: 14px;
 }
 
 .lap-time-table .MuiTable-root td {
-  padding: 10px 16px;
+  padding: 4px 10px;
   border-bottom: 1px solid #e9ecef;
   font-size: 14px;
 }
@@ -48,6 +48,21 @@
   border-radius: 4px;
   font-weight: 600;
   font-size: 13px;
+}
+
+.position-badge.position-1 {
+  background: #ffd700;
+  color: #856404;
+}
+
+.position-badge.position-2 {
+  background: #c0c0c0;
+  color: #495057;
+}
+
+.position-badge.position-3 {
+  background: #cd7f32;
+  color: #fff;
 }
 
 /* Best time highlights */
