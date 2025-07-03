@@ -188,24 +188,28 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       Lap Analysis
                     </Nav.Link>
                   </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="headToHead" className="d-flex align-items-center justify-content-center">
-                      <i className="bi bi-people me-2"></i>
-                      Driver Comparison
-                    </Nav.Link>
-                  </Nav.Item>
+                  { session === "Race" && (
+                    <Nav.Item>
+                      <Nav.Link eventKey="headToHead" className="d-flex align-items-center justify-content-center">
+                        <i className="bi bi-people me-2"></i>
+                        Driver Comparison
+                      </Nav.Link>
+                    </Nav.Item>
+                  )}
                   <Nav.Item>
                     <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-exclamation-triangle me-2"></i>
-                      Race Events
+                      {session} Events
                     </Nav.Link>
                   </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
-                      <i className="bi bi-lightning-charge me-2"></i>
-                      Performance Insights
-                    </Nav.Link>
-                  </Nav.Item>
+                  { session === "Race" && (
+                    <Nav.Item>
+                      <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
+                        <i className="bi bi-lightning-charge me-2"></i>
+                        Performance Insights
+                      </Nav.Link>
+                    </Nav.Item>
+                  )}
                 </Nav>
                 
                 <Tab.Content>

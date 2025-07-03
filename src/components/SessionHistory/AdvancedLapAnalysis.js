@@ -252,7 +252,7 @@ const AdvancedLapAnalysis = ({ eventsData, race, selectedRacerName }) => {
             <span className="tooltip-value">P{data.position}</span>
           </div>
           {data.isPit && (
-            <div className="tooltip-pit-indicator">Pit Stop Lap</div>
+            <div className="tooltip-pit-indicator">Pit-In Lap</div>
           )}
           {data.isBest && (
             <div className="tooltip-best-indicator">Best Lap</div>

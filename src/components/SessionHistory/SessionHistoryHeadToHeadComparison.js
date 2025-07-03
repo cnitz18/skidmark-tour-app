@@ -239,24 +239,6 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   const handleAnalysisModeChange = (mode) => {
     setAnalysisMode(mode);
   };
-
-  // Custom tooltip for gap chart
-  const GapTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip bg-dark text-light p-2 rounded">
-          <p className="mb-1"><strong>Lap {label}</strong></p>
-          {/* <p className="mb-1">Time Gap: {payload[0].value.toFixed(3)}s</p> */}
-          <p className="mb-0">
-            {payload[0].value > 0 ? 
-              `${comparisonDriver?.name} faster by ${Math.abs(payload[0].value).toFixed(3)}s` : 
-              `${selectedDriver?.name} faster by ${Math.abs(payload[0].value).toFixed(3)}s`}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
   
   return (
     <div className="head-to-head-comparison mb-4">
@@ -542,6 +524,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                         const { cx, cy, payload } = props;
                         return (
                           <circle 
+                            key={`dot-${payload.lap}`}
                             cx={cx} 
                             cy={cy} 
                             r={3} 
