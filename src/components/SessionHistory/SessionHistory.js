@@ -24,12 +24,10 @@ const SessionHistory = ({ enums, lists }) => {
   ];
 
   function handleFilters(e){
-    console.log('handle filters!')
     setCurPage(1)
     setFilter(e.currentTarget.value)
   }
   function handleSort(e){
-    //console.log('setSortOptionSelected:',e.currentTarget.value)
     setSortOptionSelected(e.currentTarget.value)
   }
   // Replace the renderPaginator function with:
@@ -93,8 +91,6 @@ const SessionHistory = ({ enums, lists }) => {
     .then((res) => {
       if (res) {
         setShowErrorPage(false);
-        // console.log('setting history',res)
-        // console.log('cur page?',curPage)
         setHistory([...res.data]);
         setPageCount(parseInt(res.pages));
         setShowMiniSpinner(false);

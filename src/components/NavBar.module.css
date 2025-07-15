@@ -101,7 +101,7 @@
 /* Even smaller screens */
 @media (max-width: 400px) {
   .navLinks a {
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     padding: 0.4rem 0.2rem !important;
   }
 }

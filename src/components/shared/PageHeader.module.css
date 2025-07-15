@@ -27,3 +27,12 @@
   color: #6c757d;
   margin: 0;
 }
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+  /* You may want to adjust related elements */
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+}

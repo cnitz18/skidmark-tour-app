@@ -12,8 +12,6 @@ const SlotsDropdown = ({
   bodyClass,
 }) => {
   useEffect(() => {
-    // console.log('list:',list)
-    // console.log('slotsDropdown: attrs',slotsAttrs)
   }, [list]);
   return (
     <Accordion>

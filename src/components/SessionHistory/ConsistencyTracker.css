@@ -1,0 +1,79 @@
+/* Add to your existing CSS file or create ConsistencyTracker.css */
+
+.consistency-tracker {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+}
+
+.consistency-card, .improvement-card, .sector-analysis-card {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.consistency-card:hover, .improvement-card:hover, .sector-analysis-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.consistency-rating .rating-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #343a40;
+}
+
+.consistency-rating .rating-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.detail-row {
+  font-size: 0.9rem;
+}
+
+.sector-card {
+  background-color: #f8f9fa;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: background-color 0.2s ease;
+}
+
+.sector-card:hover {
+  background-color: #f1f3f5;
+}
+
+.sector-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+.focus-area {
+  border-left: 4px solid #007bff;
+}
+
+/* Add to your CSS file */
+.text-purple {
+  color: #8e44ad !important;
+}
+
+.bg-purple {
+  background-color: #8e44ad !important;
+  color: white;
+}
+
+.sector-card-best {
+  border-left: 4px solid #8e44ad;
+  background-color: rgba(142, 68, 173, 0.05);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .sector-card {
+    margin-bottom: 1rem;
+  }
+}

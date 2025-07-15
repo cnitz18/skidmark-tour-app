@@ -12,17 +12,13 @@ export default function WeeklyPollEntry({
   navigateToTab,
 }) {
   async function deletePoll() {
-    //console.log("deletePOll:", poll._id);
     await fetch(process.env.REACT_APP_AMS2API + "/db/polls/" + poll._id, { method: "DELETE" });
     return refreshSavedPolls();
   }
   async function completePoll() {
-    //console.log("COMPELTE", poll);
     let updatedPoll = { ...poll };
     updatedPoll.complete = true;
-    // console.log("sending:", updatedPoll);
     await postAPIData("/db/polls/update/" + updatedPoll._id, updatedPoll);
-    // console.log("res:", res);
     refreshSavedPolls();
   }
 

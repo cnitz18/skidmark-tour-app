@@ -37,7 +37,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     function updatePosition(e,index,field){
         let curPositions = [...newPositions]
         curPositions[index][field] = parseInt(e.currentTarget.value);
-        //console.log(curPositions)
         setNewPositions([...curPositions])
     }
 
