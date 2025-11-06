@@ -10,43 +10,34 @@ import { Link } from 'react-router-dom';
 const TrophyRoomBasic = () => {
     const champions = [
         {
-            id: 2,
-            name: "verydystrbd",
-            season: "Spring 2025",
-            championship: "P4 (MCR S2000)",
-            stats: "6 wins, 7 podiums, 7 poles",
-            description: "A runaway championship victory, clinching the title with a 75% win rate.",
-            seasonId: 28
-        },
-        {
-            id: 2,
+            id: 1,
             name: "verydystrbd",
             season: "Winter 2024",
             championship: "Formula Junior",
-            stats: "1 wins, 3 podiums, 1 pole",
+            stats: "1 wins, 3 podiums, 1 Pole",
             description: "Secured the championship with a win in the final race thanks to heavy attrition and a Michael Masi-esque intervention",
             seasonId: 25
         },
         {
-            id: 3,
+            id: 2,
             name: "vandy.nick",
             season: "Spring 2024",
             championship: "Ginetta Cup",
-            stats: "4 wins, 5 podiums, 3 fastest laps",
+            stats: "4 wins, 5 podiums, 3 Fastest Laps",
             description: "Dominant season win, leading the championship from start to finish",
             seasonId: 23
         },
         {
-            id: 4,
+            id: 3,
             name: "Kirtis",
             season: "Winter 2023",
             championship: "Brazilian Multiclass - Prototype",
-            stats: "4 wins, 5 podiums, 4 fastest laps",
+            stats: "4 wins, 5 podiums, 4 Fastest Laps",
             description: "A nail-biting championship win, with a decisive victory sealing the title in the final race",
             seasonId: 21
         },
         {
-            id: 5,
+            id: 4,
             name: "GVONNY",
             season: "Spring 2023",
             championship: "GT4 Challenge",
