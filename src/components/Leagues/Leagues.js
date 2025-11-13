@@ -1,31 +1,54 @@
 import { Container, Row, Col, Modal, Form, Table, Spinner, Button } from "react-bootstrap";
 import { Card, CardActions, CardContent, CardMedia, Chip } from "@mui/material";
 import PageHeader from "../shared/PageHeader";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 import { BsTrophy } from "react-icons/bs";
 import './Leagues.css';
 
+const DEFAULT_POSITIONS = [
+    { position: 1, points: 10 },
+    { position: 2, points: 8 },
+    { position: 3, points: 6 },
+    { position: 4, points: 5 },
+    { position: 5, points: 4 },
+    { position: 6, points: 3 },
+    { position: 7, points: 2 },
+    { position: 8, points: 1 },
+]
+
+const getCurrentLocalDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
 const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [showModal, setShowModal] = useState(false);
-    const [newPositions,setNewPositions] = useState([{ position: 1, points: 1 }])
-    const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: (new Date()).toISOString().slice(0,16) }])
+    const [newPositions,setNewPositions] = useState([...DEFAULT_POSITIONS])
+    const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: getCurrentLocalDateTime() }])
     const [newName,setNewName] = useState("");
     const [description,setDescription] = useState("");
     const [newFastestLapPoint,setNewFastestLapPoint] = useState(false);
     const [leagues,setLeagues] = useState([]);
     const [leagueStandings, setLeagueStandings] = useState({});
     const [showSpinner, setShowSpinner] = useState(true);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     // Existing functions remain the same
     const handleCloseModal = () => {
-        setNewPositions([{ position: 1, points: 1 }]);
-        setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: (new Date()).toISOString().slice(0,16) }])
+        setNewPositions([...DEFAULT_POSITIONS]);
+        setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: getCurrentLocalDateTime() }])
         setNewName("")
         setDescription("")
         setNewFastestLapPoint(false)
+        setIsFormValid(false);
         setShowModal(false);
     }
     const handleShowModal = () => setShowModal(true);
@@ -42,8 +65,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
 
     function addNewRace(){
         let curRaces = [...newRaces];
-
-        curRaces.push({ track: parseInt(lists?.tracks.list[0].id), date: (new Date()).toISOString().slice(0,16) })
+        curRaces.push({ track: parseInt(lists?.tracks.list[0].id), date: getCurrentLocalDateTime() })
         setNewRaces([...curRaces])
     }
     function updateRace(e,index,field){
@@ -51,7 +73,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         if( field === "track")
             curRaces[index][field] = parseInt(e.currentTarget.value);
         else if (field === "date"){
-            curRaces[index][field] = e.currentTarget.value
+            curRaces[index][field] = e.currentTarget.value;
         }
         else {
             curRaces[index][field] = e.currentTarget.value
@@ -59,18 +81,38 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         setNewRaces([...curRaces])    
     }
 
+    const validateForm = useCallback(() => {
+        if (!newName.trim()) return false;
+        if (!description.trim()) return false;
+        if (newPositions.length === 0) return false;
+        for (let pos of newPositions) {
+            if (!pos.position || pos.position <= 0 || !pos.points || pos.points <= 0) return false;
+        }
+        if (newRaces.length === 0) return false;
+        for (let race of newRaces) {
+            if (!race.track) return false;
+            if (!race.date) return false;
+        }
+        return true;
+    }, [newName, description, newPositions, newRaces]);
+
     function saveNewLeague(){
+        if (!isFormValid) return;
         let data = {
             name: newName,
             points: newPositions,
             extraPointForFastestLap: newFastestLapPoint,
-            races: newRaces,
+            races: newRaces.map(r => ({ ...r, date: new Date(r.date).toISOString() })),
             description,
             completed: false
         }
         postAPIData('/leagues/create/',data)
         .then(() => handleCloseModal())
     }
+
+    useEffect(() => {
+        setIsFormValid(validateForm());
+    }, [validateForm]);
 
     useEffect(() => {
         setShowSpinner(true);
@@ -168,13 +210,13 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     <Form>
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="formGridName">
-                                <Form.Label>League Name</Form.Label>
+                                <Form.Label>League Name *</Form.Label>
                                 <Form.Control placeholder="Enter name" onChange={(e) => setNewName(e.target.value)} />
                             </Form.Group>
                         </Row>
                         <Row>
                             <Form.Group as={Col}>
-                                <Form.Label>Description</Form.Label>
+                                <Form.Label>Description *</Form.Label>
                                 <Form.Control as="textarea" rows={3} placeholder="Give a lil info here" onChange={(e) => setDescription(e.target.value)} />
                             </Form.Group>
                         </Row>
@@ -266,7 +308,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={saveNewLeague}>
+                    <Button variant="primary" onClick={saveNewLeague} disabled={!isFormValid}>
                         Save League
                     </Button>
                 </Modal.Footer>

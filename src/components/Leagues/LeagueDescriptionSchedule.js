@@ -22,7 +22,7 @@ const LeagueDescriptionSchedule = ({showHistorySpinner,leagueHistory,enums,lists
                         <TableBody>
                             {league.races.sort((a,b) => new Date(a.date) - new Date(b.date)).map((r,i) => (
                                 <TableRow key={i}>
-                                    <TableCell>{format(r.date,'PPp')}</TableCell>
+                                    <TableCell>{format(new Date(r.date),'PPp')}</TableCell>
                                     <TableCell>{ NameMapper.fromTrackId(r.track,lists["tracks"].list)}</TableCell>
                                     <TableCell>
                                         {
