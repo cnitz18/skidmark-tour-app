@@ -19,6 +19,13 @@ const DEFAULT_POSITIONS = [
     { position: 8, points: 1 },
 ]
 
+const DEFAULT_SPRINT_POSITIONS = [
+    { position: 1, points: 4 },
+    { position: 2, points: 3 },
+    { position: 3, points: 2 },
+    { position: 4, points: 1 },
+]
+
 const getCurrentLocalDateTime = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -32,6 +39,7 @@ const getCurrentLocalDateTime = () => {
 const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [showModal, setShowModal] = useState(false);
     const [newPositions,setNewPositions] = useState([...DEFAULT_POSITIONS])
+    const [newSprintPositions,setNewSprintPositions] = useState([...DEFAULT_SPRINT_POSITIONS])
     const [newRaces,setNewRaces] = useState([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: getCurrentLocalDateTime() }])
     const [newName,setNewName] = useState("");
     const [description,setDescription] = useState("");
@@ -44,6 +52,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     // Existing functions remain the same
     const handleCloseModal = () => {
         setNewPositions([...DEFAULT_POSITIONS]);
+        setNewSprintPositions([...DEFAULT_SPRINT_POSITIONS]);
         setNewRaces([{ track: parseInt(lists?.tracks?.list[0].id ?? -559709709), date: getCurrentLocalDateTime() }])
         setNewName("")
         setDescription("")
@@ -61,6 +70,17 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         let curPositions = [...newPositions]
         curPositions[index][field] = parseInt(e.currentTarget.value);
         setNewPositions([...curPositions])
+    }
+
+    function addNewSprintPosition(){
+        let curPositions = [...newSprintPositions]
+        curPositions.push({ position: 1, points: 1 })
+        setNewSprintPositions([...curPositions])
+    }
+    function updateSprintPosition(e,index,field){
+        let curPositions = [...newSprintPositions]
+        curPositions[index][field] = parseInt(e.currentTarget.value);
+        setNewSprintPositions([...curPositions])
     }
 
     function addNewRace(){
@@ -88,19 +108,23 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         for (let pos of newPositions) {
             if (!pos.position || pos.position <= 0 || !pos.points || pos.points <= 0) return false;
         }
+        for (let pos of newSprintPositions) {
+            if (!pos.position || pos.position <= 0 || !pos.points || pos.points <= 0) return false;
+        }
         if (newRaces.length === 0) return false;
         for (let race of newRaces) {
             if (!race.track) return false;
             if (!race.date) return false;
         }
         return true;
-    }, [newName, description, newPositions, newRaces]);
+    }, [newName, description, newPositions, newSprintPositions, newRaces]);
 
     function saveNewLeague(){
         if (!isFormValid) return;
         let data = {
             name: newName,
             points: newPositions,
+            sprintPoints: newSprintPositions,
             extraPointForFastestLap: newFastestLapPoint,
             races: newRaces.map(r => ({ ...r, date: new Date(r.date).toISOString() })),
             description,
@@ -221,15 +245,15 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                             </Form.Group>
                         </Row>
                         <br/>
-                        <h5>Scoring System</h5>
-                        <hr/>
-                        <Row>   
-                            <Container>
-                                <Table striped bordered>
+                        <Row>
+                            <Col md={6}>
+                                <h5>Scoring System</h5>
+                                <hr/>
+                                <Table striped bordered size="sm">
                                     <thead>
                                         <tr>
-                                            <th>Finishing Position</th>
-                                            <th>Points</th>
+                                            <th>Pos</th>
+                                            <th>Pts</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -237,22 +261,48 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                             newPositions?.map((pos,i) => (
                                                 <tr key={i}>
                                                     <td>
-                                                        <Form.Control type="number" value={pos.position} onChange={(e) => updatePosition(e,i,"position")}/>
+                                                        <Form.Control size="sm" type="number" value={pos.position} onChange={(e) => updatePosition(e,i,"position")}/>
                                                     </td>
                                                     <td>
-                                                        <Form.Control type="number" value={pos.points} onChange={(e) => updatePosition(e,i,"points")}/>
+                                                        <Form.Control size="sm" type="number" value={pos.points} onChange={(e) => updatePosition(e,i,"points")}/>
                                                     </td>
                                                 </tr>
                                             ))
                                         }
-
                                     </tbody>
                                 </Table>
-                            </Container>
-                        </Row>
-                        <Row className="text-center">
-                            <Col>
-                                <Button variant="outline-primary" onClick={addNewPosition}>Add Scoring Position</Button>
+                                <div className="text-center mb-3">
+                                    <Button variant="outline-primary" size="sm" onClick={addNewPosition}>Add Position</Button>
+                                </div>
+                            </Col>
+                            <Col md={6}>
+                                <h5>Sprint Scoring</h5>
+                                <hr/>
+                                <Table striped bordered size="sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Pos</th>
+                                            <th>Pts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            newSprintPositions?.map((pos,i) => (
+                                                <tr key={i}>
+                                                    <td>
+                                                        <Form.Control size="sm" type="number" value={pos.position} onChange={(e) => updateSprintPosition(e,i,"position")}/>
+                                                    </td>
+                                                    <td>
+                                                        <Form.Control size="sm" type="number" value={pos.points} onChange={(e) => updateSprintPosition(e,i,"points")}/>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </Table>
+                                <div className="text-center mb-3">
+                                    <Button variant="outline-primary" size="sm" onClick={addNewSprintPosition}>Add Sprint Position</Button>
+                                </div>
                             </Col>
                         </Row>
                         <Row>
