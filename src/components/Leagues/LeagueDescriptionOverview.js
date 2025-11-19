@@ -19,6 +19,9 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
     // Get the champion (first in standings)
     const champion = standings?.[0];
 
+    const standardPoints = league?.points?.filter(p => !p.race_type || p.race_type.toLowerCase() !== 'sprint') || [];
+    const sprintPoints = league?.points?.filter(p => p.race_type && p.race_type.toLowerCase() === 'sprint') || [];
+
     useEffect(() => {
         // Neecd to add filter for finished races?
         let _recentRaces = leagueHistory
@@ -286,7 +289,7 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                     <>
                                         <Row className="justify-content-center">
                                             <Col xs={8} className="text-center">
-                                                {league.points.map((p, i) => (
+                                                {standardPoints.map((p, i) => (
                                                     <div key={i} className="d-flex justify-content-between align-items-center py-1">
                                                         <span>{NameMapper.positionFromNumber(p.position)}</span>
                                                         <span className="fw-bold">{p.points} pts</span>
@@ -294,6 +297,25 @@ const LeagueDescriptionOverview = ({league, standings, lists,leagueHistory}) => 
                                                 ))}
                                             </Col>
                                         </Row>
+
+                                        {sprintPoints.length > 0 && (
+                                            <>
+                                                <div className="text-center mt-3 mb-2">
+                                                    <h6 className="text-muted border-bottom pb-2 d-inline-block px-4" style={{fontSize: '0.9rem'}}>Sprint Points</h6>
+                                                </div>
+                                                <Row className="justify-content-center">
+                                                    <Col xs={8} className="text-center">
+                                                        {sprintPoints.map((p, i) => (
+                                                            <div key={i} className="d-flex justify-content-between align-items-center py-1">
+                                                                <span>{NameMapper.positionFromNumber(p.position)}</span>
+                                                                <span className="fw-bold">{p.points} pts</span>
+                                                            </div>
+                                                        ))}
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                        )}
+
                                         {league?.extraPointForFastestLap && (
                                             <div className="text-muted mt-3 small text-center">
                                                 <BsStopwatch className="me-2" />
