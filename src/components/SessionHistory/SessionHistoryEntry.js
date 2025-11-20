@@ -23,6 +23,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   const [timedSession, setTimedSession] = useState(false);
   const [leagueId, setLeagueId] = useState(null);
   const [isHistorical, setIsHistorical] = useState(false);
+  const [isFeature, setIsFeature] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
 
     setLeagueId(data.league)
     setIsHistorical(data.isHistoricalOrIncomplete ?? false)
+    setIsFeature(data.race_type && data.race_type.toLowerCase() === 'feature')
 
     setRaceOne(data?.stages?.race1);
     setQualiOne(data?.stages?.qualifying1);
@@ -107,13 +109,14 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   }, [data]);
   return (
     <Accordion>
-        <Container className={ leagueId == null ? "history-entry" : "league-entry history-entry"}>
+        <Container className={`history-entry ${leagueId ? "league-entry" : ""} ${isFeature ? "feature-entry" : ""}`}>
         <Row className="history-entry-data">
           <Col lg="4" className="history-entry-data-title">
             {lists["tracks"] ? (
               <>
                 <h5>
                   {NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list)}
+                  {isFeature && <Badge bg="warning" text="dark" className="ms-2" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
                 </h5>
                 <p>
                   {NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list)}

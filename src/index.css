@@ -37,7 +37,11 @@ body {
 }
 
 .league-entry {
-  box-shadow: 0 0 0 2px lightblue inset;
+  border-left: 8px solid #0dcaf0;
+}
+
+.feature-entry {
+  box-shadow: 0 0 0 2px orange inset;
 }
 
 .history-entry {
