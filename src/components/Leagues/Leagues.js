@@ -143,19 +143,25 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
         getAPIData('/leagues/get/').then(async (res) => {
             setLeagues([...res]);
             
-            // Fetch standings for completed leagues
+            // Fetch standings for completed leagues in parallel
             const completedLeagues = res.filter(league => league.completed);
-            const standingsData = {};
             
-            for (const league of completedLeagues) {
-                try {
-                    const standings = await getAPIData(`/leagues/get/stats/?id=${league.id}`);
-                    if (standings && standings.scoreboard_entries?.length > 0) {
-                        standings.champion = standings.scoreboard_entries.find((ent) => ent.Position === 1)?.PlayerName;
-                        standingsData[league.id] = standings;
-                    }
-                } catch (err) {
-                    console.error(`Failed to fetch standings for league ${league.id}`, err);
+            const standingsPromises = completedLeagues.map(league =>
+                getAPIData(`/leagues/get/stats/?id=${league.id}`)
+                    .then(standings => ({ leagueId: league.id, standings, success: true }))
+                    .catch(err => {
+                        console.error(`Failed to fetch standings for league ${league.id}`, err);
+                        return { leagueId: league.id, standings: null, success: false };
+                    })
+            );
+
+            const results = await Promise.all(standingsPromises);
+            
+            const standingsData = {};
+            for (const result of results) {
+                if (result.success && result.standings?.scoreboard_entries?.length > 0) {
+                    result.standings.champion = result.standings.scoreboard_entries.find((ent) => ent.Position === 1)?.PlayerName;
+                    standingsData[result.leagueId] = result.standings;
                 }
             }
 
