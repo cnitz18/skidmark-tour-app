@@ -1,0 +1,115 @@
+.dataFixes {
+  padding: 0;
+}
+
+/* Sub-navigation */
+.subNav {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+.subNavLink {
+  color: #495057;
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.subNavLink:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+}
+
+.subNavLink:global(.active) {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+
+/* Cards */
+.card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+}
+
+.cardHeader {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+  color: #212529;
+}
+
+.description {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+/* Form elements */
+.formLabel {
+  font-weight: 500;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.formControl {
+  border-radius: 6px;
+}
+
+.formControl:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.actionButton {
+  padding: 0.5rem 1.5rem;
+}
+
+/* Warning alert */
+.warningAlert {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Logs container */
+.logsContainer {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+.logEntry {
+  color: #d4d4d4;
+  padding: 0.15rem 0;
+  border-bottom: 1px solid #333;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.logEntry:last-child {
+  border-bottom: none;
+}
+
+/* Scrollbar styling */
+.logsContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.logsContainer::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.logsContainer::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.logsContainer::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}

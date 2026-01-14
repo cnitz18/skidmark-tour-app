@@ -2,7 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Container, Card, Form, Button, Alert, Spinner, Nav } from "react-bootstrap";
 import PageHeader from "../shared/PageHeader";
 import ScreenshotParser from "../ScreenshotParser";
+import ChorleyConsole from "./ChorleyConsole";
+import DataFixes from "./DataFixes";
 import styles from "./AdminPortal.module.css";
+
+const API_BASE = process.env.REACT_APP_AMS2API;
 
 const AdminPortal = ({ enums, lists }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,15 +14,57 @@ const AdminPortal = ({ enums, lists }) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
+  const [activeTab, setActiveTab] = useState('import');
+  
+  // Shared recent races data - fetched once and passed to child components
+  const [recentRaces, setRecentRaces] = useState([]);
+  const [racesLoading, setRacesLoading] = useState(false);
+  const [racesError, setRacesError] = useState(null);
+
+  // Fetch recent races (shared data for ChorleyConsole and DataFixes)
+  const fetchRecentRaces = useCallback(async () => {
+    setRacesLoading(true);
+    setRacesError(null);
+    try {
+      const adminKey = sessionStorage.getItem("adminKey") || "";
+      const response = await fetch(`${API_BASE}/api/admin/recent-races/?limit=25`, {
+        headers: { 'X-Admin-Key': adminKey }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch races');
+      }
+      
+      const data = await response.json();
+      setRecentRaces(data.races || []);
+    } catch (err) {
+      setRacesError(err.message);
+    } finally {
+      setRacesLoading(false);
+    }
+  }, []);
 
   // Check if already authenticated in this session
   useEffect(() => {
     const sessionAuth = sessionStorage.getItem("adminAuthenticated");
-    if (sessionAuth === "true") {
+    const adminKey = sessionStorage.getItem("adminKey");
+    // Only restore session if both auth flag AND key are present
+    if (sessionAuth === "true" && adminKey) {
       setIsAuthenticated(true);
+    } else {
+      // Clear incomplete session state
+      sessionStorage.removeItem("adminAuthenticated");
+      sessionStorage.removeItem("adminKey");
     }
     setCheckingSession(false);
   }, []);
+
+  // Fetch recent races once authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchRecentRaces();
+    }
+  }, [isAuthenticated, fetchRecentRaces]);
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -42,6 +88,7 @@ const AdminPortal = ({ enums, lists }) => {
       if (result.success) {
         setIsAuthenticated(true);
         sessionStorage.setItem("adminAuthenticated", "true");
+        sessionStorage.setItem("adminKey", accessKey);
       } else {
         setError(result.error || "Invalid access key");
       }
@@ -55,6 +102,7 @@ const AdminPortal = ({ enums, lists }) => {
   const handleLogout = useCallback(() => {
     setIsAuthenticated(false);
     sessionStorage.removeItem("adminAuthenticated");
+    sessionStorage.removeItem("adminKey");
     setAccessKey("");
   }, []);
 
@@ -137,11 +185,32 @@ const AdminPortal = ({ enums, lists }) => {
         <div className={styles.tabNav}>
           <Nav variant="tabs" className={styles.adminTabs}>
             <Nav.Item>
-              <Nav.Link active className={styles.tabLink}>
+              <Nav.Link 
+                active={activeTab === 'import'} 
+                className={styles.tabLink}
+                onClick={() => setActiveTab('import')}
+              >
                 📥 Import Tool
               </Nav.Link>
             </Nav.Item>
-            {/* Future tabs will go here */}
+            <Nav.Item>
+              <Nav.Link 
+                active={activeTab === 'datafixes'} 
+                className={styles.tabLink}
+                onClick={() => setActiveTab('datafixes')}
+              >
+                🔧 Data Fixes
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link 
+                active={activeTab === 'chorley'} 
+                className={styles.tabLink}
+                onClick={() => setActiveTab('chorley')}
+              >
+                🤖 Chorley Bot
+              </Nav.Link>
+            </Nav.Item>
           </Nav>
           <Button 
             variant="outline-secondary" 
@@ -155,7 +224,24 @@ const AdminPortal = ({ enums, lists }) => {
         
         {/* Tab Content */}
         <div className={styles.tabContent}>
-          <ScreenshotParser enums={enums} lists={lists} embedded={true} />
+          {activeTab === 'import' && (
+            <ScreenshotParser enums={enums} lists={lists} embedded={true} />
+          )}
+          {activeTab === 'datafixes' && (
+            <DataFixes 
+              recentRaces={recentRaces}
+              racesLoading={racesLoading}
+              onRefreshRaces={fetchRecentRaces}
+            />
+          )}
+          {activeTab === 'chorley' && (
+            <ChorleyConsole 
+              recentRaces={recentRaces}
+              racesLoading={racesLoading}
+              racesError={racesError}
+              onRefreshRaces={fetchRecentRaces}
+            />
+          )}
         </div>
       </Container>
     </div>
