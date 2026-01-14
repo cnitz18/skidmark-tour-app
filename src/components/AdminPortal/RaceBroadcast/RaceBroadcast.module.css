@@ -1,0 +1,112 @@
+.broadcast {
+  padding: 0;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+.description {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+.tableContainer {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.raceTable {
+  margin-bottom: 0;
+}
+
+.raceTable thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 0.85rem;
+  color: #495057;
+}
+
+.raceRow {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.raceRow:hover {
+  background-color: #f8f9fa;
+}
+
+.raceRow.selected {
+  background-color: #e7f1ff;
+}
+
+.raceRow td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+.radioCheck {
+  margin: 0;
+}
+
+.noLeague {
+  color: #adb5bd;
+}
+
+.broadcastControls {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.selectedInfo {
+  margin-bottom: 1rem;
+  color: #212529;
+}
+
+.optionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.leagueSwitch {
+  margin: 0;
+}
+
+.broadcastButton {
+  padding: 0.5rem 1.5rem;
+}
+
+.resultAlert {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}

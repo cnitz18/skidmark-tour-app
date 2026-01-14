@@ -1,0 +1,153 @@
+.container {
+  min-height: calc(100vh - 120px);
+  padding-top: 100px;
+  background: linear-gradient(to bottom, #f8f9fa, #fff);
+}
+
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.loginWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 50px;
+}
+
+.loginCard {
+  background-color: #fff;
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.loginHeader {
+  background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+  border-bottom: none;
+  border-radius: 0 !important;
+  color: #ffc107;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.loginDescription {
+  color: #6c757d;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.formLabel {
+  color: #495057;
+  font-weight: 500;
+}
+
+.formControl {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  color: #212529;
+  padding: 0.75rem;
+  border-radius: 6px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formControl:focus {
+  background-color: #fff;
+  border-color: #ffc107;
+  color: #212529;
+  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+
+.formControl::placeholder {
+  color: #adb5bd;
+}
+
+.errorAlert {
+  margin-bottom: 1rem;
+}
+
+.submitButton {
+  width: 100%;
+  background-color: #ffc107;
+  border: none;
+  color: #212529;
+  font-weight: 600;
+  padding: 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #e0a800;
+  color: #212529;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.submitButton:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+/* Admin portal content styles */
+.adminContent {
+  min-height: calc(100vh - 60px);
+  background: linear-gradient(to bottom, #f8f9fa, #fff);
+}
+
+.portalContainer {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.tabNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 0;
+}
+
+.adminTabs {
+  border-bottom: none;
+}
+
+.tabLink {
+  color: #495057;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px 8px 0 0 !important;
+  transition: all 0.2s ease;
+}
+
+.tabLink:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+}
+
+.tabLink:global(.active) {
+  color: #212529 !important;
+  background-color: #fff !important;
+  border-color: #dee2e6 #dee2e6 #fff !important;
+  font-weight: 600;
+}
+
+.tabContent {
+  background-color: #fff;
+  border-radius: 0 8px 8px 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.logoutButton {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+

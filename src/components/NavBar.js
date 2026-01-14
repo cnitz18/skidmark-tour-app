@@ -11,6 +11,7 @@ import logo from "../assets/skidmark-placeholder.png";
 import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
 import ServerStatus from './ServerStatus/ServerStatus';
+import AdminPortal from './AdminPortal';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -73,6 +74,7 @@ export default function NavBar({ enums, lists }) {
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
           <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
           <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
+          <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
           <Route
             exact
             path="/league/:id"
