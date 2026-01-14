@@ -11,7 +11,6 @@ import logo from "../assets/skidmark-placeholder.png";
 import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
 import ServerStatus from './ServerStatus/ServerStatus';
-import ScreenshotParser from './ScreenshotParser';
 import AdminPortal from './AdminPortal';
 
 const navLinks = [
