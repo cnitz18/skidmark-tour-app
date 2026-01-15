@@ -97,7 +97,19 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) =>
                         { 
                             data: league.races
                                     .sort((a,b) => new Date(a.date) - new Date(b.date))
-                                    .map((r) => NameMapper.fromTrackId(r.track,lists["tracks"]?.list)),
+                                    .map((r, idx, races) => {
+                                        const trackName = NameMapper.fromTrackId(r.track, lists["tracks"]?.list);
+                                        const rDate = new Date(r.date).toDateString();
+                                        const sameDateTrack = races.filter(race => 
+                                            new Date(race.date).toDateString() === rDate && race.track === r.track
+                                        );
+                                        
+                                        if (sameDateTrack.length > 1) {
+                                            const raceNum = sameDateTrack.indexOf(r) + 1;
+                                            return `${trackName} (${raceNum})`;
+                                        }
+                                        return trackName;
+                                    }),
                             scaleType: 'point',
                         }
                     ]}
