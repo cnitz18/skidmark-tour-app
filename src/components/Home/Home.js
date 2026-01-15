@@ -47,6 +47,11 @@ const socialInfo = [
         link: "https://www.youtube.com/verydystrbd"
     },
     {
+        platform: "youtube",
+        name: "Vandy1397",
+        link: "https://www.youtube.com/Vandy1397"
+    },
+    {
         platform: "twitch",
         name: "verydystrbd",
         link: "https://www.twitch.tv/verydystrbd"
