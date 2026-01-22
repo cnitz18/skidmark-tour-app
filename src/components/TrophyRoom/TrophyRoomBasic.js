@@ -57,6 +57,15 @@ const TrophyRoomBasic = () => {
 
     const specialEvents = [
         {
+            id: 0,
+            name: "iRacing Roar Before the 24",
+            date: "January 10, 2026",
+            position: "Victory",
+            team: "Solo Entry",
+            description: "1st in TCR class after starting from the back of the field - a historic first solo Special Event win for the Skidmark Tour",
+            members: ["garrett.dix"]
+        },
+        {
             id: 1, 
             name: "iRacing Bathurst 12 Hour", 
             date: "February 22, 2025",

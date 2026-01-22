@@ -12,12 +12,21 @@ const imageInfo = [
         caption: "Karting Fall '24"
     },
     {
-        url: "homepage/arccamaros.jpg",
-        caption: "ARC Camaros @ Autódromo Yahuarcocha (link)",
-        href: "https://www.youtube.com/watch?v=4KDvMUHPLDw"
+        url: "homepage/monza-sprint-finish.jpg",
+        caption: "Nailbiter Finish @ Monza '71",
+        href: "https://www.youtube.com/watch?v=xwN_Ch8Hexo"
     },
     {
         url: "homepage/kartsontrack.jpg",
+        caption: "Karting Fall '24"
+    },
+    {
+        url: "homepage/arccamaros.jpg",
+        caption: "Door Banging @ Yahuarcocha (link)",
+        href: "https://www.youtube.com/watch?v=4KDvMUHPLDw"
+    },
+    {
+        url: "homepage/irl.jpg",
         caption: "Karting Fall '24"
     },
     {
@@ -26,18 +35,9 @@ const imageInfo = [
         href: "https://youtu.be/yMqXIcBbhxo?si=5iHQGi5Mn_rXBd3v"
     },
     {
-        url: "homepage/irl.jpg",
-        caption: "Karting Fall '24"
-    },
-    {
-        url: "homepage/mustangs.png",
-        caption: "Team practice for iRacing Spa 24"
-    },
-    {
-        url: "homepage/ginettas.jpg",
-        caption: "Ginetta GT5s @ Daytona Roval (link)",
-        href: "https://youtu.be/WpYystD5N-U?si=OCRXFccgjdf_C6AL"
-    },
+        url: "homepage/karting-fall-25.jpg",
+        caption: "Karting Fall '25",
+    }
 ]
 
 const socialInfo = [
