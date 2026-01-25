@@ -4,7 +4,7 @@ import SessionHistoryEntry from "./SessionHistoryEntry";
 import PageHeader from "../shared/PageHeader";
 import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination, Accordion } from "react-bootstrap";
 import LoadingOverlay from 'react-loading-overlay-ts';
-import UnavailablePage from "../NewServerSetup/NewServerUnavailablePage";
+import UnavailablePage from "./ServerUnavailablePage";
 
 const SessionHistory = ({ enums, lists }) => {
   const [history, setHistory] = useState([]);

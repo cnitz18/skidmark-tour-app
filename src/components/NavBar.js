@@ -7,7 +7,7 @@ import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
 import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
-import logo from "../assets/skidmark-placeholder.png";
+import logo from "../assets/Skidmark_Logo_Title.png";
 import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
 import ServerStatus from './ServerStatus/ServerStatus';
