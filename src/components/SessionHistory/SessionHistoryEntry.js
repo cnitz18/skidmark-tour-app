@@ -108,7 +108,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
     }
   }, [data]);
   return (
-    <Accordion>
+    <Accordion className="race-details-accordion">
         <Container className={`history-entry ${leagueId ? "league-entry" : ""} ${isFeature ? "feature-entry" : ""}`}>
         <Row className="history-entry-data">
           <Col lg="4" className="history-entry-data-title">

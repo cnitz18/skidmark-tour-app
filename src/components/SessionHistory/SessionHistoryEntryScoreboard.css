@@ -7,7 +7,7 @@
 }
 
 .race-event-modal .modal-header {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
 }
 
 /* Lap time table styling */
@@ -18,21 +18,21 @@
 
 .lap-time-table .MuiTable-root th {
   font-weight: 600;
-  color: #495057;
-  background-color: #f8f9fa;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg);
   padding: 6px 10px;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--color-border);
   font-size: 14px;
 }
 
 .lap-time-table .MuiTable-root td {
   padding: 4px 10px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
   font-size: 14px;
 }
 
 .lap-time-table .MuiTable-root tr.even-row {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
 }
 
 /* Position indicator */
@@ -42,8 +42,8 @@
 
 .position-badge {
   display: inline-block;
-  background: #e9ecef;
-  color: #495057;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 600;
@@ -121,7 +121,7 @@
   display: inline-flex;
   align-items: center;
   font-size: 13px;
-  color: #6c757d;
+  color: var(--color-text-secondary);
 }
 
 .color-box {

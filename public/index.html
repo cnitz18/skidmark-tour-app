@@ -18,6 +18,17 @@
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     </head>
     <body>
+        <script>
+          // Apply theme immediately before React renders to prevent flash
+          (function() {
+            const savedTheme = localStorage.getItem('skidmark-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f8f9fa';
+            document.body.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f8f9fa';
+          })();
+        </script>
         <div id="root"></div>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

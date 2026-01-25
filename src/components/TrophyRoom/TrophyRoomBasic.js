@@ -212,9 +212,7 @@ const TrophyRoomBasic = () => {
                                                 {event.members.map((member, index) => (
                                                     <Badge 
                                                         key={index} 
-                                                        bg="light" 
-                                                        text="dark" 
-                                                        className="member-badge"
+                                                        className="member-badge theme-badge"
                                                     >
                                                         <BsPersonFill className="member-icon" />
                                                         {member}

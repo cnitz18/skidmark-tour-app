@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import getAPIData from "./utils/getAPIData";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import './index.css';
 
 const App = () => {
@@ -33,11 +34,13 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <NavBar enums={enums} lists={lists}/>
-      <Footer/>
-    </>
-
+    <ThemeProvider>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <NavBar enums={enums} lists={lists}/>
+        <main style={{ flex: 1 }}></main>
+        <Footer/>
+      </div>
+    </ThemeProvider>
   );
 };
 

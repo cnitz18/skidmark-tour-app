@@ -12,13 +12,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
   font-weight: 600;
 }
 
 .description {
-  color: #6c757d;
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -28,13 +28,13 @@
   justify-content: center;
   gap: 1rem;
   padding: 2rem;
-  color: #6c757d;
+  color: var(--color-text-secondary);
 }
 
 .tableContainer {
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   margin-bottom: 1rem;
 }
@@ -46,10 +46,10 @@
 .raceTable thead th {
   position: sticky;
   top: 0;
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
+  background-color: var(--color-bg);
+  border-bottom: 2px solid var(--color-border);
   font-size: 0.85rem;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .raceRow {
@@ -58,11 +58,11 @@
 }
 
 .raceRow:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
 }
 
 .raceRow.selected {
-  background-color: #e7f1ff;
+  background-color: rgba(0, 168, 225, 0.1);
 }
 
 .raceRow td {
@@ -79,7 +79,7 @@
 }
 
 .broadcastControls {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
@@ -87,7 +87,7 @@
 
 .selectedInfo {
   margin-bottom: 1rem;
-  color: #212529;
+  color: var(--color-text);
 }
 
 .optionsRow {

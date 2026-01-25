@@ -22,7 +22,7 @@
 }
 
 .stats-label {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .stats-value {
@@ -53,8 +53,8 @@
 }
 
 .position-badge.outside-points {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #666;
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
 }
 
 /* Position highlight */
@@ -89,7 +89,7 @@
 }
 
 .race-track {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .race-result {

@@ -1,6 +1,6 @@
 .head-to-head-comparison .driver-card {
-    background-color: #f8f9fa;
-    border-left: 4px solid #007bff;
+    background-color: var(--color-bg);
+    border-left: 4px solid var(--color-secondary);
     transition: transform 0.2s ease;
   }
   
@@ -46,7 +46,7 @@
   }
   
   .battle-details {
-    background-color: #f8f9fa;
+    background-color: var(--color-bg);
   }
   
   .custom-tooltip {
@@ -57,7 +57,7 @@
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .stats-column.primary-stats {
-      border-bottom: 1px solid #dee2e6;
+      border-bottom: 1px solid var(--color-border);
       border-right: none !important;
       padding-bottom: 1rem;
       margin-bottom: 1rem;

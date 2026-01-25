@@ -1,3 +1,4 @@
+@import "./css/theme.css";
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -9,6 +10,17 @@
 
 body {
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .app-container {
@@ -16,9 +28,10 @@ body {
   margin: 30px auto;
   overflow: auto;
   min-height: 100%;
-  border: 1px solid steelblue;
+  border: 1px solid var(--color-border-light);
   padding: 30px;
   border-radius: 5px;
+  background-color: var(--color-bg-elevated);
 }
 
 .title {
@@ -30,37 +43,42 @@ body {
 }
 
 .field-entry {
-  background: #f4f4f4;
+  background: var(--color-bg);
   margin: 5px;
   padding: 10px 20px;
   display: grid;
+  border-radius: 4px;
 }
 
 .league-entry {
-  border-left: 8px solid #0dcaf0;
+  border-left: 8px solid var(--color-secondary);
 }
 
 .feature-entry {
-  box-shadow: 0 0 0 2px orange inset;
+  box-shadow: 0 0 0 2px var(--color-accent) inset;
 }
 
 .history-entry {
-  background: #f4f4f4;
+  background: var(--color-bg-elevated);
   margin: 5px;
   padding: 10px 20px;
   cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
 }
+
 .history-entry-data {
   grid-template-columns: 2fr 2fr 2fr 1fr;
 }
 
 .nav-link {
-  color: steelblue;
+  color: var(--color-secondary);
 }
 
 footer {
-  margin-top: 30px;
+  margin-top: auto;
   text-align: center;
+  padding-top: 30px;
 }
 
 .center-header {
@@ -72,21 +90,27 @@ a.button {
   color: initial;
   float: right;
 }
+
 input[type="text"],
 select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
 }
+
 input[type="number"] {
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
 }
 
 .error {
@@ -97,23 +121,28 @@ input[type="number"] {
   border: 1px solid red;
   border-radius: 4px;
 }
+
 label {
   width: 100%;
 }
 
 .command {
   width: 50%;
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--color-button-primary);
+  color: var(--color-primary);
   padding: 14px 20px;
   margin: 8px 0;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-color);
 }
 
 .command:hover {
-  background-color: #45a049;
+  background-color: var(--color-button-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(247, 168, 0, 0.3);
 }
 
 div {
@@ -124,18 +153,20 @@ div {
 .setup {
   column-count: 2;
 }
+
 .setup-3 {
   column-count: 3;
 }
+
 .setup-4 {
   column-count: 4;
 }
 
 .bordered {
-  border: 1px solid;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  border-color: #bbb;
   padding: 14px 20px;
+  background-color: var(--color-bg-elevated);
 }
 
 .session-section {
@@ -150,13 +181,16 @@ div {
   font-size: 1.2em;
   font-weight: bold;
 }
+
 .trophy {
   padding-right: 5px;
 }
+
 .lessVerticalPadding {
   padding-top: 0px;
   padding-bottom: 0px;
 }
+
 .display-flex {
   display: flex;
 }
@@ -164,12 +198,13 @@ div {
 .league-badge {
   float: right;
 }
+
 .league-badge:hover {
   outline-style: solid;
   outline-width: 1px;
-  background-color: white !important;
-  outline-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
-  color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity));
+  background-color: var(--color-bg-elevated) !important;
+  outline-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .session-details-badge {
@@ -179,107 +214,413 @@ div {
 .session-details-badge:hover {
   outline-style: solid;
   outline-width: 1px;
-  background-color: white !important;
-  outline-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity));
-  color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity));
+  background-color: var(--color-bg-elevated) !important;
+  outline-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
+
 .info-marker {
   float: right;
   padding: 0px;
   margin: 3px 5px;
 }
+
 .info-marker > svg {
   display: block;
 }
+
 .league-config-panel {
-  border-left: 1px dashed #333;
+  border-left: 1px dashed var(--color-text-secondary);
 }
+
 .race-complete-row {
-  background-color: #9eb5a8;
+  background-color: rgba(0, 168, 225, 0.15);
 }
-.nav-link{
+
+.nav-link {
   text-align: center;
 }
+
 .social-name {
-  padding: 5px; 
+  padding: 5px;
 }
+
 .homepage-content {
   text-align: center;
 }
+
 .social-list {
   text-align: center;
 }
+
 .btn-twitch, .btn-twitch:hover {
   background-color: #6441a5;
   color: white;
 }
-.btn-youtube,.btn-youtube:hover {
-  background-color: red;
+
+.btn-youtube, .btn-youtube:hover {
+  background-color: var(--color-danger);
   color: white;
 }
+
 .fastest-lap-highlight {
-  color: purple;
+  color: var(--color-accent);
   font-weight: bold;
 }
+
 .personal-fastest-lap-highlight {
-  color: green;
+  color: var(--color-success);
   font-weight: bold;
 }
+
 .personal-fastest-sector-highlight {
-  color: green;
+  color: var(--color-success);
   font-weight: bold;
 }
+
 .race-event-modal {
   text-align: center;
 }
+
 hr {
   margin: 3rem;
 }
-.homepage-carousel-item{
+
+.homepage-carousel-item {
   height: auto;
   width: 100%;
   overflow: hidden;
 }
+
 .homepage-carousel img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .homepage-carousel-caption {
   text-shadow: 2px 1px black;
   top: 1.25rem;
 }
+
 @media screen and (max-width: 1000px) {
   .history-entry-data-title {
-      text-align: center;
+    text-align: center;
   }
 }
+
 .session-score td {
-  padding-right: 5px; 
+  padding-right: 5px;
   padding-left: 5px;
 }
+
 .header-logo {
   max-width: 100%;
 }
+
 .leagues-container {
   margin: 0;
 }
+
 .league-cardactions {
   position: relative;
 }
+
 .league-display-badge {
   position: absolute;
   right: 0px;
   margin: 6px 16px;
 }
+
 .standings-row {
   transition: all 0.2s ease-in-out;
 }
 
 .standings-row:hover {
-  background-color: rgba(0,0,0,0.04);
+  background-color: var(--color-secondary);
+  opacity: 0.9;
 }
 
 .row-expand-animation {
   transition: all 0.3s ease-out;
+}
+
+/* Bootstrap Card overrides */
+.card {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.card-header {
+  background-color: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.card-body {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+}
+
+/* Bootstrap Accordion overrides - Clean, subtle style matching Form.Select */
+.accordion {
+  border: none;
+  --bs-accordion-bg: transparent;
+  --bs-accordion-border-color: transparent;
+}
+
+/* Default accordion-item styling (filters accordion) */
+.accordion-item {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0;
+}
+
+.accordion-item:first-child {
+  border-radius: 0;
+}
+
+.accordion-item:last-child {
+  border-radius: 0;
+  border-bottom: none;
+}
+
+/* Race details accordion items - all-around borders with proper overlap handling */
+.race-details-accordion .accordion-item {
+  background-color: transparent;
+  border: 2px solid var(--color-border);
+  margin-bottom: -2px; /* Overlap borders to avoid double thickness */
+  border-radius: 0;
+}
+
+.race-details-accordion .accordion-item:first-child {
+  border-radius: 0;
+  margin-bottom: -2px;
+}
+
+.race-details-accordion .accordion-item:last-child {
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.accordion-button {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+  border: none;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+.accordion-button:hover {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+}
+
+.accordion-button:focus {
+  background-color: var(--color-bg-elevated);
+  border-color: transparent;
+  box-shadow: none;
+  outline: 2px solid var(--color-secondary);
+  outline-offset: -2px;
+}
+
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300a8e1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  filter: none;
+}
+
+.accordion-body {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+  border-top: 1px solid var(--color-border);
+  padding: 1rem;
+}
+
+/* Bootstrap Form.Select overrides */
+.form-select {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300a8e1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-select:focus {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-secondary);
+  color: var(--color-text);
+  box-shadow: 0 0 0 0.25rem rgba(0, 168, 225, 0.25);
+}
+
+/* Bootstrap Badge theme override */
+.badge.theme-badge {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border);
+}
+
+/* Bootstrap Table overrides */
+.table {
+  color: var(--color-text);
+}
+
+.table > :not(caption) > * > * {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.table thead {
+  background-color: var(--color-bg);
+}
+
+.table thead th {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.table tbody tr {
+  border-color: var(--color-border);
+}
+
+.table tbody td {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* Bootstrap Pagination overrides */
+.pagination .page-link {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.pagination .page-link:hover {
+  background-color: var(--color-bg);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: #ffffff;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* Bootstrap Modal overrides */
+.modal-content {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border);
+}
+
+.modal-header {
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.modal-title {
+  color: var(--color-text);
+}
+
+.modal-body {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+}
+
+.modal-footer {
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-close {
+  filter: invert(1) brightness(1.1);
+  opacity: 0.7;
+}
+
+.btn-close:hover,
+.btn-close:focus {
+  opacity: 1;
+}
+
+/* Bootstrap Tab overrides in modals */
+.nav-tabs {
+  border-bottom-color: var(--color-border);
+}
+
+.nav-tabs .nav-link {
+  color: var(--color-text-secondary);
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-tabs .nav-link:hover {
+  border-color: transparent;
+  color: var(--color-text);
+}
+
+.nav-tabs .nav-link.active {
+  background-color: transparent;
+  color: var(--color-text);
+  border-bottom-color: var(--color-secondary);
+}
+
+/* MUI Material UI overrides */
+.MuiPaper-root {
+  background-color: var(--color-bg-elevated) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+.MuiCard-root {
+  background-color: var(--color-bg-elevated) !important;
+  color: var(--color-text) !important;
+}
+
+.MuiCardHeader-root {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.MuiCardContent-root {
+  background-color: var(--color-bg-elevated) !important;
+  color: var(--color-text) !important;
+}
+
+.MuiTableHead-root {
+  background-color: var(--color-bg) !important;
+}
+
+.MuiTableHead-root th {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-secondary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.MuiTableBody-root td {
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.MuiTableBody-root tr:hover {
+  background-color: var(--color-bg) !important;
+}
+
+.MuiChip-root {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
 }

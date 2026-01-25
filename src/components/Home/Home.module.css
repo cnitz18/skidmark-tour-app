@@ -1,6 +1,6 @@
 .homePage {
     min-height: 100vh;
-    background: linear-gradient(to bottom, #f8f9fa, #fff);
+    background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));
 }
 
 .heroSection {
@@ -72,5 +72,5 @@
 }
 
 .youtube {
-    background: #ff0000;
+    background: var(--color-danger);
 }

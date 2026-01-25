@@ -2,7 +2,7 @@
   padding-top: 100px;
   padding-bottom: 40px;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f8f9fa, #fff);
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));
 }
 
 /* Step Indicator */
@@ -24,8 +24,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #e9ecef;
-  color: #6c757d;
+  background-color: var(--color-bg);
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,8 +35,8 @@
 }
 
 .step.active .stepNumber {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: var(--color-accent);
+  color: var(--color-text);
 }
 
 .step.completed .stepNumber {
@@ -45,13 +45,13 @@
 }
 
 .stepLabel {
-  color: #6c757d;
+  color: var(--color-text-secondary);
   font-size: 14px;
   transition: color 0.3s ease;
 }
 
 .step.active .stepLabel {
-  color: #212529;
+  color: var(--color-text);
   font-weight: 600;
 }
 
@@ -62,49 +62,49 @@
 .stepDivider {
   width: 80px;
   height: 3px;
-  background-color: #e9ecef;
+  background-color: var(--color-border);
   margin-bottom: 20px;
 }
 
 /* Upload Area */
 .uploadArea {
-  border: 3px dashed #dee2e6;
+  border: 3px dashed var(--color-border);
   border-radius: 12px;
   padding: 60px 40px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #fff;
+  background-color: var(--color-bg-elevated);
 }
 
 .uploadArea:hover {
-  border-color: #ffc107;
-  background-color: #fffbf0;
+  border-color: var(--color-accent);
+  background-color: rgba(247, 168, 0, 0.05);
 }
 
 .uploadArea.dragActive {
-  border-color: #ffc107;
-  background-color: #fffbf0;
+  border-color: var(--color-accent);
+  background-color: rgba(247, 168, 0, 0.05);
 }
 
 .uploadIcon {
   font-size: 64px;
-  color: #adb5bd;
+  color: var(--color-text-secondary);
   margin-bottom: 20px;
 }
 
 .uploadArea:hover .uploadIcon {
-  color: #ffc107;
+  color: var(--color-accent);
 }
 
 .uploadText {
-  color: #495057;
+  color: var(--color-text-secondary);
   font-size: 18px;
   margin-bottom: 10px;
 }
 
 .uploadSubtext {
-  color: #6c757d;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 

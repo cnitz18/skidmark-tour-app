@@ -9,20 +9,20 @@
 }
 
 .listItem:hover {
-    background-color: rgba(13, 110, 253, 0.03);
+    background-color: rgba(0, 168, 225, 0.03);
 }
 
 .modalHeader {
-    background: #f8f9fa;
+    background: var(--color-bg);
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .detailItem {
     padding: 0.5rem 0;
-    color: #495057;
+    color: var(--color-text-secondary);
 }
 
 .detailItem strong {
-    color: #212529;
+    color: var(--color-text);
     margin-right: 0.5rem;
 }

@@ -1,0 +1,82 @@
+/* Skidmark Tour Brand Colors & Theme System */
+
+:root {
+  /* ===== BRAND COLORS ===== */
+  --color-primary: #0d2240;           /* National Flag Blue */
+  --color-secondary: #00a8e1;         /* Process Blue */
+  --color-accent: #f7a800;            /* Mustard */
+  --color-white: #ffffff;
+
+  /* ===== LIGHT MODE ===== */
+  --color-bg: #f8f9fa;
+  --color-bg-elevated: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #666666;
+  --color-border: #e0e0e0;
+  --color-border-light: rgba(13, 34, 64, 0.1);
+  --color-divider: #f0f0f0;
+
+  /* ===== SEMANTIC COLORS (Light Mode) ===== */
+  --color-success: #4caf50;
+  --color-danger: #d32f2f;
+  --color-warning: #ff9800;
+  --color-info: #00a8e1;
+
+  /* ===== COMPONENT DEFAULTS ===== */
+  --color-button-primary: var(--color-accent);
+  --color-button-primary-hover: #e09800;
+  --color-button-secondary: var(--color-secondary);
+  --color-button-secondary-hover: #0089b8;
+
+  --color-navbar-bg: rgba(13, 34, 64, 0.95);
+  --color-navbar-text: #ffffff;
+  --color-navbar-hover: rgba(255, 255, 255, 0.1);
+
+  --color-footer-bg: rgba(13, 34, 64, 0.95);
+  --color-footer-text: rgba(255, 255, 255, 0.8);
+
+  /* ===== TRANSITIONS ===== */
+  --transition-color: 0.3s ease;
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] {
+  --color-bg: #1a1a1a;
+  --color-bg-elevated: #2d2d2d;
+  --color-text: #e8e8e8;
+  --color-text-secondary: #b0b0b0;
+  --color-border: #3d3d3d;
+  --color-border-light: rgba(0, 168, 225, 0.2);
+  --color-divider: #333333;
+
+  /* ===== SEMANTIC COLORS (Dark Mode) ===== */
+  --color-success: #66bb6a;
+  --color-danger: #ef5350;
+  --color-warning: #ffa726;
+  --color-info: #29b6f6;
+
+  /* ===== COMPONENT DEFAULTS (Dark) ===== */
+  --color-button-primary: var(--color-accent);
+  --color-button-primary-hover: #f7b820;
+  --color-button-secondary: var(--color-secondary);
+  --color-button-secondary-hover: #1bc4f0;
+
+  --color-navbar-bg: rgba(13, 34, 64, 0.98);
+  --color-navbar-text: #ffffff;
+  --color-navbar-hover: rgba(0, 168, 225, 0.15);
+
+  --color-footer-bg: rgba(13, 34, 64, 0.98);
+  --color-footer-text: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== SMOOTH THEME TRANSITIONS ===== */
+* {
+  transition: background-color var(--transition-color), 
+              color var(--transition-color),
+              border-color var(--transition-color);
+}
+
+/* Prevent transition on page load */
+html.no-transition * {
+  transition: none !important;
+}

@@ -3,7 +3,7 @@
   overflow-y: hidden;
   overflow-x: auto;
   position: relative;
-  background: #f8f9fa;
+  background: var(--color-bg);
   border-radius: 4px;
 }
 
@@ -11,7 +11,7 @@
   position: relative;
   height: 60px;
   margin-top: 20px;
-  background-color: #e9ecef;
+  background-color: var(--color-border);
   border-radius: 4px;
   width: 100%;
   min-width: 100%;
@@ -161,7 +161,7 @@
 
 /* Event details styling */
 .race-timeline .sector-times {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
   padding: 10px;
   border-radius: 4px;
 }
@@ -174,7 +174,7 @@
 
 .race-timeline .sector-name {
   font-weight: bold;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .race-timeline .sector-time {
