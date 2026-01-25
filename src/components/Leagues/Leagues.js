@@ -6,6 +6,7 @@ import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 import { BsTrophy } from "react-icons/bs";
+import fullLogo from "../../assets/Skidmark_Logo_1.png";
 import './Leagues.css';
 
 const DEFAULT_POSITIONS = [
@@ -172,7 +173,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     
     return (
         <Container>
-            <PageHeader title="Leagues"/>
+            <PageHeader title="Leagues" logo={fullLogo}/>
             {
                 showAdmin ?
                 <Row className="text-center">

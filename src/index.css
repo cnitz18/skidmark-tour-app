@@ -21,6 +21,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 .app-container {
@@ -330,6 +332,12 @@ hr {
   position: absolute;
   right: 0px;
   margin: 6px 16px;
+}
+
+.league-display-badge .MuiChip-root {
+  background-color: var(--color-bg-elevated) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
 }
 
 .standings-row {

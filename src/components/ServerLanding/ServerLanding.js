@@ -1,11 +1,12 @@
 import { Container, Row, Col, Button } from "react-bootstrap"
 import PageHeader from "../shared/PageHeader";
+import fullLogo from "../../assets/Skidmark_Logo_1.png";
 
 const ServerLanding = ({ enums, lists }) => {
     return (
         <Container>
             <Row>
-                <PageHeader title="Dedicated Server"/>
+                <PageHeader title="Dedicated Server" logo={fullLogo}/>
             </Row>
             {/* <Row>
                 <p className='text-center'>

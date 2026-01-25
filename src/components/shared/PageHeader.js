@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './PageHeader.module.css'
 
-export default function PageHeader({ title, subtitle }) {
+export default function PageHeader({ title, subtitle, logo }) {
   return (
     <header className={styles.pageHeader}>
       <div className="container">
@@ -12,6 +12,7 @@ export default function PageHeader({ title, subtitle }) {
               {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
             </div>
           )}
+          {logo && <img src={logo} alt="Logo" className={styles.headerLogo} />}
         </div>
       </div>
     </header>

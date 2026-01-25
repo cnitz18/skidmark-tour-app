@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Carousel, Image, Col } from 'react-bootstrap';
+import { Container, Row, Carousel, Image, Col, Card, Spinner } from 'react-bootstrap';
 import PageHeader from '../shared/PageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 import styles from './Home.module.css';
 import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
+import getAPIData from '../../utils/getAPIData';
+import fullLogo from "../../assets/Skidmark_Logo_1.png";
 
 const imageInfo = [
     {
@@ -75,6 +77,9 @@ const socialInfo = [
 
 export default function Home() {
     const [liveStreams, setLiveStreams] = useState([]);
+    const [leagueData, setLeagueData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const CURRENT_LEAGUE_ID = 29; // Update twice yearly
     
     useEffect(() => {
         const twitchUsernames = socialInfo
@@ -86,17 +91,31 @@ export default function Home() {
             });
     }, []);
 
+    useEffect(() => {
+        // Fetch current league data
+        console.log('Fetching league data for ID:', CURRENT_LEAGUE_ID);
+        getAPIData(`/leagues/get/stats/?id=${CURRENT_LEAGUE_ID}`)
+            .then(data => {
+                console.log('League data received:', data);
+                setLeagueData(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Error fetching league data:', err);
+                setLoading(false);
+            });
+    }, []);
+
     return (
         <div className={styles.homePage}>
+            {process.env.REACT_APP_ENV === "Skidmark Tour" && (
+                <PageHeader 
+                    title="Home of The Skidmark Tour"
+                    logo={fullLogo}
+                />
+            )}
             <div className={styles.heroSection}>
                 <Container fluid>
-                    <Row>
-                        {process.env.REACT_APP_ENV === "Skidmark Tour" && (
-                            <PageHeader 
-                                title="Home of The Skidmark Tour"
-                            />
-                        )}
-                    </Row>
                     <Row className='justify-content-center'>
                         <Col md={10} lg={8}>
                             <Carousel fade className={styles.carousel}>
@@ -123,6 +142,53 @@ export default function Home() {
                     </Row>
                 </Container>
             </div>
+
+            {/* League Standings Section */}
+            <Container className={styles.leagueSection}>
+                {loading ? (
+                    <Row className='justify-content-center py-5'>
+                        <Col className='text-center'>
+                            <Spinner animation="border" variant="info" />
+                        </Col>
+                    </Row>
+                ) : leagueData && leagueData.scoreboard_entries ? (
+                    <>
+                        <Row className='mb-4'>
+                            <Col>
+                                <h2 className={styles.sectionTitle}>League Standings</h2>
+                                <p className={styles.leagueSubtitle}>Current Championship Standings</p>
+                            </Col>
+                        </Row>
+                        
+                        <Row className='mb-5'>
+                            <Col md={12} lg={8} className='mx-auto'>
+                                <Card className={styles.leagueCard}>
+                                    <Card.Body>
+                                        <div className={styles.podiumContainer}>
+                                            {leagueData.scoreboard_entries.slice(0, 3).map((entry, idx) => (
+                                                <div key={idx} className={`${styles.podiumSpot} ${styles[`position${entry.Position}`]}`}>
+                                                    <div className={styles.podiumRank}>
+                                                        <span className={styles.medalists}>{['🥇', '🥈', '🥉'][idx]}</span>
+                                                    </div>
+                                                    <div className={styles.podiumDriver}>
+                                                        <h4>{entry.PlayerName}</h4>
+                                                        <p className={styles.podiumPoints}>{entry.Points} pts</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                                <div className='text-center mt-4'>
+                                    <a href={`/leagues/${CURRENT_LEAGUE_ID}`} className={`btn ${styles.viewButton}`}>
+                                        View Full Standings
+                                    </a>
+                                </div>
+                            </Col>
+                        </Row>
+                    </>
+                ) : null}
+            </Container>
             
             <Container>
                 <LiveStreams streams={liveStreams} />
@@ -130,7 +196,7 @@ export default function Home() {
 
             <Container className={styles.socialsSection}>
                 <Row className="text-center mb-4">
-                    <h2>Connect With Us</h2>
+                    <h2>Our Socials</h2>
                 </Row>
                 <Row lg="auto" className='justify-content-center'>
                     {socialInfo.map((soc,i) => (

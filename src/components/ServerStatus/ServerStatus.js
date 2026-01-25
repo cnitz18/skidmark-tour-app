@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { FaCar, FaUsers, FaCloudRain, FaServer, FaPlayCircle } from 'react-icons/fa';
 import NameMapper from '../../utils/Classes/NameMapper';
 import PageHeader from '../shared/PageHeader';
+import fullLogo from '../../assets/Skidmark_Logo_1.png';
 import './ServerStatus.css';
 // TODO LIST:
 // - make "participants" key off of participants not members
@@ -146,7 +147,7 @@ const ServerStatus = ({ enums, lists }) => {
 
   return (
     <Container>
-      <PageHeader title="Automobilista 2 Server Status"/>
+      <PageHeader title="Automobilista 2 Server Status" logo={fullLogo}/>
       <Row>
         <Col lg={8} className="mx-auto">
           <div className="server-status-container">

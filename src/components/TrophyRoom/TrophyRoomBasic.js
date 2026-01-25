@@ -1,6 +1,7 @@
 import React from 'react';
 import './TrophyRoom.css';
 import PageHeader from '../shared/PageHeader';
+import fullLogo from '../../assets/Skidmark_Logo_1.png';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import { BsTrophy, BsFlag, BsCalendarEvent, BsPeople, BsPersonFill } from 'react-icons/bs';
 import { GiRaceCar, GiPodium } from 'react-icons/gi';
@@ -19,7 +20,7 @@ const TrophyRoomBasic = () => {
             seasonId: 28
         },
         {
-            id: 2,
+            id: 2.5,
             name: "verydystrbd",
             season: "Winter 2024",
             championship: "Formula Junior",
@@ -118,6 +119,7 @@ const TrophyRoomBasic = () => {
             <PageHeader 
                 title="Trophy Room" 
                 subtitle="Our team iRacing achievements and AMS2 championship winners."
+                logo={fullLogo}
             />
             
             <Container className="my-5">

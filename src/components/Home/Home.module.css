@@ -1,10 +1,11 @@
 .homePage {
     min-height: 100vh;
     background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));
+    padding: 0;
 }
 
 .heroSection {
-    padding: 2rem 0;
+    padding: 0 0 2rem 0;
 }
 
 .carousel {
@@ -40,9 +41,133 @@
     margin: 0;
 }
 
+/* League Standings Section */
+.leagueSection {
+    padding: 4rem 0;
+}
+
+.sectionTitle {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.leagueSubtitle {
+    color: var(--color-text-secondary);
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.leagueCard {
+    background-color: var(--color-bg-elevated);
+    border: 2px solid var(--color-secondary);
+    box-shadow: 0 8px 24px rgba(0, 168, 225, 0.15);
+    border-radius: 12px;
+}
+
+.podiumContainer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+}
+
+.podiumSpot {
+    flex: 0 1 120px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.podiumSpot:hover {
+    transform: translateY(-4px);
+}
+
+.position1 {
+    order: 2;
+}
+
+.position2 {
+    order: 1;
+}
+
+.position3 {
+    order: 3;
+}
+
+.podiumRank {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.medalists {
+    display: inline-block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.podiumDriver h4 {
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    word-wrap: break-word;
+}
+
+.podiumPoints {
+    color: var(--color-secondary);
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.viewButton {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, #0080b0 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 2.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.viewButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 168, 225, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
 @media (max-width: 768px) {
     .caption {
         padding: 0.5rem;
+    }
+    
+    .fullLogo {
+        max-width: 250px;
+    }
+    
+    .leagueSection {
+        padding: 2rem 0;
+    }
+    
+    .podiumContainer {
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .podiumSpot {
+        flex: 0 1 100px;
+    }
+    
+    .podiumRank {
+        font-size: 2.5rem;
     }
 }
 

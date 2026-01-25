@@ -2,25 +2,50 @@
   background: linear-gradient(to right, #092d44 0%, #0d3d56 100%);
   border-bottom: 1px solid var(--color-border);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  padding: 2rem 0;
+  padding: 1.25rem 0;
   color: var(--color-white);
 }
 
 .headerContent {
-  padding: 2rem 0;
-  text-align: center;
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.headerLogo {
+  max-width: 160px;
+  height: auto;
+  max-height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 168, 225, 0.3));
+  animation: slideInRight 0.6s ease-out;
+  flex-shrink: 0;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .titleWrapper {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 600px;
+  text-align: center;
 }
 
 .title {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--color-white);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   letter-spacing: -0.5px;
 }
 
@@ -32,7 +57,16 @@
 
 /* Mobile responsive styles */
 @media screen and (max-width: 768px) {
-  /* You may want to adjust related elements */
+  .headerContent {
+    gap: 1rem;
+    flex-wrap: wrap-reverse;
+  }
+  
+  .headerLogo {
+    max-width: 120px;
+    max-height: 100px;
+  }
+  
   .title {
     font-size: 1.8rem;
     margin-bottom: 0.5rem;

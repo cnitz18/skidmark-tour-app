@@ -1,6 +1,7 @@
 import React from 'react';
 import './TrophyRoom.css';
 import PageHeader from '../shared/PageHeader';
+import fullLogo from '../../assets/Skidmark_Logo_1.png';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -100,6 +101,7 @@ const TrophyRoom = () => {
             <PageHeader 
                 title="Trophy Room (under construction)" 
                 subtitle="Our team iRacing achievements and AMS2 championship winners."
+                logo={fullLogo}
             />
             <div ref={refContainer} className="canvas-container" id="trophyCanvas"></div>
         </div>

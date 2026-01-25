@@ -150,9 +150,10 @@
 /* Add to TrophyRoom.css */
 .members-box {
   margin-top: 15px;
-  background-color: #f8f9fa;
+  background-color: var(--color-bg-elevated);
   border-radius: 8px;
   padding: 10px 15px;
+  border: 1px solid var(--color-border);
   border-left: 3px solid #0d6efd;
   text-align: center; /* Center the content */
 }
@@ -161,10 +162,10 @@
   display: flex;
   align-items: center;
   justify-content: center; /* Center the header */
-  font-weight: 500;
-  color: #495057;
+  font-weight: 600;
+  color: var(--color-text);
   margin-bottom: 10px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .members-list {

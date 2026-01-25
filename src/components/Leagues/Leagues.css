@@ -1,12 +1,16 @@
 .league-card {
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
+  border: none;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--color-bg-elevated);
+  position: relative;
 }
 
 .league-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
 /* New styling for champion ribbon */
