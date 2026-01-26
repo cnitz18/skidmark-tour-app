@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import PageHeader from "../shared/PageHeader";
-import fullLogo from "../../assets/Skidmark_Logo_1.png";
 import ScreenshotUploader from "./ScreenshotUploader";
 import ResultsReviewForm from "./ResultsReviewForm";
 import SQLOutput from "./SQLOutput";
@@ -149,7 +148,6 @@ const ScreenshotParser = ({ enums, lists, embedded = false }) => {
         <PageHeader 
           title="Screenshot Parser" 
           subtitle="Upload race screenshots to generate SQL import scripts"
-          logo={fullLogo}
         />
       )}
       

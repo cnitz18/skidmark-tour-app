@@ -9,7 +9,7 @@ import { createRoot } from 'react-dom/client'
 const container = document.getElementById("root")
 const root = createRoot(container);
 
-document.title = "Home of the " + (process.env.REACT_APP_ENV ?? "Skidmark Tour");
+document.title = "The " + (process.env.REACT_APP_ENV ?? "Skidmark Tour");
 root.render(
   <React.StrictMode>
     <App />

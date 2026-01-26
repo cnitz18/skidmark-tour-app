@@ -5,7 +5,6 @@ import PageHeader from "../shared/PageHeader";
 import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination, Accordion } from "react-bootstrap";
 import LoadingOverlay from 'react-loading-overlay-ts';
 import UnavailablePage from "./ServerUnavailablePage";
-import fullLogo from "../../assets/Skidmark_Logo_1.png";
 
 const SessionHistory = ({ enums, lists }) => {
   const [history, setHistory] = useState([]);
@@ -116,11 +115,10 @@ const SessionHistory = ({ enums, lists }) => {
   },[pageCount,curPage])
 
   return (
-    <>
+    <Container>
       <PageHeader 
         title="Race History" 
         subtitle="All of our weekly Automobilista 2 races."
-        logo={fullLogo}
         />
       {showSpinner ? (
 
@@ -132,7 +130,7 @@ const SessionHistory = ({ enums, lists }) => {
                 </div>
             ) : 
             (
-              <Container>
+              <>
                 <Row>
                   <Col sm>
                     Order By:
@@ -190,14 +188,13 @@ const SessionHistory = ({ enums, lists }) => {
                   </Col>
                   <Col></Col>
                 </Row>
-              </Container>
-
+              </>
             )
       }
       {
         showErrorPage && <UnavailablePage/>
       }
-    </>
+    </Container>
   );
 };
 export default SessionHistory;

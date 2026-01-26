@@ -174,13 +174,13 @@ const AdminPortal = ({ enums, lists }) => {
 
   // Show admin portal content
   return (
-    <div className={styles.adminContent}>
+    <Container className={styles.adminContent}>
       <PageHeader 
         title="Admin Portal" 
         subtitle="Manage your racing league tools and data"
       />
       
-      <Container className={styles.portalContainer}>
+      <div className={styles.portalContainer}>
         {/* Tab Navigation */}
         <div className={styles.tabNav}>
           <Nav variant="tabs" className={styles.adminTabs}>
@@ -243,8 +243,8 @@ const AdminPortal = ({ enums, lists }) => {
             />
           )}
         </div>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 

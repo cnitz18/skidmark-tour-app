@@ -1,5 +1,5 @@
 .container {
-  padding-top: 100px;
+  padding-top: 0px;
   padding-bottom: 40px;
   min-height: 100vh;
   background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));

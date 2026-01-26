@@ -6,7 +6,6 @@ import styles from './Home.module.css';
 import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
 import getAPIData from '../../utils/getAPIData';
-import fullLogo from "../../assets/Skidmark_Logo_1.png";
 
 const imageInfo = [
     {
@@ -107,14 +106,15 @@ export default function Home() {
     }, []);
 
     return (
-        <div className={styles.homePage}>
-            {process.env.REACT_APP_ENV === "Skidmark Tour" && (
-                <PageHeader 
-                    title="Home of The Skidmark Tour"
-                    logo={fullLogo}
-                />
-            )}
-            <div className={styles.heroSection}>
+        <>
+            <Container>
+                {process.env.REACT_APP_ENV === "Skidmark Tour" && (
+                    <PageHeader 
+                        title="Home of The Skidmark Tour"
+                    />
+                )}
+            </Container>
+            <div className={styles.homePage}>
                 <Container fluid>
                     <Row className='justify-content-center'>
                         <Col md={10} lg={8}>
@@ -141,79 +141,79 @@ export default function Home() {
                         </Col>
                     </Row>
                 </Container>
-            </div>
 
-            {/* League Standings Section */}
-            <Container className={styles.leagueSection}>
-                {loading ? (
-                    <Row className='justify-content-center py-5'>
-                        <Col className='text-center'>
-                            <Spinner animation="border" variant="info" />
-                        </Col>
+                {/* League Standings Section */}
+                <Container className={styles.leagueSection}>
+                    {loading ? (
+                        <Row className='justify-content-center py-5'>
+                            <Col className='text-center'>
+                                <Spinner animation="border" variant="info" />
+                            </Col>
+                        </Row>
+                    ) : leagueData && leagueData.scoreboard_entries ? (
+                        <>
+                            <Row className='mb-4'>
+                                <Col>
+                                    <h2 className={styles.sectionTitle}>League Standings</h2>
+                                    <p className={styles.leagueSubtitle}>Current Championship Standings</p>
+                                </Col>
+                            </Row>
+                            
+                            <Row className='mb-5'>
+                                <Col md={12} lg={8} className='mx-auto'>
+                                    <Card className={styles.leagueCard}>
+                                        <Card.Body>
+                                            <div className={styles.podiumContainer}>
+                                                {leagueData.scoreboard_entries.slice(0, 3).map((entry, idx) => (
+                                                    <div key={idx} className={`${styles.podiumSpot} ${styles[`position${entry.Position}`]}`}>
+                                                        <div className={styles.podiumRank}>
+                                                            <span className={styles.medalists}>{['🥇', '🥈', '🥉'][idx]}</span>
+                                                        </div>
+                                                        <div className={styles.podiumDriver}>
+                                                            <h4>{entry.PlayerName}</h4>
+                                                            <p className={styles.podiumPoints}>{entry.Points} pts</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                    <div className='text-center mt-4'>
+                                        <a href={`/leagues/${CURRENT_LEAGUE_ID}`} className={`btn ${styles.viewButton}`}>
+                                            View Full Standings
+                                        </a>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </>
+                    ) : null}
+                </Container>
+                
+                <Container>
+                    <LiveStreams streams={liveStreams} />
+                </Container>
+
+                <Container className={styles.socialsSection}>
+                    <Row className="text-center mb-4">
+                        <h2>Our Socials</h2>
                     </Row>
-                ) : leagueData && leagueData.scoreboard_entries ? (
-                    <>
-                        <Row className='mb-4'>
-                            <Col>
-                                <h2 className={styles.sectionTitle}>League Standings</h2>
-                                <p className={styles.leagueSubtitle}>Current Championship Standings</p>
+                    <Row lg="auto" className='justify-content-center'>
+                        {socialInfo.map((soc,i) => (
+                            <Col key={i}>
+                                <a 
+                                    href={soc.link}
+                                    className={`${styles.socialLink} ${styles[soc.platform]}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
+                                    <span>{soc.name}</span>
+                                </a>
                             </Col>
-                        </Row>
-                        
-                        <Row className='mb-5'>
-                            <Col md={12} lg={8} className='mx-auto'>
-                                <Card className={styles.leagueCard}>
-                                    <Card.Body>
-                                        <div className={styles.podiumContainer}>
-                                            {leagueData.scoreboard_entries.slice(0, 3).map((entry, idx) => (
-                                                <div key={idx} className={`${styles.podiumSpot} ${styles[`position${entry.Position}`]}`}>
-                                                    <div className={styles.podiumRank}>
-                                                        <span className={styles.medalists}>{['🥇', '🥈', '🥉'][idx]}</span>
-                                                    </div>
-                                                    <div className={styles.podiumDriver}>
-                                                        <h4>{entry.PlayerName}</h4>
-                                                        <p className={styles.podiumPoints}>{entry.Points} pts</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                                <div className='text-center mt-4'>
-                                    <a href={`/leagues/${CURRENT_LEAGUE_ID}`} className={`btn ${styles.viewButton}`}>
-                                        View Full Standings
-                                    </a>
-                                </div>
-                            </Col>
-                        </Row>
-                    </>
-                ) : null}
-            </Container>
-            
-            <Container>
-                <LiveStreams streams={liveStreams} />
-            </Container>
-
-            <Container className={styles.socialsSection}>
-                <Row className="text-center mb-4">
-                    <h2>Our Socials</h2>
-                </Row>
-                <Row lg="auto" className='justify-content-center'>
-                    {socialInfo.map((soc,i) => (
-                        <Col key={i}>
-                            <a 
-                                href={soc.link}
-                                className={`${styles.socialLink} ${styles[soc.platform]}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
-                                <span>{soc.name}</span>
-                            </a>
-                        </Col>
-                    ))}
-                </Row>
-            </Container>
-        </div>
+                        ))}
+                    </Row>
+                </Container>
+            </div>
+        </>
     );
 }

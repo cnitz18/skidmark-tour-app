@@ -2,6 +2,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
+@font-face {
+  font-family: "Tamworth Gothic";
+  src: url("../public/fonts/TAMWORTH.TTF") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,7 +14,7 @@
 }
 
 body {
-  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   background-color: var(--color-bg);
   color: var(--color-text);
   display: flex;
@@ -631,4 +636,90 @@ hr {
 .MuiChip-root {
   background-color: var(--color-bg) !important;
   color: var(--color-text) !important;
+}
+
+/* MUI Tabs theme override - light/dark mode support */
+.MuiTabs-root {
+  border-bottom-color: var(--color-border) !important;
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
+}
+
+.MuiTab-root {
+  color: var(--color-text-secondary) !important;
+  text-transform: none !important;
+  transition: all 0.2s ease !important;
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
+  font-size: 1rem !important;
+}
+
+.MuiTab-root:hover {
+  color: var(--color-text) !important;
+  background-color: rgba(0, 168, 225, 0.05) !important;
+}
+
+.MuiTab-root.Mui-selected {
+  color: var(--color-text) !important;
+  font-weight: 600 !important;
+}
+
+.MuiTabs-indicator {
+  background-color: var(--color-secondary) !important;
+  height: 3px !important;
+}
+
+/* MUI Box component styling */
+.MuiBox-root {
+  color: var(--color-text) !important;
+}
+
+/* MUI Typography theme override */
+.MuiTypography-root {
+  color: var(--color-text) !important;
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
+}
+
+/* MUI Chart styling - light/dark mode support */
+.MuiLineChart-root,
+.MuiBarChart-root,
+.MuiPieChart-root {
+  color: var(--color-text) !important;
+}
+
+.MuiLineChart-root text,
+.MuiBarChart-root text,
+.MuiPieChart-root text {
+  fill: var(--color-text) !important;
+}
+
+/* MUI Chart axis labels and ticks */
+.MuiLineChart-root .MuiTextStyle-root,
+.MuiBarChart-root .MuiTextStyle-root {
+  fill: var(--color-text) !important;
+}
+
+/* Chart legend text */
+.MuiCharts-legend-content text {
+  fill: var(--color-text) !important;
+}
+
+/* MUI Select dropdown arrow */
+.MuiSelect-icon,
+.MuiNativeSelect-icon {
+  color: var(--color-text) !important;
+  fill: var(--color-text) !important;
+}
+
+/* MUI Table text styling */
+.MuiTableCell-root {
+  color: var(--color-text) !important;
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
+}
+
+/* Global font application to all text elements */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
+}
+
+p, span, div, label {
+  font-family: "Tamworth Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
 }

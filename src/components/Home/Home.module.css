@@ -1,7 +1,6 @@
 .homePage {
     min-height: 100vh;
     background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));
-    padding: 0;
 }
 
 .heroSection {
@@ -43,7 +42,7 @@
 
 /* League Standings Section */
 .leagueSection {
-    padding: 4rem 0;
+    padding: 2rem 0;
 }
 
 .sectionTitle {
@@ -172,7 +171,7 @@
 }
 
 .socialsSection {
-    padding: 4rem 0;
+    padding: 0 0 2rem 0;
 }
 
 .socialLink {

@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './PageHeader.module.css'
+import fullLogo from '../../assets/Skidmark_Logo_1.png'
 
-export default function PageHeader({ title, subtitle, logo }) {
+export default function PageHeader({ title, subtitle }) {
   return (
     <header className={styles.pageHeader}>
       <div className="container">
@@ -12,7 +13,7 @@ export default function PageHeader({ title, subtitle, logo }) {
               {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
             </div>
           )}
-          {logo && <img src={logo} alt="Logo" className={styles.headerLogo} />}
+          <img src={fullLogo} alt="Logo" className={styles.headerLogo} />
         </div>
       </div>
     </header>

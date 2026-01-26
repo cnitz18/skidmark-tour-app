@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import { useState } from "react";
-import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom'
+import { useState, useEffect } from "react";
+import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
@@ -20,6 +20,31 @@ const navLinks = [
   { name: 'Trophy Room', href: '/trophyroom'},
   { name: 'Server', href: '/server' },
 ]
+
+function TitleUpdater() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const titleMap = {
+      '/': 'The Skidmark Tour',
+      '/history': 'Race History | The Skidmark Tour',
+      '/leagues': 'Leagues | The Skidmark Tour',
+      '/trophyroom': 'Trophy Room | The Skidmark Tour',
+      '/server': 'Server Status | The Skidmark Tour',
+      '/admin': 'Admin Portal | The Skidmark Tour',
+      '/leagueadmin': 'League Admin | The Skidmark Tour',
+    };
+
+    // Check if it's a league detail page
+    if (location.pathname.startsWith('/league/')) {
+      document.title = 'League Details | The Skidmark Tour';
+    } else {
+      document.title = titleMap[location.pathname] || 'The Skidmark Tour';
+    }
+  }, [location]);
+
+  return null;
+}
 
 
 export default function NavBar({ enums, lists }) {
@@ -65,6 +90,7 @@ export default function NavBar({ enums, lists }) {
             </Navbar.Collapse>
           </Container>
         </Navbar>
+        <TitleUpdater />
         <Routes>
           {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
           <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />

@@ -13,6 +13,361 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
+.league-card img {
+  border-radius: 12px 12px 0 0;
+}
+
+/* Hero Card Styling */
+.leagues-hero-container {
+  margin-bottom: 3rem;
+}
+
+.league-hero-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 15px 50px rgba(0, 168, 225, 0.2);
+  border: 2px solid var(--color-secondary);
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(13, 34, 64, 0.85) 0%, rgba(0, 168, 225, 0.3) 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding: 3rem;
+  color: white;
+}
+
+.hero-header {
+  margin-bottom: 2rem;
+}
+
+.hero-status {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.status-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.2rem !important;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 1rem 0 0.5rem 0;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  margin: 0;
+  font-weight: 300;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Hero Stats */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.hero-stat-card {
+  padding: 0;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-box:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Championship Leaders - Compact Inline Version */
+.stat-box-compact {
+  display: flex;
+  flex-direction: column;
+}
+
+.top3-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+  flex: 1;
+  justify-content: center;
+}
+
+.top3-entry-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.top3-position-compact {
+  font-weight: 700;
+  color: var(--color-secondary);
+  font-size: 0.9rem;
+  min-width: 30px;
+  margin-right: 0.5rem;
+}
+
+.top3-driver-compact {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Championship Leaders - Full Section (removed but kept styles for reference) */
+.hero-top3 {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.top3-title {
+  color: var(--color-secondary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.top3-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.top3-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid var(--color-secondary);
+  transition: all 0.2s ease;
+}
+
+.top3-entry:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.top3-position {
+  font-weight: 800;
+  color: var(--color-secondary);
+  font-size: 1.2rem;
+  min-width: 40px;
+}
+
+.top3-driver {
+  flex: 1;
+  margin: 0 1.5rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.top3-points {
+  font-weight: 700;
+  color: var(--color-accent);
+  font-size: 1.1rem;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Hero Standings */
+.hero-standings {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.standings-title {
+  color: var(--color-secondary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.standings-list {
+  gap: 1rem;
+}
+
+.standing-item {
+  margin-bottom: 0.75rem;
+}
+
+.standing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-secondary);
+  transition: all 0.2s ease;
+}
+
+.standing-row:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(3px);
+}
+
+.standing-position {
+  font-weight: 700;
+  min-width: 25px;
+  color: var(--color-secondary);
+  font-size: 1.1rem;
+}
+
+.standing-driver {
+  flex: 1;
+  margin: 0 1rem;
+  font-weight: 600;
+}
+
+.standing-score {
+  font-weight: 700;
+  color: var(--color-accent);
+  min-width: 50px;
+  text-align: right;
+}
+
+.hero-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.view-details-btn {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%) !important;
+  border: none !important;
+  font-weight: 700;
+  padding: 0.75rem 2.5rem !important;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 25px rgba(0, 168, 225, 0.3);
+  transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 168, 225, 0.5) !important;
+}
+
+/* Standard League Cards - Smaller */
+.league-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--color-bg-elevated);
+  position: relative;
+  min-height: 280px;
+}
+
+.league-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.league-card img {
+  border-radius: 12px 12px 0 0;
+  height: 150px;
+  object-fit: cover;
+}
+
+.league-card .card-title {
+  font-size: 1.15rem;
+  margin: 0.75rem 0;
+  font-weight: 600;
+}
+
+.league-card .card-body {
+  padding: 1rem;
+}
+
 /* New styling for champion ribbon */
 .champion-ribbon {
   margin-top: 12px;
@@ -58,6 +413,14 @@
 }
 
 .league-cardactions {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 8px 16px !important;
+  padding: 12px 16px !important;
+  gap: 12px;
+}
+
+.league-display-badge {
+  display: flex;
+  align-items: center;
 }

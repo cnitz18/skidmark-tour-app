@@ -1,11 +1,3 @@
-.trophy-room {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg);
-    min-height: 100vh;
-}
-
 .canvas-container {
     width: 100%;
     height: 600px;

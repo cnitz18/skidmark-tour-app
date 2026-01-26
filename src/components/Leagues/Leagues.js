@@ -1,12 +1,11 @@
-import { Container, Row, Col, Modal, Form, Table, Spinner, Button } from "react-bootstrap";
-import { Card, CardActions, CardContent, CardMedia, Chip } from "@mui/material";
+import { Container, Row, Col, Modal, Form, Table, Spinner, Button, Card, Badge } from "react-bootstrap";
 import PageHeader from "../shared/PageHeader";
 import { useEffect, useState, useCallback } from "react";
 import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 import { BsTrophy } from "react-icons/bs";
-import fullLogo from "../../assets/Skidmark_Logo_1.png";
+import NameMapper from "../../utils/Classes/NameMapper";
 import './Leagues.css';
 
 const DEFAULT_POSITIONS = [
@@ -142,12 +141,12 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     useEffect(() => {
         setShowSpinner(true);
         getAPIData('/leagues/get/').then(async (res) => {
-            setLeagues([...res]);
+            // Sort leagues by id in descending order (newest/highest id first)
+            const sortedLeagues = [...res].sort((a, b) => b.id - a.id);
+            setLeagues(sortedLeagues);
             
-            // Fetch standings for completed leagues in parallel
-            const completedLeagues = res.filter(league => league.completed);
-            
-            const standingsPromises = completedLeagues.map(league =>
+            // Fetch standings for all leagues (not just completed)
+            const standingsPromises = sortedLeagues.map(league =>
                 getAPIData(`/leagues/get/stats/?id=${league.id}`)
                     .then(standings => ({ leagueId: league.id, standings, success: true }))
                     .catch(err => {
@@ -173,7 +172,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     
     return (
         <Container>
-            <PageHeader title="Leagues" logo={fullLogo}/>
+            <PageHeader title="Leagues"/>
             {
                 showAdmin ?
                 <Row className="text-center">
@@ -182,7 +181,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </Col>
                 </Row> : <></>
             }
-            <Row xs={1} md={1} lg={2} className="g-4 justify-content-center leagues-container">
+            <Row xs={1} md={1} lg={1} className="g-4 justify-content-center leagues-hero-container mb-5">
             {showSpinner ? (
                 <div className="text-center mt-4">
                     <Spinner animation="border" role="status"/>
@@ -191,43 +190,129 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </div>
                 </div>
                 ) : (
-                    (leagues && leagueStandings) && leagues.map((l, i) => {
-                        const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
-                        return (
-                            <Col key={i}>
-                                <Card className="text-center league-card">
-                                    <CardMedia image={l.img} height="200" component="img" alt="Photo Credit https://ams2cars.info/"/>
-                                    <CardContent>
-                                        <h5>{l.name}</h5>
-                                        {l.completed && champion && (
-                                            <div className="champion-ribbon">
-                                                <div className="champion-header">Season Champion</div>
-                                                <div className="champion-details">
-                                                    <BsTrophy className="champion-icon" />
-                                                    <span className="champion-name">{champion}</span>
+                    (leagues && leagueStandings && leagues.length > 0) && (
+                        <Col key={`featured-${leagues[0].id}`}>
+                            <div className="league-hero-card">
+                                <div className="hero-background" style={{backgroundImage: `url(${leagues[0].img || '/opala-86-1920.jpg'})`}}></div>
+                                <div className="hero-overlay"></div>
+                                <div className="hero-content">
+                                    <div className="hero-header">
+                                        <div className="hero-status">
+                                            <Badge bg={leagues[0].completed ? "success" : "warning"} className="status-badge">
+                                                {leagues[0].completed ? "COMPLETED" : "ACTIVE"}
+                                            </Badge>
+                                        </div>
+                                        <h1 className="hero-title">{leagues[0].name}</h1>
+                                        <p className="hero-subtitle">{leagues[0].description || 'The latest racing season'}</p>
+                                    </div>
+                                    
+                                    <Row className="hero-stats mt-4">
+                                        <Col md={4} className="hero-stat-card">
+                                            <div className="stat-box">
+                                                <div className="stat-label">Next Race</div>
+                                                <div className="stat-value" style={{fontSize: '1.1rem'}}>
+                                                    {leagues[0].races && leagues[0].races.length > 0 ? (
+                                                        <>
+                                                            <div>{NameMapper.fromTrackId(leagues[0].races[0].track, lists["tracks"]?.list) || 'TBA'}</div>
+                                                            <div style={{fontSize: '0.85rem', opacity: 0.85, marginTop: '0.25rem'}}>
+                                                                {new Date(leagues[0].races[0].date).toLocaleDateString()}
+                                                            </div>
+                                                        </>
+                                                    ) : 'No races scheduled'}
                                                 </div>
                                             </div>
-                                        )}
-                                    </CardContent>
-                                    <CardActions className="league-cardactions">
-                                        <Link
-                                            to={`/league/${l.id}`}
-                                            state={{ league: l }}
-                                            >
-                                            <Button variant="outline-primary" size="sm">View Details</Button>
+                                        </Col>
+                                        <Col md={4} className="hero-stat-card">
+                                            <div className="stat-box">
+                                                <div className="stat-label">Season Progress</div>
+                                                <div className="stat-value">
+                                                    {`${(leagues[0].races || []).filter(r => r.completed).length}/${leagues[0].races?.length || 0}`}
+                                                </div>
+                                                <div style={{fontSize: '0.85rem', opacity: 0.85, marginTop: '0.5rem'}}>
+                                                    Races Complete
+                                                </div>
+                                            </div>
+                                        </Col>
+                                        <Col md={4} className="hero-stat-card">
+                                            <div className="stat-box stat-box-compact">
+                                                <div className="stat-label">Championship Leaders</div>
+                                                <div className="top3-list-compact">
+                                                    {leagueStandings[leagues[0].id]?.scoreboard_entries?.slice(0, 3).map((entry, idx) => (
+                                                        <div key={idx} className="top3-entry-compact">
+                                                            <span className="top3-position-compact">#{entry.Position}</span>
+                                                            <span className="top3-driver-compact">{entry.PlayerName}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    
+                                    <div className="hero-footer mt-5">
+                                        <Link to={`/league/${leagues[0].id}`} state={{ league: leagues[0] }}>
+                                            <Button variant="primary" size="lg" className="view-details-btn">
+                                                View Full League →
+                                            </Button>
                                         </Link>
-                                        <div className="league-display-badge">
-                                            {
-                                                l.completed ?
-                                                <Chip size="small" label="Complete" color="success" variant="outlined"/>
-                                                : <Chip size="small" label="In Progress" color="information" variant="outlined"/>
-                                            }
-                                        </div>
-                                    </CardActions>
-                                </Card>
-                            </Col>
-                        );
-                    })
+                                    </div>
+                                </div>
+                            </div>
+                        </Col>
+                    )
+                )
+            }
+            </Row>
+
+            <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container">
+            {showSpinner ? (
+                <div className="text-center mt-4">
+                    <Spinner animation="border" role="status"/>
+                    <div>
+                        One moment please...
+                    </div>
+                </div>
+                ) : (
+                    (leagues && leagueStandings) && (
+                        <>
+                        {leagues.slice(1).map((l, i) => {
+                            const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
+                            return (
+                                <Col key={i}>
+                                    <Card className="text-center league-card">
+                                        <Card.Img variant="top" src={l.img || '/opala-86-1920.jpg'} alt="League"/>
+                                        <Card.Body>
+                                            <Card.Title>{l.name}</Card.Title>
+                                            {l.completed && champion && (
+                                                <div className="champion-ribbon">
+                                                    <div className="champion-header">Season Champion</div>
+                                                    <div className="champion-details">
+                                                        <BsTrophy className="champion-icon" />
+                                                        <span className="champion-name">{champion}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </Card.Body>
+                                        <Card.Footer className="league-cardactions">
+                                            <Link
+                                                to={`/league/${l.id}`}
+                                                state={{ league: l }}
+                                                >
+                                                <Button variant="outline-primary" size="sm">View Details</Button>
+                                            </Link>
+                                            <div className="league-display-badge">
+                                                {
+                                                    l.completed ?
+                                                    <Badge bg="success">Complete</Badge>
+                                                    : <Badge bg="secondary">In Progress</Badge>
+                                                }
+                                            </div>
+                                        </Card.Footer>
+                                    </Card>
+                                </Col>
+                            );
+                        })}
+                        </>
+                    )
                 )
             }
             </Row>

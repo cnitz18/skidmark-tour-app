@@ -194,17 +194,21 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     
     // Format data for the form chart
     const formData = raceWeeks.map(week => {
-      const weekEvents = eventGroups[week] || [];
+      const weekEvents = eventGroups[week] || {};
       const result = {
         name: `Week ${week}`,
-        track: NameMapper.fromTrackId(weekEvents.setup.TrackId,lists["tracks"]?.list) || `Race ${week}`
+        track: weekEvents?.setup?.TrackId ? NameMapper.fromTrackId(weekEvents.setup.TrackId, lists["tracks"]?.list) : `Race ${week}`
       };
 
       // Add position for each driver
       drivers.forEach(driver => {
-        var results = raceResultsObject[weekEvents.stages?.race1?.id];
-        const driverEvent = results.find(e => e.name === driver);
-        result[driver] = driverEvent ? driverEvent.RacePosition : null;
+        const results = raceResultsObject[weekEvents.stages?.race1?.id];
+        if (results && Array.isArray(results)) {
+          const driverEvent = results.find(e => e?.name === driver);
+          result[driver] = driverEvent?.RacePosition || null;
+        } else {
+          result[driver] = null;
+        }
       });
 
       return result;
@@ -344,26 +348,32 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     drivers.forEach(driver => {
       driverBests[driver] = {};
     });
-    
+
     // Group by track and find best performances
-    history.forEach((event,i) => {
+    history.forEach((event, i) => {
+      if (!event?.setup?.TrackId) return; // Skip if no track data
+      
       const trackId = event.setup.TrackId;
-      const track = NameMapper.fromTrackId(trackId, lists["tracks"]?.list);
+      const track = NameMapper.fromTrackId(trackId, lists["tracks"]?.list) || 'Unknown Track';
       const weekId = history.length - i;
 
       if (!tracks[track]) {
         tracks[track] = { name: track, events: [] };
       }
 
-      var resultsArray = raceResultsObject[event.stages?.race1?.id];
+      const resultsArray = raceResultsObject[event.stages?.race1?.id];
+      if (!resultsArray || !Array.isArray(resultsArray)) return; // Skip if no results
+      
       tracks[track].events.push(...resultsArray);
       
       drivers.forEach((driver) => {
         if (driverBests[driver]) {
-          var result = resultsArray.find(e => e.name === driver);
-          if (!driverBests[driver][track] || result.RacePosition < driverBests[driver][track].RacePosition) {
-            if( result ) result.RaceWeek = weekId;
-            driverBests[driver][track] = result;
+          const result = resultsArray.find(e => e?.name === driver);
+          if (result && result.RacePosition) {
+            if (!driverBests[driver][track] || result.RacePosition < driverBests[driver][track].RacePosition) {
+              result.RaceWeek = weekId;
+              driverBests[driver][track] = result;
+            }
           }
         }
       })

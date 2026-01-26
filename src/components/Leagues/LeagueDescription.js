@@ -103,7 +103,7 @@ const LeagueDescription = ({ enums, lists }) => {
         }
     },[league])
     return (
-        <div>
+        <Container>
             <PageHeader title={league?.name}/>
             {showSpinner ? (
                 <Container className="text-center p-5">
@@ -153,7 +153,7 @@ const LeagueDescription = ({ enums, lists }) => {
                     </Container>
                 )
             }
-        </div>
+        </Container>
     )
 }
  
