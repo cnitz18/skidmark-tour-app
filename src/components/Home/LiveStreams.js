@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Alert } from 'react-bootstrap';
-import { BsTwitch } from 'react-icons/bs';
+import { Card, Row, Col } from 'react-bootstrap';
 import styles from './LiveStreams.module.css';
 
 export default function LiveStreams({ streams }) {
