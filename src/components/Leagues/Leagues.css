@@ -107,6 +107,9 @@
 
 .hero-stat-card {
   padding: 0;
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .stat-box {
@@ -114,14 +117,16 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  padding: 2.5rem 2rem;
+  padding: 2rem 1.5rem;
   text-align: center;
   transition: all 0.3s ease;
   overflow: hidden;
-  min-height: 180px;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  /* gap: 1.5rem; */
 }
 
 .stat-box:hover {
@@ -131,22 +136,24 @@
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--color-secondary);
-  margin-bottom: 0.75rem;
+  margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   overflow-wrap: break-word;
   word-break: break-word;
+  line-height: 1.3;
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   opacity: 0.9;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Championship Leaders - Compact Inline Version */
@@ -158,7 +165,7 @@
 .top3-list-compact {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
   text-align: left;
   flex: 1;
   justify-content: center;
@@ -168,22 +175,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
+  padding: 0.75rem 0;
+  font-size: 1.05rem;
+  line-height: 1.4;
 }
 
 .top3-position-compact {
   font-weight: 700;
   color: var(--color-secondary);
-  font-size: 0.9rem;
-  min-width: 30px;
-  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  min-width: 40px;
+  margin-right: 0.75rem;
 }
 
 .top3-driver-compact {
   flex: 1;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -407,7 +415,7 @@
 }
 
 .champion-name {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text);
   font-size: 1rem;
 }

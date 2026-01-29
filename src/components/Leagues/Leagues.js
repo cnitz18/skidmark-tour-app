@@ -263,59 +263,62 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
             }
             </Row>
 
-            <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container">
+            {!showSpinner && (
+                <Container className="mt-5">
+                    <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Historical Leagues</h2>
+                </Container>
+            )}
+
             {showSpinner ? (
-                <div className="text-center mt-4">
-                    <Spinner animation="border" role="status"/>
-                    <div>
-                        One moment please...
+                <Container className="d-flex justify-content-center align-items-center" style={{minHeight: '400px'}}>
+                    <div className="text-center">
+                        <Spinner animation="border" role="status"/>
+                        <div>
+                            One moment please...
+                        </div>
                     </div>
-                </div>
-                ) : (
-                    (leagues && leagueStandings) && (
-                        <>
-                        {leagues.slice(1).map((l, i) => {
-                            const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
-                            return (
-                                <Col key={i}>
-                                    <Card className="text-center league-card">
-                                        <Card.Img variant="top" src={l.img || '/opala-86-1920.jpg'} alt="League"/>
-                                        <Card.Body>
-                                            <Card.Title>{l.name}</Card.Title>
-                                            {l.completed && champion && (
-                                                <div className="champion-ribbon">
-                                                    <div className="champion-header">Season Champion</div>
-                                                    <div className="champion-details">
-                                                        <BsTrophy className="champion-icon" />
-                                                        <span className="champion-name">{champion}</span>
-                                                    </div>
+                </Container>
+            ) : (
+                <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container">
+                    {leagues.slice(1).map((l, i) => {
+                        const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
+                        return (
+                            <Col key={i}>
+                                <Card className="text-center league-card">
+                                    <Card.Img variant="top" src={l.img || '/opala-86-1920.jpg'} alt="League"/>
+                                    <Card.Body>
+                                        <Card.Title>{l.name}</Card.Title>
+                                        {l.completed && champion && (
+                                            <div className="champion-ribbon">
+                                                <div className="champion-header">Season Champion</div>
+                                                <div className="champion-details">
+                                                    <BsTrophy className="champion-icon" />
+                                                    <span className="champion-name">{champion}</span>
                                                 </div>
-                                            )}
-                                        </Card.Body>
-                                        <Card.Footer className="league-cardactions">
-                                            <Link
-                                                to={`/league/${l.id}`}
-                                                state={{ league: l }}
-                                                >
-                                                <Button variant="outline-primary" size="sm">View Details</Button>
-                                            </Link>
-                                            <div className="league-display-badge">
-                                                {
-                                                    l.completed ?
-                                                    <Badge bg="success">Complete</Badge>
-                                                    : <Badge bg="secondary">In Progress</Badge>
-                                                }
                                             </div>
-                                        </Card.Footer>
-                                    </Card>
-                                </Col>
-                            );
-                        })}
-                        </>
-                    )
-                )
-            }
-            </Row>
+                                        )}
+                                    </Card.Body>
+                                    <Card.Footer className="league-cardactions">
+                                        <Link
+                                            to={`/league/${l.id}`}
+                                            state={{ league: l }}
+                                            >
+                                            <Button variant="outline-primary" size="sm">View Details</Button>
+                                        </Link>
+                                        <div className="league-display-badge">
+                                            {
+                                                l.completed ?
+                                                <Badge bg="success">Complete</Badge>
+                                                : <Badge bg="secondary">In Progress</Badge>
+                                            }
+                                        </div>
+                                    </Card.Footer>
+                                </Card>
+                            </Col>
+                        );
+                    })}
+                </Row>
+            )}
             
             {/* Modal code remains unchanged */}
             <Modal show={showModal} onHide={handleCloseModal} size="lg">

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Carousel, Image, Col, Card, Spinner } from 'react-bootstrap';
-import PageHeader from '../shared/PageHeader'
+// import PageHeader from '../shared/PageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 import styles from './Home.module.css';
 import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
 import getAPIData from '../../utils/getAPIData';
+import fullLogo from "../../assets/Skidmark_Logo_1.png";
 
 const imageInfo = [
     {
@@ -77,8 +78,8 @@ const socialInfo = [
 export default function Home() {
     const [liveStreams, setLiveStreams] = useState([]);
     const [leagueData, setLeagueData] = useState(null);
+    const [leagueId, setLeagueId] = useState(null);
     const [loading, setLoading] = useState(true);
-    const CURRENT_LEAGUE_ID = 29; // Update twice yearly
     
     useEffect(() => {
         const twitchUsernames = socialInfo
@@ -91,12 +92,24 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        // Fetch current league data
-        console.log('Fetching league data for ID:', CURRENT_LEAGUE_ID);
-        getAPIData(`/leagues/get/stats/?id=${CURRENT_LEAGUE_ID}`)
+        // Fetch all leagues and get the latest one
+        getAPIData('/leagues/get/')
+            .then(leagues => {
+                if (leagues && leagues.length > 0) {
+                    // Sort by ID descending to get the newest/most recent league
+                    const sortedLeagues = [...leagues].sort((a, b) => b.id - a.id);
+                    const latestLeagueId = sortedLeagues[0].id;
+                    setLeagueId(latestLeagueId);
+                    
+                    // Now fetch stats for the latest league
+                    return getAPIData(`/leagues/get/stats/?id=${latestLeagueId}`);
+                }
+            })
             .then(data => {
-                console.log('League data received:', data);
-                setLeagueData(data);
+                if (data) {
+                    console.log('League data received:', data);
+                    setLeagueData(data);
+                }
                 setLoading(false);
             })
             .catch(err => {
@@ -106,44 +119,45 @@ export default function Home() {
     }, []);
 
     return (
-        <>
-            <Container>
-                {process.env.REACT_APP_ENV === "Skidmark Tour" && (
-                    <PageHeader 
-                        title="Home of The Skidmark Tour"
-                    />
-                )}
-            </Container>
-            <div className={styles.homePage}>
-                <Container fluid>
-                    <Row className='justify-content-center'>
-                        <Col md={10} lg={8}>
-                            <Carousel fade className={styles.carousel}>
-                                {imageInfo.map((img,i) => (
-                                    <Carousel.Item key={i} interval={3000}>
-                                        {img.href ? (
-                                            <a href={img.href} className={styles.carouselLink} target="_blank" rel='noopener noreferrer'>
-                                                <Image src={img.url} fluid/>
-                                                <div className={styles.overlay}></div>
-                                            </a>
-                                        ) : (
-                                            <>
-                                                <Image src={img.url} fluid/>
-                                                <div className={styles.overlay}></div>
-                                            </>
-                                        )}
-                                        <Carousel.Caption className={styles.caption}>
-                                            <h3>{img.caption}</h3>
-                                        </Carousel.Caption>
-                                    </Carousel.Item>
-                                ))}
-                            </Carousel>
-                        </Col>
-                    </Row>
-                </Container>
+        <div className={styles.homePage}>
+            <Container className={styles.heroContainer}>
+                <div className={styles.heroSection}>
+                    {/* Integrated Header + Carousel */}
+                    <div className={styles.carouselWrapper}>
+                        <Carousel fade className={styles.carousel}>
+                            {imageInfo.map((img,i) => (
+                                <Carousel.Item key={i} interval={3000}>
+                                    {img.href ? (
+                                        <a href={img.href} className={styles.carouselLink} target="_blank" rel='noopener noreferrer'>
+                                            <Image src={img.url} fluid/>
+                                            <div className={styles.overlay}></div>
+                                        </a>
+                                    ) : (
+                                        <>
+                                            <Image src={img.url} fluid/>
+                                            <div className={styles.overlay}></div>
+                                        </>
+                                    )}
+                                    <Carousel.Caption className={styles.caption}>
+                                        <h3>{img.caption}</h3>
+                                    </Carousel.Caption>
+                                </Carousel.Item>
+                            ))}
+                        </Carousel>
+                        
+                        {/* Header Overlay */}
+                        <div className={styles.headerOverlay}>
+                            <div className={styles.headerContent}>
+                                <div className={styles.headerText}>
+                                    <h1>Home of The Skidmark Tour</h1>
+                                </div>
+                                <img src={fullLogo} alt="Skidmark Logo" className={styles.overlayLogo} />
+                            </div>
+                        </div>
+                    </div>
 
-                {/* League Standings Section */}
-                <Container className={styles.leagueSection}>
+                        {/* League Standings Section */}
+                    <div className={styles.leagueSection}>
                     {loading ? (
                         <Row className='justify-content-center py-5'>
                             <Col className='text-center'>
@@ -179,7 +193,7 @@ export default function Home() {
                                         </Card.Body>
                                     </Card>
                                     <div className='text-center mt-4'>
-                                        <a href={`/leagues/${CURRENT_LEAGUE_ID}`} className={`btn ${styles.viewButton}`}>
+                                        <a href={`/league/${leagueId}`} className={`btn ${styles.viewButton}`}>
                                             View Full Standings
                                         </a>
                                     </div>
@@ -187,33 +201,32 @@ export default function Home() {
                             </Row>
                         </>
                     ) : null}
-                </Container>
-                
-                <Container>
+                    </div>
+                    
                     <LiveStreams streams={liveStreams} />
-                </Container>
 
-                <Container className={styles.socialsSection}>
-                    <Row className="text-center mb-4">
-                        <h2>Our Socials</h2>
-                    </Row>
-                    <Row lg="auto" className='justify-content-center'>
-                        {socialInfo.map((soc,i) => (
-                            <Col key={i}>
-                                <a 
-                                    href={soc.link}
-                                    className={`${styles.socialLink} ${styles[soc.platform]}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
-                                    <span>{soc.name}</span>
-                                </a>
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </div>
-        </>
+                    <div className={styles.socialsSection}>
+                        <Row className="text-center mb-4">
+                            <h2>Our Socials</h2>
+                        </Row>
+                        <Row lg="auto" className='justify-content-center'>
+                            {socialInfo.map((soc,i) => (
+                                <Col key={i}>
+                                    <a 
+                                        href={soc.link}
+                                        className={`${styles.socialLink} ${styles[soc.platform]}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
+                                        <span>{soc.name}</span>
+                                    </a>
+                                </Col>
+                            ))}
+                        </Row>
+                    </div>
+                </div>
+            </Container>
+        </div>
     );
 }

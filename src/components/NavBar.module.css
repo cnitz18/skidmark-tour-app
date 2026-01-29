@@ -2,7 +2,6 @@
   background: var(--color-navbar-bg);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
   padding: 0.5rem 0;
   position: fixed;
   top: 0;
