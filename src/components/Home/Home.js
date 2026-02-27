@@ -193,13 +193,13 @@ export default function Home() {
                                                     </div>
                                                 ))}
                                             </div>
+                                            <div className='text-center' style={{ paddingBottom: '1rem' }}>
+                                                <a href={`/league/${leagueId}`} className={`btn ${styles.viewButton}`}>
+                                                    View Full Standings
+                                                </a>
+                                            </div>
                                         </Card.Body>
                                     </Card>
-                                    <div className='text-center mt-4'>
-                                        <a href={`/league/${leagueId}`} className={`btn ${styles.viewButton}`}>
-                                            View Full Standings
-                                        </a>
-                                    </div>
                                 </Col>
                             </Row>
                         </>

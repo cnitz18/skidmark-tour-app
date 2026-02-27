@@ -293,3 +293,82 @@
   color: #4CAF50;
   font-weight: 500;
 }
+
+/* ===== DARK MODE CHART STYLING ===== */
+
+/* Form Tracker - Fix tooltip and axis text */
+[data-theme="dark"] .performance-analytics {
+  /* Recharts axis and tooltip styling */
+}
+
+[data-theme="dark"] .performance-analytics text {
+  fill: var(--color-text) !important;
+}
+
+[data-theme="dark"] .performance-analytics .recharts-cartesian-axis-tick text {
+  fill: var(--color-text) !important;
+}
+
+[data-theme="dark"] .performance-analytics .recharts-legend-item-text {
+  color: var(--color-text) !important;
+  fill: var(--color-text) !important;
+}
+
+/* Recharts tooltip - dark background, light text */
+[data-theme="dark"] .recharts-default-tooltip {
+  background-color: var(--color-bg-elevated) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+[data-theme="dark"] .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+[data-theme="dark"] .recharts-tooltip-label {
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .recharts-tooltip-item {
+  color: var(--color-text) !important;
+}
+
+/* Fix the dashed line that appears on hover in charts */
+[data-theme="dark"] .recharts-cursor-line {
+  stroke: var(--color-border) !important;
+}
+
+[data-theme="dark"] .recharts-reference-line-line {
+  stroke: var(--color-border) !important;
+}
+
+/* Consistency score circle background */
+[data-theme="dark"] .score-inner {
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .score-inner small {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Bar chart hover effects - fix row highlight */
+[data-theme="dark"] .recharts-bar-rectangle:hover {
+  filter: none !important;
+}
+
+[data-theme="dark"] .recharts-bar-rectangles > g:hover {
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .recharts-surface {
+  background-color: transparent !important;
+}
+
+/* Peak Performance table hover text fix */
+[data-theme="dark"] .track-performances table tbody tr:hover {
+  background-color: rgba(0, 168, 225, 0.1) !important;
+}
+
+[data-theme="dark"] .track-performances table tbody tr:hover td {
+  color: var(--color-text) !important;
+}
