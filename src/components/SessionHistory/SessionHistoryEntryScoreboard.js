@@ -11,7 +11,7 @@ import "./SessionHistoryEntryScoreboard.css";
 import { RaceAnalyticsProvider } from "../../utils/RaceAnalyticsContext";
 import getStandardizedEventData from "../../utils/getStandardizedEventData";
 
-const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass }) => {
+const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass, isHistorical }) => {
   const [showModal, setShowModal] = useState(false);
   const [eventsData, setEventsData] = useState([]);
   const [selectedRacerName, setSelectedRacerName] = useState("");
@@ -418,9 +418,11 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                         :<></>
                       }
                       <td className="justify-content-md-center display-flex">
-                        <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
-                          Details
-                        </Button> 
+                        {!isHistorical && (
+                          <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
+                            Details
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   )

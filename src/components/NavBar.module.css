@@ -75,38 +75,74 @@
 }
 
 /* Make navbar items responsive */
-@media (max-width: 991px) {
-  .navLinks {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .navLinks a {
-    padding: 0.5rem 0.25rem !important;
-    font-size: 1rem;
-    text-align: center;
-  }
-  
+/* Tablet and up - show full horizontal menu */
+@media (min-width: 992px) {
   .logo {
-    height: 30px; /* Make logo smaller on mobile */
-  }
-  
-  /* Override Bootstrap's default navbar collapse behavior */
-  .navbar button.navbar-toggler {
-    display: none;
-  }
-  
-  .navbar .navbar-collapse {
-    display: flex !important;
+    height: 45px;
   }
 }
 
-/* Even smaller screens */
-@media (max-width: 400px) {
+/* Tablet - start to compress */
+@media (max-width: 991px) {
+  .logo {
+    height: 35px;
+  }
+  
+  .navLinks {
+    margin-left: auto;
+  }
+  
   .navLinks a {
-    font-size: 0.65rem;
-    padding: 0.4rem 0.2rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile - hamburger menu with vertical stack */
+@media (max-width: 576px) {
+  .logo {
+    height: 30px;
+    max-width: 150px;
+  }
+  
+  .navbar :global(.navbar-collapse) {
+    background: rgba(13, 34, 64, 0.95);
+    backdrop-filter: blur(8px);
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    padding: 1rem 0;
+  }
+  
+  .navLinks {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .navLinks a {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem;
+    border-radius: 0;
+    margin: 0 !important;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .navLinks a:last-child {
+    border-bottom: none;
+  }
+  
+  .navLinks a:hover {
+    background: rgba(0, 168, 225, 0.2) !important;
+    padding-left: 2rem !important;
+  }
+  
+  .navLinks a.active {
+    background: rgba(0, 168, 225, 0.3) !important;
+    border-left: 4px solid var(--color-secondary);
+    padding-left: calc(1.5rem - 4px) !important;
   }
 }
 

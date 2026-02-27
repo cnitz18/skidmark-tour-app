@@ -218,6 +218,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                     race={practiceOne}
                     vehicles={lists["vehicles"].list}
                     session="Practice"
+                    isHistorical={isHistorical}
                   />
                 ) : (
                   <></>
@@ -240,6 +241,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                     vehicles={lists["vehicles"].list}
                     winner={polePosition}
                     session="Qualifying"
+                    isHistorical={isHistorical}
                   />
                 ) : (
                   <></>
@@ -260,6 +262,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                 winner={firstPlace}
                 vehicles={lists["vehicles"].list}
                 session="Race"
+                isHistorical={isHistorical}
               />
             ) : (
               <></>

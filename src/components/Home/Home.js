@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Carousel, Image, Col, Card, Spinner } from 'react-bootstrap';
+import { Container, Row, Carousel, Col, Card, Spinner } from 'react-bootstrap';
 // import PageHeader from '../shared/PageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 import styles from './Home.module.css';
@@ -80,6 +80,7 @@ export default function Home() {
     const [leagueData, setLeagueData] = useState(null);
     const [leagueId, setLeagueId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activeSlide, setActiveSlide] = useState(0);
     
     useEffect(() => {
         const twitchUsernames = socialInfo
@@ -124,26 +125,28 @@ export default function Home() {
                 <div className={styles.heroSection}>
                     {/* Integrated Header + Carousel */}
                     <div className={styles.carouselWrapper}>
-                        <Carousel fade className={styles.carousel}>
+                        <Carousel fade className={styles.carousel} onSelect={(index) => setActiveSlide(index)}>
                             {imageInfo.map((img,i) => (
                                 <Carousel.Item key={i} interval={3000}>
                                     {img.href ? (
                                         <a href={img.href} className={styles.carouselLink} target="_blank" rel='noopener noreferrer'>
-                                            <Image src={img.url} fluid/>
+                                            <img src={img.url} alt={img.caption} className={styles.carouselImage} />
                                             <div className={styles.overlay}></div>
                                         </a>
                                     ) : (
                                         <>
-                                            <Image src={img.url} fluid/>
+                                            <img src={img.url} alt={img.caption} className={styles.carouselImage} />
                                             <div className={styles.overlay}></div>
                                         </>
                                     )}
-                                    <Carousel.Caption className={styles.caption}>
-                                        <h3>{img.caption}</h3>
-                                    </Carousel.Caption>
                                 </Carousel.Item>
                             ))}
                         </Carousel>
+                        
+                        {/* Caption positioned at wrapper bottom, tracks active slide */}
+                        <div className={styles.caption}>
+                            <h3>{imageInfo[activeSlide]?.caption}</h3>
+                        </div>
                         
                         {/* Header Overlay */}
                         <div className={styles.headerOverlay}>
@@ -166,14 +169,14 @@ export default function Home() {
                         </Row>
                     ) : leagueData && leagueData.scoreboard_entries ? (
                         <>
-                            <Row className='mb-4'>
+                            <Row>
                                 <Col>
                                     <h2 className={styles.sectionTitle}>League Standings</h2>
                                     <p className={styles.leagueSubtitle}>Current Championship Standings</p>
                                 </Col>
                             </Row>
                             
-                            <Row className='mb-5'>
+                            <Row>
                                 <Col md={12} lg={8} className='mx-auto'>
                                     <Card className={styles.leagueCard}>
                                         <Card.Body>
@@ -202,29 +205,25 @@ export default function Home() {
                         </>
                     ) : null}
                     </div>
-                    
-                    <LiveStreams streams={liveStreams} />
-
                     <div className={styles.socialsSection}>
-                        <Row className="text-center mb-4">
-                            <h2>Our Socials</h2>
-                        </Row>
-                        <Row lg="auto" className='justify-content-center'>
+                        <h2>Our Socials</h2>
+                        <div className={styles.socialsContainer}>
                             {socialInfo.map((soc,i) => (
-                                <Col key={i}>
-                                    <a 
-                                        href={soc.link}
-                                        className={`${styles.socialLink} ${styles[soc.platform]}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
-                                        <span>{soc.name}</span>
-                                    </a>
-                                </Col>
+                                <a 
+                                    key={i}
+                                    href={soc.link}
+                                    className={`${styles.socialLink} ${styles[soc.platform]}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
+                                    <span>{soc.name}</span>
+                                </a>
                             ))}
-                        </Row>
+                        </div>
                     </div>
+
+                    <LiveStreams streams={liveStreams} />
                 </div>
             </Container>
         </div>

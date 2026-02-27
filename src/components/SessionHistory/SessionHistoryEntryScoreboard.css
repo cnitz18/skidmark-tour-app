@@ -68,8 +68,8 @@
 /* Best time highlights */
 .race-fastest-lap-highlight {
   background-color: rgba(128, 0, 128, 0.08) !important;
-  color: #5a189a;
-  font-weight: 600;
+  color: #ffffff;
+  /* font-weight: 600; */
   position: relative;
 }
 
