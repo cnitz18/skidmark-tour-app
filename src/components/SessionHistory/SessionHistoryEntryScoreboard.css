@@ -60,6 +60,13 @@
   color: #495057;
 }
 
+@media screen and (max-width: 768px) {
+  .session-score th,
+  .session-score td {
+    text-align: center;
+  }
+}
+
 .position-badge.position-3 {
   background: #cd7f32;
   color: #fff;

@@ -167,7 +167,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
             <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
           </Col>
           <Col lg="2">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', top: '10px', right: '10px' }}>
+            <div className="d-flex flex-row flex-md-column gap-2 align-items-center align-items-md-start justify-content-between justify-content-md-start w-100">
               {isHistorical ? (
                 <OverlayTrigger 
                   placement="top"

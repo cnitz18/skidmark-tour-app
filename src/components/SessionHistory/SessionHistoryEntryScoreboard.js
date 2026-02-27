@@ -366,17 +366,20 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
           <Table className="session-score">
             <thead>
               <tr>
-                <th>Finish Position</th>
+                <th>
+                  <span className="d-none d-md-inline">Finish Position</span>
+                  <span className="d-md-none">#</span>
+                </th>
                 <th>Name</th>
-                <th>Vehicle</th>
+                <th className="d-none d-md-table-cell">Vehicle</th>
                 {
                   session.toLowerCase() === "race" ?
                   <th>Time</th> : <></>
                 }
-                <th>Fastest Lap</th>
+                <th className={session.toLowerCase() === "race" ? "d-none d-md-table-cell" : ""}>Fastest Lap</th>
                   {
                     session.toLowerCase() === "qualifying" ?
-                    <th>Delta</th> : <></>
+                    <th className="d-none d-md-table-cell">Delta</th> : <></>
                   }
                 <th>
                 </th>
@@ -389,7 +392,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                     <tr key={i}>
                       <td>{res.RacePosition}</td>
                       <td>{res.name}</td>
-                      <td>{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
+                      <td className="d-none d-md-table-cell">{vehicles.find((v) => v.id === res.VehicleId)?.name}</td>
                       {
                         session.toLowerCase() === "race" 
                           ?
@@ -409,19 +412,48 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                         </td>
                         : <></>
                       }
-                      <td className={res.IsFastestLap ? "race-fastest-lap-highlight" : ""}>{msToTime(res.FastestLapTime)}</td>
+                      <td className={`${res.IsFastestLap ? "race-fastest-lap-highlight" : ""} ${session.toLowerCase() === "race" ? "d-none d-md-table-cell" : ""}`}>
+                        {session.toLowerCase() === "qualifying" ? (
+                          <>
+                            <span className="d-none d-md-inline">{msToTime(res.FastestLapTime)}</span>
+                            <span className="d-md-none">
+                              {i && winner?.FastestLapTime
+                                ? `+${msToTime(res.FastestLapTime - winner.FastestLapTime)}`
+                                : msToTime(res.FastestLapTime)}
+                            </span>
+                          </>
+                        ) : (
+                          msToTime(res.FastestLapTime)
+                        )}
+                      </td>
                       {
                         session.toLowerCase() === "qualifying" ?
-                        <td>
+                        <td className="d-none d-md-table-cell">
                           {i && winner?.FastestLapTime ? " (+" + msToTime(res.FastestLapTime - winner.FastestLapTime) + ")":<></>}
                         </td>
                         :<></>
                       }
                       <td className="justify-content-md-center display-flex">
                         {!isHistorical && (
-                          <Button onClick={() => rowClick(res)} size="sm" variant="outline-info">
-                            Details
-                          </Button>
+                          <>
+                            <Button
+                              onClick={() => rowClick(res)}
+                              size="sm"
+                              variant="outline-info"
+                              className="d-none d-md-inline-flex"
+                            >
+                              Details
+                            </Button>
+                            <Button
+                              onClick={() => rowClick(res)}
+                              size="sm"
+                              variant="outline-info"
+                              className="d-inline-flex d-md-none"
+                              aria-label="Open details"
+                            >
+                              <i className="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                            </Button>
+                          </>
                         )}
                       </td>
                     </tr>
