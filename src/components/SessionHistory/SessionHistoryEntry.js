@@ -115,11 +115,11 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
             {lists["tracks"] ? (
               <>
                 <h5>
-                  {NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list)}
+                  {NameMapper.fromTrackApiName(NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list))}
                   {isFeature && <Badge className="ms-3 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
                 </h5>
                 <p>
-                  {NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list)}
+                  {NameMapper.fromVehicleClassApiName(NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list))}
                 </p>
               </>
             ) : (

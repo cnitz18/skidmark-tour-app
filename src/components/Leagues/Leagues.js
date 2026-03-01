@@ -193,8 +193,9 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     (leagues && leagueStandings && leagues.length > 0) && (
                         <Col key={`featured-${leagues[0].id}`}>
                             <div className="league-hero-card">
-                                <div className="hero-background" style={{backgroundImage: `url(${leagues[0].img || '/opala-86-1920.jpg'})`}}></div>
-                                <div className="hero-overlay"></div>
+                                <div className="hero-background" style={{backgroundImage: `url(${leagues[0].img || '/opala-86-1920.jpg'})`}}>
+                                    <div className="hero-overlay"></div>
+                                </div>
                                 <div className="hero-content">
                                     <div className="hero-header">
                                         <h1 className="hero-title">{leagues[0].name}</h1>

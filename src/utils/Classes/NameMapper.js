@@ -1,3 +1,5 @@
+import apiNameMappings from '../apiNameMappings.json';
+
 class NameMapper {
     static fromTrackId( trackId, tracklist ) {
         return tracklist?.find((t) => t.id === trackId)?.name;
@@ -60,6 +62,19 @@ class NameMapper {
     static fromWeatherSlot(slot, enums){
         let weatherList = enums.weather?.list;
         return weatherList?.find((w) => w.value === slot)?.name;
+    }
+    
+    // API name string-based lookups (e.g., "Opala86" -> "Opala 86")
+    static fromVehicleApiName(apiName) {
+        return apiNameMappings.vehicles?.[apiName] ?? apiName;
+    }
+
+    static fromVehicleClassApiName(apiName) {
+        return apiNameMappings.vehicleClasses?.[apiName] ?? apiName;
+    }
+    
+    static fromTrackApiName(apiName) {
+        return apiNameMappings.tracks?.[apiName] ?? apiName;
     }
 }
 export default NameMapper;
