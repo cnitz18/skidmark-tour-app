@@ -1,6 +1,15 @@
 /* Skidmark Tour Brand Colors & Theme System */
 
+@font-face {
+  font-family: 'Tamworth';
+  src: url('../../public/fonts/TAMWORTH.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
+  /* ===== FONT FAMILY ===== */
+  --font-primary: 'Tamworth', sans-serif;
   /* ===== BRAND COLORS ===== */
   --color-primary: #0d2240;           /* National Flag Blue */
   --color-secondary: #00a8e1;         /* Process Blue */
@@ -37,6 +46,9 @@
 
   /* ===== TRANSITIONS ===== */
   --transition-color: 0.3s ease;
+  
+  /* ===== FONT APPLICATION ===== */
+  font-family: var(--font-primary);
 }
 
 /* ===== DARK MODE ===== */

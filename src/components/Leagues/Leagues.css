@@ -26,22 +26,19 @@
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  min-height: 500px;
   display: flex;
-  align-items: center;
+  flex-direction: row;
   box-shadow: 0 15px 50px rgba(0, 168, 225, 0.2);
-  border: 2px solid var(--color-secondary);
+  background-color: var(--color-bg-elevated);
 }
 
 .hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  flex: 0 0 40%;
   background-size: cover;
   background-position: center;
-  z-index: 1;
+  position: relative;
+  min-height: 300px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hero-overlay {
@@ -50,25 +47,28 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(13, 34, 64, 0.85) 0%, rgba(0, 168, 225, 0.3) 100%);
-  z-index: 2;
+  background: linear-gradient(to right, rgba(13, 34, 64, 0.1) 0%, rgba(13, 34, 64, 0.4) 100%);
+  z-index: 1;
 }
 
 .hero-content {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  padding: 3rem;
-  color: white;
+  flex: 0 0 60%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
 }
 
 .hero-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .hero-status {
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .status-badge {
@@ -80,29 +80,48 @@
   box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3);
 }
 
+.status-indicator {
+  font-size: 0.75rem;
+  color: var(--color-secondary);
+  opacity: 0.7;
+}
+
 .hero-title {
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 1rem 0 0.5rem 0;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-  letter-spacing: -1px;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  text-align: center;
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
-  opacity: 0.95;
+  font-size: 1rem;
   margin: 0;
-  font-weight: 300;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  text-align: center;
 }
 
 /* Hero Stats */
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin: 2rem 0;
+  gap: 0.75rem;
+  margin: 1rem 0;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-stats {
+    grid-template-columns: 1fr;
+  }
 }
 
 .hero-stat-card {
@@ -113,11 +132,10 @@
 }
 
 .stat-box {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 2rem 1.5rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem;
   text-align: center;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -126,32 +144,30 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* gap: 1.5rem; */
 }
 
 .stat-box:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-3px);
+  background: var(--color-bg-elevated);
+  border-color: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 168, 225, 0.15);
 }
 
 .stat-value {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--color-secondary);
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0.25rem 0;
   overflow-wrap: break-word;
   word-break: break-word;
   line-height: 1.3;
 }
 
 .stat-label {
-  font-size: 0.95rem;
-  opacity: 0.9;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
+  letter-spacing: 0.5px;
   margin: 0;
   line-height: 1.4;
 }
@@ -162,39 +178,53 @@
   flex-direction: column;
 }
 
+@media (max-width: 768px) {
+  .stat-box-compact {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 576px) {
+  .stat-box-compact {
+    grid-column: span 1;
+  }
+}
+
 .top3-list-compact {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  text-align: left;
+  gap: 0.75rem;
+  text-align: center;
   flex: 1;
   justify-content: center;
+  margin-top: 0.75rem;
 }
 
 .top3-entry-compact {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0;
-  font-size: 1.05rem;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
   line-height: 1.4;
 }
 
 .top3-position-compact {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-secondary);
-  font-size: 1.1rem;
-  min-width: 40px;
-  margin-right: 0.75rem;
+  font-size: 1rem;
+  min-width: 35px;
+  margin-right: 0.5rem;
 }
 
 .top3-driver-compact {
   flex: 1;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--color-text);
 }
 
 /* Championship Leaders - Full Section (removed but kept styles for reference) */

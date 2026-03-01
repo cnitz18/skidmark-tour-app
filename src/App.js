@@ -5,6 +5,7 @@ import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import './index.css';
+import styles from './App.module.css';
 
 const App = () => {
   const [enums, setEnums] = useState({});
@@ -35,9 +36,9 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className={styles.appWrapper}>
         <NavBar enums={enums} lists={lists}/>
-        <main style={{ flex: 1 }}></main>
+        <main className={styles.mainContent}></main>
         <Footer/>
       </div>
     </ThemeProvider>

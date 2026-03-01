@@ -116,7 +116,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
               <>
                 <h5>
                   {NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list)}
-                  {isFeature && <Badge bg="warning" text="dark" className="ms-2" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
+                  {isFeature && <Badge className="ms-3 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
                 </h5>
                 <p>
                   {NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list)}
@@ -167,7 +167,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
             <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
           </Col>
           <Col lg="2">
-            <div className="d-flex flex-row flex-md-column gap-2 align-items-center align-items-md-start justify-content-between justify-content-md-start w-100">
+            <div className="d-flex flex-row flex-md-column gap-2 align-items-center align-items-md-end justify-content-between justify-content-lg-end w-100">
               {isHistorical ? (
                 <OverlayTrigger 
                   placement="top"

@@ -197,11 +197,6 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                 <div className="hero-overlay"></div>
                                 <div className="hero-content">
                                     <div className="hero-header">
-                                        <div className="hero-status">
-                                            <Badge bg={leagues[0].completed ? "success" : "warning"} className="status-badge">
-                                                {leagues[0].completed ? "COMPLETED" : "ACTIVE"}
-                                            </Badge>
-                                        </div>
                                         <h1 className="hero-title">{leagues[0].name}</h1>
                                         <p className="hero-subtitle">{leagues[0].description || 'The latest racing season'}</p>
                                     </div>
