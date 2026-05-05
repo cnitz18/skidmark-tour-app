@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import "./css/styles.css";
 import App from "./App";
