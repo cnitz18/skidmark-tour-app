@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
   const [isLoading, setIsLoading] = useState(true);
 
   // Initialize theme on mount
@@ -14,29 +14,12 @@ export const ThemeProvider = ({ children }) => {
     if (savedTheme) {
       setTheme(savedTheme);
       applyTheme(savedTheme);
-      setIsLoading(false);
     } else {
-      // Follow system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const systemTheme = prefersDark ? 'dark' : 'light';
-      setTheme(systemTheme);
-      applyTheme(systemTheme);
-      setIsLoading(false);
+      // Default to dark mode for first-time visitors.
+      setTheme('dark');
+      applyTheme('dark');
     }
-
-    // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e) => {
-      const newTheme = e.matches ? 'dark' : 'light';
-      // Only auto-switch if user hasn't explicitly saved a preference
-      if (!localStorage.getItem('skidmark-theme')) {
-        setTheme(newTheme);
-        applyTheme(newTheme);
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    setIsLoading(false);
   }, []);
 
   const applyTheme = (newTheme) => {
