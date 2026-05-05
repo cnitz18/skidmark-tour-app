@@ -264,9 +264,16 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                                         </div>
                                                     ))}
                                                     {!leagueStandings[leagues[0].id]?.scoreboard_entries?.length && (
-                                                        <div className="top3-entry-compact">
-                                                            <span className="top3-driver-compact">Loading standings...</span>
-                                                        </div>
+                                                        <>
+                                                            {[0, 1, 2].map((idx) => (
+                                                                <div key={idx} className="top3-entry-compact">
+                                                                    <span className="top3-position-compact">#{idx + 1}</span>
+                                                                    <span className="top3-driver-compact" style={idx === 0 ? undefined : { opacity: 0 }}>
+                                                                        {idx === 0 ? 'Loading standings...' : '\u00A0'}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </>
                                                     )}
                                                 </div>
                                             </div>
