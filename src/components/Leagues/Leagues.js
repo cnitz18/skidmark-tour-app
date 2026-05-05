@@ -245,11 +245,16 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                     </Row>
                                     
                                     <div className="hero-footer mt-5">
-                                        <Link to={`/league/${leagues[0].id}`} state={{ league: leagues[0] }}>
-                                            <Button variant="primary" size="lg" className="view-details-btn">
-                                                View Full League →
-                                            </Button>
-                                        </Link>
+                                        <Button
+                                            as={Link}
+                                            to={`/league/${leagues[0].id}`}
+                                            state={{ league: leagues[0] }}
+                                            variant="primary"
+                                            size="lg"
+                                            className="view-details-btn"
+                                        >
+                                            View Full League →
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -295,12 +300,15 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                         )}
                                     </Card.Body>
                                     <Card.Footer className="league-cardactions">
-                                        <Link
+                                        <Button
+                                            as={Link}
                                             to={`/league/${l.id}`}
                                             state={{ league: l }}
-                                            >
-                                            <Button variant="outline-primary" size="sm">View Details</Button>
-                                        </Link>
+                                            variant="outline-primary"
+                                            size="sm"
+                                        >
+                                            View Details
+                                        </Button>
                                         <div className="league-display-badge">
                                             {
                                                 l.completed ?
