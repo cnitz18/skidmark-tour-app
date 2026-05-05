@@ -4,7 +4,6 @@ import getAPIData from "./utils/getAPIData";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import './index.css';
 import styles from './App.module.css';
 
 const App = () => {

@@ -25,7 +25,9 @@
             const theme = savedTheme || 'dark';
             document.documentElement.setAttribute('data-theme', theme);
             document.documentElement.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f8f9fa';
+            document.documentElement.style.color = theme === 'dark' ? '#e8e8e8' : '#0d2240';
             document.body.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f8f9fa';
+            document.body.style.color = theme === 'dark' ? '#e8e8e8' : '#0d2240';
           })();
         </script>
         <div id="root"></div>

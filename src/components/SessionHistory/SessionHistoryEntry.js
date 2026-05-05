@@ -25,25 +25,16 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   const [isHistorical, setIsHistorical] = useState(false);
   const [isFeature, setIsFeature] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
-  const trackName = NameMapper.fromTrackApiName(
-    NameMapper.fromTrackId(data?.setup?.TrackId, lists?.tracks?.list)
-  ) || "Unknown Track";
-
-  const vehicleClassName = NameMapper.fromVehicleClassApiName(
-    NameMapper.fromVehicleClassId(
-      data?.setup?.VehicleClassId,
-      lists?.vehicle_classes?.list,
-      "Unknown Vehicle Class"
-    )
-  ) || "Unknown Vehicle Class";
+  const [isPracticeLoading, setIsPracticeLoading] = useState(false);
+  const [isQualiLoading, setIsQualiLoading] = useState(false);
 
   useEffect(() => {
-    if( raceOne && !raceOne.results?.length ){
+    if (raceOne && !raceOne.results?.length) {
       getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceOne.id}`)
-      .then((res) => setRaceOne({...raceOne, results: res}))
-      .catch((err) => console.log(err));
+        .then((res) => setRaceOne({ ...raceOne, results: res }))
+        .catch((err) => console.log(err));
     }
+
     if (raceOne && raceOne?.results?.length) {
       setFirstPlace({
         ...raceOne?.results?.find((m) => m?.RacePosition === 1),
@@ -54,36 +45,22 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
       setThirdPlace({
         ...raceOne?.results?.find((m) => m?.RacePosition === 3),
       });
-    }
-    else{
+    } else {
       setFirstPlace("");
       setSecondPlace("");
       setThirdPlace();
     }
-  },[raceOne]);
+  }, [raceOne]);
 
   useEffect(() => {
-    if( qualiOne && !qualiOne?.results?.length ){
-      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiOne.id}`)
-      .then((res) => setQualiOne({...qualiOne, results: res}))
-      .catch((err) => console.log(err));
-    }
-    else if( qualiOne && qualiOne.results?.length ){
+    if (qualiOne && qualiOne.results?.length) {
       setPolePosition({
         ...qualiOne?.results?.find((m) => m?.RacePosition === 1),
       });
-    }else{
-      setPolePosition("")
+    } else {
+      setPolePosition("");
     }
-  },[qualiOne]);
-
-  useEffect(() => {
-    if( practiceOne && !practiceOne?.results?.length ){
-      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${practiceOne.id}`)
-      .then((res) => setPracticeOne({...practiceOne, results: res}))
-      .catch((err) => console.log(err));
-    } 
-  },[practiceOne]);
+  }, [qualiOne]);
 
   useEffect(() => {
     setStartTime(new Date(data.start_time * 1000));
@@ -119,24 +96,67 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
       setSessionLength(raceSetup.RaceLength);
     }
   }, [data]);
+
+  async function loadPracticeResults() {
+    if (!practiceOne || practiceOne?.results?.length || isPracticeLoading) {
+      return;
+    }
+
+    try {
+      setIsPracticeLoading(true);
+      const res = await getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${practiceOne.id}`);
+      setPracticeOne({ ...practiceOne, results: res });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsPracticeLoading(false);
+    }
+  }
+
+  async function loadQualiResults() {
+    if (!qualiOne || qualiOne?.results?.length || isQualiLoading) {
+      return;
+    }
+
+    try {
+      setIsQualiLoading(true);
+      const res = await getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiOne.id}`);
+      setQualiOne({ ...qualiOne, results: res });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsQualiLoading(false);
+    }
+  }
+
+  const trackDisplayName =
+    lists?.tracks?.list
+      ? (NameMapper.fromTrackApiName(NameMapper.fromTrackId(data?.setup?.TrackId, lists?.tracks?.list)) || "Unknown Track")
+      : "Loading track...";
+
+  const vehicleClassDisplayName =
+    lists?.vehicle_classes?.list
+      ? (
+          NameMapper.fromVehicleClassApiName(
+            NameMapper.fromVehicleClassId(data?.setup?.VehicleClassId, lists?.vehicle_classes?.list, "")
+          ) || "Unknown Vehicle Class"
+        )
+      : "Loading class...";
+
   return (
     <Accordion className="race-details-accordion">
         <Container className={`history-entry ${leagueId ? "league-entry" : ""} ${isFeature ? "feature-entry" : ""}`}>
         <Row className="history-entry-data">
           <Col lg="4" className="history-entry-data-title">
-            {lists["tracks"] ? (
-              <>
-                <h5>
-                  {trackName}
-                  {isFeature && <Badge className="ms-3 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
-                </h5>
-                <p>
-                  {vehicleClassName}
-                </p>
-              </>
-            ) : (
-              <></>
-            )}
+            <>
+              <h5>
+                {trackDisplayName}
+                {isFeature && <Badge className="ms-3 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
+              </h5>
+              <p>
+                {vehicleClassDisplayName}
+              </p>
+            </>
           </Col>
           <Col className="text-center">
             <Row className="lessVerticalPadding">
@@ -230,11 +250,12 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
         {
           practiceOne && (
             <Accordion.Item eventKey={data.index + '_prac1'}>
-              <Accordion.Header>Practice Details:</Accordion.Header>
+              <Accordion.Header onClick={loadPracticeResults}>Practice Details:</Accordion.Header>
               <Accordion.Body>
                 {/* 
                             add some more details about the server/race here
                             */}
+                {isPracticeLoading && <div className="text-center py-2">Loading practice results...</div>}
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
                     race={practiceOne}
@@ -252,11 +273,12 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
         {
           qualiOne && (
             <Accordion.Item eventKey={data.index + '_qual1'}>
-              <Accordion.Header>Qualifying Details:</Accordion.Header>
+              <Accordion.Header onClick={loadQualiResults}>Qualifying Details:</Accordion.Header>
               <Accordion.Body>
                 {/* 
                             add some more details about the server/race here
                             */}
+                {isQualiLoading && <div className="text-center py-2">Loading qualifying results...</div>}
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
                     race={qualiOne}

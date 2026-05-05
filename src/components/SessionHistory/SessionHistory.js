@@ -117,7 +117,7 @@ const SessionHistory = ({ enums, lists }) => {
         />
       {showSpinner ? (
 
-                <div className="text-center mt-4">
+                <div className="text-center mt-4" style={{ color: 'var(--color-text)' }}>
                     <Spinner animation="border" role="status"/>
                       <div>
                         One moment please...
