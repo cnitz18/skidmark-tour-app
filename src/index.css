@@ -241,6 +241,40 @@ div {
   font-weight: bold;
 }
 
+.podium-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.podium-label-main {
+  min-height: 44px;
+}
+
+.podium-name {
+  display: inline-block;
+  min-width: 12ch;
+  min-height: 1.2em;
+  text-align: left;
+  transition: opacity var(--motion-base) var(--motion-ease-standard), transform var(--motion-base) var(--motion-ease-standard);
+}
+
+.podium-name-sm {
+  min-width: 9ch;
+}
+
+.podium-name.is-placeholder {
+  opacity: 0.35;
+  transform: translateY(2px);
+}
+
+.podium-name.is-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .trophy {
   padding-right: 5px;
 }

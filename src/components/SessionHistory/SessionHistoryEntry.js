@@ -143,6 +143,10 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
         )
       : "Loading class...";
 
+  const firstPlaceName = firstPlace?.name || "";
+  const secondPlaceName = secondPlace?.name || "";
+  const thirdPlaceName = thirdPlace?.name || "";
+
   return (
     <Accordion className="race-details-accordion">
         <Container className={`history-entry ${leagueId ? "league-entry" : ""} ${isFeature ? "feature-entry" : ""}`}>
@@ -160,22 +164,28 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
           </Col>
           <Col className="text-center">
             <Row className="lessVerticalPadding">
-              <label>
+              <label className="podium-label podium-label-main">
                 <ImTrophy color="gold" className="trophy" size={40}/>
-                <span className="firstPlace">{firstPlace?.name}</span>
+                <span className={`podium-name firstPlace ${firstPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                  {firstPlaceName || "\u00A0"}
+                </span>
               </label>{" "}
             </Row>
             <Row className="justify-content-md-center lessVerticalPadding">
               <Col md="auto">
-                <label>
+                <label className="podium-label">
                   <ImTrophy color="silver" className="trophy" size={20} />
-                  <small>{secondPlace?.name}</small>
+                  <small className={`podium-name podium-name-sm ${secondPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                    {secondPlaceName || "\u00A0"}
+                  </small>
                 </label>
               </Col>
               <Col md="auto">
-                <label>
+                <label className="podium-label">
                   <ImTrophy color="tan" className="trophy" size={20} />
-                  <small>{thirdPlace?.name}</small>
+                  <small className={`podium-name podium-name-sm ${thirdPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                    {thirdPlaceName || "\u00A0"}
+                  </small>
                 </label>
               </Col>
             </Row>
