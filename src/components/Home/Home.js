@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Carousel, Col, Card, Spinner } from 'react-bootstrap';
 // import PageHeader from '../shared/PageHeader'
 import { FaYoutube, FaTwitch } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 import styles from './Home.module.css';
 import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
@@ -194,9 +195,9 @@ export default function Home() {
                                                 ))}
                                             </div>
                                             <div className='text-center' style={{ paddingBottom: '1rem' }}>
-                                                <a href={`/league/${leagueId}`} className={`btn ${styles.viewButton}`}>
+                                                <Link to={`/league/${leagueId}`} className={`btn ${styles.viewButton}`}>
                                                     View Full Standings
-                                                </a>
+                                                </Link>
                                             </div>
                                         </Card.Body>
                                     </Card>

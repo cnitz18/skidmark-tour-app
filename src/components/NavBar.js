@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import { useState, useEffect } from "react";
-import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom'
+import { Route, Routes, BrowserRouter as Router, Navigate, useLocation, Link } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
@@ -46,68 +46,69 @@ function TitleUpdater() {
   return null;
 }
 
-
-export default function NavBar({ enums, lists }) {
-  const [selectedRoute, setSelectedRoute] = useState(window.location.pathname);
-
-  function onSelectRoute(e) {
-    setSelectedRoute(e.currentTarget.getAttribute('href'));
-  }
+function NavigationContent({ enums, lists }) {
+  const location = useLocation();
 
   return (
+    <div className={styles.mainContent}>
+      <Navbar 
+        expand="lg" 
+        className={styles.navbar}
+        fixed="top"
+      >
+        <Container>
+          <Navbar.Brand as={Link} to="/" className={styles.brand}>
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className={styles.logo}
+            />
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className={styles.navLinks}>
+              {
+                navLinks.map((nLink,i) => (
+                  <Nav.Link 
+                    key={i}
+                    as={Link}
+                    to={nLink.href}
+                    active={location.pathname === nLink.href}
+                    className={`nav-link ${location.pathname === nLink.href ? styles.active : ''}`}>
+                      {nLink.name}
+                    </Nav.Link>
+                ))
+              }
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <TitleUpdater />
+      <Routes>
+        {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
+        <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
+        <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
+        <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
+        <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
+        <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
+        <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
+        <Route
+          exact
+          path="/league/:id"
+          element={<LeagueDescription  enums={enums} lists={lists}/>}
+        />
+      </Routes>
+    </div>
+  );
+}
+
+
+export default function NavBar({ enums, lists }) {
+  return (
     <Router>
-      <div className={styles.mainContent}>
-        <Navbar 
-          expand="lg" 
-          className={styles.navbar}
-          fixed="top"
-        >
-          <Container>
-            <Navbar.Brand href="/" className={styles.brand}>
-              <img 
-                src={logo} 
-                alt="Logo" 
-                className={styles.logo}
-              />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className={styles.navLinks}>
-                {
-                  navLinks.map((nLink,i) => (
-                    <Nav.Link 
-                      key={i}
-                      value={nLink.href}
-                      href={nLink.href} 
-                      active={selectedRoute === nLink.href}
-                      onClick={onSelectRoute}
-                      className={`nav-link ${selectedRoute === nLink.href ? styles.active : ''}`}>
-                        {nLink.name}
-                      </Nav.Link>
-                  ))
-                }
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
-        <TitleUpdater />
-        <Routes>
-          {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
-          <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
-          <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
-          <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
-          <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
-          <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
-          <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
-          <Route
-            exact
-            path="/league/:id"
-            element={<LeagueDescription  enums={enums} lists={lists}/>}
-          />
-        </Routes>
-      </div>
+      <NavigationContent enums={enums} lists={lists} />
     </Router>
   )
 }

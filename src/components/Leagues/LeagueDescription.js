@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
 import PageHeader from '../shared/PageHeader';
 import getAPIData from '../../utils/getAPIData';
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Tabs, Tab, Box } from '@mui/material';
 import LeagueDescriptionOverview from './LeagueDescriptionOverview';
 import LeagueDescriptionSchedule from './LeagueDescriptionSchedule';
@@ -48,6 +48,7 @@ const LeagueDescription = ({ enums, lists }) => {
     const [leagueHistory, setLeagueHistory] = useState([])
     const [tableSeries, setTableSeries] = useState([])
     const { state } = useLocation();
+    const { id: routeLeagueId } = useParams();
 
     useEffect(() => {
         if( leagueDetails.snapshot && leagueDetails.snapshot.length ){
@@ -84,7 +85,7 @@ const LeagueDescription = ({ enums, lists }) => {
                     return;
                 }
 
-                const leagueId = state?.leagueId || window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+                const leagueId = state?.leagueId || routeLeagueId;
                 const res = await getAPIData('/leagues/get/?id=' + leagueId);
 
                 if (isMounted) {
@@ -106,7 +107,7 @@ const LeagueDescription = ({ enums, lists }) => {
             isMounted = false;
         };
         // eslint-disable-next-line
-    }, [state?.league, state?.leagueId])
+    }, [routeLeagueId, state?.league, state?.leagueId])
 
     useEffect(() => {
         if( league && league.id ){
