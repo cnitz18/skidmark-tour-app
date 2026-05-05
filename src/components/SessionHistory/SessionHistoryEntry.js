@@ -26,6 +26,18 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   const [isFeature, setIsFeature] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const trackName = NameMapper.fromTrackApiName(
+    NameMapper.fromTrackId(data?.setup?.TrackId, lists?.tracks?.list)
+  ) || "Unknown Track";
+
+  const vehicleClassName = NameMapper.fromVehicleClassApiName(
+    NameMapper.fromVehicleClassId(
+      data?.setup?.VehicleClassId,
+      lists?.vehicle_classes?.list,
+      "Unknown Vehicle Class"
+    )
+  ) || "Unknown Vehicle Class";
+
   useEffect(() => {
     if( raceOne && !raceOne.results?.length ){
       getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceOne.id}`)
@@ -115,11 +127,11 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
             {lists["tracks"] ? (
               <>
                 <h5>
-                  {NameMapper.fromTrackApiName(NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list))}
+                  {trackName}
                   {isFeature && <Badge className="ms-3 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
                 </h5>
                 <p>
-                  {NameMapper.fromVehicleClassApiName(NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list))}
+                  {vehicleClassName}
                 </p>
               </>
             ) : (
