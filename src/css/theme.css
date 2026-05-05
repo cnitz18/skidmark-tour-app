@@ -37,8 +37,17 @@
   --color-footer-bg: rgba(13, 34, 64, 0.95);
   --color-footer-text: rgba(255, 255, 255, 0.8);
 
-  /* ===== TRANSITIONS ===== */
-  --transition-color: 0.3s ease;
+  /* ===== MOTION TOKENS ===== */
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 360ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-distance-sm: 8px;
+  --motion-distance-md: 16px;
+
+  /* ===== LEGACY TRANSITION TOKEN ===== */
+  --transition-color: var(--motion-base) var(--motion-ease-standard);
   
   /* ===== FONT APPLICATION ===== */
   font-family: var(--font-primary);
@@ -79,6 +88,18 @@
   transition: background-color var(--transition-color), 
               color var(--transition-color),
               border-color var(--transition-color);
+}
+
+/* Respect reduced-motion users globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Prevent transition on page load */

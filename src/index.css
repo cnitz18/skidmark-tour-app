@@ -27,6 +27,62 @@ body {
   color: var(--color-text);
 }
 
+/* Shared motion utilities */
+@keyframes motionFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motionRiseIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance-md));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.motion-fade-in {
+  animation: motionFadeIn var(--motion-slow) var(--motion-ease-emphasized) both;
+}
+
+.motion-rise-in {
+  animation: motionRiseIn var(--motion-slow) var(--motion-ease-emphasized) both;
+}
+
+.motion-stagger > * {
+  opacity: 0;
+  animation: motionRiseIn var(--motion-slow) var(--motion-ease-emphasized) both;
+}
+
+.motion-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.motion-stagger > *:nth-child(2) { animation-delay: 50ms; }
+.motion-stagger > *:nth-child(3) { animation-delay: 100ms; }
+.motion-stagger > *:nth-child(4) { animation-delay: 150ms; }
+.motion-stagger > *:nth-child(5) { animation-delay: 200ms; }
+.motion-stagger > *:nth-child(6) { animation-delay: 250ms; }
+
+/* Global interaction polish */
+a,
+button,
+.btn,
+.card,
+.nav-link,
+.accordion-button,
+.form-control,
+.form-select {
+  transition:
+    transform var(--motion-base) var(--motion-ease-standard),
+    box-shadow var(--motion-base) var(--motion-ease-standard),
+    opacity var(--motion-fast) var(--motion-ease-standard);
+}
+
 .app-container {
   min-width: 99%;
   margin: 30px auto;
@@ -277,6 +333,16 @@ div {
 
 .homepage-content {
   text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-fade-in,
+  .motion-rise-in,
+  .motion-stagger > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 .social-list {
