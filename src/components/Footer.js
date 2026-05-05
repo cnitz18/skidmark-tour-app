@@ -8,9 +8,9 @@ export default function Footer() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`${styles.footer} motion-fade-in`}>
       <Container>
-        <Row className="align-items-center">
+        <Row className="align-items-center motion-stagger">
           <Col md={4}>
             <p className={styles.copyright}>Casey Nitz &copy; {new Date().getFullYear()}</p>
           </Col>
