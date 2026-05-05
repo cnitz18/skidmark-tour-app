@@ -84,6 +84,7 @@
     padding: 2rem 1.5rem;
     text-align: center;
     background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    pointer-events: none;
 }
 
 .caption h3 {
@@ -92,6 +93,12 @@
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     margin: 0;
     color: white;
+}
+
+.carousel :global(.carousel-indicators),
+.carousel :global(.carousel-control-prev),
+.carousel :global(.carousel-control-next) {
+    z-index: 25;
 }
 
 /* Header Overlay */
