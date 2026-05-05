@@ -10,10 +10,10 @@ import getAPIData from '../../utils/getAPIData';
 import fullLogo from "../../assets/Skidmark_Logo_1.png";
 
 const imageInfo = [
-    {
-        url: "homepage/kartgrid.jpg",
-        caption: "Karting Fall '24"
-    },
+    // {
+    //     url: "homepage/kartgrid.jpg",
+    //     caption: "Karting Fall '24"
+    // },
     {
         url: "homepage/monza-sprint-finish.jpg",
         caption: "Nailbiter Finish @ Monza '71",
