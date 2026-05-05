@@ -4,6 +4,12 @@
   font-family: var(--font-primary);
 }
 
+/* Ensure all nested MUI/Recharts content on this page inherits brand typography. */
+.performance-analytics,
+.performance-analytics * {
+  font-family: var(--font-primary) !important;
+}
+
 /* Stats list styling */
 .stats-list {
   margin-bottom: 15px;

@@ -780,6 +780,7 @@ hr {
   text-transform: none !important;
   transition: all 0.2s ease !important;
   font-size: 1rem !important;
+  font-family: var(--font-primary) !important;
 }
 
 .MuiTab-root:hover {
@@ -804,6 +805,7 @@ hr {
 
 /* MUI Typography theme override */
 .MuiTypography-root {
+  font-family: var(--font-primary) !important;
   color: var(--color-text) !important;
 }
 
@@ -840,7 +842,36 @@ hr {
 
 /* MUI Table text styling */
 .MuiTableCell-root {
+  font-family: var(--font-primary) !important;
   color: var(--color-text) !important;
+}
+
+/* MUI input/select labels and controls */
+.MuiFormLabel-root,
+.MuiInputBase-root,
+.MuiSelect-select,
+.MuiChip-label,
+.MuiButtonBase-root {
+  font-family: var(--font-primary) !important;
+}
+
+/* MUI X-Charts typography */
+.MuiChartsAxis-root text,
+.MuiChartsLegend-root text,
+.MuiChartsAxis-tickLabel,
+.MuiChartsAxis-label {
+  font-family: var(--font-primary) !important;
+  fill: var(--color-text) !important;
+}
+
+/* Recharts typography */
+.recharts-wrapper,
+.recharts-wrapper text,
+.recharts-default-tooltip,
+.recharts-legend-wrapper,
+.recharts-legend-item-text,
+.recharts-text {
+  font-family: var(--font-primary) !important;
 }
 
 /* Global font application to all text elements */

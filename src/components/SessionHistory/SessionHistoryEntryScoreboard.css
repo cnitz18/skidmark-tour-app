@@ -192,8 +192,10 @@
 }
 
 /* Tab styling */
-.nav-tabs .nav-link {
-  color: #495057;
+.race-event-modal .nav-tabs .nav-link {
+  color: var(--color-text-secondary);
+  font-family: var(--font-primary);
+  background-color: transparent;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   padding: 10px 15px;
@@ -201,15 +203,21 @@
   border: 1px solid transparent;
 }
 
-.nav-tabs .nav-link:hover {
-  background-color: #f8f9fa;
-  border-color: transparent;
+.race-event-modal .nav-tabs .nav-link:hover {
+  background-color: var(--color-bg);
+  border-color: var(--color-border) var(--color-border) transparent;
+  color: var(--color-text);
 }
 
-.nav-tabs .nav-link.active {
-  color: #007bff;
-  background-color: white;
-  border-color: #dee2e6 #dee2e6 white;
+.race-event-modal .nav-tabs .nav-link.active,
+.race-event-modal .nav-tabs .nav-item.show .nav-link {
+  color: var(--color-text);
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border) var(--color-border) var(--color-bg-elevated);
+}
+
+.race-event-modal .nav-tabs {
+  border-bottom-color: var(--color-border);
 }
 .event-card .card-body {
   padding: 0;
