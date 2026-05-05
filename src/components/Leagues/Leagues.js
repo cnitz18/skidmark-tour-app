@@ -36,6 +36,43 @@ const getCurrentLocalDateTime = () => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
+const getTrackDisplayName = (trackValue, trackList) => {
+    const normalizeTrackLabel = (value) => String(value)
+        .replaceAll('_', ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (trackValue === null || trackValue === undefined || trackValue === '') {
+        return 'TBA';
+    }
+
+    const asNumber = Number(trackValue);
+    if (!Number.isNaN(asNumber)) {
+        const mapped = (
+            NameMapper.fromTrackId(asNumber, trackList) ||
+            NameMapper.fromTrackId(String(trackValue), trackList) ||
+            'TBA'
+        );
+        return mapped === 'TBA' ? mapped : normalizeTrackLabel(mapped);
+    }
+
+    const mappedApiName = NameMapper.fromTrackApiName(String(trackValue));
+    return normalizeTrackLabel(mappedApiName);
+};
+
+const getReadableRaceDate = (dateValue) => {
+    const parsed = new Date(dateValue);
+    if (Number.isNaN(parsed.getTime())) {
+        return 'Date TBA';
+    }
+
+    return parsed.toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+};
+
 const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [showModal, setShowModal] = useState(false);
     const [newPositions,setNewPositions] = useState([...DEFAULT_POSITIONS])
@@ -233,9 +270,9 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                                 <div className="stat-value" style={{fontSize: '1.1rem'}}>
                                                     {leagues[0].races && leagues[0].races.length > 0 ? (
                                                         <>
-                                                            <div>{NameMapper.fromTrackId(leagues[0].races[0].track, lists["tracks"]?.list) || 'TBA'}</div>
+                                                            <div>{getTrackDisplayName(leagues[0].races[0].track, lists["tracks"]?.list)}</div>
                                                             <div style={{fontSize: '0.85rem', opacity: 0.85, marginTop: '0.25rem'}}>
-                                                                {new Date(leagues[0].races[0].date).toLocaleDateString()}
+                                                                {getReadableRaceDate(leagues[0].races[0].date)}
                                                             </div>
                                                         </>
                                                     ) : 'No races scheduled'}

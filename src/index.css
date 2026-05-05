@@ -17,6 +17,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   font-family: var(--font-primary);
+  font-style: italic;
 }
 
 #root {
