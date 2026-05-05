@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Route, Routes, BrowserRouter as Router, Navigate, useLocation, Link } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Home from './Home/Home'
@@ -48,6 +48,7 @@ function TitleUpdater() {
 
 function NavigationContent({ enums, lists }) {
   const location = useLocation();
+  const routeKey = `${location.pathname}${location.search}`;
 
   return (
     <div className={styles.mainContent}>
@@ -84,22 +85,24 @@ function NavigationContent({ enums, lists }) {
         </Container>
       </Navbar>
       <TitleUpdater />
-      <Routes>
-        {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
-        <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
-        <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
-        <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
-        <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
-        <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
-        <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
-        <Route
-          exact
-          path="/league/:id"
-          element={<LeagueDescription  enums={enums} lists={lists}/>}
-        />
-      </Routes>
+      <div key={routeKey} className={styles.routeTransition}>
+        <Routes>
+          {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
+          <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
+          <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
+          <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
+          <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
+          <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
+          <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
+          <Route
+            exact
+            path="/league/:id"
+            element={<LeagueDescription  enums={enums} lists={lists}/>}
+          />
+        </Routes>
+      </div>
     </div>
   );
 }

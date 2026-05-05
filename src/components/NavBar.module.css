@@ -69,6 +69,27 @@
   padding-top: 70px; /* Adjust based on navbar height */
 }
 
+.routeTransition {
+  animation: routeEnter var(--motion-slow) var(--motion-ease-emphasized) both;
+}
+
+@keyframes routeEnter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance-sm));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .routeTransition {
+    animation: none;
+  }
+}
+
 /* Make navbar items responsive */
 /* Tablet and up - show full horizontal menu */
 @media (min-width: 992px) {
