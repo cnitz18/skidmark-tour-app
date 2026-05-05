@@ -140,13 +140,13 @@ const LeagueDescription = ({ enums, lists }) => {
         <Container>
             <PageHeader title={league?.name}/>
             {isLeagueLoading ? (
-                <Container className="text-center p-5">
+                <Container className="text-center p-5 motion-fade-in">
                     <Spinner animation="border" role="status" variant="primary"/>
                     <p className="mt-3 text-muted">Loading league...</p>
                 </Container>
             ) : 
                 ( league &&
-                    <Container className="league-desc-container">
+                    <Container className="league-desc-container motion-rise-in">
                         <Box sx={{ width: '100%' }}>
                             <Box>
                                 <Tabs 

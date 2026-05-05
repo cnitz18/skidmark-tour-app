@@ -145,9 +145,9 @@ const ServerStatus = ({ enums, lists }) => {
   };
 
   return (
-    <Container>
+    <Container className="motion-fade-in">
       <PageHeader title="Automobilista 2 Server Status"/>
-      <Row>
+      <Row className="motion-rise-in">
         <Col lg={8} className="mx-auto">
           <div className="server-status-container">
             <div className="status-card">
@@ -175,7 +175,7 @@ const ServerStatus = ({ enums, lists }) => {
             {/* Only show server info when there's an active session */}
             {(isServerLive && isSessionActive && Object.keys(serverInfo).length > 0) ? (
               <>
-                <div className="server-info">
+                <div className="server-info motion-stagger">
                   {/* Add Session Status card */}
                   <div className="info-card">
                     <FaPlayCircle size={24} color="#dc3545" />
@@ -204,7 +204,7 @@ const ServerStatus = ({ enums, lists }) => {
                 </div>
 
                 {/* Add new Participants component */}
-                <div className="participants-section">
+                <div className="participants-section motion-fade-in">
                   <ParticipantsList members={serverInfo.sessionState === "Lobby" ? serverInfo.members : serverInfo.participants} />
                 </div>
               </>

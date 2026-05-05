@@ -192,7 +192,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     }, []);
     
     return (
-        <Container>
+        <Container className="motion-fade-in">
             <PageHeader title="Leagues"/>
             {
                 showAdmin ?
@@ -213,7 +213,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                 </Container>
             ) : (
                 <>
-                    <Row xs={1} md={1} lg={1} className="g-4 justify-content-center leagues-hero-container mb-5">
+                    <Row xs={1} md={1} lg={1} className="g-4 justify-content-center leagues-hero-container mb-5 motion-rise-in">
                     {(leagues && leagues.length > 0) && (
                         <Col key={`featured-${leagues[0].id}`}>
                             <div className="league-hero-card">
@@ -296,7 +296,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                         <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Historical Leagues</h2>
                     </Container>
 
-                    <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container">
+                    <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container motion-stagger">
                     {leagues.slice(1).map((l, i) => {
                         const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
                         return (

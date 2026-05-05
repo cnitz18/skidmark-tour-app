@@ -114,13 +114,13 @@ const TrophyRoomBasic = () => {
 
 
     return (
-        <Container>
+        <Container className="motion-fade-in">
             <PageHeader 
                 title="Trophy Room" 
                 subtitle="Our team iRacing achievements and AMS2 championship winners."
             />
             
-            <div className="my-5">
+            <div className="my-5 motion-rise-in">
                 
                 <section className="mb-5">
                     <div className="section-header d-flex align-items-center mb-4">
@@ -128,7 +128,7 @@ const TrophyRoomBasic = () => {
                         <h2 className="mb-0">Skidmark Champions</h2>
                     </div>
                     
-                    <Row xs={1} md={2} lg={4} className="g-4 justify-content-center">
+                    <Row xs={1} md={2} lg={4} className="g-4 justify-content-center motion-stagger">
                         {champions.map(champion => (
                             <Col key={champion.id}>
                                 {champion.seasonId ? (
@@ -183,7 +183,7 @@ const TrophyRoomBasic = () => {
                     </div>
                     
                     {/* Added justify-content-center to center the cards within the row */}
-                    <Row xs={1} md={2} lg={3} className="g-4 justify-content-center">
+                    <Row xs={1} md={2} lg={3} className="g-4 justify-content-center motion-stagger">
                         {specialEvents.map(event => (
                             <Col key={event.id}>
                                 <Card className="trophy-card special-event h-100">
