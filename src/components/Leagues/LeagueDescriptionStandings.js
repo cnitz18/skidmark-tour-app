@@ -1,5 +1,6 @@
 import { Table, TableHead, TableBody, TableRow, TableCell, Stack, IconButton, Collapse } from "@mui/material";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from "@mui/x-charts";
 import { cheerfulFiestaPalette } from '@mui/x-charts/colorPalettes';
@@ -84,12 +85,22 @@ function StandingsRow(props){
     );
 }
 
-const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) => {
+const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,showDetailsSpinner=false}) => {
     const [isHidden] = useState(true);
 
     return (<>
         {
-            (league.races?.length && tableSeries) &&
+            showDetailsSpinner && (
+                <div className="text-center mt-4">
+                    <Spinner animation="border" role="status"/>
+                    <div>
+                        Loading standings...
+                    </div>
+                </div>
+            )
+        }
+        {
+            (!showDetailsSpinner && league.races?.length && tableSeries) &&
             <Stack>
                 <LineChart
                 
@@ -151,7 +162,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists}) =>
             </Stack>
         }
         {
-            (leagueDetails && leagueDetails?.scoreboard_entries) 
+            (!showDetailsSpinner && leagueDetails && leagueDetails?.scoreboard_entries) 
             && 
             <div className="schedule-table-div standings-table-div">
                 <Table size="sm" sx={{

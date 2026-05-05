@@ -40,7 +40,8 @@ const LeagueDescription = ({ enums, lists }) => {
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
     };
-    const [showSpinner, setShowSpinner] = useState(true);
+    const [isLeagueLoading, setIsLeagueLoading] = useState(true);
+    const [isDetailsLoading, setIsDetailsLoading] = useState(true);
     const [showHistorySpinner, setShowHistorySpinner] = useState(true);
     const [league, setLeague] = useState({});
     const [leagueDetails, setLeagueDetails] = useState({});
@@ -69,46 +70,78 @@ const LeagueDescription = ({ enums, lists }) => {
         }
     },[leagueDetails])
     useEffect(() => {
-        if( state ){
-            if( state.league ){
-                    setLeague({...state.league});
-            }else if( state.leagueId ){
-                getAPIData('/leagues/get/?id='+state.leagueId)
-                .then((res) => {
-                    setLeague({...res})
-                })
+        let isMounted = true;
+
+        const resolveLeague = async () => {
+            setIsLeagueLoading(true);
+
+            try {
+                if (state?.league) {
+                    if (isMounted) {
+                        setLeague({ ...state.league });
+                        setIsLeagueLoading(false);
+                    }
+                    return;
+                }
+
+                const leagueId = state?.leagueId || window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+                const res = await getAPIData('/leagues/get/?id=' + leagueId);
+
+                if (isMounted) {
+                    setLeague({ ...res });
+                    setIsLeagueLoading(false);
+                }
+            } catch (err) {
+                console.error('Error fetching league info:', err);
+                if (isMounted) {
+                    setLeague({});
+                    setIsLeagueLoading(false);
+                }
             }
-        }else {
-            let href = window.location.href;
-            let leagueId = href.substring(href.lastIndexOf('/')+1)
-            getAPIData('/leagues/get/?id='+leagueId)
-            .then((res) => {
-                setLeague({...res})
-            })
-        }
+        };
+
+        resolveLeague();
+
+        return () => {
+            isMounted = false;
+        };
         // eslint-disable-next-line
-    },[state?.league,state?.leagueId])
+    }, [state?.league, state?.leagueId])
+
     useEffect(() => {
         if( league && league.id ){
+            setIsDetailsLoading(true);
+            setShowHistorySpinner(true);
+
             getAPIData('/leagues/get/stats/?id=' + league.id)
             .then((res) => {
                 setLeagueDetails({...res})
-                setShowSpinner(false)
-            }).catch((err) => { console.error(err); setShowSpinner(false) })
+            }).catch((err) => {
+                console.error(err);
+                setLeagueDetails({});
+            }).finally(() => {
+                setIsDetailsLoading(false);
+            })
+
             getAPIData('/api/batchupload/sms_stats_data/?league=' + league.id)
             .then((res) => {
                 setLeagueHistory([...res.data])
+            }).catch((err) => {
+                console.error(err);
+                setLeagueHistory([]);
+            }).finally(() => {
                 setShowHistorySpinner(false)
-            }).catch((err) => { console.error(err); setShowHistorySpinner(false) })
+            })
         }
     },[league])
+
     return (
         <Container>
             <PageHeader title={league?.name}/>
-            {showSpinner ? (
+            {isLeagueLoading ? (
                 <Container className="text-center p-5">
                     <Spinner animation="border" role="status" variant="primary"/>
-                    <p className="mt-3 text-muted">Loading league details...</p>
+                    <p className="mt-3 text-muted">Loading league...</p>
                 </Container>
             ) : 
                 ( league &&
@@ -144,7 +177,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                 <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={2}>
-                                <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists}}/>
+                                <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists,showDetailsSpinner: isDetailsLoading}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={3}>
                                 <LeagueDescriptionPerformance {...{showHistorySpinner,league, leagueHistory, leagueDetails, lists}} />
