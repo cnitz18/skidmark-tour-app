@@ -7,6 +7,16 @@
         <meta name="author" content="Casey Nitz" />
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="preload" href="%PUBLIC_URL%/fonts/TAMWORTH.TTF" as="font" type="font/ttf" crossorigin />
+        <style>
+          @font-face {
+            font-family: 'Tamworth';
+            src: local('Tamworth'), url('%PUBLIC_URL%/fonts/TAMWORTH.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+          }
+        </style>
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <link rel="apple-touch-icon" href="%PUBLIC_URL%/Skidmark_Logo_Shield.png" />

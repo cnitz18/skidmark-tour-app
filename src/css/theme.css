@@ -1,12 +1,5 @@
 /* Skidmark Tour Brand Colors & Theme System */
 
-@font-face {
-  font-family: 'Tamworth';
-  src: url('../../public/fonts/TAMWORTH.TTF') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 :root {
   /* ===== FONT FAMILY ===== */
   --font-primary: 'Tamworth', sans-serif;
