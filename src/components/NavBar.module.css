@@ -70,7 +70,7 @@
 }
 
 .routeTransition {
-  animation: routeEnter var(--motion-slow) var(--motion-ease-emphasized) both;
+  animation: routeEnter var(--motion-base) var(--motion-ease-emphasized) both;
 }
 
 @keyframes routeEnter {

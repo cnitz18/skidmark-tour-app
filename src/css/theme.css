@@ -38,13 +38,13 @@
   --color-footer-text: rgba(255, 255, 255, 0.8);
 
   /* ===== MOTION TOKENS ===== */
-  --motion-fast: 140ms;
-  --motion-base: 220ms;
-  --motion-slow: 360ms;
+  --motion-fast: 100ms;
+  --motion-base: 170ms;
+  --motion-slow: 260ms;
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --motion-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --motion-distance-sm: 8px;
-  --motion-distance-md: 16px;
+  --motion-ease-emphasized: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --motion-distance-sm: 6px;
+  --motion-distance-md: 12px;
 
   /* ===== LEGACY TRANSITION TOKEN ===== */
   --transition-color: var(--motion-base) var(--motion-ease-standard);
