@@ -101,6 +101,34 @@
     z-index: 25;
 }
 
+.carousel :global(.carousel-indicators button) {
+    width: 44px;
+    height: 44px;
+    margin: 0 2px;
+    background: transparent;
+    border: none;
+    opacity: 1;
+    position: relative;
+}
+
+.carousel :global(.carousel-indicators button::before) {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.carousel :global(.carousel-indicators .active::before) {
+    background: var(--color-secondary);
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
 /* Header Overlay */
 .headerOverlay {
     position: absolute;
