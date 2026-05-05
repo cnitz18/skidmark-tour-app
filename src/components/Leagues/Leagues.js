@@ -282,7 +282,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                             size="lg"
                                             className="view-details-btn"
                                         >
-                                            View Full League →
+                                            League Details →
                                         </Button>
                                     </div>
                                 </div>
