@@ -126,7 +126,7 @@ const SessionHistory = ({ enums, lists }) => {
             ) : 
             (
               <>
-                <Row className="mb-3 g-2 align-items-end">
+                <Row className="mb-3 g-2 align-items-end motion-fade-in">
                   <Col xs={12} md="auto" className="flex-grow-1 flex-md-grow-0">
                     <Form.Group>
                       <Form.Label className="mb-2">Order By:</Form.Label>
@@ -151,7 +151,7 @@ const SessionHistory = ({ enums, lists }) => {
                   active={showMiniSpinner}
                   spinner
                   text='Loading...'>  
-                  <Row>
+                  <Row className="motion-stagger">
                     {
                       history
                       .map((h, i) => 

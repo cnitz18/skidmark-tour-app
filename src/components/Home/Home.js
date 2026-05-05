@@ -123,7 +123,7 @@ export default function Home() {
     return (
         <div className={styles.homePage}>
             <Container className={styles.heroContainer}>
-                <div className={styles.heroSection}>
+                <div className={`${styles.heroSection} motion-rise-in`}>
                     {/* Integrated Header + Carousel */}
                     <div className={styles.carouselWrapper}>
                         <Carousel fade className={styles.carousel} onSelect={(index) => setActiveSlide(index)}>
@@ -161,7 +161,7 @@ export default function Home() {
                     </div>
 
                         {/* League Standings Section */}
-                    <div className={styles.leagueSection}>
+                    <div className={`${styles.leagueSection} motion-fade-in`}>
                     {loading ? (
                         <Row className='justify-content-center py-5'>
                             <Col className='text-center'>
@@ -181,7 +181,7 @@ export default function Home() {
                                 <Col md={12} lg={8} className='mx-auto'>
                                     <Card className={styles.leagueCard}>
                                         <Card.Body>
-                                            <div className={styles.podiumContainer}>
+                                            <div className={`${styles.podiumContainer} motion-stagger`}>
                                                 {leagueData.scoreboard_entries.slice(0, 3).map((entry, idx) => (
                                                     <div key={idx} className={`${styles.podiumSpot} ${styles[`position${entry.Position}`]}`}>
                                                         <div className={styles.podiumRank}>
@@ -206,7 +206,7 @@ export default function Home() {
                         </>
                     ) : null}
                     </div>
-                    <div className={styles.socialsSection}>
+                    <div className={`${styles.socialsSection} motion-fade-in`}>
                         <h2>Our Socials</h2>
                         <div className={styles.socialsContainer}>
                             {socialInfo.map((soc,i) => (
