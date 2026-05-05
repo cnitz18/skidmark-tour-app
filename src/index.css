@@ -200,7 +200,6 @@ div {
 }
 
 .league-badge {
-  float: right;
   background-color: #0080b0 !important;
   font-weight: 400;
   color: white;
@@ -215,9 +214,17 @@ div {
 }
 
 .session-details-badge {
-  float: right;
   font-weight: 400;
   color: white;
+}
+
+.action-chip {
+  min-height: 44px;
+  padding: 0.5rem 0.9rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
 }
 
 .session-details-badge:hover {
