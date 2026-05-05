@@ -13,7 +13,13 @@ export default function PageHeader({ title, subtitle }) {
               {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
             </div>
           )}
-          <img src={fullLogo} alt="Logo" className={styles.headerLogo} />
+          <img
+            src={fullLogo}
+            alt="Logo"
+            className={styles.headerLogo}
+            width="160"
+            height="120"
+          />
         </div>
       </div>
     </header>

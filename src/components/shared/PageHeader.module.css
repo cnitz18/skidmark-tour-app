@@ -19,11 +19,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  min-height: 120px;
 }
 
 .headerLogo {
-  max-width: 160px;
-  height: auto;
+  width: 160px;
+  height: 120px;
+  max-width: 100%;
   max-height: 120px;
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
@@ -79,10 +81,12 @@
   .headerContent {
     gap: 1rem;
     flex-wrap: wrap-reverse;
+    min-height: 100px;
   }
   
   .headerLogo {
-    max-width: 120px;
+    width: 120px;
+    height: 100px;
     max-height: 100px;
   }
   
