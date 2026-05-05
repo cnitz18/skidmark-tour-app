@@ -46,7 +46,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     const [newFastestLapPoint,setNewFastestLapPoint] = useState(false);
     const [leagues,setLeagues] = useState([]);
     const [leagueStandings, setLeagueStandings] = useState({});
-    const [showSpinner, setShowSpinner] = useState(true);
+    const [isLeaguesLoading, setIsLeaguesLoading] = useState(true);
     const [isFormValid, setIsFormValid] = useState(false);
 
     // Existing functions remain the same
@@ -139,35 +139,56 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
     }, [validateForm]);
 
     useEffect(() => {
-        setShowSpinner(true);
-        getAPIData('/leagues/get/').then(async (res) => {
-            // Sort leagues by id in descending order (newest/highest id first)
-            const sortedLeagues = [...res].sort((a, b) => b.id - a.id);
-            setLeagues(sortedLeagues);
-            
-            // Fetch standings for all leagues (not just completed)
-            const standingsPromises = sortedLeagues.map(league =>
-                getAPIData(`/leagues/get/stats/?id=${league.id}`)
-                    .then(standings => ({ leagueId: league.id, standings, success: true }))
-                    .catch(err => {
-                        console.error(`Failed to fetch standings for league ${league.id}`, err);
-                        return { leagueId: league.id, standings: null, success: false };
-                    })
-            );
+        let isMounted = true;
 
-            const results = await Promise.all(standingsPromises);
-            
-            const standingsData = {};
-            for (const result of results) {
-                if (result.success && result.standings?.scoreboard_entries?.length > 0) {
-                    result.standings.champion = result.standings.scoreboard_entries.find((ent) => ent.Position === 1)?.PlayerName;
-                    standingsData[result.leagueId] = result.standings;
+        const fetchLeaguesAndStandings = async () => {
+            setIsLeaguesLoading(true);
+
+            try {
+                const res = await getAPIData('/leagues/get/');
+                const sortedLeagues = [...(res || [])].sort((a, b) => b.id - a.id);
+
+                if (!isMounted) return;
+                setLeagues(sortedLeagues);
+                setIsLeaguesLoading(false);
+
+                // Fetch standings in the background so league cards can render immediately.
+                const standingsPromises = sortedLeagues.map((league) =>
+                    getAPIData(`/leagues/get/stats/?id=${league.id}`)
+                        .then((standings) => ({ leagueId: league.id, standings, success: true }))
+                        .catch((err) => {
+                            console.error(`Failed to fetch standings for league ${league.id}`, err);
+                            return { leagueId: league.id, standings: null, success: false };
+                        })
+                );
+
+                Promise.all(standingsPromises).then((results) => {
+                    if (!isMounted) return;
+
+                    const standingsData = {};
+                    for (const result of results) {
+                        if (result.success && result.standings?.scoreboard_entries?.length > 0) {
+                            result.standings.champion = result.standings.scoreboard_entries.find((ent) => ent.Position === 1)?.PlayerName;
+                            standingsData[result.leagueId] = result.standings;
+                        }
+                    }
+
+                    setLeagueStandings(standingsData);
+                });
+            } catch (err) {
+                console.error('Failed to fetch leagues', err);
+                if (isMounted) {
+                    setLeagues([]);
+                    setIsLeaguesLoading(false);
                 }
             }
+        };
 
-            setLeagueStandings(standingsData);
-            setShowSpinner(false);
-        });
+        fetchLeaguesAndStandings();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
     
     return (
@@ -181,16 +202,19 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </Col>
                 </Row> : <></>
             }
-            <Row xs={1} md={1} lg={1} className="g-4 justify-content-center leagues-hero-container mb-5">
-            {showSpinner ? (
-                <div className="text-center mt-4">
-                    <Spinner animation="border" role="status"/>
-                    <div>
-                        One moment please...
+            {isLeaguesLoading ? (
+                <Container className="d-flex justify-content-center align-items-center" style={{minHeight: '400px'}}>
+                    <div className="text-center">
+                        <Spinner animation="border" role="status"/>
+                        <div>
+                            One moment please...
+                        </div>
                     </div>
-                </div>
-                ) : (
-                    (leagues && leagueStandings && leagues.length > 0) && (
+                </Container>
+            ) : (
+                <>
+                    <Row xs={1} md={1} lg={1} className="g-4 justify-content-center leagues-hero-container mb-5">
+                    {(leagues && leagues.length > 0) && (
                         <Col key={`featured-${leagues[0].id}`}>
                             <div className="league-hero-card">
                                 <div className="hero-background" style={{backgroundImage: `url(${leagues[0].img || '/opala-86-1920.jpg'})`}}>
@@ -239,6 +263,11 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                                             <span className="top3-driver-compact">{entry.PlayerName}</span>
                                                         </div>
                                                     ))}
+                                                    {!leagueStandings[leagues[0].id]?.scoreboard_entries?.length && (
+                                                        <div className="top3-entry-compact">
+                                                            <span className="top3-driver-compact">Loading standings...</span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </Col>
@@ -260,27 +289,14 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                             </div>
                         </Col>
                     )
-                )
-            }
-            </Row>
+                    }
+                    </Row>
 
-            {!showSpinner && (
-                <Container className="mt-5">
-                    <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Historical Leagues</h2>
-                </Container>
-            )}
+                    <Container className="mt-5">
+                        <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Historical Leagues</h2>
+                    </Container>
 
-            {showSpinner ? (
-                <Container className="d-flex justify-content-center align-items-center" style={{minHeight: '400px'}}>
-                    <div className="text-center">
-                        <Spinner animation="border" role="status"/>
-                        <div>
-                            One moment please...
-                        </div>
-                    </div>
-                </Container>
-            ) : (
-                <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container">
+                    <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container">
                     {leagues.slice(1).map((l, i) => {
                         const champion = l.completed && leagueStandings[l.id] ? leagueStandings[l.id]?.champion : null;
                         return (
@@ -321,7 +337,13 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                             </Col>
                         );
                     })}
-                </Row>
+                    </Row>
+                    {!leagues.length && (
+                        <Container className="text-center mt-4">
+                            No leagues found.
+                        </Container>
+                    )}
+                </>
             )}
             
             {/* Modal code remains unchanged */}
