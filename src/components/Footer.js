@@ -26,10 +26,22 @@ export default function Footer() {
           </Col>
           <Col md={4}>
             <div className={styles.socialLinks}>
-              <a href="https://github.com/cnitz18" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/cnitz18"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit Casey Nitz on GitHub"
+                title="GitHub"
+              >
                 <BsGithub />
               </a>
-              <a href="https://www.linkedin.com/in/caseynitz/" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://www.linkedin.com/in/caseynitz/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit Casey Nitz on LinkedIn"
+                title="LinkedIn"
+              >
                 <BsLinkedin />
               </a>
             </div>
