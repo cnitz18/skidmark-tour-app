@@ -214,26 +214,16 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                   </div>
                 </OverlayTrigger>
               ) : (
-                <Button
-                  variant="secondary"
-                  className="session-details-badge action-chip"
+                <Link
                   onClick={() => setShowModal(true)}
                 >
-                  Session Details
-                </Button>
+                  <Badge bg="secondary" className="session-details-badge">Session Details</Badge>
+                </Link>
               )}
               {leagueId && (
-                showLeagueInfo && (
-                  <Button
-                    as={Link}
-                    to={`/league/${leagueId}`}
-                    state={{ leagueId }}
-                    variant="info"
-                    className="league-badge action-chip"
-                  >
-                    League Info
-                  </Button>
-                )
+                <Link to={`/league/${leagueId}`} state={{ leagueId }}>
+                  {showLeagueInfo && <Badge bg="info" className="league-badge">League Info</Badge>}
+                </Link>
               )}
             </div>
           </Col>
