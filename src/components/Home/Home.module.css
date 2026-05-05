@@ -1,6 +1,7 @@
 .homePage {
     min-height: 100vh;
     background: var(--color-bg);
+    overflow-x: hidden;
 }
 
 .heroContainer {
@@ -9,6 +10,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    overflow-x: hidden;
 }
 
 .heroSection {
@@ -36,6 +38,10 @@
     height: 100%;
     border-radius: 0;
     box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3);
+}
+
+.carousel :global(.carousel-inner) {
+    height: 100%;
 }
 
 .carousel :global(.carousel-item) {
@@ -81,7 +87,7 @@
     left: 0;
     right: 0;
     z-index: 12;
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.5rem 3.2rem;
     text-align: center;
     background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     pointer-events: none;
@@ -101,6 +107,11 @@
     z-index: 25;
 }
 
+.carousel :global(.carousel-indicators) {
+    bottom: 0.35rem;
+    margin-bottom: 0;
+}
+
 .carousel :global(.carousel-indicators button) {
     width: 44px;
     height: 44px;
@@ -113,10 +124,10 @@
 
 .carousel :global(.carousel-indicators button::before) {
     content: "";
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.62);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -125,8 +136,8 @@
 }
 
 .carousel :global(.carousel-indicators .active::before) {
-    background: var(--color-secondary);
-    transform: translate(-50%, -50%) scale(1.15);
+    background: #ffffff;
+    transform: translate(-50%, -50%) scale(1.1);
 }
 
 /* Header Overlay */
@@ -314,7 +325,7 @@
 
 @media (max-width: 768px) {
     .caption {
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 1rem 2.8rem;
         background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
     }
     
@@ -363,8 +374,9 @@
 
 @media (max-width: 576px) {
     .carouselWrapper {
-        aspect-ratio: 3 / 4;
-        max-height: 70vh;
+        aspect-ratio: 16 / 10;
+        max-height: none;
+        height: clamp(320px, 58vh, 460px);
     }
     
     .carouselImage {
@@ -373,7 +385,8 @@
     }
     
     .caption {
-        padding: 0.75rem 1rem;
+        padding: 0.6rem 1rem 2.5rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.52));
     }
     
     .caption h3 {
@@ -383,6 +396,21 @@
     .overlayLogo {
         max-width: clamp(60px, 12vw, 100px);
         max-height: clamp(40px, 8vw, 70px);
+    }
+
+    .headerOverlay {
+        top: 36%;
+        width: 94%;
+        padding: 0.75rem;
+    }
+
+    .headerText h1 {
+        font-size: clamp(1rem, 6vw, 1.4rem);
+        line-height: 1.15;
+    }
+
+    .overlay {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.22));
     }
 }
 
