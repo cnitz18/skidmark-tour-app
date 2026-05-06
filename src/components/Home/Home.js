@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Carousel, Col, Card, Spinner } from 'react-bootstrap';
-// import PageHeader from '../shared/PageHeader'
+import { Container, Row, Carousel, Col, Spinner } from 'react-bootstrap';
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import styles from './Home.module.css';
@@ -8,6 +7,7 @@ import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
 import getAPIData from '../../utils/getAPIData';
 import fullLogo from "../../assets/Skidmark_Logo_1.png";
+import FeaturedLeagueCard from '../shared/FeaturedLeagueCard';
 
 const imageInfo = [
     // {
@@ -76,8 +76,9 @@ const socialInfo = [
     }
 ]
 
-export default function Home() {
+export default function Home({ lists }) {
     const [liveStreams, setLiveStreams] = useState([]);
+    const [league, setLeague] = useState(null);
     const [leagueData, setLeagueData] = useState(null);
     const [leagueId, setLeagueId] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -100,7 +101,9 @@ export default function Home() {
                 if (leagues && leagues.length > 0) {
                     // Sort by ID descending to get the newest/most recent league
                     const sortedLeagues = [...leagues].sort((a, b) => b.id - a.id);
-                    const latestLeagueId = sortedLeagues[0].id;
+                    const latestLeague = sortedLeagues[0];
+                    const latestLeagueId = latestLeague.id;
+                    setLeague(latestLeague);
                     setLeagueId(latestLeagueId);
                     
                     // Now fetch stats for the latest league
@@ -169,7 +172,7 @@ export default function Home() {
                                 <Spinner animation="border" variant="info" />
                             </Col>
                         </Row>
-                    ) : leagueData && leagueData.scoreboard_entries ? (
+                    ) : league ? (
                         <>
                             <Row>
                                 <Col>
@@ -177,33 +180,12 @@ export default function Home() {
                                     <p className={styles.leagueSubtitle}>Current Championship Standings</p>
                                 </Col>
                             </Row>
-                            
-                            <Row>
-                                <Col md={12} lg={8} className='mx-auto'>
-                                    <Card className={styles.leagueCard}>
-                                        <Card.Body>
-                                            <div className={`${styles.podiumContainer} motion-stagger`}>
-                                                {leagueData.scoreboard_entries.slice(0, 3).map((entry, idx) => (
-                                                    <div key={idx} className={`${styles.podiumSpot} ${styles[`position${entry.Position}`]}`}>
-                                                        <div className={styles.podiumRank}>
-                                                            <span className={styles.medalists}>{['🥇', '🥈', '🥉'][idx]}</span>
-                                                        </div>
-                                                        <div className={styles.podiumDriver}>
-                                                            <h4>{entry.PlayerName}</h4>
-                                                            <p className={styles.podiumPoints}>{entry.Points} pts</p>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            <div className='text-center' style={{ paddingBottom: '1rem' }}>
-                                                <Link to={`/league/${leagueId}`} className={`btn ${styles.viewButton}`}>
-                                                    View Full Standings
-                                                </Link>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            </Row>
+                            <FeaturedLeagueCard
+                                league={league}
+                                standings={leagueData}
+                                tracksList={lists?.tracks?.list}
+                                compact
+                            />
                         </>
                     ) : null}
                     </div>

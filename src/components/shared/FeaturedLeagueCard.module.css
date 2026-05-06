@@ -1,0 +1,296 @@
+/* =============================================
+   FeaturedLeagueCard — desktop: side-by-side
+   ============================================= */
+.heroCard {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 15px 50px rgba(0, 168, 225, 0.2);
+  background-color: var(--color-bg-elevated);
+}
+
+.heroBackground {
+  flex: 0 0 40%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  min-height: 300px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.compact .heroBackground {
+  min-height: 200px;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(13, 34, 64, 0.1) 0%, rgba(13, 34, 64, 0.4) 100%);
+  z-index: 1;
+}
+
+.heroContent {
+  flex: 0 0 60%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text);
+}
+
+.heroHeader {
+  margin-bottom: 1rem;
+  text-align: center;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.heroTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.compact .heroTitle {
+  font-size: 1.5rem;
+}
+
+.heroSubtitle {
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.compact .heroSubtitle {
+  font-size: 0.9rem;
+}
+
+/* Standings box */
+.standingsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+  padding: 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.compact .standingsBox {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+}
+
+.standingsLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.standingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.standingRow:last-child {
+  border-bottom: none;
+}
+
+.medal {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  width: 1.8rem;
+  text-align: center;
+}
+
+.driver {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.driverSkeleton {
+  display: block;
+  min-width: 120px;
+  height: 1em;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg-elevated) 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.points {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+/* Info strip */
+.infoStrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.compact .infoStrip {
+  margin-bottom: 0.75rem;
+}
+
+.stripItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.stripLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.stripSep {
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+}
+
+/* Footer */
+.heroFooter {
+  display: flex;
+  justify-content: center;
+}
+
+.viewBtn {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%) !important;
+  border: none !important;
+  font-weight: 700;
+  padding: 0.75rem 2.5rem !important;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 25px rgba(0, 168, 225, 0.3);
+  transition: all 0.3s ease;
+}
+
+.compact .viewBtn {
+  padding: 0.5rem 1.75rem !important;
+  font-size: 0.95rem;
+}
+
+.viewBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 168, 225, 0.5) !important;
+}
+
+/* =============================================
+   Mobile: cinematic overlay (B3 layout)
+   ============================================= */
+@media (max-width: 768px) {
+  .heroCard {
+    flex-direction: column;
+    position: relative;
+  }
+
+  .heroBackground {
+    position: absolute;
+    inset: 0;
+    flex: none;
+    width: 100%;
+    height: 100%;
+    min-height: unset;
+    border-right: none;
+  }
+
+  .heroOverlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(13, 34, 64, 0.15) 0%,
+      rgba(13, 34, 64, 0.55) 30%,
+      rgba(10, 20, 40, 0.95) 100%
+    );
+  }
+
+  .heroContent {
+    flex: none;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    padding-top: clamp(50px, 10vh, 100px);
+    padding-bottom: clamp(50px, 10vh, 100px);
+  }
+
+  /* Compact variant: much less image peek on mobile */
+  .compact .heroContent {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .heroTitle {
+    font-size: 1.4rem;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  }
+
+  .heroSubtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .standingsBox {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .standingsLabel {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .standingRow {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .driver {
+    color: #fff;
+  }
+
+  .infoStrip {
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .stripLabel {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}

@@ -1,5 +1,6 @@
 import { Container, Row, Col, Modal, Form, Table, Spinner, Button, Card, Badge } from "react-bootstrap";
 import PageHeader from "../shared/PageHeader";
+import FeaturedLeagueCard from "../shared/FeaturedLeagueCard";
 import { useEffect, useState, useCallback } from "react";
 import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
@@ -250,71 +251,15 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                 </Container>
             ) : (
                 <>
-                    <Row xs={1} md={1} lg={1} className="g-4 justify-content-center leagues-hero-container mb-5 motion-rise-in">
                     {(leagues && leagues.length > 0) && (
-                        <Col key={`featured-${leagues[0].id}`}>
-                            <div className="league-hero-card">
-                                <div className="hero-background" style={{backgroundImage: `url(${leagues[0].img || '/opala-86-1920.jpg'})`}}>
-                                    <div className="hero-overlay"></div>
-                                </div>
-                                <div className="hero-content">
-                                    <div className="hero-header">
-                                        <h1 className="hero-title">{leagues[0].name}</h1>
-                                        <p className="hero-subtitle">{leagues[0].description || 'The latest racing season'}</p>
-                                    </div>
-
-                                    <div className="hero-standings-b3">
-                                        <div className="b3-standings-label">Championship Leaders</div>
-                                        {[0, 1, 2].map((idx) => {
-                                            const entry = leagueStandings[leagues[0].id]?.scoreboard_entries?.[idx];
-                                            return (
-                                                <div key={idx} className="b3-standing-row">
-                                                    <span className="b3-medal">{['🥇', '🥈', '🥉'][idx]}</span>
-                                                    {entry ? (
-                                                        <>
-                                                            <span className="b3-driver">{entry.PlayerName}</span>
-                                                            <span className="b3-points">{entry.Points} pts</span>
-                                                        </>
-                                                    ) : (
-                                                        <span className="b3-driver b3-driver-skeleton">&nbsp;</span>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-
-                                    <div className="hero-info-strip">
-                                        <span className="strip-item">
-                                            <span className="strip-label">Next Race</span>
-                                            {leagues[0].races?.length > 0
-                                                ? `${getTrackDisplayName(leagues[0].races[0].track, lists["tracks"]?.list)} | ${getReadableRaceDate(leagues[0].races[0].date)}`
-                                                : 'No races scheduled'}
-                                        </span>
-                                        <span className="strip-sep">·</span>
-                                        <span className="strip-item">
-                                            <span className="strip-label">Progress</span>
-                                            {`${(leagues[0].races || []).filter(r => r.completed).length}/${leagues[0].races?.length || 0} races`}
-                                        </span>
-                                    </div>
-
-                                    <div className="hero-footer">
-                                        <Button
-                                            as={Link}
-                                            to={`/league/${leagues[0].id}`}
-                                            state={{ league: leagues[0] }}
-                                            variant="primary"
-                                            size="lg"
-                                            className="view-details-btn"
-                                        >
-                                            League Details →
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-                    )
-                    }
-                    </Row>
+                        <div className="leagues-hero-container mb-5 motion-rise-in">
+                            <FeaturedLeagueCard
+                                league={leagues[0]}
+                                standings={leagueStandings[leagues[0].id]}
+                                tracksList={lists["tracks"]?.list}
+                            />
+                        </div>
+                    )}
 
                     <Container className="mt-5">
                         <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Past Leagues</h2>

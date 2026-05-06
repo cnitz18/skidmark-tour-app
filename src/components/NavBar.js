@@ -93,7 +93,7 @@ function NavigationContent({ enums, lists }) {
         <Routes>
           {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
           <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home lists={lists} />} />
           <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
