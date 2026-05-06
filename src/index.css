@@ -206,8 +206,13 @@ label {
 }
 
 div {
-  border-radius: 5px;
   padding: 4px;
+}
+
+.setup > *,
+.setup-3 > *,
+.setup-4 > * {
+  border-radius: 5px;
 }
 
 .setup {
