@@ -10,6 +10,15 @@ import { Link } from 'react-router-dom';
 const TrophyRoomBasic = () => {
     const champions = [
         {
+            id: 1,
+            name: "verydystrbd",
+            season: "Winter 2025",
+            championship: "Opala '86s",
+            stats: "3 wins, 5 podiums, 2 poles",
+            description: "A relentless 10-round campaign capped by a composed title run to 61 points.",
+            seasonId: 29
+        },
+        {
             id: 2,
             name: "verydystrbd",
             season: "Spring 2025",

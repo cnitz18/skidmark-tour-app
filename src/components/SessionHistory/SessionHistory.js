@@ -141,7 +141,7 @@ const SessionHistory = ({ enums, lists }) => {
                       <Form.Label className="mb-2">Filter By:</Form.Label>
                       <Form.Select value={filter} onChange={handleFilters}>
                         <option value="all">All Races</option>
-                        <option value="league-only">League Only</option>
+                        <option value="league-only">League Races</option>
                       </Form.Select>
                     </Form.Group>
                   </div>

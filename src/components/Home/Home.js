@@ -176,8 +176,7 @@ export default function Home({ lists }) {
                         <>
                             <Row>
                                 <Col>
-                                    <h2 className={styles.sectionTitle}>League Standings</h2>
-                                    <p className={styles.leagueSubtitle}>Current Championship Standings</p>
+                                    <h2 className={styles.sectionTitle}>Current League</h2>
                                 </Col>
                             </Row>
                             <FeaturedLeagueCard
