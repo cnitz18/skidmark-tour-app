@@ -150,7 +150,75 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   return (
     <Accordion className="race-details-accordion">
         <Container className={`history-entry ${leagueId ? "league-entry" : ""} ${isFeature ? "feature-entry" : ""}`}>
-        <Row className="history-entry-data">
+        {/* ── Mobile card layout (< md) ── */}
+        <div className="d-md-none mobile-history-entry">
+          <div className="mobile-entry-header">
+            <div className="mobile-entry-title">
+              <h5 className="mobile-track-name">
+                {trackDisplayName}
+                {isFeature && <Badge className="ms-2 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
+              </h5>
+              <span className="mobile-car-class">{vehicleClassDisplayName}</span>
+            </div>
+          </div>
+
+          <div className="mobile-podium">
+            <div className="mobile-podium-winner">
+              <ImTrophy color="gold" size={22} className="trophy" />
+              <span className={`mobile-winner-name ${firstPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                {firstPlaceName || "\u00A0"}
+              </span>
+            </div>
+            <div className="mobile-podium-rest">
+              <span className={`mobile-place-name ${secondPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                <ImTrophy color="silver" size={14} className="trophy" />
+                {secondPlaceName || "\u00A0"}
+              </span>
+              <span className={`mobile-place-name ${thirdPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                <ImTrophy color="tan" size={14} className="trophy" />
+                {thirdPlaceName || "\u00A0"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mobile-entry-footer">
+            <span className="mobile-session-length">
+              {sessionLength}&thinsp;{timedSession ? "min" : "laps"}
+            </span>
+            <span className="mobile-entry-dot">·</span>
+            <span className="mobile-entry-date">
+              {startTime.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+            </span>
+            <span className="mobile-entry-dot">·</span>
+            {!data.finished && <Badge bg="warning" text="dark" className="me-1" style={{fontSize:'0.65em'}}>Incomplete</Badge>}
+            <span className="mobile-entry-actions">
+              {isHistorical ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip {...props}>
+                      Manually entered from historical screenshots. May not be fully accurate.
+                    </Tooltip>
+                  )}
+                >
+                  <span><IoInformationCircleOutline color="red" /></span>
+                </OverlayTrigger>
+              ) : (
+                <Link onClick={() => setShowModal(true)}>
+                  <Badge bg="secondary" className="session-details-badge" style={{fontSize:'0.65em'}}>Details</Badge>
+                </Link>
+              )}
+              {leagueId && showLeagueInfo && (
+                <Link to={`/league/${leagueId}`} state={{ leagueId }}>
+                  <Badge bg="info" className="league-badge" style={{fontSize:'0.65em'}}>League</Badge>
+                </Link>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* ── Desktop layout (≥ md) ── */}
+        <Row className="history-entry-data d-none d-md-flex">
           <Col lg="4" className="history-entry-data-title">
             <>
               <h5>

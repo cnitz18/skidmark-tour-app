@@ -524,6 +524,118 @@ hr {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* ── Mobile race history card ── */
+.mobile-history-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 2px 0;
+}
+
+.mobile-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-entry-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-track-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.15rem 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-car-class {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.mobile-entry-actions {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.mobile-podium {
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0.4rem;
+}
+
+.mobile-podium-winner {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.2rem;
+}
+
+.mobile-winner-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  transition: opacity var(--motion-base) var(--motion-ease-standard);
+}
+
+.mobile-winner-name.is-placeholder {
+  opacity: 0.3;
+}
+
+.mobile-podium-rest {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.mobile-place-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  transition: opacity var(--motion-base) var(--motion-ease-standard);
+}
+
+.mobile-place-name.is-placeholder {
+  opacity: 0.3;
+}
+
+.mobile-entry-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.mobile-session-length {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.mobile-entry-dot {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.mobile-entry-date {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
 /* Race details accordion items - all-around borders with proper overlap handling */
 .race-details-accordion .accordion-item {
   background-color: transparent;
