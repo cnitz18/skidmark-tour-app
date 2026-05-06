@@ -12,7 +12,6 @@ import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
 import ServerStatus from './ServerStatus/ServerStatus';
 import AdminPortal from './AdminPortal';
-import FontLab from './FontLab/FontLab';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -34,7 +33,6 @@ function TitleUpdater() {
       '/server': 'Server Status | The Skidmark Tour',
       '/admin': 'Admin Portal | The Skidmark Tour',
       '/leagueadmin': 'League Admin | The Skidmark Tour',
-      '/font-lab': 'Font Lab | The Skidmark Tour',
     };
 
     // Check if it's a league detail page
@@ -98,7 +96,6 @@ function NavigationContent({ enums, lists }) {
           <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
           <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
           <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
-          <Route path="/font-lab" element={<FontLab />} />
           <Route
             exact
             path="/league/:id"
