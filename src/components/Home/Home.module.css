@@ -17,8 +17,27 @@
     width: 100%;
     aspect-ratio: 16 / 9;
     max-height: calc(100vh - 80px);
+    padding: 0;
     overflow: hidden;
     border-radius: 0;
+}
+
+@media (max-width: 768px) {
+    .carouselWrapper {
+        border-radius: 16px;
+        margin: 0 0.75rem;
+        width: calc(100% - 1.5rem);
+    }
+
+    .carousel {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .carousel :global(.carousel-inner) {
+        border-radius: 16px;
+        overflow: hidden;
+    }
 }
 
 .carousel {
@@ -27,16 +46,19 @@
     left: 0;
     width: 100%;
     height: 100%;
+    padding: 0;
     border-radius: 0;
     box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3);
 }
 
 .carousel :global(.carousel-inner) {
     height: 100%;
+    padding: 0;
 }
 
 .carousel :global(.carousel-item) {
     height: 100%;
+    padding: 0;
 }
 
 .carousel :global(.carousel-item img),
@@ -67,6 +89,7 @@
     left: 0;
     right: 0;
     bottom: 0;
+    padding: 0;
     background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
     z-index: 5;
     pointer-events: none;
@@ -317,7 +340,7 @@
 @media (max-width: 768px) {
     .caption {
         padding: 0.5rem 1rem 2.8rem;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.32) 46%, rgba(0, 0, 0, 0) 100%);
     }
     
     .caption h3 {
@@ -377,7 +400,7 @@
     
     .caption {
         padding: 0.6rem 1rem 2.5rem;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.52));
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.34) 50%, rgba(0, 0, 0, 0.02) 84%, rgba(0, 0, 0, 0) 100%);
     }
     
     .caption h3 {
@@ -401,7 +424,7 @@
     }
 
     .overlay {
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.22));
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.16) 44%, rgba(0, 0, 0, 0) 100%);
     }
 }
 

@@ -146,26 +146,6 @@ const SessionHistory = ({ enums, lists }) => {
                     </Form.Group>
                   </div>
                 </details>
-                <Row className="mb-3 g-2 align-items-end motion-fade-in d-none d-md-flex">
-                  <Col xs={12} md="auto" className="flex-grow-1 flex-md-grow-0">
-                    <Form.Group>
-                      <Form.Label className="mb-2">Order By:</Form.Label>
-                      <Form.Select value={sortOptionSelected} onChange={handleSort}>
-                        <option value="dateDesc">Date Descending</option>
-                        <option value="dateAsc">Date Ascending</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col xs={12} md="auto" className="flex-grow-1 flex-md-grow-0">
-                    <Form.Group>
-                      <Form.Label className="mb-2">Filter By:</Form.Label>
-                      <Form.Select value={filter} onChange={handleFilters}>
-                        <option value="all">All Races</option>
-                        <option value="league-only">League Only</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
                 {/* History List */}
                 <LoadingOverlay
                   active={showMiniSpinner}
