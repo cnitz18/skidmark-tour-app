@@ -4,21 +4,12 @@
     overflow-x: hidden;
 }
 
-.heroContainer {
-    padding: 0;
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    overflow-x: hidden;
-}
-
 .heroSection {
     padding: 0;
     display: flex;
     flex-direction: column;
-    /* gap: 3rem; */
     width: 100%;
+    overflow-x: hidden;
 }
 
 .carouselWrapper {

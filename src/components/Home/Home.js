@@ -122,10 +122,9 @@ export default function Home() {
 
     return (
         <div className={styles.homePage}>
-            <Container className={styles.heroContainer}>
-                <div className={`${styles.heroSection} motion-rise-in`}>
-                    {/* Integrated Header + Carousel */}
-                    <div className={styles.carouselWrapper}>
+            <div className={`${styles.heroSection} motion-rise-in`}>
+                {/* Integrated Header + Carousel — full bleed, no container */}
+                <div className={styles.carouselWrapper}>
                         <Carousel fade className={styles.carousel} onSelect={(index) => setActiveSlide(index)}>
                             {imageInfo.map((img,i) => (
                                 <Carousel.Item key={i} interval={3000}>
@@ -158,9 +157,11 @@ export default function Home() {
                                 <img src={fullLogo} alt="Skidmark Logo" className={styles.overlayLogo} />
                             </div>
                         </div>
-                    </div>
+                </div>
 
-                        {/* League Standings Section */}
+                {/* League standings, socials — inside a proper container for mobile centering */}
+                <Container>
+                    {/* League Standings Section */}
                     <div className={`${styles.leagueSection} motion-fade-in`}>
                     {loading ? (
                         <Row className='justify-content-center py-5'>
@@ -225,8 +226,8 @@ export default function Home() {
                     </div>
 
                     <LiveStreams streams={liveStreams} />
-                </div>
-            </Container>
+                </Container>
+            </div>
         </div>
     );
 }
