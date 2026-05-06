@@ -78,21 +78,28 @@
 
 /* Mobile responsive styles */
 @media screen and (max-width: 768px) {
+  .pageHeader {
+    padding: 0.5rem 0;
+  }
+
   .headerContent {
+    padding: 0;
     gap: 1rem;
-    flex-wrap: wrap-reverse;
-    min-height: 100px;
+    min-height: unset;
+    flex-wrap: nowrap;
+    align-items: center;
   }
   
   .headerLogo {
     width: 120px;
-    height: 100px;
-    max-height: 100px;
+    height: 90px;
+    max-height: 90px;
+    flex-shrink: 0;
   }
   
   .title {
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 0;
   }
 
   .subtitle {
