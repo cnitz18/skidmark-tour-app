@@ -114,15 +114,167 @@
   width: 100%;
 }
 
-@media (max-width: 768px) {
-  .hero-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* B3 standings layout */
+.hero-standings-b3 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+  padding: 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
-@media (max-width: 576px) {
-  .hero-stats {
-    grid-template-columns: 1fr;
+.b3-standings-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.b3-standing-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.b3-standing-row:last-child {
+  border-bottom: none;
+}
+
+.b3-medal {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  width: 1.8rem;
+  text-align: center;
+}
+
+.b3-driver {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.b3-driver-skeleton {
+  display: block;
+  min-width: 120px;
+  height: 1em;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg-elevated) 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.b3-points {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+/* Info strip (next race · progress) */
+.hero-info-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.strip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.strip-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.strip-sep {
+  color: var(--color-text-secondary);
+  opacity: 0.4;
+}
+
+/* Cinematic overlay on mobile (B3 layout) */
+@media (max-width: 768px) {
+  .league-hero-card {
+    flex-direction: column;
+    position: relative;
+  }
+  .hero-background {
+    position: absolute;
+    inset: 0;
+    flex: none;
+    width: 100%;
+    height: 100%;
+    min-height: unset;
+    border-right: none;
+  }
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(13, 34, 64, 0.15) 0%,
+      rgba(13, 34, 64, 0.55) 30%,
+      rgba(10, 20, 40, 0.95) 100%
+    );
+  }
+  .hero-content {
+    flex: none;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    padding-top: clamp(50px, 10vh, 100px);
+    padding-bottom: clamp(50px, 10vh, 100px);
+  }
+  .hero-title {
+    font-size: 1.4rem;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+  .hero-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.75);
+  }
+  .hero-standings-b3 {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  .b3-standings-label {
+    color: rgba(255,255,255,0.55);
+  }
+  .b3-standing-row {
+    border-color: rgba(255,255,255,0.08);
+  }
+  .b3-driver {
+    color: #fff;
+  }
+  .hero-info-strip {
+    color: rgba(255,255,255,0.65);
+  }
+  .strip-label {
+    color: rgba(255,255,255,0.45);
   }
 }
 

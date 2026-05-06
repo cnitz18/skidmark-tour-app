@@ -262,62 +262,42 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                                         <h1 className="hero-title">{leagues[0].name}</h1>
                                         <p className="hero-subtitle">{leagues[0].description || 'The latest racing season'}</p>
                                     </div>
-                                    
-                                    <Row className="hero-stats mt-4">
-                                        <Col md={4} className="hero-stat-card">
-                                            <div className="stat-box">
-                                                <div className="stat-label">Next Race</div>
-                                                <div className="stat-value" style={{fontSize: '1.1rem'}}>
-                                                    {leagues[0].races && leagues[0].races.length > 0 ? (
+
+                                    <div className="hero-standings-b3">
+                                        <div className="b3-standings-label">Championship Leaders</div>
+                                        {[0, 1, 2].map((idx) => {
+                                            const entry = leagueStandings[leagues[0].id]?.scoreboard_entries?.[idx];
+                                            return (
+                                                <div key={idx} className="b3-standing-row">
+                                                    <span className="b3-medal">{['🥇', '🥈', '🥉'][idx]}</span>
+                                                    {entry ? (
                                                         <>
-                                                            <div>{getTrackDisplayName(leagues[0].races[0].track, lists["tracks"]?.list)}</div>
-                                                            <div style={{fontSize: '0.85rem', opacity: 0.85, marginTop: '0.25rem'}}>
-                                                                {getReadableRaceDate(leagues[0].races[0].date)}
-                                                            </div>
+                                                            <span className="b3-driver">{entry.PlayerName}</span>
+                                                            <span className="b3-points">{entry.Points} pts</span>
                                                         </>
-                                                    ) : 'No races scheduled'}
-                                                </div>
-                                            </div>
-                                        </Col>
-                                        <Col md={4} className="hero-stat-card">
-                                            <div className="stat-box">
-                                                <div className="stat-label">Season Progress</div>
-                                                <div className="stat-value">
-                                                    {`${(leagues[0].races || []).filter(r => r.completed).length}/${leagues[0].races?.length || 0}`}
-                                                </div>
-                                                <div style={{fontSize: '0.85rem', opacity: 0.85, marginTop: '0.5rem'}}>
-                                                    Races Complete
-                                                </div>
-                                            </div>
-                                        </Col>
-                                        <Col md={4} className="hero-stat-card">
-                                            <div className="stat-box stat-box-compact">
-                                                <div className="stat-label">Championship Leaders</div>
-                                                <div className="top3-list-compact">
-                                                    {leagueStandings[leagues[0].id]?.scoreboard_entries?.slice(0, 3).map((entry, idx) => (
-                                                        <div key={idx} className="top3-entry-compact">
-                                                            <span className="top3-position-compact">#{entry.Position}</span>
-                                                            <span className="top3-driver-compact">{entry.PlayerName}</span>
-                                                        </div>
-                                                    ))}
-                                                    {!leagueStandings[leagues[0].id]?.scoreboard_entries?.length && (
-                                                        <>
-                                                            {[0, 1, 2].map((idx) => (
-                                                                <div key={idx} className="top3-entry-compact">
-                                                                    <span className="top3-position-compact">#{idx + 1}</span>
-                                                                    <span className="top3-driver-compact" style={idx === 0 ? undefined : { opacity: 0 }}>
-                                                                        {idx === 0 ? 'Loading standings...' : '\u00A0'}
-                                                                    </span>
-                                                                </div>
-                                                            ))}
-                                                        </>
+                                                    ) : (
+                                                        <span className="b3-driver b3-driver-skeleton">&nbsp;</span>
                                                     )}
                                                 </div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                    
-                                    <div className="hero-footer mt-5">
+                                            );
+                                        })}
+                                    </div>
+
+                                    <div className="hero-info-strip">
+                                        <span className="strip-item">
+                                            <span className="strip-label">Next Race</span>
+                                            {leagues[0].races?.length > 0
+                                                ? `${getTrackDisplayName(leagues[0].races[0].track, lists["tracks"]?.list)} | ${getReadableRaceDate(leagues[0].races[0].date)}`
+                                                : 'No races scheduled'}
+                                        </span>
+                                        <span className="strip-sep">·</span>
+                                        <span className="strip-item">
+                                            <span className="strip-label">Progress</span>
+                                            {`${(leagues[0].races || []).filter(r => r.completed).length}/${leagues[0].races?.length || 0} races`}
+                                        </span>
+                                    </div>
+
+                                    <div className="hero-footer">
                                         <Button
                                             as={Link}
                                             to={`/league/${leagues[0].id}`}
@@ -337,7 +317,7 @@ const Leagues = ({ enums, lists, showAdmin=false }) => {
                     </Row>
 
                     <Container className="mt-5">
-                        <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Historical Leagues</h2>
+                        <h2 style={{fontSize: '2rem', fontWeight: 600, marginBottom: '2rem', textAlign: 'center', color: 'var(--color-text)'}}>Past Leagues</h2>
                     </Container>
 
                     <Row xs={1} md={2} lg={4} className="g-4 justify-content-center leagues-container motion-stagger">
