@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import React, { useState } from 'react'
 import { useEffect } from "react";
 import { Route, Routes, BrowserRouter as Router, Navigate, useLocation, Link } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
@@ -49,6 +49,7 @@ function TitleUpdater() {
 function NavigationContent({ enums, lists }) {
   const location = useLocation();
   const routeKey = `${location.pathname}${location.search}`;
+  const [navExpanded, setNavExpanded] = useState(false);
 
   return (
     <div className={styles.mainContent}>
@@ -56,9 +57,11 @@ function NavigationContent({ enums, lists }) {
         expand="lg" 
         className={styles.navbar}
         fixed="top"
+        expanded={navExpanded}
+        onToggle={(expanded) => setNavExpanded(expanded)}
       >
         <Container>
-          <Navbar.Brand as={Link} to="/" className={styles.brand}>
+          <Navbar.Brand as={Link} to="/" className={styles.brand} onClick={() => setNavExpanded(false)}>
             <img 
               src={logo} 
               alt="Logo" 
@@ -75,7 +78,8 @@ function NavigationContent({ enums, lists }) {
                     as={Link}
                     to={nLink.href}
                     active={location.pathname === nLink.href}
-                    className={`nav-link ${location.pathname === nLink.href ? styles.active : ''}`}>
+                    className={`nav-link ${location.pathname === nLink.href ? styles.active : ''}`}
+                    onClick={() => setNavExpanded(false)}>
                       {nLink.name}
                     </Nav.Link>
                 ))
