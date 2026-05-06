@@ -5,6 +5,7 @@ import PageHeader from "../shared/PageHeader";
 import { Spinner, Container, Row, Col, Form, Pagination } from "react-bootstrap";
 import LoadingOverlay from 'react-loading-overlay-ts';
 import UnavailablePage from "./ServerUnavailablePage";
+import styles from './SessionHistory.module.css';
 
 const SessionHistory = ({ enums, lists }) => {
   const [history, setHistory] = useState([]);
@@ -126,7 +127,26 @@ const SessionHistory = ({ enums, lists }) => {
             ) : 
             (
               <>
-                <Row className="mb-3 g-2 align-items-end motion-fade-in">
+                <details className={styles.filterToggle}>
+                  <summary>Filters</summary>
+                  <div className={styles.filterRowInner}>
+                    <Form.Group>
+                      <Form.Label className="mb-2">Order By:</Form.Label>
+                      <Form.Select value={sortOptionSelected} onChange={handleSort}>
+                        <option value="dateDesc">Date Descending</option>
+                        <option value="dateAsc">Date Ascending</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label className="mb-2">Filter By:</Form.Label>
+                      <Form.Select value={filter} onChange={handleFilters}>
+                        <option value="all">All Races</option>
+                        <option value="league-only">League Only</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </div>
+                </details>
+                <Row className="mb-3 g-2 align-items-end motion-fade-in d-none d-md-flex">
                   <Col xs={12} md="auto" className="flex-grow-1 flex-md-grow-0">
                     <Form.Group>
                       <Form.Label className="mb-2">Order By:</Form.Label>
