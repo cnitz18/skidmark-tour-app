@@ -112,7 +112,6 @@ export default function Home({ lists }) {
             })
             .then(data => {
                 if (data) {
-                    console.log('League data received:', data);
                     setLeagueData(data);
                 }
                 setLoading(false);

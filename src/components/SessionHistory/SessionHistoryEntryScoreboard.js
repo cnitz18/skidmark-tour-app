@@ -33,6 +33,11 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   function rowClick(res){
     let stage_id = res["stage"]
     let participant_id = res["participantid"]
+    setShowSpinner(true);
+    setActiveTab("lapLog");
+    setEventsData([]);
+    setAllPlayerEvents([]);
+    setMinSectors({});
     setSelectedRacerName(res["name"])
 
     var promiseArr = [], playerEvents = [];;
@@ -246,16 +251,16 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                                   <tr key={i} className={i % 2 === 0 ? "even-row" : ""}>
                                     <td className="text-center">{i+1}</td>                            
                                     <td className={evt.attributes_LapTime === minSectors.total ? "personal-fastest-lap-highlight" : ""}>
-                                      {msToTime(evt.attributes_LapTime)}
+                                      <span className="lap-time-value">{msToTime(evt.attributes_LapTime)}</span>
                                     </td>
                                     <td className={evt.attributes_Sector1Time === minSectors.sector1 ? "personal-fastest-sector-highlight" : ""}>
-                                      {msToTime(evt.attributes_Sector1Time)}
+                                      <span className="sector-time-value">{msToTime(evt.attributes_Sector1Time)}</span>
                                     </td>
                                     <td className={evt.attributes_Sector2Time === minSectors.sector2 ? "personal-fastest-sector-highlight" : ""}>
-                                      {msToTime(evt.attributes_Sector2Time)}
+                                      <span className="sector-time-value">{msToTime(evt.attributes_Sector2Time)}</span>
                                     </td>
                                     <td className={evt.attributes_Sector3Time === minSectors.sector3 ? "personal-fastest-sector-highlight" : ""}>
-                                      {msToTime(evt.attributes_Sector3Time)}
+                                      <span className="sector-time-value">{msToTime(evt.attributes_Sector3Time)}</span>
                                     </td>
                                     <td className="text-center position-cell">
                                       <span className={`position-badge ${evt.attributes_RacePosition <= 3 ? `position-${evt.attributes_RacePosition}` : ''}`}>P{evt.attributes_RacePosition}</span>

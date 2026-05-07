@@ -31,8 +31,15 @@
   font-size: 14px;
 }
 
-.lap-time-table .MuiTable-root tr.even-row {
-  background-color: var(--color-bg);
+.lap-time-value {
+  font-size: 1.04rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.sector-time-value {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
 }
 
 /* Position indicator */
@@ -51,8 +58,8 @@
 }
 
 .position-badge.position-1 {
-  background: #ffd700;
-  color: #856404;
+  background: #d4af37;
+  color: #3a2f08;
 }
 
 .position-badge.position-2 {
@@ -108,7 +115,7 @@
 }
 
 .personal-fastest-sector-highlight {
-  background-color: rgba(255, 193, 7, 0.08) !important;
+  background-color: rgba(255, 193, 7, 0.12) !important;
   color: #856404;
   font-weight: 600;
   position: relative;
@@ -218,6 +225,51 @@
 
 .race-event-modal .nav-tabs {
   border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .position-badge.position-1 {
+  background: #b99222;
+  color: #f5e7bf;
+}
+
+[data-theme="dark"] .position-badge.position-2 {
+  background: #7e8690;
+  color: #f2f4f7;
+}
+
+[data-theme="dark"] .position-badge.position-3 {
+  background: #8e5f34;
+  color: #f5e9db;
+}
+
+[data-theme="dark"] .personal-fastest-lap-highlight {
+  background-color: rgba(40, 167, 69, 0.22) !important;
+  color: #d9ffe3;
+}
+
+[data-theme="dark"] .personal-fastest-lap-highlight::before {
+  background-color: #45d36e;
+}
+
+[data-theme="dark"] .personal-fastest-sector-highlight {
+  background-color: rgba(255, 193, 7, 0.26) !important;
+  color: #fff2c2;
+}
+
+[data-theme="dark"] .personal-fastest-sector-highlight::before {
+  background-color: #ffd766;
+}
+
+[data-theme="dark"] .sector-time-value {
+  color: #c2c9d4;
+}
+
+[data-theme="dark"] .personal-fastest-lap-legend .color-box {
+  background-color: rgba(69, 211, 110, 0.35);
+}
+
+[data-theme="dark"] .personal-fastest-sector-legend .color-box {
+  background-color: rgba(255, 215, 102, 0.42);
 }
 .event-card .card-body {
   padding: 0;
