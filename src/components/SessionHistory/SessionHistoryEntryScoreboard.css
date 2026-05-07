@@ -43,10 +43,7 @@
 }
 
 .lap-intelligence-panel {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 10px;
+  padding: 0;
 }
 
 .lap-intelligence-summary {
@@ -56,10 +53,7 @@
 }
 
 .summary-item {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 8px 10px;
+  padding: 4px 10px;
 }
 
 .summary-label {

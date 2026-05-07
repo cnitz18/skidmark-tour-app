@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Card, Badge, Table, ButtonGroup, Spinner } from 'react-bootstrap';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceDot } from 'recharts';
 import msToTime from '../../utils/msToTime';
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
 import './SessionHistoryHeadToHeadComparison.css';
@@ -25,6 +25,8 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   const [selectedSector, setSelectedSector] = useState(1);
   const [analysisMode, setAnalysisMode] = useState('clean'); // 'all' or 'clean'
   const [battleGapThreshold, setBattleGapThreshold] = useState(2.0);
+  const [primaryPitLaps, setPrimaryPitLaps] = useState({ in: [], out: [] });
+  const [comparisonPitLaps, setComparisonPitLaps] = useState({ in: [], out: [] });
 
   // Initialize available drivers for comparison
   useEffect(() => {
@@ -93,6 +95,10 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     // Detect pit stops
     const primaryPitLaps = detectPitStops(primaryDriverData, primaryLaps);
     const comparisonPitLaps = detectPitStops(comparisonDriverData, comparisonLaps);
+
+    // Store pit lap data for table rendering
+    setPrimaryPitLaps(primaryPitLaps);
+    setComparisonPitLaps(comparisonPitLaps);
 
     // Filter laps based on analysis mode
     let filteredPrimaryLaps = primaryLaps;
@@ -322,6 +328,17 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     return `${value >= 0 ? '+' : ''}${value.toFixed(3)}s`;
   };
 
+  const getPitIndicator = (lapNum, isPrimaryDriver) => {
+    const pitLaps = isPrimaryDriver ? primaryPitLaps : comparisonPitLaps;
+    if (pitLaps.in.includes(lapNum)) {
+      return <span className="pit-indicator pit-in" style={{ marginLeft: '4px', display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ff4444' }} title="Pit-in lap" />;
+    }
+    if (pitLaps.out.includes(lapNum)) {
+      return <span className="pit-indicator pit-out" style={{ marginLeft: '4px', display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffaa00' }} title="Pit-out lap" />;
+    }
+    return null;
+  };
+
   const lapTimeTooltipFormatter = (value, name, entry) => {
     if (name === selectedDriver?.name || name === comparisonDriver?.name) {
       return [msToTime(Math.round(value * 1000)), name];
@@ -476,6 +493,22 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                         <ReferenceLine yAxisId="lapAxis" x={selectedBattle.endLap} stroke="#fd7e14" strokeDasharray="4 4" />
                       </>
                     )}
+                    {primaryPitLaps.in.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`primary-pit-in-${lapNum}`} x={lapNum} y={lapData.primaryTime} yAxisId="lapAxis" r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null;
+                    })}
+                    {primaryPitLaps.out.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`primary-pit-out-${lapNum}`} x={lapNum} y={lapData.primaryTime} yAxisId="lapAxis" r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null;
+                    })}
+                    {comparisonPitLaps.in.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`comparison-pit-in-${lapNum}`} x={lapNum} y={lapData.comparisonTime} yAxisId="lapAxis" r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null;
+                    })}
+                    {comparisonPitLaps.out.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`comparison-pit-out-${lapNum}`} x={lapNum} y={lapData.comparisonTime} yAxisId="lapAxis" r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null;
+                    })}
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -546,6 +579,22 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                       dot={false}
                       strokeWidth={2}
                     />
+                    {primaryPitLaps.in.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-primary-pit-in-${lapNum}`} x={lapNum} y={lapData[`primaryS${selectedSector}`]} r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null;
+                    })}
+                    {primaryPitLaps.out.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-primary-pit-out-${lapNum}`} x={lapNum} y={lapData[`primaryS${selectedSector}`]} r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null;
+                    })}
+                    {comparisonPitLaps.in.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-comparison-pit-in-${lapNum}`} x={lapNum} y={lapData[`comparisonS${selectedSector}`]} r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null;
+                    })}
+                    {comparisonPitLaps.out.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-comparison-pit-out-${lapNum}`} x={lapNum} y={lapData[`comparisonS${selectedSector}`]} r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null;
+                    })}
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -612,8 +661,8 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                               .map((lap) => (
                                 <tr key={lap.lap}>
                                   <td>{lap.lap}</td>
-                                  <td>{msToTime(Math.round(lap.primaryTime * 1000))}</td>
-                                  <td>{msToTime(Math.round(lap.comparisonTime * 1000))}</td>
+                                  <td>{msToTime(Math.round(lap.primaryTime * 1000))}{getPitIndicator(lap.lap, true)}</td>
+                                  <td>{msToTime(Math.round(lap.comparisonTime * 1000))}{getPitIndicator(lap.lap, false)}</td>
                                   <td className={lap.timeGap > 0 ? 'text-danger' : 'text-success'}>
                                     {formatTimeGap(lap.timeGap)}
                                   </td>

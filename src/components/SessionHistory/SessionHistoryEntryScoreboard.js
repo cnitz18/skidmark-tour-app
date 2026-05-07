@@ -22,10 +22,12 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   const [showLapChart, setShowLapChart] = useState(false);
   const [allPlayerEvents, setAllPlayerEvents] = useState([]);
   const [selectedParticipantId,setSelectedParticipantId] = useState(null);
+  const [freshEventsData, setFreshEventsData] = useState([]);
 
   const handleCloseModal = () => {
     setEventsData([]);
     setAllPlayerEvents([])
+    setFreshEventsData([]);
     setMinSectors({});
     setShowModal(false)
   };
@@ -39,6 +41,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     setShowLapChart(false);
     setEventsData([]);
     setAllPlayerEvents([]);
+    setFreshEventsData([]);
     setMinSectors({});
     setSelectedRacerName(res["name"])
 
@@ -47,6 +50,11 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
       promiseArr.push(
         getStandardizedEventData(stage_id, racer.participantid)
         .then((res) => {
+          // Store fresh, unprocessed data for accurate pit detection
+          if( racer.participantid === participant_id ){
+            setFreshEventsData(res);
+          }
+          
           var lapTracker = 1;
           res = res.map((evt) => {
             if( evt.event_name === "Lap" ){
@@ -106,7 +114,10 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
 
     if (!lapEvents.length) return { data: [], pitLaps: { in: [], out: [] }, bestLap: null };
 
-    const pitLaps = detectPitStops(eventsData, lapEvents);
+    // Use fresh (unprocessed) data for pit detection to avoid lap tracker corruption
+    const pitLaps = freshEventsData.length > 0
+      ? detectPitStops(freshEventsData, freshEventsData.filter(evt => evt.event_name === "Lap").sort((a, b) => a.attributes_Lap - b.attributes_Lap))
+      : detectPitStops(eventsData, lapEvents);
     const bestLapEvent = lapEvents.reduce(
       (best, current) => (current.attributes_LapTime < best.attributes_LapTime ? current : best),
       lapEvents[0]
@@ -165,7 +176,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
       case 'CutTrackEnd':
         return <Badge bg="warning" text="dark">Off-Track End</Badge>;
       case 'State':
-        return <Badge bg="info">State Change</Badge>;
+        return <Badge bg="info" text="dark">State Change</Badge>;
       default:
         return <Badge bg="secondary">{eventName}</Badge>;
     }
@@ -351,8 +362,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Tab.Pane eventKey="lapLog">
                     {activeTab === "lapLog" && (
                       <Paper elevation={0} className="p-3 mb-4 border">
-                        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-                          <h5 className="mb-2 mb-md-0">Lap Times</h5>
+                        <div className="d-flex flex-row justify-content-end align-items-center mb-3">
                           <div className="legend-container">
                             <span className="personal-fastest-lap-legend me-3">
                               <span className="color-box"></span> Best Lap
@@ -366,7 +376,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                         <div className="lap-intelligence-panel mb-3">
                           <div className="lap-intelligence-summary">
                             <div className="summary-item">
-                              <span className="summary-label">Best Lap</span>
+                              <span className="summary-label">Fastest Lap</span>
                               <span className="summary-value">
                                 {lapIntelligence.bestLapTime ? msToTime(lapIntelligence.bestLapTime) : 'N/A'}
                               </span>
@@ -384,18 +394,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                               </span>
                             </div>
                           </div>
-
-                          {lapIntelligence.insights.length > 0 && (
-                            <div className="lap-intelligence-insights">
-                              {lapIntelligence.insights.map((insight) => (
-                                <div key={insight.title} className="insight-chip">
-                                  <div className="insight-chip-title">{insight.title}</div>
-                                  <div className="insight-chip-value">{insight.value}</div>
-                                  <div className="insight-chip-detail">{insight.detail}</div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
                         </div>
                         
                         <div className="lap-time-table mt-3">
@@ -437,6 +435,18 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                           </Table>
                         </div>
 
+                        {lapIntelligence.insights.length > 0 && (
+                          <div className="lap-intelligence-insights mb-3">
+                            {lapIntelligence.insights.map((insight) => (
+                              <div key={insight.title} className="insight-chip">
+                                <div className="insight-chip-title">{insight.title}</div>
+                                <div className="insight-chip-value">{insight.value}</div>
+                                <div className="insight-chip-detail">{insight.detail}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
                         <div className="lap-table-toggle-wrap">
                           <Button
                             size="sm"
@@ -452,7 +462,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                             <h6 className="mb-2">Lap Time Progression</h6>
                             <div className="lap-mini-chart-canvas">
                               <ResponsiveContainer width="100%" height="100%">
-                                <ComposedChart data={lapChartData.data} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                                <ComposedChart data={lapChartData.data} margin={{ top: 8, right: 12, left: 8, bottom: 8 }}>
                                   <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
                                   <XAxis dataKey="lap" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
                                   <YAxis
@@ -461,9 +471,34 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                                     domain={lapTimeDomain}
                                   />
                                   <Tooltip content={<LapChartTooltip />} />
-                                  {lapChartData.pitLaps.in.map((lapNum) => (
-                                    <ReferenceLine key={`pit-in-${lapNum}`} x={lapNum} stroke="#dc3545" strokeDasharray="3 3" />
-                                  ))}
+                                  {lapChartData.pitLaps.in.map((lapNum) => {
+                                    const lapData = lapChartData.data.find(d => d.lap === lapNum);
+                                    return lapData ? (
+                                      <ReferenceDot
+                                        key={`pit-in-${lapNum}`}
+                                        x={lapNum}
+                                        y={lapData.lapTime}
+                                        r={5}
+                                        fill="#ff4444"
+                                        stroke="#cc0000"
+                                        ifOverflow="visible"
+                                      />
+                                    ) : null;
+                                  })}
+                                  {lapChartData.pitLaps.out.map((lapNum) => {
+                                    const lapData = lapChartData.data.find(d => d.lap === lapNum);
+                                    return lapData ? (
+                                      <ReferenceDot
+                                        key={`pit-out-${lapNum}`}
+                                        x={lapNum}
+                                        y={lapData.lapTime}
+                                        r={5}
+                                        fill="#ffaa00"
+                                        stroke="#ff8800"
+                                        ifOverflow="visible"
+                                      />
+                                    ) : null;
+                                  })}
                                   {lapChartData.bestLap && (
                                     <ReferenceDot
                                       x={lapChartData.bestLap.lap}
@@ -478,7 +513,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                                 </ComposedChart>
                               </ResponsiveContainer>
                             </div>
-                            <small className="text-muted">Dashed red lines indicate pit-in laps. Green marker indicates fastest lap.</small>
+                            <small className="text-muted">Green = fastest lap. Red = pit-in. Orange = pit-out.</small>
                           </div>
                         )}
                       </Paper>
