@@ -42,6 +42,118 @@
   color: var(--color-text-secondary);
 }
 
+.lap-intelligence-panel {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.lap-intelligence-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summary-item {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.summary-label {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.summary-value {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.summary-gain {
+  color: var(--color-success);
+}
+
+.lap-intelligence-insights {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lap-table-toggle-wrap {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+
+.lap-mini-chart {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.lap-mini-chart-canvas {
+  width: 100%;
+  height: 220px;
+}
+
+.lap-mini-tooltip {
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-width: 130px;
+}
+
+.lap-mini-tooltip-title {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.lap-mini-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.insight-chip {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  padding: 8px 10px;
+}
+
+.insight-chip-title {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.insight-chip-value {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.insight-chip-detail {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  margin-top: 4px;
+  line-height: 1.25;
+}
+
 /* Position indicator */
 .position-cell {
   background-color: rgba(0,0,0,0.02);
@@ -277,6 +389,11 @@
 
 /* Mobile responsive styling */
 @media (max-width: 768px) {
+  .lap-intelligence-summary,
+  .lap-intelligence-insights {
+    grid-template-columns: 1fr;
+  }
+
   .lap-time-table {
     overflow-x: auto !important;
   }

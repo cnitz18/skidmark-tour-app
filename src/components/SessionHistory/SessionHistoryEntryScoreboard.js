@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Spinner, Nav, Tab, Badge, Card } from 'react-bootstrap';
 import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
-// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ResponsiveContainer, ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ReferenceDot } from 'recharts';
 import SessionHistoryHeadToHeadComparison from './SessionHistoryHeadToHeadComparison';
-import AdvancedLapAnalysis from './AdvancedLapAnalysis';
 import ConsistencyTracker from './ConsistencyTracker';
 // eslint-disable-next-line no-unused-vars
 import "./SessionHistoryEntryScoreboard.css";
 import { RaceAnalyticsProvider } from "../../utils/RaceAnalyticsContext";
 import getStandardizedEventData from "../../utils/getStandardizedEventData";
+import detectPitStops from "../../utils/detectPitStops";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass, isHistorical }) => {
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +19,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   const [showSpinner, setShowSpinner] = useState(true);
   const [minSectors, setMinSectors] = useState({});
   const [activeTab, setActiveTab] = useState("lapLog");
+  const [showLapChart, setShowLapChart] = useState(false);
   const [allPlayerEvents, setAllPlayerEvents] = useState([]);
   const [selectedParticipantId,setSelectedParticipantId] = useState(null);
 
@@ -35,6 +36,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     let participant_id = res["participantid"]
     setShowSpinner(true);
     setActiveTab("lapLog");
+    setShowLapChart(false);
     setEventsData([]);
     setAllPlayerEvents([]);
     setMinSectors({});
@@ -97,20 +99,62 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     }
   }
 
-  // const formatLapDataForChart = () => {
-  //   if (!eventsData || eventsData.length === 0) return [];
-    
-  //   return eventsData
-  //     .filter(evt => evt.event_name === "Lap")
-  //     .map((evt, index) => ({
-  //       lap: index + 1,
-  //       lapTime: evt.attributes_LapTime / 1000,
-  //       s1: evt.attributes_Sector1Time / 1000,
-  //       s2: evt.attributes_Sector2Time / 1000,
-  //       s3: evt.attributes_Sector3Time / 1000,
-  //       position: evt.attributes_RacePosition
-  //     }));
-  // };
+  const formatLapDataForChart = () => {
+    const lapEvents = eventsData
+      .filter((evt) => evt.event_name === "Lap")
+      .sort((a, b) => a.attributes_Lap - b.attributes_Lap);
+
+    if (!lapEvents.length) return { data: [], pitLaps: { in: [], out: [] }, bestLap: null };
+
+    const pitLaps = detectPitStops(eventsData, lapEvents);
+    const bestLapEvent = lapEvents.reduce(
+      (best, current) => (current.attributes_LapTime < best.attributes_LapTime ? current : best),
+      lapEvents[0]
+    );
+
+    const data = lapEvents.map((lap) => ({
+      lap: lap.attributes_Lap,
+      lapTime: lap.attributes_LapTime / 1000,
+    }));
+
+    return {
+      data,
+      pitLaps,
+      bestLap: {
+        lap: bestLapEvent.attributes_Lap,
+        lapTime: bestLapEvent.attributes_LapTime / 1000,
+      },
+    };
+  };
+
+  const lapChartData = formatLapDataForChart();
+
+  const lapTimeDomain = (() => {
+    if (!lapChartData.data.length) return ['auto', 'auto'];
+
+    const lapTimes = lapChartData.data.map((point) => point.lapTime);
+    const minLapTime = Math.min(...lapTimes);
+    const maxLapTime = Math.max(...lapTimes);
+    const range = Math.max(maxLapTime - minLapTime, 0.1);
+    const padding = Math.max(range * 0.1, 0.2);
+
+    return [Math.max(0, minLapTime - padding), maxLapTime + padding];
+  })();
+
+  const LapChartTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="lap-mini-tooltip">
+          <div className="lap-mini-tooltip-title">Lap {label}</div>
+          <div className="lap-mini-tooltip-row">
+            <span>Lap Time</span>
+            <strong>{msToTime(payload[0].value * 1000)}</strong>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const getEventBadge = (eventName) => {
     switch(eventName) {
@@ -135,6 +179,104 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
       setParticipantsMap(participants)
     }
   }, [race,selectedRacerName]);
+
+  const getLapIntelligence = () => {
+    const lapEvents = eventsData
+      .filter((evt) => evt.event_name === "Lap")
+      .sort((a, b) => a.attributes_Lap - b.attributes_Lap);
+
+    if (!lapEvents.length) {
+      return {
+        idealLapTime: null,
+        bestLapTime: null,
+        potentialGain: null,
+        insights: []
+      };
+    }
+
+    const bestLapTime = minSectors.total ?? Math.min(...lapEvents.map((lap) => lap.attributes_LapTime));
+    const hasSectorData = minSectors.sector1 && minSectors.sector2 && minSectors.sector3;
+    const idealLapTime = hasSectorData ? (minSectors.sector1 + minSectors.sector2 + minSectors.sector3) : null;
+    const potentialGain = idealLapTime ? Math.max(0, bestLapTime - idealLapTime) : null;
+
+    const avgS1 = lapEvents.reduce((sum, lap) => sum + lap.attributes_Sector1Time, 0) / lapEvents.length;
+    const avgS2 = lapEvents.reduce((sum, lap) => sum + lap.attributes_Sector2Time, 0) / lapEvents.length;
+    const avgS3 = lapEvents.reduce((sum, lap) => sum + lap.attributes_Sector3Time, 0) / lapEvents.length;
+
+    const sectorLosses = [
+      { sector: 'S1', loss: avgS1 - minSectors.sector1 },
+      { sector: 'S2', loss: avgS2 - minSectors.sector2 },
+      { sector: 'S3', loss: avgS3 - minSectors.sector3 },
+    ].sort((a, b) => b.loss - a.loss);
+
+    const biggestLeak = sectorLosses[0];
+
+    let bestWindow = null;
+    const windowSize = lapEvents.length >= 5 ? 5 : (lapEvents.length >= 3 ? 3 : 0);
+    if (windowSize > 0) {
+      let bestAvg = Number.POSITIVE_INFINITY;
+      let bestStart = 0;
+
+      for (let i = 0; i <= lapEvents.length - windowSize; i++) {
+        const laps = lapEvents.slice(i, i + windowSize);
+        const avg = laps.reduce((sum, lap) => sum + lap.attributes_LapTime, 0) / windowSize;
+        if (avg < bestAvg) {
+          bestAvg = avg;
+          bestStart = laps[0].attributes_Lap;
+        }
+      }
+
+      bestWindow = {
+        size: windowSize,
+        startLap: bestStart,
+        endLap: bestStart + windowSize - 1,
+        average: bestAvg,
+      };
+    }
+
+    let biggestDrop = null;
+    for (let i = 1; i < lapEvents.length; i++) {
+      const delta = lapEvents[i].attributes_LapTime - lapEvents[i - 1].attributes_LapTime;
+      if (delta <= 0) continue;
+      if (!biggestDrop || delta > biggestDrop.delta) {
+        biggestDrop = {
+          lapFrom: lapEvents[i - 1].attributes_Lap,
+          lapTo: lapEvents[i].attributes_Lap,
+          delta,
+        };
+      }
+    }
+
+    const insights = [];
+    if (biggestLeak && biggestLeak.loss > 0) {
+      insights.push({
+        title: 'Largest Time Leak',
+        value: `${biggestLeak.sector} +${msToTime(biggestLeak.loss)}`,
+        detail: `Average ${biggestLeak.sector} is ${msToTime(biggestLeak.loss)} slower than your ${biggestLeak.sector} best.`,
+      });
+    }
+
+    if (bestWindow) {
+      insights.push({
+        title: 'Best Repeatable Pace',
+        value: `${bestWindow.size}-lap avg ${msToTime(bestWindow.average)}`,
+        detail: `Lap ${bestWindow.startLap} to ${bestWindow.endLap}`,
+      });
+    }
+
+    if (biggestDrop) {
+      insights.push({
+        title: 'Largest Pace Drop',
+        value: `+${msToTime(biggestDrop.delta)}`,
+        detail: `From lap ${biggestDrop.lapFrom} to lap ${biggestDrop.lapTo}`,
+      });
+    }
+
+    return { idealLapTime, bestLapTime, potentialGain, insights };
+  };
+
+  const lapIntelligence = getLapIntelligence();
+
   useEffect(() => {
     if( eventsData.length ){
       var bestHighlightedData = [...eventsData].filter(e => e.event_name==="Lap");
@@ -181,18 +323,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       Lap Times
                     </Nav.Link>
                   </Nav.Item>
-                  {/* <Nav.Item>
-                    <Nav.Link eventKey="lapChart" className="d-flex align-items-center justify-content-center">
-                      <i className="bi bi-graph-up me-2"></i>
-                      Lap Analysis
-                    </Nav.Link>
-                  </Nav.Item> */}
-                  <Nav.Item>
-                    <Nav.Link eventKey="advancedAnalysis" className="d-flex align-items-center justify-content-center">
-                      <i className="bi bi-speedometer2 me-2"></i>
-                      Lap Analysis
-                    </Nav.Link>
-                  </Nav.Item>
                   { session === "Race" && (
                     <Nav.Item>
                       <Nav.Link eventKey="headToHead" className="d-flex align-items-center justify-content-center">
@@ -232,8 +362,43 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                             </span>
                           </div>
                         </div>
+
+                        <div className="lap-intelligence-panel mb-3">
+                          <div className="lap-intelligence-summary">
+                            <div className="summary-item">
+                              <span className="summary-label">Best Lap</span>
+                              <span className="summary-value">
+                                {lapIntelligence.bestLapTime ? msToTime(lapIntelligence.bestLapTime) : 'N/A'}
+                              </span>
+                            </div>
+                            <div className="summary-item">
+                              <span className="summary-label">Ideal Lap</span>
+                              <span className="summary-value">
+                                {lapIntelligence.idealLapTime ? msToTime(lapIntelligence.idealLapTime) : 'N/A'}
+                              </span>
+                            </div>
+                            <div className="summary-item">
+                              <span className="summary-label">Potential Gain</span>
+                              <span className="summary-value summary-gain">
+                                {lapIntelligence.potentialGain ? `-${msToTime(lapIntelligence.potentialGain)}` : 'N/A'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {lapIntelligence.insights.length > 0 && (
+                            <div className="lap-intelligence-insights">
+                              {lapIntelligence.insights.map((insight) => (
+                                <div key={insight.title} className="insight-chip">
+                                  <div className="insight-chip-title">{insight.title}</div>
+                                  <div className="insight-chip-value">{insight.value}</div>
+                                  <div className="insight-chip-detail">{insight.detail}</div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                         
-                        <div className="lap-time-table">
+                        <div className="lap-time-table mt-3">
                           <Table>
                             <thead>
                               <tr>
@@ -271,20 +436,53 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                             </tbody>
                           </Table>
                         </div>
+
+                        <div className="lap-table-toggle-wrap">
+                          <Button
+                            size="sm"
+                            variant={showLapChart ? "outline-secondary" : "outline-primary"}
+                            onClick={() => setShowLapChart((prev) => !prev)}
+                          >
+                            {showLapChart ? "Hide Lap Time Chart" : "Show Lap Time Chart"}
+                          </Button>
+                        </div>
+
+                        {showLapChart && (
+                          <div className="lap-mini-chart mt-3">
+                            <h6 className="mb-2">Lap Time Progression</h6>
+                            <div className="lap-mini-chart-canvas">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={lapChartData.data} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                                  <XAxis dataKey="lap" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+                                  <YAxis
+                                    tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }}
+                                    width={48}
+                                    domain={lapTimeDomain}
+                                  />
+                                  <Tooltip content={<LapChartTooltip />} />
+                                  {lapChartData.pitLaps.in.map((lapNum) => (
+                                    <ReferenceLine key={`pit-in-${lapNum}`} x={lapNum} stroke="#dc3545" strokeDasharray="3 3" />
+                                  ))}
+                                  {lapChartData.bestLap && (
+                                    <ReferenceDot
+                                      x={lapChartData.bestLap.lap}
+                                      y={lapChartData.bestLap.lapTime}
+                                      r={5}
+                                      fill="#28a745"
+                                      stroke="#1e7e34"
+                                      ifOverflow="visible"
+                                    />
+                                  )}
+                                  <Line type="monotone" dataKey="lapTime" stroke="#00a8e1" strokeWidth={2} dot={false} name="Lap Time" />
+                                </ComposedChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <small className="text-muted">Dashed red lines indicate pit-in laps. Green marker indicates fastest lap.</small>
+                          </div>
+                        )}
                       </Paper>
                     )}
-                  </Tab.Pane>
-                  
-                  <Tab.Pane eventKey="advancedAnalysis">
-                    <Paper elevation={0} className="p-3 mb-4 border">
-                      {activeTab === "advancedAnalysis" && (
-                        <AdvancedLapAnalysis 
-                          eventsData={eventsData}
-                          race={race}
-                          selectedRacerName={selectedRacerName}
-                        />
-                      )}
-                    </Paper>
                   </Tab.Pane>
                   
                   <Tab.Pane eventKey="headToHead">
