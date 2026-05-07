@@ -6,7 +6,6 @@ import postAPIData from "../../utils/postAPIData";
 import getAPIData from "../../utils/getAPIData";
 import { Link } from "react-router-dom";
 import { BsTrophy } from "react-icons/bs";
-import NameMapper from "../../utils/Classes/NameMapper";
 import './Leagues.css';
 
 const DEFAULT_POSITIONS = [
@@ -35,43 +34,6 @@ const getCurrentLocalDateTime = () => {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
-
-const getTrackDisplayName = (trackValue, trackList) => {
-    const normalizeTrackLabel = (value) => String(value)
-        .replaceAll('_', ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-    if (trackValue === null || trackValue === undefined || trackValue === '') {
-        return 'TBA';
-    }
-
-    const asNumber = Number(trackValue);
-    if (!Number.isNaN(asNumber)) {
-        const mapped = (
-            NameMapper.fromTrackId(asNumber, trackList) ||
-            NameMapper.fromTrackId(String(trackValue), trackList) ||
-            'TBA'
-        );
-        return mapped === 'TBA' ? mapped : normalizeTrackLabel(mapped);
-    }
-
-    const mappedApiName = NameMapper.fromTrackApiName(String(trackValue));
-    return normalizeTrackLabel(mappedApiName);
-};
-
-const getReadableRaceDate = (dateValue) => {
-    const parsed = new Date(dateValue);
-    if (Number.isNaN(parsed.getTime())) {
-        return 'Date TBA';
-    }
-
-    return parsed.toLocaleString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
 };
 
 const Leagues = ({ enums, lists, showAdmin=false }) => {

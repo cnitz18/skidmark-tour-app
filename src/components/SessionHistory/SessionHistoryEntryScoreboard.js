@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Spinner, Nav, Tab, Badge, Card } from 'react-bootstrap';
 import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
-import { ResponsiveContainer, ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ReferenceDot } from 'recharts';
+import { ResponsiveContainer, ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceDot } from 'recharts';
 import SessionHistoryHeadToHeadComparison from './SessionHistoryHeadToHeadComparison';
 import ConsistencyTracker from './ConsistencyTracker';
 // eslint-disable-next-line no-unused-vars
@@ -575,11 +575,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Tab.Pane eventKey="performanceInsights">
                     {activeTab === "performanceInsights" && (
                       <Paper elevation={0} className="p-3 mb-4 border">
-                        <h5 className="mb-4">Performance Analytics</h5>
-                        
-                        {activeTab === "performanceInsights" && (
-                          <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
-                        )}
+                        <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
                       </Paper>
                     )}
                   </Tab.Pane>

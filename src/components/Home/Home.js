@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Carousel, Col, Spinner } from 'react-bootstrap';
 import { FaYoutube, FaTwitch } from "react-icons/fa";
-import { Link } from 'react-router-dom';
 import styles from './Home.module.css';
 import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
@@ -24,6 +23,15 @@ const imageInfo = [
         caption: "Karting Fall '24"
     },
     {
+        url: "homepage/skidmarkvsopalas.jpg",
+        caption: "2025 Winter Season Highlights (link)",
+        href: "https://youtu.be/yMqXIcBbhxo?si=5iHQGi5Mn_rXBd3v"
+    },
+    {
+        url: "homepage/karting-fall-25.jpg",
+        caption: "Karting Fall '25",
+    },
+    {
         url: "homepage/arccamaros.jpg",
         caption: "Door Banging @ Yahuarcocha (link)",
         href: "https://www.youtube.com/watch?v=4KDvMUHPLDw"
@@ -31,15 +39,6 @@ const imageInfo = [
     {
         url: "homepage/irl.jpg",
         caption: "Karting Fall '24"
-    },
-    {
-        url: "homepage/formulajuniors.jpg",
-        caption: "Formula Juniors @ Spa-Francorchamps 1970 (link)",
-        href: "https://youtu.be/yMqXIcBbhxo?si=5iHQGi5Mn_rXBd3v"
-    },
-    {
-        url: "homepage/karting-fall-25.jpg",
-        caption: "Karting Fall '25",
     }
 ]
 
@@ -80,7 +79,6 @@ export default function Home({ lists }) {
     const [liveStreams, setLiveStreams] = useState([]);
     const [league, setLeague] = useState(null);
     const [leagueData, setLeagueData] = useState(null);
-    const [leagueId, setLeagueId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeSlide, setActiveSlide] = useState(0);
     
@@ -104,7 +102,6 @@ export default function Home({ lists }) {
                     const latestLeague = sortedLeagues[0];
                     const latestLeagueId = latestLeague.id;
                     setLeague(latestLeague);
-                    setLeagueId(latestLeagueId);
                     
                     // Now fetch stats for the latest league
                     return getAPIData(`/leagues/get/stats/?id=${latestLeagueId}`);
