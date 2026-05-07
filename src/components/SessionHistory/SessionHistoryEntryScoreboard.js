@@ -362,17 +362,6 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Tab.Pane eventKey="lapLog">
                     {activeTab === "lapLog" && (
                       <Paper elevation={0} className="p-3 mb-4 border">
-                        <div className="d-flex flex-row justify-content-end align-items-center mb-3">
-                          <div className="legend-container">
-                            <span className="personal-fastest-lap-legend me-3">
-                              <span className="color-box"></span> Best Lap
-                            </span>
-                            <span className="personal-fastest-sector-legend">
-                              <span className="color-box"></span> Best Sector
-                            </span>
-                          </div>
-                        </div>
-
                         <div className="lap-intelligence-panel mb-3">
                           <div className="lap-intelligence-summary">
                             <div className="summary-item">
@@ -393,6 +382,17 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                                 {lapIntelligence.potentialGain ? `-${msToTime(lapIntelligence.potentialGain)}` : 'N/A'}
                               </span>
                             </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex flex-row justify-content-end align-items-center mb-3">
+                          <div className="legend-container">
+                            <span className="personal-fastest-lap-legend me-3">
+                              <span className="color-box"></span> Best Lap
+                            </span>
+                            <span className="personal-fastest-sector-legend">
+                              <span className="color-box"></span> Best Sector
+                            </span>
                           </div>
                         </div>
                         
