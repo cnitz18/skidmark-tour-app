@@ -129,15 +129,15 @@ const TrophyRoomBasic = () => {
                 subtitle="Our team iRacing achievements and AMS2 championship winners."
             />
             
-            <div className="my-5 motion-rise-in">
+            <div className="my-4">
                 
-                <section className="mb-5">
+                <section className="mb-5 motion-rise-in">
                     <div className="section-header d-flex align-items-center mb-4">
-                        <GiRaceCar className="section-icon text-warning me-3" />
-                        <h2 className="mb-0">Skidmark Champions</h2>
+                        <GiRaceCar className="section-icon me-3" />
+                        <h2 className="mb-0" style={{fontWeight:600, letterSpacing:'-0.5px'}}>Skidmark Champions</h2>
                     </div>
                     
-                    <Row xs={1} md={2} lg={4} className="g-4 justify-content-center motion-stagger">
+                    <Row xs={1} md={2} lg={3} className="g-4 motion-stagger">
                         {champions.map(champion => (
                             <Col key={champion.id}>
                                 {champion.seasonId ? (
@@ -185,10 +185,10 @@ const TrophyRoomBasic = () => {
                     </Row>
                 </section>
 
-                <section>
+                <section className="motion-rise-in">
                     <div className="section-header d-flex align-items-center mb-4">
-                        <FaFlagCheckered className="section-icon text-primary me-3" />
-                        <h2 className="mb-0">Special Events</h2>
+                        <FaFlagCheckered className="section-icon me-3" />
+                        <h2 className="mb-0" style={{fontWeight:600, letterSpacing:'-0.5px'}}>Special Events</h2>
                     </div>
                     
                     {/* Added justify-content-center to center the cards within the row */}

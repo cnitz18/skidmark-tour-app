@@ -112,7 +112,7 @@ const ServerStatus = ({ enums, lists }) => {
 
     return (
       <div className="participants-container">
-        <h4><FaUsers size={24} className="me-2" color="#28a745" /> Current Participants</h4>
+        <h4><FaUsers size={24} className="me-2" color="var(--color-success)" /> Current Participants</h4>
         <div className="participants-list">
           <table className="participants-table">
             <thead>
@@ -146,13 +146,13 @@ const ServerStatus = ({ enums, lists }) => {
 
   return (
     <Container className="motion-fade-in">
-      <PageHeader title="Automobilista 2 Server Status"/>
+      <PageHeader title="Automobilista 2 Server Status" subtitle="Live session data, updated every minute."/>
       <Row className="motion-rise-in">
         <Col lg={8} className="mx-auto">
           <div className="server-status-container">
             <div className="status-card">
-              <FaServer size={48} color={isServerLive ? "#28a745" : "#dc3545"} />
-              <h3 className="mt-3">{serverInfo.serverName}</h3>
+              <FaServer size={48} color={isServerLive ? 'var(--color-success)' : 'var(--color-danger)'} />
+              <h3 className="mt-3" style={{fontWeight:600, letterSpacing:'-0.3px'}}>{serverInfo.serverName}</h3>
               
               <div className="status-indicator">
                 <div className={`status-dot ${isServerLive ? 'online' : 'offline'}`}></div>
@@ -178,26 +178,26 @@ const ServerStatus = ({ enums, lists }) => {
                 <div className="server-info motion-stagger">
                   {/* Add Session Status card */}
                   <div className="info-card">
-                    <FaPlayCircle size={24} color="#dc3545" />
+                    <FaPlayCircle size={24} color="var(--color-danger)" />
                     <h4>Session Status</h4>
                     <p>{serverInfo.sessionState || 'Unknown'}</p>
                   </div>
 
                   <div className="info-card">
-                    <FaCar size={24} color="#007bff" />
+                    <FaCar size={24} color="var(--color-secondary)" />
                     <h4>Track</h4>
                     <p>{serverInfo.currentTrack}</p>
                   </div>
                   
                   <div className="info-card">
-                    <FaCar size={24} color="#ffc107" />
+                    <FaCar size={24} color="var(--color-accent)" />
                     <h4>Vehicle Class</h4>
                     <p>{serverInfo.currentVehicle}</p>
                   </div>
 
                   {/* Weather component with fixed width */}
                   <div className="info-card weather-card fixed-width-card">
-                    <FaCloudRain size={24} color="#17a2b8" />
+                    <FaCloudRain size={24} color="var(--color-info)" />
                     <h4>Weather</h4>
                     <WeatherDisplay weatherCondition={serverInfo.weatherCondition} />
                   </div>
@@ -205,7 +205,7 @@ const ServerStatus = ({ enums, lists }) => {
 
                 {/* Add new Participants component */}
                 <div className="participants-section motion-fade-in">
-                  <ParticipantsList members={serverInfo.sessionState === "Lobby" ? serverInfo.members : serverInfo.participants} />
+                  <ParticipantsList members={serverInfo.sessionState === 'Lobby' ? serverInfo.members : serverInfo.participants} />
                 </div>
               </>
             ) : isServerLive ? (
