@@ -1,9 +1,7 @@
-import { Modal, Button, ListGroup, Row, Col } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import { 
-  BsCalendar3, 
   BsSpeedometer, 
   BsCarFrontFill,
-  BsShield,
   BsCloud
 } from 'react-icons/bs';
 import { FaFlagCheckered } from "react-icons/fa";
@@ -90,159 +88,147 @@ const SessionHistoryDetailsModal = ({ show, handleClose, setup, lists, enums }) 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[setup,lists])
 
+  const trackName = lists?.tracks?.list
+    ? (NameMapper.fromTrackApiName(NameMapper.fromTrackId(setup?.TrackId, lists?.tracks?.list)) || 'Unknown Track')
+    : '';
+
+  const activeFlags = flags.filter(f => f.checked);
+  const inactiveFlags = flags.filter(f => !f.checked);
+  const isTimedRace = flags.find(f => f.name === 'Timed Race')?.checked;
+
+  const activeWeatherSlots = Array.from({ length: setup.RaceWeatherSlots || 0 }, (_, i) => ({
+    index: i + 1,
+    name: NameMapper.fromWeatherSlot(setup[`RaceWeatherSlot${i + 1}`], enums),
+  }));
+
+  const activeMulticlassSlots = Array.from({ length: setup.MultiClassSlots || 0 }, (_, i) => ({
+    index: i + 1,
+    name: NameMapper.fromVehicleClassId(setup[`MultiClassSlot${i + 1}`], lists['vehicle_classes']?.list, 'N/A'),
+  })).filter(s => s.name !== 'N/A');
+
   return (
-    <Modal show={show} onHide={handleClose} size="lg">
+    <Modal show={show} onHide={handleClose} size="lg" scrollable contentClassName={styles.modalContent}>
       <Modal.Header closeButton className={styles.modalHeader}>
-        <Modal.Title>Session Details</Modal.Title>
+        <Modal.Title className={styles.modalTitle}>
+          Session Details{trackName ? ` — ${trackName}` : ''}
+        </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <ListGroup variant="flush">
-          <ListGroup.Item>
-            <h6><FaFlagCheckered className="me-2" />Race Configuration</h6>
-            <Row>
-              <Col md={6}>
-                <div className={styles.detailItem}>
-                  <strong>Track:</strong> {NameMapper.fromTrackId(setup.TrackId, lists["tracks"]?.list)}
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Vehicle Class:</strong> {NameMapper.fromVehicleClassId(setup.VehicleClassId, lists["vehicle_classes"]?.list)}
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Race Length:</strong> {setup.RaceLength} { flags?.find(f => f.name === "Timed Race") ? "minutes" : "laps"}                </div>
-                <div className={styles.detailItem}>
-                  <strong>Extra Lap:</strong> {setup.RaceExtraLap ? "Yes" : "No"}
-                </div>
-              </Col>
-              <Col md={6}>
-                <div className={styles.detailItem}>
-                  <strong>AI Difficulty:</strong> {setup.OpponentDifficulty}%
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Grid Size:</strong> {setup.GridSize}
-                </div>
-                <div className={styles.detailItem}>
-                  <strong>Max Players:</strong> {setup.MaxPlayers}
-                </div>
-              </Col>
-            </Row>
-          </ListGroup.Item>
+      <Modal.Body className={styles.modalBody}>
 
-          <ListGroup.Item>
-            <h6><BsCalendar3 className="me-2" />In-Game Date & Time</h6>
-            <div className={styles.detailItem}>
-              {formatDate(setup.RaceDateYear, setup.RaceDateMonth, setup.RaceDateDay, setup.RaceDateHour)}
+        {/* Section 1: Race Configuration (absorbs Date + Damage) */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <FaFlagCheckered className={styles.sectionIcon} />
+            <span>Race Configuration</span>
+          </div>
+          <div className={styles.detailGrid}>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Track</span>
+              <span className={styles.detailValue}>{trackName}</span>
             </div>
-          </ListGroup.Item>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Vehicle Class</span>
+              <span className={styles.detailValue}>{NameMapper.fromVehicleClassId(setup.VehicleClassId, lists['vehicle_classes']?.list)}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Race Length</span>
+              <span className={styles.detailValue}>{setup.RaceLength} {isTimedRace ? 'minutes' : 'laps'}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Extra Lap</span>
+              <span className={styles.detailValue}>{setup.RaceExtraLap ? 'Yes' : 'No'}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>In-Game Date</span>
+              <span className={styles.detailValue}>{formatDate(setup.RaceDateYear, setup.RaceDateMonth, setup.RaceDateDay, setup.RaceDateHour)}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>AI Difficulty</span>
+              <span className={styles.detailValue}>{setup.OpponentDifficulty}%</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Grid Size</span>
+              <span className={styles.detailValue}>{setup.GridSize}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Max Players</span>
+              <span className={styles.detailValue}>{setup.MaxPlayers}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Damage Type</span>
+              <span className={styles.detailValue}>{getDamageType(setup.DamageType)}</span>
+            </div>
+            <div className={styles.detailCell}>
+              <span className={styles.detailLabel}>Damage Scale</span>
+              <span className={styles.detailValue}>{getDamageScale(setup.DamageScale)}</span>
+            </div>
+          </div>
+        </div>
 
-          <ListGroup.Item>
-            <h6><BsShield className="me-2" />Damage Settings</h6>
-            <Row>
-              <Col md={6}>
-                <div className={styles.detailItem}>
-                  <strong>Damage Type:</strong> {getDamageType(setup.DamageType)}
+        {/* Section 2: Race Parameters (flags) */}
+        {flags.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <BsSpeedometer className={styles.sectionIcon} />
+              <span>Race Parameters</span>
+            </div>
+            <div className={styles.flagsBody}>
+              {activeFlags.length > 0 && (
+                <div className={styles.flagsRow}>
+                  {activeFlags.map((flag, i) => (
+                    <span key={i} className={styles.flagActive}>{flag.name}</span>
+                  ))}
                 </div>
-              </Col>
-              <Col md={6}>
-                <div className={styles.detailItem}>
-                  <strong>Damage Scale:</strong> {getDamageScale(setup.DamageScale)}
+              )}
+              {inactiveFlags.length > 0 && (
+                <div className={`${styles.flagsRow} ${activeFlags.length > 0 ? styles.flagsInactiveRow : ''}`}>
+                  {inactiveFlags.map((flag, i) => (
+                    <span key={i} className={styles.flagInactive}>{flag.name}</span>
+                  ))}
                 </div>
-              </Col>
-            </Row>
-          </ListGroup.Item>
+              )}
+            </div>
+          </div>
+        )}
 
-          <ListGroup.Item>
-            <h6><BsSpeedometer className="me-2" />Race Parameters</h6>
-            <Row>
-              <Col md={6}>
-                {
-                  flags?.length &&
-                  flags.slice(0, Math.floor(flags.length / 2)).map((flag, i) => (
-                    <div key={i} className={styles.detailItem}>
-                      <strong>{flag.name}:</strong> {flag.checked ? "True" : "False"}
-                    </div>
-                  ))
-                }
-              </Col>
-              <Col md={6}>
-                {
-                  flags?.length &&
-                  flags.slice(Math.ceil(flags.length / 2)).map((flag, i) => (
-                    <div key={i} className={styles.detailItem}>
-                      <strong>{flag.name}:</strong> {flag.checked ? "True" : "False"}
-                    </div>
-                  ))
-                }
-              </Col>
-            </Row>
-          </ListGroup.Item>
+        {/* Section 3: Weather */}
+        {activeWeatherSlots.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <BsCloud className={styles.sectionIcon} />
+              <span>Weather Configuration</span>
+            </div>
+            <div className={styles.detailGrid}>
+              {activeWeatherSlots.map(slot => (
+                <div key={slot.index} className={styles.detailCell}>
+                  <span className={styles.detailLabel}>Slot {slot.index}</span>
+                  <span className={styles.detailValue}>{slot.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-          <ListGroup.Item>
-            <h6><BsCloud className="me-2" />Weather Configuration</h6>
-              <Row>
-                <Col md={6}>
-                  <div className={styles.detailItem}>
-                    <strong>Active Slots:</strong> {setup.RaceWeatherSlots}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 2:</strong> {NameMapper.fromWeatherSlot(setup.RaceWeatherSlot2,enums)}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 4:</strong> {NameMapper.fromWeatherSlot(setup.RaceWeatherSlot4,enums)}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 1:</strong> {NameMapper.fromWeatherSlot(setup.RaceWeatherSlot1,enums)}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 3:</strong> {NameMapper.fromWeatherSlot(setup.RaceWeatherSlot3,enums)}
-                  </div>
-                </Col>
-            </Row>
-          </ListGroup.Item>
+        {/* Section 4: Multiclass */}
+        {activeMulticlassSlots.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <BsCarFrontFill className={styles.sectionIcon} />
+              <span>Multiclass Configuration</span>
+            </div>
+            <div className={styles.detailGrid}>
+              {activeMulticlassSlots.map(slot => (
+                <div key={slot.index} className={styles.detailCell}>
+                  <span className={styles.detailLabel}>Slot {slot.index}</span>
+                  <span className={styles.detailValue}>{slot.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-          <ListGroup.Item>
-            <h6><BsCarFrontFill className="me-2" />Multiclass Configuration</h6>
-              <Row>
-                <Col md={6}>
-                  <div className={styles.detailItem}>
-                    <strong>Active Slots:</strong> {setup.MultiClassSlots}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 2:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot2,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 4:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot4,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 6:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot6,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 8:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot8,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 1:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot1,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 3:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot3,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 5:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot5,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 7:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot7,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                  <div className={styles.detailItem}>
-                    <strong>Slot 9:</strong> {NameMapper.fromVehicleClassId(setup.MultiClassSlot9,lists['vehicle_classes']?.list,'N/A')}
-                  </div>
-                </Col>
-            </Row>
-          </ListGroup.Item>
-        </ListGroup>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className={styles.modalFooter}>
         <Button variant="secondary" onClick={handleClose}>Close</Button>
       </Modal.Footer>
     </Modal>
