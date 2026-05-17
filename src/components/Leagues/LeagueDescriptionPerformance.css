@@ -20,7 +20,7 @@
   justify-content: space-between;
   margin-bottom: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .stats-item:last-child {
@@ -49,13 +49,13 @@
 }
 
 .position-badge.podium {
-  background-color: rgba(255, 215, 0, 0.2);
-  color: #D4AF37;
+  background-color: rgba(247, 168, 0, 0.15);
+  color: var(--color-accent);
 }
 
 .position-badge.points {
-  background-color: rgba(33, 150, 243, 0.1);
-  color: #2196F3;
+  background-color: rgba(0, 168, 225, 0.1);
+  color: var(--color-secondary);
 }
 
 .position-badge.outside-points {
@@ -71,13 +71,13 @@
 }
 
 .position-highlight.podium {
-  background-color: rgba(255, 215, 0, 0.2);
-  color: #D4AF37;
+  background-color: rgba(247, 168, 0, 0.15);
+  color: var(--color-accent);
 }
 
 .position-highlight.points {
-  background-color: rgba(33, 150, 243, 0.1);
-  color: #2196F3;
+  background-color: rgba(0, 168, 225, 0.1);
+  color: var(--color-secondary);
 }
 
 /* Recent races list */
@@ -87,7 +87,7 @@
 
 .race-item {
   padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .race-item:last-child {
@@ -103,11 +103,11 @@
 }
 
 .race-result.podium {
-  color: #D4AF37;
+  color: var(--color-accent);
 }
 
 .race-result.points {
-  color: #2196F3;
+  color: var(--color-secondary);
 }
 
 /* Consistency score circle */
@@ -131,7 +131,7 @@
   position: relative;
   width: 100px;
   height: 100px;
-  background: white;
+  background: var(--color-bg);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -146,7 +146,7 @@
 }
 
 .score-inner small {
-  color: #666;
+  color: var(--color-text-secondary);
   margin-top: 5px;
 }
 
@@ -167,16 +167,16 @@
   align-items: center;
   padding: 12px;
   border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.02);
-  border-left: 4px solid #2196F3;
+  background-color: var(--color-bg-elevated);
+  border-left: 4px solid var(--color-secondary);
 }
 
 .track-position {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #2196F3;
-  color: white;
+  background-color: var(--color-secondary);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,7 +191,7 @@
 
 .track-stats {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* Performance distribution */
@@ -202,7 +202,7 @@
 .position-label {
   width: 40px;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .position-bar-wrapper {
@@ -213,22 +213,22 @@
 
 .position-bar {
   height: 12px;
-  background-color: #9E9E9E;
+  background-color: var(--color-border);
   border-radius: 2px;
   transition: width 0.3s ease;
 }
 
 .position-bar.podium {
-  background-color: #FFC107;
+  background-color: var(--color-accent);
 }
 
 .position-bar.points {
-  background-color: #2196F3;
+  background-color: var(--color-secondary);
 }
 
 .position-count {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* Comeback factor */
@@ -253,13 +253,13 @@
 }
 
 .comeback-score.positive {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.12);
+  color: var(--color-success);
 }
 
 .comeback-score.negative {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #F44336;
+  background-color: rgba(211, 47, 47, 0.12);
+  color: var(--color-danger);
 }
 
 .comeback-score span {
@@ -277,7 +277,7 @@
 .comeback-highlight {
   width: 80px;
   height: 80px;
-  background-color: rgba(76, 175, 80, 0.1);
+  background-color: rgba(76, 175, 80, 0.12);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -285,18 +285,18 @@
 }
 
 .positions-gained {
-  color: #4CAF50;
+  color: var(--color-success);
   font-size: 1.5rem;
   font-weight: 600;
 }
 
 .qualifying-position {
-  color: #FF9800;
+  color: var(--color-warning);
   font-weight: 500;
 }
 
 .finish-position {
-  color: #4CAF50;
+  color: var(--color-success);
   font-weight: 500;
 }
 

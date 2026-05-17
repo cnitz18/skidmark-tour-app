@@ -95,7 +95,29 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     peakPerformances: {},
     comebackFactors: []
   });
-  
+  const [chartColors, setChartColors] = useState({
+    primary: '#00a8e1',
+    accent: '#f7a800',
+    success: '#4caf50',
+    danger: '#d32f2f',
+    warning: '#ff9800',
+    border: '#dee2e6',
+  });
+
+  // Resolve CSS custom properties to actual hex values for Recharts (SVG can't use CSS vars)
+  useEffect(() => {
+    const style = getComputedStyle(document.documentElement);
+    const get = (v) => style.getPropertyValue(v).trim();
+    setChartColors({
+      primary: get('--color-secondary') || '#00a8e1',
+      accent: get('--color-accent') || '#f7a800',
+      success: get('--color-success') || '#4caf50',
+      danger: get('--color-danger') || '#d32f2f',
+      warning: get('--color-warning') || '#ff9800',
+      border: get('--color-border') || '#dee2e6',
+    });
+  }, []);
+
   // Process league data when it changes
   useEffect(() => {
     if (leagueHistory?.length && leagueDetails?.scoreboard_entries?.length) {
@@ -625,12 +647,12 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                           contentStyle={{ borderRadius: '4px' }}
                         />
                           <Legend content={renderCustomLegend} />
-                          <ReferenceLine y={3.5} strokeDasharray="5 5" stroke="#4CAF50" />
+                          <ReferenceLine y={3.5} strokeDasharray="5 5" stroke={chartColors.success} />
                           <Line 
                             type="monotone" 
                             dataKey="position" 
                             name={selectedDriver} 
-                            stroke="#8884d8" 
+                            stroke={chartColors.primary} 
                             strokeWidth={3}
                             activeDot={{ r: 8 }} 
                           />
@@ -763,7 +785,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                           <PolarGrid />
                           <PolarAngleAxis dataKey="subject" />
                           <PolarRadiusAxis angle={90} domain={[0, 10]} />
-                          <Radar name={selectedDriver} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                          <Radar name={selectedDriver} dataKey="A" stroke={chartColors.primary} fill={chartColors.primary} fillOpacity={0.6} />
                           <Legend />
                         </RadarChart>
                       </ResponsiveContainer>
@@ -782,7 +804,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                             background: `conic-gradient(
                               ${getConsistencyColor(selectedDriverConsistency.consistency)} 
                               ${selectedDriverConsistency.consistency * 10}%, 
-                              #e0e0e0 0
+                              ${chartColors.border} 0
                             )`
                           }}>
                             <div className="score-inner">
@@ -893,7 +915,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                           <Bar 
                             dataKey="consistency" 
                             name="Consistency Rating" 
-                            fill="#8884d8" 
+                            fill={chartColors.primary} 
                             radius={[0, 4, 4, 0]}
                           >
                             {formattedData.consistencyRatings
@@ -901,7 +923,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                               .map((entry, index) => (
                                 <Cell 
                                   key={`cell-${index}`} 
-                                  fill={entry.name === selectedDriver ? '#ff7300' : '#8884d8'} 
+                                  fill={entry.name === selectedDriver ? chartColors.accent : chartColors.primary} 
                                 />
                               ))
                             }
@@ -1098,16 +1120,16 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                                 formatter={(value) => [`${value > 0 ? '+' : ''}${value} positions`, 'Change']}
                                 labelFormatter={(label) => `${label}`} 
                               />
-                              <ReferenceLine y={0} stroke="#000" />
+                              <ReferenceLine y={0} stroke={chartColors.border} />
                               <Bar 
                                 dataKey="delta" 
                                 name="Positions Gained" 
-                                fill={(data) => data.delta > 0 ? "#4CAF50" : "#FF5722"}
+                                fill={(data) => data.delta > 0 ? chartColors.success : chartColors.danger}
                               >
                                 {selectedDriverComebacks.map((entry, index) => (
                                   <Cell 
                                     key={`cell-${index}`} 
-                                    fill={entry.delta > 0 ? "#4CAF50" : "#FF5722"} 
+                                    fill={entry.delta > 0 ? chartColors.success : chartColors.danger} 
                                   />
                                 ))}
                               </Bar>
@@ -1197,10 +1219,11 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
 
 // Helper function to get color based on consistency score
 const getConsistencyColor = (score) => {
-  if (score >= 8) return '#4CAF50';  // Green
-  if (score >= 6) return '#2196F3';  // Blue
-  if (score >= 4) return '#FF9800';  // Orange
-  return '#F44336';  // Red
+  const style = getComputedStyle(document.documentElement);
+  if (score >= 8) return style.getPropertyValue('--color-success').trim() || '#4caf50';
+  if (score >= 6) return style.getPropertyValue('--color-secondary').trim() || '#00a8e1';
+  if (score >= 4) return style.getPropertyValue('--color-warning').trim() || '#ff9800';
+  return style.getPropertyValue('--color-danger').trim() || '#d32f2f';
 };
 
 // Helper function to get rating text based on consistency score

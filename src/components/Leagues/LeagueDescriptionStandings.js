@@ -171,7 +171,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                             textAlign: 'center'
                         },
                         '& .MuiTableHead-root': {
-                            backgroundColor: '#f5f5f5'
+                            backgroundColor: 'var(--color-bg-elevated)'
                         }
                     }}>
                     <TableHead>
