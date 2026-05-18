@@ -134,12 +134,13 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
 
         var fetchRacesArray = [];
         var racesObj = {}, qualiObj = {};
-        leagueHistory.map((hist) => [hist.stages?.race1?.id,hist.stages?.qualifying1?.id])
-        .forEach(([raceId,qualiId], i) => { 
-          if( raceId ){
+        leagueHistory.map((hist) => [hist.stages?.race1?.id, hist.stages?.qualifying1?.id, hist.finished])
+        .forEach(([raceId, qualiId, finished], i) => {
+          if( raceId && finished !== false ){
             fetchRacesArray.push(
               getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceId}`)
               .then((raceRes) => {
+                if (!raceRes) return null;
                 raceRes = raceRes.map((e) => {
                   e.RaceWeek = leagueHistory.length - i;
                   return e;
@@ -147,6 +148,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                 if( qualiId ){
                   return getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiId}`)
                   .then((qualiRes) => {
+                    if (!qualiRes) return raceRes;
                     var stageId = qualiRes[0]?.stage;
                     qualiObj[stageId] = qualiRes.map((e) => { e.RaceWeek = leagueHistory.length - i; return e; });
                     raceRes = raceRes.map((r) => {
@@ -167,6 +169,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
 
         Promise.all(fetchRacesArray).then((raceRes) => {
           raceRes.forEach((res) => {
+            if (!res) return;
             var stageId = res[0]?.stage;
             racesObj[stageId] = res;
           })
@@ -442,6 +445,7 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
           return res[0].RaceWeek === week
         });
 
+        if (!weekRaceResults) return;
         const driverRaceEvent = weekRaceResults.find((res) => res.name === driver);
         const driverQualiEvent = weekQualiResults?.find((res) => res.name === driver);
         

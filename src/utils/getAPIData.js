@@ -14,6 +14,7 @@ async function getAPIData(subpath) {
     });
 
     checkResponse(response);
+    if (!response.ok) return null;
     let jsonRes = await response.json();
     
     return jsonRes.response ?? jsonRes;

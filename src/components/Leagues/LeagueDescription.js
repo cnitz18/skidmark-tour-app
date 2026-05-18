@@ -9,6 +9,7 @@ import LeagueDescriptionOverview from './LeagueDescriptionOverview';
 import LeagueDescriptionSchedule from './LeagueDescriptionSchedule';
 import LeagueDescriptionStandings from './LeagueDescriptionStandings';
 import LeagueDescriptionPerformance from './LeagueDescriptionPerformance';
+import LeagueDescriptionRules from './LeagueDescriptionRules';
   
 function LeagueDescriptionTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -36,9 +37,15 @@ function a11yProps(index) {
 
 const LeagueDescription = ({ enums, lists }) => {
     const [tabValue, setTabValue] = React.useState(0);
+    const [targetRaceId, setTargetRaceId] = React.useState(null);
 
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
+    };
+
+    const handleSwitchToSchedule = (raceId) => {
+      setTargetRaceId(raceId);
+      setTabValue(1);
     };
     const [isLeagueLoading, setIsLeagueLoading] = useState(true);
     const [isDetailsLoading, setIsDetailsLoading] = useState(true);
@@ -61,7 +68,8 @@ const LeagueDescription = ({ enums, lists }) => {
                         id: snap.PlayerName,
                         data,
                         label: snap.PlayerName,
-                        showMark: false
+                        showMark: false,
+                        highlightScope: { fade: 'global', highlight: 'series' }
                     }
                 }
                 series_obj[snap.PlayerName].data[snap.Week-1] = snap.Points;
@@ -148,40 +156,82 @@ const LeagueDescription = ({ enums, lists }) => {
                 ( league &&
                     <Container className="league-desc-container motion-rise-in">
                         <Box sx={{ width: '100%' }}>
-                            <Box>
+                            <Box sx={{
+                                position: 'relative',
+                                mb: 0.5,
+                                '&::after': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0,
+                                    width: '2.5rem',
+                                    background: 'linear-gradient(to right, transparent, var(--color-bg))',
+                                    pointerEvents: 'none',
+                                    zIndex: 1,
+                                }
+                            }}>
                                 <Tabs 
                                     value={tabValue} 
                                     onChange={handleChange}
                                     aria-label="league tabs"
                                     variant="scrollable"
-                                    scrollButtons="auto"
+                                    scrollButtons={false}
                                     sx={{
-                                        borderBottom: 1,
-                                        borderColor: 'divider',
+                                        minHeight: 0,
+                                        borderBottom: 0,
+                                        '& .MuiTabs-indicator': { display: 'none' },
+                                        '& .MuiTabs-flexContainer': {
+                                            gap: '0.4rem',
+                                            py: 0.75,
+                                        },
+                                        '& .MuiTabs-scrollableX': {
+                                            scrollbarWidth: 'none',
+                                            '&::-webkit-scrollbar': { display: 'none' },
+                                        },
                                         '& .MuiTab-root': {
                                             textTransform: 'none',
-                                            minWidth: 120,
-                                            fontWeight: 500
+                                            minWidth: 0,
+                                            minHeight: 0,
+                                            px: 1.5,
+                                            py: 0.6,
+                                            fontSize: '0.8rem',
+                                            fontWeight: 600,
+                                            lineHeight: 1.3,
+                                            borderRadius: '20px',
+                                            border: '1.5px solid var(--color-border)',
+                                            color: 'var(--color-text-secondary)',
+                                            transition: 'all 0.15s ease',
+                                            letterSpacing: '0.01em',
+                                        },
+                                        '& .Mui-selected': {
+                                            backgroundColor: 'var(--color-accent) !important',
+                                            borderColor: 'var(--color-accent) !important',
+                                            color: '#0d2240 !important',
+                                            fontWeight: 700,
                                         }
                                     }}>
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
-                                    <Tab label="Performance Analytics" {...a11yProps(3)} />
-                                    {/* <Tab label="Scoring" {...a11yProps(3)}/> */}
+                                    <Tab label="Analytics" {...a11yProps(3)} />
+                                    <Tab label="Details" {...a11yProps(4)} />
                                 </Tabs>
                             </Box>
                             <LeagueDescriptionTabPanel value={tabValue} index={0}>
-                                <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries,lists,leagueHistory}}/>
+                                <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries,lists,leagueHistory, onSwitchToSchedule: handleSwitchToSchedule}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={1}>
-                                <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league}}/>
+                                <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league, targetRaceId, onClearTarget: () => setTargetRaceId(null)}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={2}>
                                 <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists,showDetailsSpinner: isDetailsLoading}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={3}>
                                 <LeagueDescriptionPerformance {...{showHistorySpinner,league, leagueHistory, leagueDetails, lists}} />
+                            </LeagueDescriptionTabPanel>
+                            <LeagueDescriptionTabPanel value={tabValue} index={4}>
+                                <LeagueDescriptionRules {...{league, lists}} />
                             </LeagueDescriptionTabPanel>
                         </Box>
                     </Container>

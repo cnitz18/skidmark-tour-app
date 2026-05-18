@@ -327,7 +327,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
               </div>
             ) : eventsData && eventsData.length > 0 ? (
               <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
-                <Nav variant="tabs" className="mb-3 nav-fill">
+                <Nav variant="pills" className="mb-3 race-detail-pills">
                   <Nav.Item>
                     <Nav.Link eventKey="lapLog" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-stopwatch me-2"></i>
