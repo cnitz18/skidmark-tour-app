@@ -111,7 +111,7 @@ const LeagueDescriptionOverview = ({ league, standings, lists, leagueHistory, on
         <>
           {champion && (
             <div className={`mb-4 ${styles.championCard}`}>
-              <div className="py-4 px-4">
+              <div className={styles.championCardBody}>
                 <div className={styles.championHeroInner}>
                   <div className={styles.championLeft}>
                     <div className={styles.crownIcon}>
