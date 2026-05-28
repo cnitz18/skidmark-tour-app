@@ -345,7 +345,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Nav.Item>
                     <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
                       <i className="bi bi-exclamation-triangle me-2"></i>
-                      {session} Events
+                      {session} Timeline
                     </Nav.Link>
                   </Nav.Item>
                   { session === "Race" && (
@@ -543,9 +543,9 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   <Tab.Pane eventKey="events">
                     {activeTab === "events" && (
                       <Paper elevation={0} className="p-3 mb-4 border">
-                        <h5 className="mb-3">Race Events</h5>
+                        <h5 className="mb-3">{session} Timeline</h5>
                         <div className="events-container">
-                          {eventsData.map((evt, i) => (
+                          {eventsData.filter(evt => evt.event_name !== 'Lap').map((evt, i) => (
                             <Card key={i} className="event-card mb-2">
                               <Card.Body>
                                 <div className="d-flex align-items-center">
@@ -553,8 +553,8 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                                     Lap {evt.attributes_Lap}
                                   </div>
                                   <div className="event-badge me-3">
-                                    {getEventBadge(evt.event_name)}
-                                  </div>
+                                      {getEventBadge(evt.event_name)}
+                                    </div>
                                   <div className="event-description">
                                     {getEventDescription(evt)}
                                   </div>
@@ -562,7 +562,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                               </Card.Body>
                             </Card>
                           ))}
-                          {eventsData.filter(evt => evt.event_name !== "Lap").length === 0 && (
+                          {eventsData.filter(evt => evt.event_name !== 'Lap').length === 0 && (
                             <div className="text-center py-4 text-muted">
                               No events recorded for this session
                             </div>

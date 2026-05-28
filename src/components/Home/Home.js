@@ -9,13 +9,9 @@ import fullLogo from "../../assets/Skidmark_Logo_1.png";
 import FeaturedLeagueCard from '../shared/FeaturedLeagueCard';
 
 const imageInfo = [
-    // {
-    //     url: "homepage/kartgrid.jpg",
-    //     caption: "Karting Fall '24"
-    // },
     {
         url: "homepage/monza-sprint-finish.jpg",
-        caption: "Nailbiter Finish @ Monza '71",
+        caption: "Low Key Last Lap With The Boys (link)",
         href: "https://www.youtube.com/watch?v=xwN_Ch8Hexo"
     },
     {
@@ -25,7 +21,7 @@ const imageInfo = [
     {
         url: "homepage/skidmarkvsopalas.jpg",
         caption: "2025 Winter Season Highlights (link)",
-        href: "https://youtu.be/yMqXIcBbhxo?si=5iHQGi5Mn_rXBd3v"
+        href: "https://www.youtube.com/watch?v=LGmDh31O4Rc"
     },
     {
         url: "homepage/karting-fall-25.jpg",
@@ -37,7 +33,7 @@ const imageInfo = [
         href: "https://www.youtube.com/watch?v=4KDvMUHPLDw"
     },
     {
-        url: "homepage/irl.jpg",
+        url: "homepage/kartgrid.jpg",
         caption: "Karting Fall '24"
     }
 ]

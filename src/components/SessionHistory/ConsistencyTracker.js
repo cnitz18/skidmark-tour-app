@@ -40,6 +40,108 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
 
   return (
     <div className="consistency-tracker">
+            <Row>
+        <Col>
+          <Card className="sector-analysis-card">
+            <Card.Body>
+              <h5 className="mb-3">Sector Performance Analysis</h5>
+              
+              <Row>
+                <Col md={4} className="mb-3 mb-md-0">
+                  <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS1 ? 'sector-card-best' : ''}`}>
+                    <h6 className="sector-title">
+                      <span className="sector-badge">S1</span> Sector 1
+                      {analyticsData?.hasSessionBestS1 && 
+                        <span className="ms-2 badge bg-purple">SESSION BEST</span>}
+                    </h6>
+                    <div className="sector-stats">
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>My Best:</span>
+                        <span className="fw-bold">{msToTime(analyticsData?.bestSector1Time)}</span>
+                      </div>
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>Gap to Session Best:</span>
+                        {analyticsData?.gapToSessionBestS1 === 0 ? (
+                          <span className="fw-bold text-purple">BEST</span>
+                        ) : (
+                          <span className="fw-bold text-danger">
+                            +{msToTime(analyticsData?.gapToSessionBestS1)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>Pace Spread:</span>
+                        <span className="fw-bold">{sectorInsights.s1.paceSpreadLabel}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+                
+                <Col md={4} className="mb-3 mb-md-0">
+                  <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS2 ? 'sector-card-best' : ''}`}>
+                    <h6 className="sector-title">
+                      <span className="sector-badge">S2</span> Sector 2
+                      {analyticsData?.hasSessionBestS2 && 
+                        <span className="ms-2 badge bg-purple">SESSION BEST</span>}
+                    </h6>
+                    <div className="sector-stats">
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>My Best:</span>
+                        <span className="fw-bold">{msToTime(analyticsData?.bestSector2Time)}</span>
+                      </div>
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>Gap to Session Best:</span>
+                        {analyticsData?.gapToSessionBestS2 === 0 ? (
+                          <span className="fw-bold text-purple">BEST</span>
+                        ) : (
+                          <span className="fw-bold text-danger">
+                            +{msToTime(analyticsData?.gapToSessionBestS2)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>Pace Spread:</span>
+                        <span className="fw-bold">{sectorInsights.s2.paceSpreadLabel}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+                
+                <Col md={4}>
+                  <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS3 ? 'sector-card-best' : ''}`}>
+                    <h6 className="sector-title">
+                      <span className="sector-badge">S3</span> Sector 3
+                      {analyticsData?.hasSessionBestS3 && 
+                        <span className="ms-2 badge bg-purple">SESSION BEST</span>}
+                    </h6>
+                    <div className="sector-stats">
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>My Best:</span>
+                        <span className="fw-bold">{msToTime(analyticsData?.bestSector3Time)}</span>
+                      </div>
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>Gap to Session Best:</span>
+                        {analyticsData?.gapToSessionBestS3 === 0 ? (
+                          <span className="fw-bold text-purple">BEST</span>
+                        ) : (
+                          <span className="fw-bold text-danger">
+                            +{msToTime(analyticsData?.gapToSessionBestS3)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="stat-row d-flex justify-content-between mb-2">
+                        <span>Pace Spread:</span>
+                        <span className="fw-bold">{sectorInsights.s3.paceSpreadLabel}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      
       <Row className="mb-4">
         <Col md={6}>
           <Card className="h-100 consistency-card">
@@ -152,108 +254,6 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
               ) : (
                 <div className="text-muted">Not enough clean laps to calculate stint degradation.</div>
               )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
-          <Card className="sector-analysis-card">
-            <Card.Body>
-              <h5 className="mb-3">Sector Performance Analysis</h5>
-              
-              <Row>
-                <Col md={4} className="mb-3 mb-md-0">
-                  <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS1 ? 'sector-card-best' : ''}`}>
-                    <h6 className="sector-title">
-                      <span className="sector-badge">S1</span> Sector 1
-                      {analyticsData?.hasSessionBestS1 && 
-                        <span className="ms-2 badge bg-purple">SESSION BEST</span>}
-                    </h6>
-                    <div className="sector-stats">
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>My Best:</span>
-                        <span className="fw-bold">{msToTime(analyticsData?.bestSector1Time)}</span>
-                      </div>
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>Gap to Session Best:</span>
-                        {analyticsData?.gapToSessionBestS1 === 0 ? (
-                          <span className="fw-bold text-purple">BEST</span>
-                        ) : (
-                          <span className="fw-bold text-danger">
-                            +{msToTime(analyticsData?.gapToSessionBestS1)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>Pace Spread:</span>
-                        <span className="fw-bold">{sectorInsights.s1.paceSpreadLabel}</span>
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-                
-                <Col md={4} className="mb-3 mb-md-0">
-                  <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS2 ? 'sector-card-best' : ''}`}>
-                    <h6 className="sector-title">
-                      <span className="sector-badge">S2</span> Sector 2
-                      {analyticsData?.hasSessionBestS2 && 
-                        <span className="ms-2 badge bg-purple">SESSION BEST</span>}
-                    </h6>
-                    <div className="sector-stats">
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>My Best:</span>
-                        <span className="fw-bold">{msToTime(analyticsData?.bestSector2Time)}</span>
-                      </div>
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>Gap to Session Best:</span>
-                        {analyticsData?.gapToSessionBestS2 === 0 ? (
-                          <span className="fw-bold text-purple">BEST</span>
-                        ) : (
-                          <span className="fw-bold text-danger">
-                            +{msToTime(analyticsData?.gapToSessionBestS2)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>Pace Spread:</span>
-                        <span className="fw-bold">{sectorInsights.s2.paceSpreadLabel}</span>
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-                
-                <Col md={4}>
-                  <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS3 ? 'sector-card-best' : ''}`}>
-                    <h6 className="sector-title">
-                      <span className="sector-badge">S3</span> Sector 3
-                      {analyticsData?.hasSessionBestS3 && 
-                        <span className="ms-2 badge bg-purple">SESSION BEST</span>}
-                    </h6>
-                    <div className="sector-stats">
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>My Best:</span>
-                        <span className="fw-bold">{msToTime(analyticsData?.bestSector3Time)}</span>
-                      </div>
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>Gap to Session Best:</span>
-                        {analyticsData?.gapToSessionBestS3 === 0 ? (
-                          <span className="fw-bold text-purple">BEST</span>
-                        ) : (
-                          <span className="fw-bold text-danger">
-                            +{msToTime(analyticsData?.gapToSessionBestS3)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="stat-row d-flex justify-content-between mb-2">
-                        <span>Pace Spread:</span>
-                        <span className="fw-bold">{sectorInsights.s3.paceSpreadLabel}</span>
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
             </Card.Body>
           </Card>
         </Col>
