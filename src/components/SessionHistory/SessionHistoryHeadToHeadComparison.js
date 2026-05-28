@@ -453,7 +453,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
                     className={`h2h-segmented-btn ${chartMode === 'trackGap' ? 'active' : ''}`}
                     onClick={() => handleChartModeChange('trackGap')}
                   >
-                    Track Gap
+                    On-Track Gap
                   </Button>
                 </ButtonGroup>
               </span>
