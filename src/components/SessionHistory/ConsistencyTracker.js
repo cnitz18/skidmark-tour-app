@@ -34,17 +34,21 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
   const paceWindows = buildPaceWindows(cleanLaps);
   const stintSummary = buildStintSummary(stintInsights, cleanLaps.length);
   const sectorInsights = buildSectorInsights(cleanLaps);
-  const stdDevMs = analyticsData?.stdDev ?? 0;
-  const consistencyLabel = getConsistencyLabel(stdDevMs);
-  const fieldComparison = analyticsData?.fieldComparison;
+  const cleanLapTimes = cleanLaps.map(l => l.attributes_LapTime);
+  const cleanBestLap = cleanLapTimes.length ? Math.min(...cleanLapTimes) : null;
+  const cleanAvgLap = cleanLapTimes.length ? cleanLapTimes.reduce((s, t) => s + t, 0) / cleanLapTimes.length : null;
+  const localPaceSpreadMs = cleanBestLap != null && cleanAvgLap != null ? Math.round(cleanAvgLap - cleanBestLap) : null;
+  const fieldAvgPaceSpread = analyticsData?.fieldAvgPaceSpread ?? null;
+  const paceSpreadLabel = getPaceSpreadLabel(localPaceSpreadMs, fieldAvgPaceSpread);
+  const sectorBestHolders = getSectorBestHolders(driverAnalytics);
 
   return (
     <div className="consistency-tracker">
-            <Row>
-        <Col>
-          <Card className="sector-analysis-card">
-            <Card.Body>
-              <h5 className="mb-3">Sector Performance Analysis</h5>
+      <Card className="mb-4 sector-analysis-card">
+        <Card.Header>
+          <h5 className="mb-0">Sector Performance Analysis</h5>
+        </Card.Header>
+        <Card.Body>
               
               <Row>
                 <Col md={4} className="mb-3 mb-md-0">
@@ -69,6 +73,11 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                           </span>
                         )}
                       </div>
+                      {sectorBestHolders.s1 && (
+                        <div className="stat-row mb-2">
+                          <small className="text-muted">Held by {sectorBestHolders.s1}</small>
+                        </div>
+                      )}
                       <div className="stat-row d-flex justify-content-between mb-2">
                         <span>Pace Spread:</span>
                         <span className="fw-bold">{sectorInsights.s1.paceSpreadLabel}</span>
@@ -99,6 +108,11 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                           </span>
                         )}
                       </div>
+                      {sectorBestHolders.s2 && (
+                        <div className="stat-row mb-2">
+                          <small className="text-muted">Held by {sectorBestHolders.s2}</small>
+                        </div>
+                      )}
                       <div className="stat-row d-flex justify-content-between mb-2">
                         <span>Pace Spread:</span>
                         <span className="fw-bold">{sectorInsights.s2.paceSpreadLabel}</span>
@@ -129,6 +143,11 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                           </span>
                         )}
                       </div>
+                      {sectorBestHolders.s3 && (
+                        <div className="stat-row mb-2">
+                          <small className="text-muted">Held by {sectorBestHolders.s3}</small>
+                        </div>
+                      )}
                       <div className="stat-row d-flex justify-content-between mb-2">
                         <span>Pace Spread:</span>
                         <span className="fw-bold">{sectorInsights.s3.paceSpreadLabel}</span>
@@ -137,90 +156,72 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                   </div>
                 </Col>
               </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      
-      <Row className="mb-4">
-        <Col md={6}>
-          <Card className="h-100 consistency-card">
-            <Card.Body>
-              <h5 className="mb-3">Sustained Pace</h5>
+        </Card.Body>
+      </Card>
+
+      <Row>
+        <Col md={6} className="mb-4">
+        <Card className="h-100 consistency-card">
+          <Card.Header>
+            <h5 className="mb-0">Pace Spread</h5>
+          </Card.Header>
+        <Card.Body>
 
               <div className="consistency-std-display mb-3">
                 <div className="consistency-std-stack mb-1">
-                  <span className="consistency-std-value">{(stdDevMs / 1000).toFixed(3)}s</span>
-                  <span className={`consistency-std-label-badge consistency-${consistencyLabel.key}`}>{consistencyLabel.label}</span>
+                  <span className="consistency-std-value">
+                    {localPaceSpreadMs != null ? `+${(localPaceSpreadMs / 1000).toFixed(3)}s` : '—'}
+                  </span>
+                  <span className={`consistency-std-label-badge consistency-${paceSpreadLabel.key}`}>{paceSpreadLabel.label}</span>
                 </div>
-                <small className="text-muted">Standard deviation across clean laps (pit stops &amp; outliers excluded)</small>
+                <small className="text-muted">Avg − best clean lap (pit stops &amp; outliers excluded)</small>
+                {fieldAvgPaceSpread != null && (
+                  <small className="text-muted d-block mt-1">vs. field avg: +{(fieldAvgPaceSpread / 1000).toFixed(3)}s</small>
+                )}
               </div>
 
               <div className="pace-window-grid mb-3">
                 <div className="pace-window-card">
-                  <div className="pace-window-label">Best 3-Lap Run</div>
+                  <div className="pace-window-label">Best 3-Lap Avg</div>
                   <div className="pace-window-value">{paceWindows.bestThreeLapAvg ? msToTime(paceWindows.bestThreeLapAvg) : 'N/A'}</div>
                   <div className="pace-window-detail">{paceWindows.bestThreeLapRange || 'Not enough clean laps'}</div>
                 </div>
                 <div className="pace-window-card">
-                  <div className="pace-window-label">Best 5-Lap Run</div>
+                  <div className="pace-window-label">Best 5-Lap Avg</div>
                   <div className="pace-window-value">{paceWindows.bestFiveLapAvg ? msToTime(paceWindows.bestFiveLapAvg) : 'N/A'}</div>
                   <div className="pace-window-detail">{paceWindows.bestFiveLapRange || 'Not enough clean laps'}</div>
                 </div>
                 <div className="pace-window-card">
-                  <div className="pace-window-label">Longest Clean Run</div>
-                  <div className="pace-window-value">{paceWindows.longestRunAvg ? msToTime(paceWindows.longestRunAvg) : 'N/A'}</div>
-                  <div className="pace-window-detail">{paceWindows.longestRunLabel || 'No uninterrupted run found'}</div>
+                  <div className="pace-window-label">Fastest Lap</div>
+                  <div className="pace-window-value">{cleanBestLap ? msToTime(cleanBestLap) : 'N/A'}</div>
                 </div>
                 <div className="pace-window-card">
-                  <div className="pace-window-label">Run Fade</div>
-                  <div className={`pace-window-value ${paceWindows.longestRunFadeMs <= 150 ? 'is-positive' : paceWindows.longestRunFadeMs <= 500 ? 'is-neutral' : 'is-negative'}`}>
-                    {paceWindows.longestRunFadeMs != null ? `${paceWindows.longestRunFadeMs > 0 ? '+' : ''}${(paceWindows.longestRunFadeMs / 1000).toFixed(3)}s` : 'N/A'}
-                  </div>
-                  <div className="pace-window-detail">{paceWindows.longestRunFadeLabel || 'Need at least two laps in run'}</div>
+                  <div className="pace-window-label">Clean Laps</div>
+                  <div className="pace-window-value">{cleanLaps.length}</div>
+                  <div className="pace-window-detail">used in analysis</div>
                 </div>
               </div>
 
-              <div className="consistency-details">
-                <div className="detail-row d-flex justify-content-between mb-2">
-                  <span>Lap Time Spread:</span>
-                  <span className="fw-bold">{msToTime(analyticsData?.spread)}s <small className="text-muted">(fastest to slowest)</small></span>
-                </div>
-                <div className="detail-row d-flex justify-content-between">
-                  <span>vs Field Average:</span>
-                  {fieldComparison != null ? (
-                    <span className={`fw-bold ${fieldComparison >= 0 ? 'text-success' : 'text-danger'}`}>
-                      {fieldComparison > 0 ? '+' : ''}{fieldComparison.toFixed(1)}% {fieldComparison >= 0 ? 'tighter' : 'looser'}
-                    </span>
-                  ) : <span className="text-muted">N/A</span>}
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
+
+          </Card.Body>
+        </Card>
         </Col>
-
-        <Col md={6}>
-          <Card className="h-100 improvement-card">
-            <Card.Body>
-              <h5 className="mb-3">Stint Pace &amp; Degradation</h5>
-              <small className="text-muted d-block mb-3">Each stint is split around pit laps, then measured from its opening pace to closing pace.</small>
-
+        <Col md={6} className="mb-4">
+        <Card className="h-100 improvement-card">
+          <Card.Header>
+            <h5 className="mb-0">Stint Pace</h5>
+          </Card.Header>
+        <Card.Body>
               <div className="stint-summary-grid mb-3">
                 <div className="stint-summary-card">
-                  <div className="stint-summary-label">Clean Stints</div>
-                  <div className="stint-summary-value">{stintSummary.stintCount}</div>
+                  <div className="stint-summary-label">Best Opening Lap</div>
+                  <div className="stint-summary-value">{stintSummary.bestOpeningLap ? msToTime(stintSummary.bestOpeningLap.time) : 'N/A'}</div>
+                  <div className="pace-window-detail">{stintSummary.bestOpeningLap?.label || 'No clean stints'}</div>
                 </div>
                 <div className="stint-summary-card">
-                  <div className="stint-summary-label">Clean Laps</div>
-                  <div className="stint-summary-value">{stintSummary.cleanLapCount}</div>
-                </div>
-                <div className="stint-summary-card">
-                  <div className="stint-summary-label">Best Stint Opening</div>
-                  <div className="stint-summary-value">{stintSummary.bestOpeningAvg ? msToTime(stintSummary.bestOpeningAvg) : 'N/A'}</div>
-                </div>
-                <div className="stint-summary-card">
-                  <div className="stint-summary-label">Worst Fade</div>
-                  <div className="stint-summary-value">{stintSummary.worstFadeMs != null ? `${stintSummary.worstFadeMs > 0 ? '+' : ''}${(stintSummary.worstFadeMs / 1000).toFixed(3)}s` : 'N/A'}</div>
+                  <div className="stint-summary-label">Best Closing Lap</div>
+                  <div className="stint-summary-value">{stintSummary.bestClosingLap ? msToTime(stintSummary.bestClosingLap.time) : 'N/A'}</div>
+                  <div className="pace-window-detail">{stintSummary.bestClosingLap?.label || 'No clean stints'}</div>
                 </div>
               </div>
 
@@ -230,32 +231,27 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                     <div key={stint.label} className="stint-insight-row">
                       <div>
                         <div className="stint-insight-title">{stint.label}</div>
-                        <div className="stint-insight-subtitle">Laps {stint.startLap}-{stint.endLap}</div>
+                        <div className="stint-insight-subtitle">Laps {stint.startLap}-{stint.endLap} ({stint.lapCount} laps)</div>
                       </div>
                       <div className="stint-insight-metrics">
                         <div className="stint-insight-metric">
-                          <span className="text-muted">Opening</span>
-                          <strong>{msToTime(stint.openingAvg)}</strong>
+                          <span className="text-muted">Fastest Lap</span>
+                          <strong>{msToTime(stint.bestLapTime)}</strong>
+                          <small className="text-muted">Lap {stint.bestLapNumber}</small>
                         </div>
                         <div className="stint-insight-metric">
-                          <span className="text-muted">Closing</span>
-                          <strong>{msToTime(stint.closingAvg)}</strong>
-                        </div>
-                        <div className="stint-insight-metric">
-                          <span className={`stint-delta ${stint.degradationMs <= 150 ? 'is-stable' : stint.degradationMs <= 500 ? 'is-manageable' : 'is-fading'}`}>
-                            {stint.degradationMs > 0 ? '+' : ''}{(stint.degradationMs / 1000).toFixed(3)}s
-                          </span>
-                          <small>{stint.degradationLabel}</small>
+                          <span className="text-muted">Pace Spread</span>
+                          <strong>{stint.paceSpreadMs != null ? `+${(stint.paceSpreadMs / 1000).toFixed(3)}s` : 'N/A'}</strong>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-muted">Not enough clean laps to calculate stint degradation.</div>
+                <div className="text-muted">Not enough clean laps to show stint pace.</div>
               )}
-            </Card.Body>
-          </Card>
+          </Card.Body>
+        </Card>
         </Col>
       </Row>
     </div>
@@ -301,10 +297,14 @@ const buildStintInsights = (laps, pitAffectedLaps) => {
     .map((stint, index) => {
       const sampleSize = Math.min(2, stint.length);
       const openingWindow = stint.slice(0, sampleSize);
-      const closingWindow = stint.slice(-sampleSize);
       const openingAvg = averageLapTime(openingWindow);
-      const closingAvg = averageLapTime(closingWindow);
-      const degradationMs = closingAvg - openingAvg;
+      const openingLapTime = stint[0].attributes_LapTime;
+      const closingLapTime = stint[stint.length - 1].attributes_LapTime;
+      const bestLap = stint.reduce((best, lap) => (
+        !best || lap.attributes_LapTime < best.attributes_LapTime ? lap : best
+      ), null);
+      const bestLapTime = bestLap?.attributes_LapTime ?? null;
+      const stintAverage = averageLapTime(stint);
 
       return {
         label: `Stint ${index + 1}`,
@@ -312,9 +312,11 @@ const buildStintInsights = (laps, pitAffectedLaps) => {
         endLap: stint[stint.length - 1].attributes_Lap,
         lapCount: stint.length,
         openingAvg,
-        closingAvg,
-        degradationMs,
-        degradationLabel: getDegradationLabel(degradationMs)
+        openingLapTime,
+        closingLapTime,
+        bestLapTime,
+        bestLapNumber: bestLap?.attributes_Lap ?? null,
+        paceSpreadMs: Math.round(stintAverage - bestLapTime)
       };
     });
 };
@@ -325,8 +327,6 @@ const averageLapTime = (laps) => {
 };
 
 const buildPaceWindows = (cleanLaps) => {
-  const cleanRuns = buildCleanRuns(cleanLaps);
-  const longestRun = cleanRuns.reduce((longest, run) => (run.length > longest.length ? run : longest), []);
   const bestThree = getBestRollingWindow(cleanLaps, 3);
   const bestFive = getBestRollingWindow(cleanLaps, 5);
 
@@ -334,26 +334,8 @@ const buildPaceWindows = (cleanLaps) => {
     bestThreeLapAvg: bestThree?.avg ?? null,
     bestThreeLapRange: bestThree ? `Laps ${bestThree.startLap}-${bestThree.endLap}` : null,
     bestFiveLapAvg: bestFive?.avg ?? null,
-    bestFiveLapRange: bestFive ? `Laps ${bestFive.startLap}-${bestFive.endLap}` : null,
-    longestRunAvg: longestRun.length ? averageLapTime(longestRun) : null,
-    longestRunLabel: longestRun.length ? `${longestRun.length} laps, Laps ${longestRun[0].attributes_Lap}-${longestRun[longestRun.length - 1].attributes_Lap}` : null,
-    longestRunFadeMs: longestRun.length >= 2 ? averageLapTime(longestRun.slice(-2)) - averageLapTime(longestRun.slice(0, 2)) : null,
-    longestRunFadeLabel: longestRun.length >= 2 ? getDegradationLabel(averageLapTime(longestRun.slice(-2)) - averageLapTime(longestRun.slice(0, 2))) : null
+    bestFiveLapRange: bestFive ? `Laps ${bestFive.startLap}-${bestFive.endLap}` : null
   };
-};
-
-const buildCleanRuns = (cleanLaps) => {
-  if (!cleanLaps.length) return [];
-
-  return cleanLaps.reduce((runs, lap) => {
-    const currentRun = runs[runs.length - 1];
-    if (!currentRun.length || currentRun[currentRun.length - 1].attributes_Lap + 1 === lap.attributes_Lap) {
-      currentRun.push(lap);
-    } else {
-      runs.push([lap]);
-    }
-    return runs;
-  }, [[]]).filter((run) => run.length > 0);
 };
 
 const getBestRollingWindow = (laps, windowSize) => {
@@ -380,25 +362,29 @@ const getBestRollingWindow = (laps, windowSize) => {
 const buildStintSummary = (stintInsights, cleanLapCount) => {
   if (!stintInsights.length) {
     return {
-      stintCount: 0,
       cleanLapCount,
-      bestOpeningAvg: null,
-      worstFadeMs: null
+      bestOpeningLap: null,
+      bestClosingLap: null
     };
   }
 
-  return {
-    stintCount: stintInsights.length,
-    cleanLapCount,
-    bestOpeningAvg: Math.min(...stintInsights.map((stint) => stint.openingAvg)),
-    worstFadeMs: Math.max(...stintInsights.map((stint) => stint.degradationMs))
-  };
-};
+  const bestOpeningLap = stintInsights.reduce((best, stint) => (
+    !best || stint.openingLapTime < best.time
+      ? { time: stint.openingLapTime, label: stint.label }
+      : best
+  ), null);
 
-const getDegradationLabel = (degradationMs) => {
-  if (degradationMs <= 150) return 'Stable';
-  if (degradationMs <= 500) return 'Manageable fade';
-  return 'Heavy fade';
+  const bestClosingLap = stintInsights.reduce((best, stint) => (
+    !best || stint.closingLapTime < best.time
+      ? { time: stint.closingLapTime, label: stint.label }
+      : best
+  ), null);
+
+  return {
+    cleanLapCount,
+    bestOpeningLap,
+    bestClosingLap
+  };
 };
 
 const buildSectorInsights = (cleanLaps) => {
@@ -428,14 +414,29 @@ const buildSectorInsights = (cleanLaps) => {
   };
 };
 
-// Translate raw std deviation (ms) to a human-readable label
-const getConsistencyLabel = (stdDevMs) => {
-  if (stdDevMs === 0) return { key: 'unknown', label: '—' };
-  if (stdDevMs <= 300) return { key: 'tight', label: 'Very Tight' };
-  if (stdDevMs <= 600) return { key: 'good', label: 'Good' };
-  if (stdDevMs <= 1200) return { key: 'moderate', label: 'Moderate' };
-  if (stdDevMs <= 2500) return { key: 'scattered', label: 'Scattered' };
-  return { key: 'high', label: 'High Variability' };
+const getSectorBestHolders = (driverAnalytics) => {
+  const entries = Object.entries(driverAnalytics || {});
+
+  const getHolderName = (flagKey) => entries.find(([, driver]) => driver?.[flagKey])?.[1]?.name || null;
+
+  return {
+    s1: getHolderName('hasSessionBestS1'),
+    s2: getHolderName('hasSessionBestS2'),
+    s3: getHolderName('hasSessionBestS3')
+  };
+};
+
+const getPaceSpreadLabel = (paceSpreadMs, fieldAvgPaceSpread) => {
+  if (paceSpreadMs == null || fieldAvgPaceSpread == null || fieldAvgPaceSpread <= 0) {
+    return { key: 'unknown', label: '—' };
+  }
+
+  const ratio = paceSpreadMs / fieldAvgPaceSpread;
+
+  if (ratio <= 0.75) return { key: 'tight', label: 'More consistent than field' };
+  if (ratio <= 1.1) return { key: 'good', label: 'Near field average' };
+  if (ratio <= 1.4) return { key: 'moderate', label: 'Above field average' };
+  return { key: 'high', label: 'High variability' };
 };
 
 export default ConsistencyTracker;

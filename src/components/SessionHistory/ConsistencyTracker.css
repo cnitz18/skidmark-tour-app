@@ -5,8 +5,6 @@
 }
 
 .consistency-card, .improvement-card, .sector-analysis-card {
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
 }
 
@@ -88,7 +86,7 @@
 
 .stint-summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -120,7 +118,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start;
   padding: 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -139,8 +137,10 @@
 
 .stint-insight-metrics {
   display: flex;
-  gap: 18px;
-  align-items: center;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .stint-insight-metric {
@@ -148,6 +148,7 @@
   flex-direction: column;
   align-items: flex-end;
   font-size: 0.8rem;
+  min-width: 4.75rem;
 }
 
 .stint-insight-metric strong {
@@ -177,8 +178,8 @@
 }
 
 .sector-card {
-  background-color: var(--color-bg);
-  border: 1px solid rgba(0,0,0,0.05);
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
 }
 
 .sector-badge {

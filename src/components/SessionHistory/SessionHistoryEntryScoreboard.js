@@ -545,16 +545,18 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                       <Paper elevation={0} className="p-3 mb-4 border">
                         <h5 className="mb-3">{session} Timeline</h5>
                         <div className="events-container">
-                          {eventsData.filter(evt => evt.event_name !== 'Lap').map((evt, i) => (
+                          {eventsData.map((evt, i) => (
                             <Card key={i} className="event-card mb-2">
                               <Card.Body>
                                 <div className="d-flex align-items-center">
                                   <div className="event-time me-3">
                                     Lap {evt.attributes_Lap}
                                   </div>
-                                  <div className="event-badge me-3">
+                                  {evt.event_name !== "Lap" && (
+                                    <div className="event-badge me-3">
                                       {getEventBadge(evt.event_name)}
                                     </div>
+                                  )}
                                   <div className="event-description">
                                     {getEventDescription(evt)}
                                   </div>
@@ -574,9 +576,9 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   
                   <Tab.Pane eventKey="performanceInsights">
                     {activeTab === "performanceInsights" && (
-                      <Paper elevation={0} className="p-3 mb-4 border">
+                      <div className="p-3">
                         <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
-                      </Paper>
+                      </div>
                     )}
                   </Tab.Pane>
                 </Tab.Content>
