@@ -361,7 +361,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                 <Tab.Content>
                   <Tab.Pane eventKey="lapLog">
                     {activeTab === "lapLog" && (
-                      <Paper elevation={0} className="p-3 mb-4 border">
+                      <Paper elevation={0}>
                         <div className="lap-intelligence-panel mb-3">
                           <div className="lap-intelligence-summary">
                             <div className="summary-item">
@@ -371,7 +371,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                               </span>
                             </div>
                             <div className="summary-item">
-                              <span className="summary-label">Ideal Lap</span>
+                              <span className="summary-label">Optimal Lap</span>
                               <span className="summary-value">
                                 {lapIntelligence.idealLapTime ? msToTime(lapIntelligence.idealLapTime) : 'N/A'}
                               </span>
@@ -521,7 +521,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   </Tab.Pane>
                   
                   <Tab.Pane eventKey="headToHead">
-                    <Paper elevation={0} className="p-3 mb-4 border">
+                    <Paper elevation={0}>
                       {activeTab === "headToHead" && (
                         <SessionHistoryHeadToHeadComparison 
                           eventsData={eventsData}
@@ -542,8 +542,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   {/* Race Events tab pane */}
                   <Tab.Pane eventKey="events">
                     {activeTab === "events" && (
-                      <Paper elevation={0} className="p-3 mb-4 border">
-                        <h5 className="mb-3">{session} Timeline</h5>
+                      <Paper elevation={0}>
                         <div className="events-container">
                           {eventsData.map((evt, i) => (
                             <Card key={i} className="event-card mb-2">
@@ -576,9 +575,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
                   
                   <Tab.Pane eventKey="performanceInsights">
                     {activeTab === "performanceInsights" && (
-                      <div className="p-3">
-                        <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
-                      </div>
+                      <ConsistencyTracker eventsData={eventsData} selectedParticipantId={selectedParticipantId}/>
                     )}
                   </Tab.Pane>
                 </Tab.Content>

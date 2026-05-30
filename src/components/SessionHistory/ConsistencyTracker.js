@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col } from 'react-bootstrap';
+import { Card, Row, Col, Button } from 'react-bootstrap';
 import msToTime from '../../utils/msToTime';
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
 import detectPitStops from '../../utils/detectPitStops';
@@ -7,7 +7,25 @@ import './ConsistencyTracker.css';
 
 const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
   const [analyticsData,setAnalyticsData] = useState();
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMobileSectorDetails, setShowMobileSectorDetails] = useState(false);
+  const [showMobilePaceDetails, setShowMobilePaceDetails] = useState(false);
   const { driverAnalytics } = useRaceAnalytics();
+
+  useEffect(() => {
+    const mobileMq = window.matchMedia('(max-width: 768px)');
+    const syncMobile = (event) => setIsMobile(event.matches);
+
+    setIsMobile(mobileMq.matches);
+
+    if (mobileMq.addEventListener) {
+      mobileMq.addEventListener('change', syncMobile);
+      return () => mobileMq.removeEventListener('change', syncMobile);
+    }
+
+    mobileMq.addListener(syncMobile);
+    return () => mobileMq.removeListener(syncMobile);
+  }, []);
   
   useEffect(() => {
     const driverData = driverAnalytics[selectedParticipantId];
@@ -15,6 +33,11 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
       setAnalyticsData(driverData);
     }
   },[driverAnalytics,selectedParticipantId])
+
+  useEffect(() => {
+    setShowMobileSectorDetails(false);
+    setShowMobilePaceDetails(false);
+  }, [selectedParticipantId]);
   
   const lapEvents = eventsData.filter(evt => evt.event_name === 'Lap');
   const rawLaps = lapEvents.length > 1 ? lapEvents.slice(1) : lapEvents;
@@ -41,6 +64,18 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
   const fieldAvgPaceSpread = analyticsData?.fieldAvgPaceSpread ?? null;
   const paceSpreadLabel = getPaceSpreadLabel(localPaceSpreadMs, fieldAvgPaceSpread);
   const sectorBestHolders = getSectorBestHolders(driverAnalytics);
+  const sectorGapSummary = [
+    { key: 'S1', gapMs: analyticsData?.gapToSessionBestS1 ?? null },
+    { key: 'S2', gapMs: analyticsData?.gapToSessionBestS2 ?? null },
+    { key: 'S3', gapMs: analyticsData?.gapToSessionBestS3 ?? null }
+  ].filter((sector) => Number.isFinite(sector.gapMs));
+  const strongestSector = sectorGapSummary.length
+    ? sectorGapSummary.reduce((best, sector) => (sector.gapMs < best.gapMs ? sector : best), sectorGapSummary[0])
+    : null;
+  const biggestGapSector = sectorGapSummary.length
+    ? sectorGapSummary.reduce((worst, sector) => (sector.gapMs > worst.gapMs ? sector : worst), sectorGapSummary[0])
+    : null;
+  const holderSummary = `S1 ${sectorBestHolders.s1 || '-'} | S2 ${sectorBestHolders.s2 || '-'} | S3 ${sectorBestHolders.s3 || '-'}`;
 
   return (
     <div className="consistency-tracker">
@@ -49,7 +84,43 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
           <h5 className="mb-0">Sector Performance Analysis</h5>
         </Card.Header>
         <Card.Body>
-              
+
+              {isMobile && (
+                <div className="sector-mobile-summary mb-3">
+                  <div className="sector-mobile-summary-row">
+                    <span className="text-muted">Strongest Sector</span>
+                    <strong>
+                      {strongestSector
+                        ? `${strongestSector.key} (${strongestSector.gapMs === 0 ? 'BEST' : `+${msToTime(strongestSector.gapMs)}`})`
+                        : 'N/A'}
+                    </strong>
+                  </div>
+                  <div className="sector-mobile-summary-row">
+                    <span className="text-muted">Biggest Gap</span>
+                    <strong>
+                      {biggestGapSector
+                        ? `${biggestGapSector.key} (${biggestGapSector.gapMs === 0 ? 'BEST' : `+${msToTime(biggestGapSector.gapMs)}`})`
+                        : 'N/A'}
+                    </strong>
+                  </div>
+                  <div className="sector-mobile-holders text-muted">Session best holders: {holderSummary}</div>
+                </div>
+              )}
+
+              {isMobile && (
+                <div className="d-flex justify-content-end mb-3">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="mobile-toggle-btn"
+                    onClick={() => setShowMobileSectorDetails((prev) => !prev)}
+                  >
+                    {showMobileSectorDetails ? 'Hide Full Sectors' : 'Show Full Sectors'}
+                  </Button>
+                </div>
+              )}
+
+              {(!isMobile || showMobileSectorDetails) && (
               <Row>
                 <Col md={4} className="mb-3 mb-md-0">
                   <div className={`sector-card p-3 rounded ${analyticsData?.hasSessionBestS1 ? 'sector-card-best' : ''}`}>
@@ -156,6 +227,7 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                   </div>
                 </Col>
               </Row>
+              )}
         </Card.Body>
       </Card>
 
@@ -166,6 +238,7 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
             <h5 className="mb-0">Pace Spread</h5>
           </Card.Header>
         <Card.Body>
+              <small className="text-muted d-block mb-3">Pace Spread = average lap time minus best lap time. Lower values indicate more repeatable pace.</small>
 
               <div className="consistency-std-display mb-3">
                 <div className="consistency-std-stack mb-1">
@@ -182,16 +255,6 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
 
               <div className="pace-window-grid mb-3">
                 <div className="pace-window-card">
-                  <div className="pace-window-label">Best 3-Lap Avg</div>
-                  <div className="pace-window-value">{paceWindows.bestThreeLapAvg ? msToTime(paceWindows.bestThreeLapAvg) : 'N/A'}</div>
-                  <div className="pace-window-detail">{paceWindows.bestThreeLapRange || 'Not enough clean laps'}</div>
-                </div>
-                <div className="pace-window-card">
-                  <div className="pace-window-label">Best 5-Lap Avg</div>
-                  <div className="pace-window-value">{paceWindows.bestFiveLapAvg ? msToTime(paceWindows.bestFiveLapAvg) : 'N/A'}</div>
-                  <div className="pace-window-detail">{paceWindows.bestFiveLapRange || 'Not enough clean laps'}</div>
-                </div>
-                <div className="pace-window-card">
                   <div className="pace-window-label">Fastest Lap</div>
                   <div className="pace-window-value">{cleanBestLap ? msToTime(cleanBestLap) : 'N/A'}</div>
                 </div>
@@ -200,7 +263,35 @@ const ConsistencyTracker = ({ eventsData, selectedParticipantId }) => {
                   <div className="pace-window-value">{cleanLaps.length}</div>
                   <div className="pace-window-detail">used in analysis</div>
                 </div>
+
+                {(!isMobile || showMobilePaceDetails) && (
+                  <>
+                    <div className="pace-window-card">
+                      <div className="pace-window-label">Best 3-Lap Avg</div>
+                      <div className="pace-window-value">{paceWindows.bestThreeLapAvg ? msToTime(paceWindows.bestThreeLapAvg) : 'N/A'}</div>
+                      <div className="pace-window-detail">{paceWindows.bestThreeLapRange || 'Not enough clean laps'}</div>
+                    </div>
+                    <div className="pace-window-card">
+                      <div className="pace-window-label">Best 5-Lap Avg</div>
+                      <div className="pace-window-value">{paceWindows.bestFiveLapAvg ? msToTime(paceWindows.bestFiveLapAvg) : 'N/A'}</div>
+                      <div className="pace-window-detail">{paceWindows.bestFiveLapRange || 'Not enough clean laps'}</div>
+                    </div>
+                  </>
+                )}
               </div>
+
+              {isMobile && (
+                <div className="d-flex justify-content-end mb-2">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="mobile-toggle-btn"
+                    onClick={() => setShowMobilePaceDetails((prev) => !prev)}
+                  >
+                    {showMobilePaceDetails ? 'Hide Pace Details' : 'Show Pace Details'}
+                  </Button>
+                </div>
+              )}
 
 
           </Card.Body>
