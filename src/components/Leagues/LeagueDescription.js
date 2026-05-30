@@ -132,7 +132,7 @@ const LeagueDescription = ({ enums, lists }) => {
                 setIsDetailsLoading(false);
             })
 
-            getAPIData('/api/batchupload/sms_stats_data/?league=' + league.id)
+            getAPIData('/api/batchupload/sms_stats_data/?league=' + league.id + '&per_page=100')
             .then((res) => {
                 setLeagueHistory([...res.data])
             }).catch((err) => {
@@ -214,7 +214,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                     <Tab label="Overview" {...a11yProps(0)} />
                                     <Tab label="Schedule" {...a11yProps(1)} />
                                     <Tab label="Standings" {...a11yProps(2)} />
-                                    <Tab label="Analytics" {...a11yProps(3)} />
+                                    <Tab label="Driver Stats" {...a11yProps(3)} />
                                     <Tab label="Details" {...a11yProps(4)} />
                                 </Tabs>
                             </Box>

@@ -97,7 +97,7 @@ function NavigationContent({ enums, lists }) {
           <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
-          <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
+          <Route path="/trophyroom" element={<TrophyRoomBasic lists={lists}/>}/>
           <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
           <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
           <Route

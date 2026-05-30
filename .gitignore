@@ -25,4 +25,4 @@ release/*
 
 # Playwright MCP artifacts
 .playwright-mcp/
-*.png
+/*.png

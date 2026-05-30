@@ -6,8 +6,9 @@ import { BsTrophy, BsFlag, BsCalendarEvent, BsPeople, BsPersonFill } from 'react
 import { GiRaceCar, GiPodium } from 'react-icons/gi';
 import { FaFlagCheckered, FaUsers } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import NameMapper from '../../utils/Classes/NameMapper';
 
-const TrophyRoomBasic = () => {
+const TrophyRoomBasic = ({ lists }) => {
     const champions = [
         {
             id: 1,
@@ -16,7 +17,8 @@ const TrophyRoomBasic = () => {
             championship: "Opala '86s",
             stats: "3 wins, 5 podiums, 2 poles",
             description: "A relentless 10-round campaign capped by a composed title run to 61 points.",
-            seasonId: 29
+            seasonId: 29,
+            vehicleId: 245459304  // Chevrolet Opala Stock Cars 1986
         },
         {
             id: 2,
@@ -25,7 +27,8 @@ const TrophyRoomBasic = () => {
             championship: "P4 (MCR S2000)",
             stats: "6 wins, 7 podiums, 7 poles",
             description: "A runaway championship victory, clinching the title with a 75% win rate.",
-            seasonId: 28
+            seasonId: 28,
+            vehicleId: 95104745  // MCR S2000
         },
         {
             id: 2.5,
@@ -34,7 +37,8 @@ const TrophyRoomBasic = () => {
             championship: "Formula Junior",
             stats: "1 wins, 3 podiums, 1 pole",
             description: "Secured the championship with a win in the final race thanks to heavy attrition and a Michael Masi-esque intervention",
-            seasonId: 25
+            seasonId: 25,
+            vehicleId: 1609162502  // Formula Junior
         },
         {
             id: 3,
@@ -43,7 +47,8 @@ const TrophyRoomBasic = () => {
             championship: "Ginetta Cup",
             stats: "4 wins, 5 podiums, 3 fastest laps",
             description: "Dominant season win, leading the championship from start to finish",
-            seasonId: 23
+            seasonId: 23,
+            vehicleId: -751207847  // Ginetta G40 Cup
         },
         {
             id: 4,
@@ -52,7 +57,8 @@ const TrophyRoomBasic = () => {
             championship: "Brazilian Multiclass - Prototype",
             stats: "4 wins, 5 podiums, 4 fastest laps",
             description: "A nail-biting championship win, with a decisive victory sealing the title in the final race",
-            seasonId: 21
+            seasonId: 21,
+            vehicleId: -1720554236  // Sigma P1 G5 (P1Gen2)
         },
         {
             id: 5,
@@ -60,7 +66,8 @@ const TrophyRoomBasic = () => {
             season: "Spring 2023",
             championship: "GT4 Challenge",
             stats: "Season stats have been lost to history :(",
-            description: "The very first Skidmark Tour champion, a true pioneer"
+            description: "The very first Skidmark Tour champion, a true pioneer",
+            vehicleId: 1464988033  // Porsche Cayman GT4 Clubsport MR
         }
     ];
 
@@ -138,50 +145,51 @@ const TrophyRoomBasic = () => {
                     </div>
                     
                     <Row xs={1} md={2} lg={3} className="g-4 motion-stagger">
-                        {champions.map(champion => (
-                            <Col key={champion.id}>
-                                {champion.seasonId ? (
-                                    // Wrap in Link only if seasonId exists
-                                    <Link 
-                                        to={`/league/${champion.seasonId}`} 
-                                        className="text-decoration-none champion-link"
-                                    >
-                                        <Card className="trophy-card champion-card h-100">
-                                            <Card.Body>
-                                                <div className="champion-crown">
-                                                    <BsTrophy />
-                                                </div>
-                                                <Card.Title className="trophy-title">{champion.name}</Card.Title>
-                                                <div className="champion-season">
-                                                    <BsFlag className="me-2" />
-                                                    {champion.season}
-                                                </div>
-                                                <div className="champion-championship">{champion.championship}</div>
-                                                <div className="champion-stats">{champion.stats}</div>
-                                                <Card.Text className="mt-2">{champion.description}</Card.Text>
-                                            </Card.Body>
-                                        </Card>
-                                    </Link>
-                                ) : (
-                                    // Just the card without link if no seasonId
-                                    <Card className="trophy-card champion-card h-100">
-                                        <Card.Body>
-                                            <div className="champion-crown">
-                                                <BsTrophy />
-                                            </div>
-                                            <Card.Title className="trophy-title">{champion.name}</Card.Title>
-                                            <div className="champion-season">
-                                                <BsFlag className="me-2" />
-                                                {champion.season}
-                                            </div>
-                                            <div className="champion-championship">{champion.championship}</div>
-                                            <div className="champion-stats">{champion.stats}</div>
-                                            <Card.Text className="mt-2">{champion.description}</Card.Text>
-                                        </Card.Body>
-                                    </Card>
-                                )}
-                            </Col>
-                        ))}
+                        {champions.map(champion => {
+                            const carImgSrc = champion.vehicleId
+                                ? NameMapper.vehicleImagePath(champion.vehicleId, lists?.vehicles?.list)
+                                : null;
+                            const cardContent = (
+                                <Card className="trophy-card champion-card h-100">
+                                    {carImgSrc && (
+                                        <div className="champion-car-image-wrap">
+                                            <img
+                                                src={carImgSrc}
+                                                className="champion-car-image"
+                                                alt={champion.championship}
+                                            />
+                                        </div>
+                                    )}
+                                    <Card.Body>
+                                        <div className="champion-crown">
+                                            <BsTrophy />
+                                        </div>
+                                        <Card.Title className="trophy-title">{champion.name}</Card.Title>
+                                        <div className="champion-season">
+                                            <BsFlag className="me-2" />
+                                            {champion.season}
+                                        </div>
+                                        <div className="champion-championship">{champion.championship}</div>
+                                        <div className="champion-stats">{champion.stats}</div>
+                                        <Card.Text className="mt-2">{champion.description}</Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            );
+                            return (
+                                <Col key={champion.id}>
+                                    {champion.seasonId ? (
+                                        <Link
+                                            to={`/league/${champion.seasonId}`}
+                                            className="text-decoration-none champion-link"
+                                        >
+                                            {cardContent}
+                                        </Link>
+                                    ) : (
+                                        cardContent
+                                    )}
+                                </Col>
+                            );
+                        })}
                     </Row>
                 </section>
 

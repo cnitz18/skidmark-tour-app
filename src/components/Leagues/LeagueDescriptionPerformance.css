@@ -1,197 +1,224 @@
-/* Performance Analytics Styles */
-
-.performance-analytics {
-  font-family: var(--font-primary);
+/* ── Driver Summary Strip ── */
+.perf-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
 }
-
-/* Ensure all nested MUI/Recharts content on this page inherits brand typography. */
-.performance-analytics,
-.performance-analytics * {
-  font-family: var(--font-primary) !important;
-}
-
-/* Stats list styling */
-.stats-list {
-  margin-bottom: 15px;
-}
-
-.stats-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.stats-item:last-child {
-  border-bottom: none;
-}
-
-.stats-label {
+.perf-summary-stat { text-align: center; }
+.perf-summary-label {
+  font-size: 0.75rem;
   color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.perf-summary-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.1;
 }
 
-.stats-value {
-  font-weight: 500;
+/* ── Performance Stats Grid ── */
+.perf-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.perf-stat-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 14px;
+  background: var(--color-bg-elevated);
+}
+.perf-stat-label {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.perf-stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+.perf-stat-detail {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+.perf-stat-rank {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
 }
 
-/* Position badges */
-.position-badge {
+/* ── Charts ── */
+.perf-chart-wrap { height: 240px; }
+.perf-chart-sm { height: 140px; }
+
+/* ── Tables ── */
+.perf-results-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.perf-results-table th {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  border-color: var(--color-border);
+}
+.perf-results-table td {
+  font-size: 0.88rem;
+  border-color: var(--color-border);
+  vertical-align: middle;
+}
+.perf-rnd-cell { width: 3rem; font-size: 0.8rem; }
+
+/* ── Position Badges ── */
+.perf-position-badge {
   display: inline-block;
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
-  text-align: center;
-  border-radius: 50%;
-  margin-right: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.position-badge.podium {
-  background-color: rgba(247, 168, 0, 0.15);
-  color: var(--color-accent);
-}
-
-.position-badge.points {
-  background-color: rgba(0, 168, 225, 0.1);
-  color: var(--color-secondary);
-}
-
-.position-badge.outside-points {
-  background-color: var(--color-bg);
-  color: var(--color-text-secondary);
-}
-
-/* Position highlight */
-.position-highlight {
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.position-highlight.podium {
-  background-color: rgba(247, 168, 0, 0.15);
-  color: var(--color-accent);
-}
-
-.position-highlight.points {
-  background-color: rgba(0, 168, 225, 0.1);
-  color: var(--color-secondary);
-}
-
-/* Recent races list */
-.race-list {
-  overflow-y: auto;
-}
-
-.race-item {
-  padding: 8px 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.race-item:last-child {
-  border-bottom: none;
-}
-
-.race-track {
-  color: var(--color-text-secondary);
-}
-
-.race-result {
-  font-weight: 600;
-}
-
-.race-result.podium {
-  color: var(--color-accent);
-}
-
-.race-result.points {
-  color: var(--color-secondary);
-}
-
-/* Consistency score circle */
-.consistency-score-container {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-}
-
-.score-circle {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.score-inner {
-  position: relative;
-  width: 100px;
-  height: 100px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 20px;
   background: var(--color-bg);
-  border-radius: 50%;
+  color: var(--color-text);
+}
+.perf-position-badge.pos-win { background: var(--color-accent); color: #fff; }
+.perf-position-badge.pos-podium { background: var(--color-secondary); color: #fff; }
+.perf-position-badge.pos-points { background: rgba(0, 168, 225, 0.1); color: var(--color-secondary); }
+.perf-position-text { color: var(--color-text-secondary); font-size: 0.85rem; }
+.perf-dnf-badge { font-size: 0.75rem; padding: 2px 6px; }
+
+/* ── vs Avg Indicator ── */
+.perf-vs-avg { font-size: 0.82rem; font-weight: 600; }
+.perf-vs-avg.better { color: var(--color-success); }
+.perf-vs-avg.worse { color: var(--color-danger); }
+
+/* ── Section Sub Heading ── */
+.perf-section-sub-heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+/* ── Season Highlights Grid ── */
+.perf-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.perf-highlight-card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  gap: 2px;
 }
 
-.score-inner span {
-  font-size: 2.5rem;
-  font-weight: 600;
-  line-height: 1;
+.perf-highlight-card.tier-1 {
+  border-color: var(--color-accent);
+  border-left-width: 3px;
 }
 
-.score-inner small {
+.perf-highlight-card.tier-2 {
+  border-color: var(--color-secondary);
+  border-left-width: 3px;
+}
+
+.perf-highlight-label {
+  font-size: 0.72rem;
   color: var(--color-text-secondary);
-  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.score-explanation {
+.perf-highlight-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.15;
+}
+
+.perf-highlight-sub {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Position Distribution (CSS horizontal bars) ── */
+.perf-distribution {
+  padding: 4px 0;
+}
+
+.perf-dist-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.perf-dist-label {
+  width: 34px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.perf-dist-bar-track {
   flex: 1;
-  margin-left: 25px;
+  height: 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
 }
 
-/* Track performance */
-.track-performances {
-  overflow-y: auto;
-  max-height: 500px;
+.perf-dist-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-border);
+  transition: width 0.35s ease;
+  min-width: 0;
 }
 
-/* Specialist tracks */
-.track-card {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  background-color: var(--color-bg-elevated);
-  border-left: 4px solid var(--color-secondary);
-}
+.perf-dist-bar-fill.win    { background: var(--color-accent); }
+.perf-dist-bar-fill.podium { background: var(--color-warning); }
+.perf-dist-bar-fill.points { background: var(--color-secondary); }
 
-.track-position {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--color-secondary);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  margin-right: 12px;
-}
-
-.track-name {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.track-stats {
-  font-size: 0.85rem;
+.perf-dist-count {
+  width: 18px;
+  font-size: 0.82rem;
   color: var(--color-text-secondary);
+  text-align: left;
+  flex-shrink: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .perf-summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .perf-summary-value { font-size: 1.1rem; }
+  .perf-stat-grid { grid-template-columns: 1fr; }
+  .perf-stat-value { font-size: 1.3rem; }
+  .perf-chart-wrap { height: 180px; }
+  .perf-chart-sm { height: 110px; }
+  .perf-highlights-grid { grid-template-columns: repeat(2, 1fr); }
+  .perf-highlight-value { font-size: 1.2rem; }
 }
 
 /* Performance distribution */
@@ -202,7 +229,7 @@
 .position-label {
   width: 40px;
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: #666;
 }
 
 .position-bar-wrapper {
@@ -213,168 +240,20 @@
 
 .position-bar {
   height: 12px;
-  background-color: var(--color-border);
+  background-color: #9E9E9E;
   border-radius: 2px;
   transition: width 0.3s ease;
 }
 
 .position-bar.podium {
-  background-color: var(--color-accent);
+  background-color: #FFC107;
 }
 
 .position-bar.points {
-  background-color: var(--color-secondary);
+  background-color: #2196F3;
 }
 
 .position-count {
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
-}
-
-/* Comeback factor */
-.comeback-score-container {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.comeback-score {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.comeback-score.positive {
-  background-color: rgba(76, 175, 80, 0.12);
-  color: var(--color-success);
-}
-
-.comeback-score.negative {
-  background-color: rgba(211, 47, 47, 0.12);
-  color: var(--color-danger);
-}
-
-.comeback-score span {
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.comeback-score small {
-  margin-top: 5px;
-  font-size: 0.8rem;
-}
-
-/* Best comeback */
-.comeback-highlight {
-  width: 80px;
-  height: 80px;
-  background-color: rgba(76, 175, 80, 0.12);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.positions-gained {
-  color: var(--color-success);
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.qualifying-position {
-  color: var(--color-warning);
-  font-weight: 500;
-}
-
-.finish-position {
-  color: var(--color-success);
-  font-weight: 500;
-}
-
-/* ===== DARK MODE CHART STYLING ===== */
-
-/* Form Tracker - Fix tooltip and axis text */
-[data-theme="dark"] .performance-analytics {
-  /* Recharts axis and tooltip styling */
-}
-
-[data-theme="dark"] .performance-analytics text {
-  fill: var(--color-text) !important;
-}
-
-[data-theme="dark"] .performance-analytics .recharts-cartesian-axis-tick text {
-  fill: var(--color-text) !important;
-}
-
-[data-theme="dark"] .performance-analytics .recharts-legend-item-text {
-  color: var(--color-text) !important;
-  fill: var(--color-text) !important;
-}
-
-/* Recharts tooltip - dark background, light text */
-[data-theme="dark"] .recharts-default-tooltip {
-  background-color: var(--color-bg-elevated) !important;
-  border: 1px solid var(--color-border) !important;
-}
-
-[data-theme="dark"] .recharts-tooltip-wrapper {
-  outline: none;
-}
-
-[data-theme="dark"] .recharts-tooltip-label {
-  color: var(--color-text) !important;
-}
-
-[data-theme="dark"] .recharts-tooltip-item {
-  color: var(--color-text) !important;
-}
-
-/* Fix the dashed line that appears on hover in charts */
-[data-theme="dark"] .recharts-cursor-line {
-  stroke: var(--color-border) !important;
-}
-
-[data-theme="dark"] .recharts-reference-line-line {
-  stroke: var(--color-border) !important;
-}
-
-/* Consistency score circle background */
-[data-theme="dark"] .score-inner {
-  background: var(--color-bg) !important;
-  color: var(--color-text) !important;
-}
-
-[data-theme="dark"] .score-inner small {
-  color: var(--color-text-secondary) !important;
-}
-
-/* Bar chart hover effects - fix row highlight */
-[data-theme="dark"] .recharts-bar-rectangle:hover {
-  filter: none !important;
-}
-
-[data-theme="dark"] .recharts-bar-rectangles > g:hover {
-  opacity: 1 !important;
-}
-
-[data-theme="dark"] .recharts-surface {
-  background-color: transparent !important;
-}
-
-/* Peak Performance table hover text fix */
-[data-theme="dark"] .track-performances table tbody tr:hover {
-  background-color: rgba(0, 168, 225, 0.1) !important;
-}
-
-[data-theme="dark"] .track-performances table tbody tr:hover td {
-  color: var(--color-text) !important;
+  color: #666;
 }
