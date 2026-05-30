@@ -1,0 +1,1980 @@
+[
+  {
+    "class": "F-3",
+    "slug": "f3-brasil",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Dallara F301",
+        "file": "Dallara F301.png",
+        "size": 342040
+      },
+      {
+        "name": "Dallara F309",
+        "file": "Dallara F309.png",
+        "size": 361865
+      }
+    ]
+  },
+  {
+    "class": "LMP2_Gen1",
+    "slug": "lmp2-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ligier JS P217",
+        "file": "Ligier JS P217.png",
+        "size": 674385
+      },
+      {
+        "name": "Oreca 07 Gen1",
+        "file": "Oreca 07 Gen1.png",
+        "size": 772393
+      }
+    ]
+  },
+  {
+    "class": "GT3_Gen2",
+    "slug": "gt3-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Aston Martin Vantage GT3 Evo",
+        "file": "Aston Martin Vantage GT3 Evo.png",
+        "size": 722826
+      },
+      {
+        "name": "Audi R8 LMS GT3 evo II",
+        "file": "Audi R8 LMS GT3 evo II.png",
+        "size": 681472
+      },
+      {
+        "name": "BMW M4 GT3",
+        "file": "BMW M4 GT3.png",
+        "size": 746023
+      },
+      {
+        "name": "Chevrolet Corvette Z06 GT3.R",
+        "file": "Chevrolet Corvette Z06 GT3.R.png",
+        "size": 691823
+      },
+      {
+        "name": "Lamborghini Huracan GT3 EVO2",
+        "file": "Lamborghini Huracan GT3 EVO2.png",
+        "size": 716762
+      },
+      {
+        "name": "McLaren 720S GT3 Evo",
+        "file": "McLaren 720S GT3 Evo.png",
+        "size": 815705
+      },
+      {
+        "name": "Mercedes-AMG GT3 Evo",
+        "file": "Mercedes-AMG GT3 Evo.png",
+        "size": 816765
+      },
+      {
+        "name": "Porsche 992 GT3 R",
+        "file": "Porsche 992 GT3 R.png",
+        "size": 736481
+      }
+    ]
+  },
+  {
+    "class": "F-Ultimate",
+    "slug": "formula-ultimate",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Ultimate Gen1",
+        "file": "Formula Ultimate Gen1.png",
+        "size": 485440
+      }
+    ]
+  },
+  {
+    "class": "StockCarV8_2020",
+    "slug": "stock-car-brasil-2020",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Cruze Stock Car 2020",
+        "file": "Chevrolet Cruze Stock Car 2020.png",
+        "size": 712328
+      },
+      {
+        "name": "Toyota Corolla Stock Car 2020",
+        "file": "Toyota Corolla Stock Car 2020.png",
+        "size": 673462
+      }
+    ]
+  },
+  {
+    "class": "F-Retro_Gen1",
+    "slug": "formula-retro-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Brabham BT44",
+        "file": "Brabham BT44.png",
+        "size": 406668
+      },
+      {
+        "name": "Formula Retro V12",
+        "file": "Formula Retro V12.png",
+        "size": 441422
+      },
+      {
+        "name": "Formula Retro V8",
+        "file": "Formula Retro V8.png",
+        "size": 432579
+      },
+      {
+        "name": "Lotus 72E",
+        "file": "Lotus 72E.png",
+        "size": 430793
+      },
+      {
+        "name": "McLaren M23",
+        "file": "McLaren M23.png",
+        "size": 380576
+      }
+    ]
+  },
+  {
+    "class": "OldStock",
+    "slug": "old-stock",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Opala Old Stock Race",
+        "file": "Chevrolet Opala Old Stock Race.png",
+        "size": 556148
+      }
+    ]
+  },
+  {
+    "class": "Cat_Academy",
+    "slug": "caterham-academy",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Caterham Academy",
+        "file": "Caterham Academy.png",
+        "size": 452571
+      }
+    ]
+  },
+  {
+    "class": "F-V10_Gen2",
+    "slug": "formula-v10-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula V10 Gen2",
+        "file": "Formula V10 Gen2.png",
+        "size": 422598
+      }
+    ]
+  },
+  {
+    "class": "KartShifter",
+    "slug": "kart-shifter",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Kart 2-Stroke 125cc Shifter",
+        "file": "Kart 2-Stroke 125cc Shifter.png",
+        "size": 284516
+      }
+    ]
+  },
+  {
+    "class": "F-Classic_Gen3",
+    "slug": "formula-classic-gen3",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Classic Gen3 Model1",
+        "file": "Formula Classic Gen3 Model1.png",
+        "size": 410442
+      },
+      {
+        "name": "Formula Classic Gen3 Model2",
+        "file": "Formula Classic Gen3 Model2.png",
+        "size": 375144
+      },
+      {
+        "name": "Formula Classic Gen3 Model3",
+        "file": "Formula Classic Gen3 Model3.png",
+        "size": 427276
+      },
+      {
+        "name": "Formula Classic Gen3 Model4",
+        "file": "Formula Classic Gen3 Model4.png",
+        "size": 398269
+      },
+      {
+        "name": "McLaren Honda MP4_5B",
+        "file": "McLaren Honda MP4_5B.png",
+        "size": 405340
+      }
+    ]
+  },
+  {
+    "class": "Opala79",
+    "slug": "opala-79",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Opala Stock Cars 1979",
+        "file": "Chevrolet Opala Stock Cars 1979.png",
+        "size": 517072
+      }
+    ]
+  },
+  {
+    "class": "P1Gen2",
+    "slug": "p1-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ginetta G58 Gen2",
+        "file": "Ginetta G58 Gen2.png",
+        "size": 773754
+      },
+      {
+        "name": "Ligier JS P320",
+        "file": "Ligier JS P320.png",
+        "size": 684745
+      },
+      {
+        "name": "MetalMoro AJR Gen2 Chevrolet",
+        "file": "MetalMoro AJR Gen2 Chevrolet.png",
+        "size": 594044
+      },
+      {
+        "name": "MetalMoro AJR Gen2 Honda",
+        "file": "MetalMoro AJR Gen2 Honda.png",
+        "size": 621446
+      },
+      {
+        "name": "MetalMoro AJR Gen2 Nissan",
+        "file": "MetalMoro AJR Gen2 Nissan.png",
+        "size": 637532
+      },
+      {
+        "name": "Sigma P1 G5",
+        "file": "Sigma P1 G5.png",
+        "size": 705144
+      }
+    ]
+  },
+  {
+    "class": "GT1",
+    "slug": "gt1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "McLaren F1 GTR",
+        "file": "McLaren F1 GTR.png",
+        "size": 703447
+      },
+      {
+        "name": "Mercedes-Benz CLK LM",
+        "file": "Mercedes-Benz CLK LM.png",
+        "size": 697222
+      },
+      {
+        "name": "Nissan R390 GT1",
+        "file": "Nissan R390 GT1.png",
+        "size": 652132
+      },
+      {
+        "name": "Porsche 911 GT1-98",
+        "file": "Porsche 911 GT1-98.png",
+        "size": 749861
+      }
+    ]
+  },
+  {
+    "class": "F-Trainer_A",
+    "slug": "formula-trainer-advanced",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Trainer Advanced",
+        "file": "Formula Trainer Advanced.png",
+        "size": 340303
+      }
+    ]
+  },
+  {
+    "class": "P1",
+    "slug": "p1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ginetta G58",
+        "file": "Ginetta G58.png",
+        "size": 620487
+      },
+      {
+        "name": "MetalMoro AJR Chevrolet",
+        "file": "MetalMoro AJR Chevrolet.png",
+        "size": 624079
+      },
+      {
+        "name": "MetalMoro AJR Honda",
+        "file": "MetalMoro AJR Honda.png",
+        "size": 633005
+      },
+      {
+        "name": "MetalMoro AJR Judd",
+        "file": "MetalMoro AJR Judd.png",
+        "size": 613537
+      },
+      {
+        "name": "MetalMoro AJR Nissan",
+        "file": "MetalMoro AJR Nissan.png",
+        "size": 614296
+      }
+    ]
+  },
+  {
+    "class": "TC60S2",
+    "slug": "vintage-cars-tier-2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lotus 23",
+        "file": "Lotus 23.png",
+        "size": 317887
+      },
+      {
+        "name": "MetalMoro AJR Honda",
+        "file": "MetalMoro AJR Honda.png",
+        "size": 633005
+      },
+      {
+        "name": "MINI Cooper S 1965",
+        "file": "MINI Cooper S 1965.png",
+        "size": 370430
+      }
+    ]
+  },
+  {
+    "class": "GT4",
+    "slug": "gt4",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Alpine A110 GT4 Evo",
+        "file": "Alpine A110 GT4 Evo.png",
+        "size": 685058
+      },
+      {
+        "name": "Aston Martin Vantage GT4 Evo",
+        "file": "Aston Martin Vantage GT4 Evo.png",
+        "size": 642656
+      },
+      {
+        "name": "Audi R8 LMS GT4",
+        "file": "Audi R8 LMS GT4.png",
+        "size": 611223
+      },
+      {
+        "name": "BMW M4 GT4",
+        "file": "BMW M4 GT4.png",
+        "size": 664272
+      },
+      {
+        "name": "Chevrolet Camaro GT4.R",
+        "file": "Chevrolet Camaro GT4.R.png",
+        "size": 694261
+      },
+      {
+        "name": "Ginetta G55 GT4",
+        "file": "Ginetta G55 GT4.png",
+        "size": 698289
+      },
+      {
+        "name": "McLaren 570S GT4",
+        "file": "McLaren 570S GT4.png",
+        "size": 683102
+      },
+      {
+        "name": "Mercedes-AMG GT4",
+        "file": "Mercedes-AMG GT4.png",
+        "size": 676922
+      },
+      {
+        "name": "Porsche Cayman GT4 Clubsport MR",
+        "file": "Porsche Cayman GT4 Clubsport MR.png",
+        "size": 690768
+      }
+    ]
+  },
+  {
+    "class": "F-Vee",
+    "slug": "formula-vee-brazil-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Vee Gen1",
+        "file": "Formula Vee Gen1.png",
+        "size": 383644
+      },
+      {
+        "name": "Formula Vee Gen1 + Fin",
+        "file": "Formula Vee Gen1 + Fin.png",
+        "size": 445394
+      }
+    ]
+  },
+  {
+    "class": "Hypercars",
+    "slug": "hypercars",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Aston Martin Valkyrie",
+        "error": "not cached"
+      },
+      {
+        "name": "Brabham BT26A",
+        "file": "Brabham BT26A.png",
+        "size": 427908
+      },
+      {
+        "name": "Brabham BT62",
+        "file": "Brabham BT62.png",
+        "size": 691347
+      },
+      {
+        "name": "Lamborghini Revuelto",
+        "file": "Lamborghini Revuelto.png",
+        "size": 604184
+      },
+      {
+        "name": "Lamborghini Veneno Roadster",
+        "file": "Lamborghini Veneno Roadster.png",
+        "size": 655481
+      },
+      {
+        "name": "McLaren Senna",
+        "file": "McLaren Senna.png",
+        "size": 731523
+      }
+    ]
+  },
+  {
+    "class": "Carrera Cup",
+    "slug": "porsche-carrera-cup",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Porsche 911 GT3 Cup 3.8",
+        "file": "Porsche 911 GT3 Cup 3.8.png",
+        "size": 597477
+      },
+      {
+        "name": "Porsche 911 GT3 Cup 4.0",
+        "file": "Porsche 911 GT3 Cup 4.0.png",
+        "size": 591613
+      }
+    ]
+  },
+  {
+    "class": "GTE",
+    "slug": "gte",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Aston Martin Vantage GTE",
+        "file": "Aston Martin Vantage GTE.png",
+        "size": 540899
+      },
+      {
+        "name": "BMW M8 GTE",
+        "file": "BMW M8 GTE.png",
+        "size": 597439
+      },
+      {
+        "name": "Chevrolet Corvette C8.R",
+        "file": "Chevrolet Corvette C8.R.png",
+        "size": 664545
+      },
+      {
+        "name": "Porsche 911 RSR GTE",
+        "file": "Porsche 911 RSR GTE.png",
+        "size": 677254
+      }
+    ]
+  },
+  {
+    "class": "F-Trainer",
+    "slug": "formula-trainer",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Trainer",
+        "file": "Formula Trainer.png",
+        "size": 366668
+      }
+    ]
+  },
+  {
+    "class": "LMP2_05",
+    "slug": "lmp2-2005",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lola B05_40 Turbo",
+        "file": "Lola B05_40 Turbo.png",
+        "size": 590458
+      },
+      {
+        "name": "Lola B05_40 V8",
+        "file": "Lola B05_40 V8.png",
+        "size": 602307
+      }
+    ]
+  },
+  {
+    "class": "F-USA_Gen1",
+    "slug": "formula-usa-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lola T95_00 Ford-Cosworth",
+        "file": "Lola T95_00 Ford-Cosworth.png",
+        "size": 441208
+      },
+      {
+        "name": "Lola T95_00 Mercedes-Benz",
+        "file": "Lola T95_00 Mercedes-Benz.png",
+        "size": 437567
+      },
+      {
+        "name": "Reynard 95i Ford-Cosworth",
+        "file": "Reynard 95i Ford-Cosworth.png",
+        "size": 492981
+      },
+      {
+        "name": "Reynard 95i Honda",
+        "file": "Reynard 95i Honda.png",
+        "size": 464601
+      },
+      {
+        "name": "Reynard 95i Mercedes-Benz",
+        "file": "Reynard 95i Mercedes-Benz.png",
+        "size": 473740
+      }
+    ]
+  },
+  {
+    "class": "F-USA_Gen2",
+    "slug": "formula-usa-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lola T98_00 Ford-Cosworth",
+        "file": "Lola T98_00 Ford-Cosworth.png",
+        "size": 439802
+      },
+      {
+        "name": "Reynard 98i Ford-Cosworth",
+        "file": "Reynard 98i Ford-Cosworth.png",
+        "size": 463963
+      },
+      {
+        "name": "Reynard 98i Honda",
+        "file": "Reynard 98i Honda.png",
+        "size": 438297
+      },
+      {
+        "name": "Reynard 98i Mercedes-Benz",
+        "file": "Reynard 98i Mercedes-Benz.png",
+        "size": 413295
+      },
+      {
+        "name": "Reynard 98i Toyota",
+        "file": "Reynard 98i Toyota.png",
+        "size": 462501
+      },
+      {
+        "name": "Swift 009c Ford-Cosworth",
+        "file": "Swift 009c Ford-Cosworth.png",
+        "size": 418331
+      }
+    ]
+  },
+  {
+    "class": "F-Vintage_Gen2",
+    "slug": "formula-vintage-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Vintage Gen2 Model1",
+        "file": "Formula Vintage Gen2 Model1.png",
+        "size": 412315
+      },
+      {
+        "name": "Formula Vintage Gen2 Model2",
+        "file": "Formula Vintage Gen2 Model2.png",
+        "size": 422753
+      }
+    ]
+  },
+  {
+    "class": "Kart125cc",
+    "slug": "kart-125cc",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Kart 2-Stroke 125cc Direct",
+        "file": "Kart 2-Stroke 125cc Direct.png",
+        "size": 262708
+      }
+    ]
+  },
+  {
+    "class": "RX",
+    "slug": "rx",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Citroen DS3 RX",
+        "file": "Citroen DS3 RX.png",
+        "size": 812315
+      },
+      {
+        "name": "MINI Countryman R60 RX",
+        "file": "MINI Countryman R60 RX.png",
+        "size": 665623
+      },
+      {
+        "name": "Mitsubishi Lancer Evo10 RX",
+        "file": "Mitsubishi Lancer Evo10 RX.png",
+        "size": 661542
+      },
+      {
+        "name": "Volkswagen Polo RX",
+        "file": "Volkswagen Polo RX.png",
+        "size": 631699
+      }
+    ]
+  },
+  {
+    "class": "MiniChallenge",
+    "slug": "mini-jcw-uk",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "MINI Cooper JCW",
+        "file": "MINI Cooper JCW.png",
+        "size": 564844
+      }
+    ]
+  },
+  {
+    "class": "Kartcross",
+    "slug": "kartcross",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Kart Cross",
+        "file": "Kart Cross.png",
+        "size": 558121
+      }
+    ]
+  },
+  {
+    "class": "F-Vee_Gen2",
+    "slug": "formula-vee-brazil-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Vee Gen2",
+        "file": "Formula Vee Gen2.png",
+        "size": 474757
+      }
+    ]
+  },
+  {
+    "class": "GT1_05",
+    "slug": "gt1-2005",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Aston Martin DBR9",
+        "file": "Aston Martin DBR9.png",
+        "size": 764119
+      },
+      {
+        "name": "Chevrolet Corvette C5-R",
+        "file": "Chevrolet Corvette C5-R.png",
+        "size": 699233
+      },
+      {
+        "name": "Dodge Viper GTS-R",
+        "file": "Dodge Viper GTS-R.png",
+        "size": 698078
+      },
+      {
+        "name": "Lamborghini Murcielago R-GT",
+        "file": "Lamborghini Murcielago R-GT.png",
+        "size": 562496
+      },
+      {
+        "name": "Maserati MC12 GT1",
+        "file": "Maserati MC12 GT1.png",
+        "size": 643459
+      }
+    ]
+  },
+  {
+    "class": "Stock_USA_Gen3_LM",
+    "slug": "stock-usa-gen3-le-mans",
+    "status": "skipped",
+    "reason": "HTTP 500"
+  },
+  {
+    "class": "STT",
+    "slug": "stt",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Super Trophy Trucks",
+        "file": "Super Trophy Trucks.png",
+        "size": 489519
+      }
+    ]
+  },
+  {
+    "class": "CopaUno",
+    "slug": "copa-uno",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Copa Uno",
+        "file": "Copa Uno.png",
+        "size": 450688
+      }
+    ]
+  },
+  {
+    "class": "CopaClassicFL",
+    "slug": "copa-classic-fl",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Fusca Classic FL",
+        "file": "Fusca Classic FL.png",
+        "size": 408197
+      },
+      {
+        "name": "Gol Classic FL",
+        "file": "Gol Classic FL.png",
+        "size": 486714
+      },
+      {
+        "name": "Passat Classic FL",
+        "file": "Passat Classic FL.png",
+        "size": 505902
+      },
+      {
+        "name": "Puma GTB",
+        "file": "Puma GTB.png",
+        "size": 535625
+      }
+    ]
+  },
+  {
+    "class": "P4",
+    "slug": "p4",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "MCR S2000",
+        "file": "MCR S2000.png",
+        "size": 480297
+      },
+      {
+        "name": "MetalMoro MRX Duratec P4",
+        "file": "MetalMoro MRX Duratec P4.png",
+        "size": 425764
+      }
+    ]
+  },
+  {
+    "class": "KartRental",
+    "slug": "kart-rental",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Kart 4-Stroke Rental",
+        "file": "Kart 4-Stroke Rental.png",
+        "size": 213682
+      }
+    ]
+  },
+  {
+    "class": "KartGX390",
+    "slug": "kart-gx390",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Kart 4-Stroke Race",
+        "file": "Kart 4-Stroke Race.png",
+        "size": 281058
+      }
+    ]
+  },
+  {
+    "class": "StockCar99",
+    "slug": "stock-car-99",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Omega Stock Car 1999",
+        "file": "Chevrolet Omega Stock Car 1999.png",
+        "size": 718654
+      }
+    ]
+  },
+  {
+    "class": "Stock_USA_Gen3",
+    "slug": "stock-usa-gen3",
+    "status": "skipped",
+    "reason": "HTTP 500"
+  },
+  {
+    "class": "Procar",
+    "slug": "procar",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "BMW M1 Procar",
+        "file": "BMW M1 Procar.png",
+        "size": 577302
+      }
+    ]
+  },
+  {
+    "class": "Hot Cars",
+    "slug": "hot-cars",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Fusca 1 Hot Cars",
+        "file": "Fusca 1 Hot Cars.png",
+        "size": 436224
+      },
+      {
+        "name": "Fusca 2 Hot Cars",
+        "file": "Fusca 2 Hot Cars.png",
+        "size": 420217
+      },
+      {
+        "name": "Gol Hot Cars",
+        "file": "Gol Hot Cars.png",
+        "size": 474680
+      },
+      {
+        "name": "Passat Hot Cars",
+        "file": "Passat Hot Cars.png",
+        "size": 527605
+      }
+    ]
+  },
+  {
+    "class": "DPI",
+    "slug": "dpi",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Cadillac DPi-VR",
+        "file": "Cadillac DPi-VR.png",
+        "size": 604787
+      }
+    ]
+  },
+  {
+    "class": "StockCarV8_2021",
+    "slug": "stock-car-brasil-2021",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Cruze Stock Car 2021",
+        "file": "Chevrolet Cruze Stock Car 2021.png",
+        "size": 727757
+      },
+      {
+        "name": "Toyota Corolla Stock Car 2021",
+        "file": "Toyota Corolla Stock Car 2021.png",
+        "size": 735383
+      }
+    ]
+  },
+  {
+    "class": "GT5",
+    "slug": "gt5",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ginetta G40",
+        "file": "Ginetta G40.png",
+        "size": 593293
+      },
+      {
+        "name": "Puma P052",
+        "file": "Puma P052.png",
+        "size": 622763
+      }
+    ]
+  },
+  {
+    "class": "ARC_Cam",
+    "slug": "arc-camaro",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "ARC Camaro",
+        "file": "ARC Camaro.png",
+        "size": 531780
+      }
+    ]
+  },
+  {
+    "class": "Stock_USA_Gen2",
+    "slug": "stock-usa-gen2",
+    "status": "skipped",
+    "reason": "HTTP 500"
+  },
+  {
+    "class": "CopaClassicB",
+    "slug": "copa-classic-b",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Chevette",
+        "file": "Chevrolet Chevette.png",
+        "size": 547053
+      },
+      {
+        "name": "Gol Classic B",
+        "file": "Gol Classic B.png",
+        "size": 494459
+      },
+      {
+        "name": "MINI Cooper S 1965 B",
+        "file": "MINI Cooper S 1965 B.png",
+        "size": 407733
+      },
+      {
+        "name": "Passat Classic B",
+        "file": "Passat Classic B.png",
+        "size": 507654
+      },
+      {
+        "name": "Puma GTE",
+        "file": "Puma GTE.png",
+        "size": 479200
+      },
+      {
+        "name": "Uno Classic B",
+        "file": "Uno Classic B.png",
+        "size": 407134
+      }
+    ]
+  },
+  {
+    "class": "TSICup",
+    "slug": "tsi-cup",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Mercedes-Benz CLK LM",
+        "file": "Mercedes-Benz CLK LM.png",
+        "size": 697222
+      },
+      {
+        "name": "Volkswagen Polo",
+        "file": "Volkswagen Polo.png",
+        "size": 482742
+      },
+      {
+        "name": "Volkswagen Polo GTS",
+        "file": "Volkswagen Polo GTS.png",
+        "size": 522257
+      },
+      {
+        "name": "Volkswagen Virtus",
+        "file": "Volkswagen Virtus.png",
+        "size": 519660
+      },
+      {
+        "name": "Volkswagen Virtus GTS",
+        "file": "Volkswagen Virtus GTS.png",
+        "size": 508651
+      }
+    ]
+  },
+  {
+    "class": "Group A",
+    "slug": "group-a",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Audi V8 quattro DTM",
+        "file": "Audi V8 quattro DTM.png",
+        "size": 702006
+      },
+      {
+        "name": "BMW M3 Sport Evo Group A",
+        "file": "BMW M3 Sport Evo Group A.png",
+        "size": 641181
+      },
+      {
+        "name": "Mercedes-Benz 190E 2.5-16 Evo II DTM",
+        "file": "Mercedes-Benz 190E 2.5-16 Evo II DTM.png",
+        "size": 696582
+      }
+    ]
+  },
+  {
+    "class": "GTR_04",
+    "slug": "gtr-2004",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "BMW M3 E46 GTR",
+        "file": "BMW M3 E46 GTR.png",
+        "size": 653709
+      }
+    ]
+  },
+  {
+    "class": "Supercars",
+    "slug": "supercars",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Audi R8 V10 GT",
+        "error": "not cached"
+      },
+      {
+        "name": "Chevrolet Corvette C8 Z06 (+Z07 Upgrade)",
+        "file": "Chevrolet Corvette C8 Z06 (+Z07 Upgrade).png",
+        "size": 716113
+      },
+      {
+        "name": "Dodge Viper ACR",
+        "error": "not cached"
+      },
+      {
+        "name": "Maserati GT2 Stradale",
+        "error": "not cached"
+      },
+      {
+        "name": "McLaren F1 LM",
+        "file": "McLaren F1 LM.png",
+        "size": 639305
+      },
+      {
+        "name": "Ultima GTR",
+        "file": "Ultima GTR.png",
+        "size": 472987
+      }
+    ]
+  },
+  {
+    "class": "CopaFusca",
+    "slug": "copa-fusca",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Copa Fusca",
+        "file": "Copa Fusca.png",
+        "size": 436224
+      }
+    ]
+  },
+  {
+    "class": "LES_2025",
+    "slug": "ligier-european-series",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ligier JS2 R",
+        "file": "Ligier JS2 R.png",
+        "size": 568965
+      }
+    ]
+  },
+  {
+    "class": "SuperV8",
+    "slug": "super-v8",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Super V8",
+        "file": "Super V8.png",
+        "size": 789168
+      }
+    ]
+  },
+  {
+    "class": "StockCarV8_2024",
+    "slug": "stock-car-pro-series-2024",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Cruze Stock Car 2024",
+        "file": "Chevrolet Cruze Stock Car 2024.png",
+        "size": 720272
+      },
+      {
+        "name": "Toyota Corolla Stock Car 2024",
+        "file": "Toyota Corolla Stock Car 2024.png",
+        "size": 735981
+      }
+    ]
+  },
+  {
+    "class": "G40Cup",
+    "slug": "g40cup",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ginetta G40 Cup",
+        "file": "Ginetta G40 Cup.png",
+        "size": 604682
+      }
+    ]
+  },
+  {
+    "class": "F-Classic_Gen4",
+    "slug": "formula-classic-gen4",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Classic Gen4 Model1",
+        "file": "Formula Classic Gen4 Model1.png",
+        "size": 447500
+      },
+      {
+        "name": "Formula Classic Gen4 Model2",
+        "file": "Formula Classic Gen4 Model2.png",
+        "size": 451320
+      },
+      {
+        "name": "Formula Classic Gen4 Model3",
+        "file": "Formula Classic Gen4 Model3.png",
+        "size": 443528
+      },
+      {
+        "name": "McLaren Honda MP4_6",
+        "file": "McLaren Honda MP4_6.png",
+        "size": 422053
+      }
+    ]
+  },
+  {
+    "class": "StockCarV8_2022",
+    "slug": "stock-car-pro-series-2022",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Cruze Stock Car 2022",
+        "file": "Chevrolet Cruze Stock Car 2022.png",
+        "size": 719431
+      },
+      {
+        "name": "Toyota Corolla Stock Car 2022",
+        "file": "Toyota Corolla Stock Car 2022.png",
+        "size": 737137
+      }
+    ]
+  },
+  {
+    "class": "F-Junior",
+    "slug": "formula-junior",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Junior",
+        "file": "Formula Junior.png",
+        "size": 343296
+      }
+    ]
+  },
+  {
+    "class": "TC70S",
+    "slug": "gt-classics",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Corvette C3.R",
+        "file": "Chevrolet Corvette C3.R.png",
+        "size": 552453
+      },
+      {
+        "name": "Porsche 911 RSR 1974",
+        "file": "Porsche 911 RSR 1974.png",
+        "size": 565661
+      }
+    ]
+  },
+  {
+    "class": "TC60S",
+    "slug": "vintage-cars-tier-1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "BMW 2002 Turbo",
+        "file": "BMW 2002 Turbo.png",
+        "size": 486704
+      },
+      {
+        "name": "Chevrolet Corvette C3",
+        "file": "Chevrolet Corvette C3.png",
+        "size": 552782
+      }
+    ]
+  },
+  {
+    "class": "Super Trofeo",
+    "slug": "super-trofeo",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lamborghini Huracan Super Trofeo EVO2",
+        "file": "Lamborghini Huracan Super Trofeo EVO2.png",
+        "size": 634711
+      }
+    ]
+  },
+  {
+    "class": "F-Hitech_Gen1",
+    "slug": "f-hitech-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula HiTech Gen1 Model1",
+        "file": "Formula HiTech Gen1 Model1.png",
+        "size": 480441
+      },
+      {
+        "name": "Formula HiTech Gen1 Model2",
+        "file": "Formula HiTech Gen1 Model2.png",
+        "size": 450858
+      },
+      {
+        "name": "Formula HiTech Gen1 Model3",
+        "file": "Formula HiTech Gen1 Model3.png",
+        "size": 429418
+      },
+      {
+        "name": "Formula HiTech Gen1 Model4",
+        "file": "Formula HiTech Gen1 Model4.png",
+        "size": 446551
+      },
+      {
+        "name": "McLaren Honda MP4_7A",
+        "file": "McLaren Honda MP4_7A.png",
+        "size": 412035
+      }
+    ]
+  },
+  {
+    "class": "SuperKart",
+    "slug": "superkart",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Superkart 250cc",
+        "file": "Superkart 250cc.png",
+        "size": 358257
+      }
+    ]
+  },
+  {
+    "class": "F-USA_Gen3",
+    "slug": "formula-usa-gen3",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lola B2K00 Ford-Cosworth",
+        "file": "Lola B2K00 Ford-Cosworth.png",
+        "size": 413021
+      },
+      {
+        "name": "Lola B2K00 Mercedes-Benz",
+        "file": "Lola B2K00 Mercedes-Benz.png",
+        "size": 433500
+      },
+      {
+        "name": "Lola B2K00 Toyota",
+        "file": "Lola B2K00 Toyota.png",
+        "size": 436664
+      },
+      {
+        "name": "Reynard 2Ki Ford-Cosworth",
+        "file": "Reynard 2Ki Ford-Cosworth.png",
+        "size": 463317
+      },
+      {
+        "name": "Reynard 2Ki Honda",
+        "file": "Reynard 2Ki Honda.png",
+        "size": 451624
+      },
+      {
+        "name": "Reynard 2Ki Mercedes-Benz",
+        "file": "Reynard 2Ki Mercedes-Benz.png",
+        "size": 475441
+      },
+      {
+        "name": "Reynard 2Ki Toyota",
+        "file": "Reynard 2Ki Toyota.png",
+        "size": 486984
+      }
+    ]
+  },
+  {
+    "class": "CopaTruck",
+    "slug": "copa-truck",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Iveco Stralis",
+        "file": "Iveco Stralis.png",
+        "size": 437515
+      },
+      {
+        "name": "MAN TGX",
+        "file": "MAN TGX.png",
+        "size": 478422
+      },
+      {
+        "name": "Mercedes-Benz Actros",
+        "file": "Mercedes-Benz Actros.png",
+        "size": 483691
+      },
+      {
+        "name": "Volkswagen Constellation",
+        "file": "Volkswagen Constellation.png",
+        "size": 476229
+      },
+      {
+        "name": "Vulkan Truck",
+        "file": "Vulkan Truck.png",
+        "size": 423487
+      }
+    ]
+  },
+  {
+    "class": "LMDh",
+    "slug": "lmdh",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Alpine A424",
+        "file": "Alpine A424.png",
+        "size": 716987
+      },
+      {
+        "name": "Aston Martin Valkyrie Hypercar",
+        "file": "Aston Martin Valkyrie Hypercar.png",
+        "size": 709375
+      },
+      {
+        "name": "BMW M Hybrid V8",
+        "file": "BMW M Hybrid V8.png",
+        "size": 673895
+      },
+      {
+        "name": "Cadillac V-Series.R",
+        "file": "Cadillac V-Series.R.png",
+        "size": 672367
+      },
+      {
+        "name": "Lamborghini SC63",
+        "file": "Lamborghini SC63.png",
+        "size": 655600
+      },
+      {
+        "name": "Porsche 963",
+        "file": "Porsche 963.png",
+        "size": 616372
+      }
+    ]
+  },
+  {
+    "class": "ST96",
+    "slug": "super-trofeo-96",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Lamborghini Diablo SV-R",
+        "file": "Lamborghini Diablo SV-R.png",
+        "size": 609540
+      }
+    ]
+  },
+  {
+    "class": "LMP1_05",
+    "slug": "lmp1-2005",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Audi R8 LMP1",
+        "file": "Audi R8 LMP1.png",
+        "size": 608654
+      },
+      {
+        "name": "Courage C60 Hybrid",
+        "file": "Courage C60 Hybrid.png",
+        "size": 640365
+      },
+      {
+        "name": "Dallara SP1",
+        "file": "Dallara SP1.png",
+        "size": 575639
+      }
+    ]
+  },
+  {
+    "class": "Stock_USA_Gen1",
+    "slug": "stock-usa-gen1",
+    "status": "skipped",
+    "reason": "HTTP 500"
+  },
+  {
+    "class": "F-Hitech_Gen2",
+    "slug": "f-hitech-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula HiTech Gen2 Model1",
+        "file": "Formula HiTech Gen2 Model1.png",
+        "size": 458615
+      },
+      {
+        "name": "Formula HiTech Gen2 Model2",
+        "file": "Formula HiTech Gen2 Model2.png",
+        "size": 441173
+      },
+      {
+        "name": "Formula HiTech Gen2 Model3",
+        "file": "Formula HiTech Gen2 Model3.png",
+        "size": 442207
+      },
+      {
+        "name": "McLaren Cosworth MP4_8",
+        "file": "McLaren Cosworth MP4_8.png",
+        "size": 381723
+      }
+    ]
+  },
+  {
+    "class": "LMP2",
+    "slug": "lmp2-gen2",
+    "status": "skipped",
+    "reason": "HTTP 500"
+  },
+  {
+    "class": "P2",
+    "slug": "p2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "MetalMoro MRX Duratec Turbo P2",
+        "file": "MetalMoro MRX Duratec Turbo P2.png",
+        "size": 466630
+      },
+      {
+        "name": "Sigma P1",
+        "file": "Sigma P1.png",
+        "size": 622254
+      }
+    ]
+  },
+  {
+    "class": "Montana",
+    "slug": "copa-montana",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Copa Montana",
+        "file": "Copa Montana.png",
+        "size": 698328
+      }
+    ]
+  },
+  {
+    "class": "G55Supercup",
+    "slug": "g55-supercup",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ginetta G55 GT4 Supercup",
+        "file": "Ginetta G55 GT4 Supercup.png",
+        "size": 666526
+      }
+    ]
+  },
+  {
+    "class": "F-USA_2023",
+    "slug": "formula-usa-2023",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula USA 2023",
+        "file": "Formula USA 2023.png",
+        "size": 608865
+      }
+    ]
+  },
+  {
+    "class": "Cat_Superlight",
+    "slug": "caterham-superlight",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Caterham Superlight",
+        "file": "Caterham Superlight.png",
+        "size": 430718
+      }
+    ]
+  },
+  {
+    "class": "F-V12",
+    "slug": "formula-v12",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula V12",
+        "file": "Formula V12.png",
+        "size": 394564
+      }
+    ]
+  },
+  {
+    "class": "StockCarV8_2023",
+    "slug": "stock-car-pro-series-2023",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Cruze Stock Car 2023",
+        "file": "Chevrolet Cruze Stock Car 2023.png",
+        "size": 721825
+      },
+      {
+        "name": "Toyota Corolla Stock Car 2023",
+        "file": "Toyota Corolla Stock Car 2023.png",
+        "size": 745256
+      }
+    ]
+  },
+  {
+    "class": "GT3",
+    "slug": "gt3",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Audi R8 LMS GT3",
+        "file": "Audi R8 LMS GT3.png",
+        "size": 689238
+      },
+      {
+        "name": "BMW M6 GT3",
+        "file": "BMW M6 GT3.png",
+        "size": 760037
+      },
+      {
+        "name": "Lamborghini Diablo SV-R",
+        "file": "Lamborghini Diablo SV-R.png",
+        "size": 609540
+      },
+      {
+        "name": "McLaren 720S GT3",
+        "file": "McLaren 720S GT3.png",
+        "size": 705295
+      },
+      {
+        "name": "Mercedes-AMG GT3",
+        "file": "Mercedes-AMG GT3.png",
+        "size": 761226
+      },
+      {
+        "name": "Nissan GT-R Nismo GT3",
+        "file": "Nissan GT-R Nismo GT3.png",
+        "size": 760275
+      },
+      {
+        "name": "Porsche 911 GT3 R",
+        "file": "Porsche 911 GT3 R.png",
+        "size": 608431
+      }
+    ]
+  },
+  {
+    "class": "Cat_Supersport",
+    "slug": "caterham-supersport",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Caterham Supersport",
+        "file": "Caterham Supersport.png",
+        "size": 422019
+      }
+    ]
+  },
+  {
+    "class": "F-Inter",
+    "slug": "formula-inter",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Inter MG-15",
+        "file": "Formula Inter MG-15.png",
+        "size": 423225
+      }
+    ]
+  },
+  {
+    "class": "F-V10_Gen1",
+    "slug": "formula-v10-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula V10 Gen1",
+        "file": "Formula V10 Gen1.png",
+        "size": 423960
+      },
+      {
+        "name": "McLaren Mercedes MP4_12",
+        "file": "McLaren Mercedes MP4_12.png",
+        "size": 398367
+      }
+    ]
+  },
+  {
+    "class": "F-Reiza",
+    "slug": "formula-reiza",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Reiza",
+        "file": "Formula Reiza.png",
+        "size": 483036
+      }
+    ]
+  },
+  {
+    "class": "Street",
+    "slug": "street",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Camaro SS",
+        "file": "Chevrolet Camaro SS.png",
+        "size": 580976
+      }
+    ]
+  },
+  {
+    "class": "F-Retro_Gen3",
+    "slug": "formula-retro-gen3",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Brabham BMW BT52",
+        "file": "Brabham BMW BT52.png",
+        "size": 384955
+      },
+      {
+        "name": "Formula Retro Gen3 DFY",
+        "file": "Formula Retro Gen3 DFY.png",
+        "size": 402222
+      },
+      {
+        "name": "Formula Retro Gen3 Turbo",
+        "file": "Formula Retro Gen3 Turbo.png",
+        "size": 406809
+      },
+      {
+        "name": "McLaren Cosworth MP4_1C",
+        "file": "McLaren Cosworth MP4_1C.png",
+        "size": 375737
+      }
+    ]
+  },
+  {
+    "class": "StockCarV8",
+    "slug": "stock-car-brasil-2019",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Cruze Stock Car 2019",
+        "file": "Chevrolet Cruze Stock Car 2019.png",
+        "size": 763951
+      }
+    ]
+  },
+  {
+    "class": "LancerCup",
+    "slug": "lancer-cup",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Mitsubishi Lancer R",
+        "file": "Mitsubishi Lancer R.png",
+        "size": 531946
+      },
+      {
+        "name": "Mitsubishi Lancer RS",
+        "file": "Mitsubishi Lancer RS.png",
+        "size": 611157
+      }
+    ]
+  },
+  {
+    "class": "F-Ultimate_Gen2",
+    "slug": "formula-ultimate-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Ultimate Gen2",
+        "file": "Formula Ultimate Gen2.png",
+        "size": 621112
+      }
+    ]
+  },
+  {
+    "class": "F-Vintage_Gen1",
+    "slug": "formula-vintage-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Vintage Gen1 Model1",
+        "file": "Formula Vintage Gen1 Model1.png",
+        "size": 403389
+      },
+      {
+        "name": "Formula Vintage Gen1 Model2",
+        "file": "Formula Vintage Gen1 Model2.png",
+        "size": 453345
+      }
+    ]
+  },
+  {
+    "class": "Cat620R",
+    "slug": "caterham-620r",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Caterham 620R",
+        "file": "Caterham 620R.png",
+        "size": 395279
+      }
+    ]
+  },
+  {
+    "class": "Opala86",
+    "slug": "opala-86",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Opala Stock Cars 1986",
+        "file": "Chevrolet Opala Stock Cars 1986.png",
+        "size": 568115
+      }
+    ]
+  },
+  {
+    "class": "F-Retro_Gen2",
+    "slug": "formula-retro-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Brabham Alfa Romeo BT46B",
+        "file": "Brabham Alfa Romeo BT46B.png",
+        "size": 421781
+      },
+      {
+        "name": "Brabham Cosworth BT49",
+        "file": "Brabham Cosworth BT49.png",
+        "size": 393757
+      },
+      {
+        "name": "Formula Retro Gen2",
+        "file": "Formula Retro Gen2.png",
+        "size": 417408
+      },
+      {
+        "name": "Lotus 79",
+        "file": "Lotus 79.png",
+        "size": 382613
+      }
+    ]
+  },
+  {
+    "class": "GT2_05",
+    "slug": "gt2-2005",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Milano GT36",
+        "file": "Milano GT36.png",
+        "size": 686901
+      },
+      {
+        "name": "Porsche 996 GT3 RSR",
+        "file": "Porsche 996 GT3 RSR.png",
+        "size": 714836
+      }
+    ]
+  },
+  {
+    "class": "GTOpen",
+    "slug": "gt-open",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Ginetta G55 GT3",
+        "file": "Ginetta G55 GT3.png",
+        "size": 684247
+      },
+      {
+        "name": "Ultima GTR Race",
+        "file": "Ultima GTR Race.png",
+        "size": 627919
+      }
+    ]
+  },
+  {
+    "class": "P3",
+    "slug": "p3",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "MetalMoro MRX Duratec Turbo P3",
+        "file": "MetalMoro MRX Duratec Turbo P3.png",
+        "size": 448119
+      },
+      {
+        "name": "MetalMoro MRX Honda P3",
+        "file": "MetalMoro MRX Honda P3.png",
+        "size": 565838
+      },
+      {
+        "name": "Roco 001",
+        "file": "Roco 001.png",
+        "size": 417211
+      }
+    ]
+  },
+  {
+    "class": "F-Classic_Gen2",
+    "slug": "formula-classic-gen2",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Classic Gen2 Model1",
+        "file": "Formula Classic Gen2 Model1.png",
+        "size": 412315
+      },
+      {
+        "name": "Formula Classic Gen2 Model2",
+        "file": "Formula Classic Gen2 Model2.png",
+        "size": 401994
+      },
+      {
+        "name": "Formula Classic Gen2 Model3",
+        "file": "Formula Classic Gen2 Model3.png",
+        "size": 405363
+      },
+      {
+        "name": "McLaren Honda MP4_4",
+        "file": "McLaren Honda MP4_4.png",
+        "size": 409375
+      }
+    ]
+  },
+  {
+    "class": "F-Dirt",
+    "slug": "formula-dirt",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Dirt",
+        "file": "Formula Dirt.png",
+        "size": 591531
+      }
+    ]
+  },
+  {
+    "class": "SprintRace",
+    "slug": "sprint-race",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Sprint Race",
+        "error": "not cached"
+      }
+    ]
+  },
+  {
+    "class": "F-Classic_Gen1",
+    "slug": "formula-classic-gen1",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Formula Classic Gen1 Model1",
+        "file": "Formula Classic Gen1 Model1.png",
+        "size": 395950
+      },
+      {
+        "name": "Formula Classic Gen1 Model2",
+        "file": "Formula Classic Gen1 Model2.png",
+        "size": 453345
+      },
+      {
+        "name": "Lotus Renault 98T",
+        "file": "Lotus Renault 98T.png",
+        "size": 473815
+      }
+    ]
+  },
+  {
+    "class": "Group C",
+    "slug": "group-c",
+    "status": "ok",
+    "vehicles": [
+      {
+        "name": "Chevrolet Corvette GTP",
+        "file": "Chevrolet Corvette GTP.png",
+        "size": 622190
+      },
+      {
+        "name": "Nissan R89C",
+        "file": "Nissan R89C.png",
+        "size": 601605
+      },
+      {
+        "name": "Porsche 962C",
+        "file": "Porsche 962C.png",
+        "size": 586367
+      },
+      {
+        "name": "Sauber Mercedes C9",
+        "file": "Sauber Mercedes C9.png",
+        "size": 588626
+      }
+    ]
+  }
+]
