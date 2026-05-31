@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { BsChevronDown, BsChevronUp, BsArrowUp, BsArrowDown } from "react-icons/bs";
 import styles from './LeagueDescriptionSchedule.module.css';
 
-const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, lists, league, targetRaceId, onClearTarget }) => {
+const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, lists, league, targetRaceId, onClearTarget, onSwitchToSchedule }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
 
@@ -28,6 +28,22 @@ const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, l
     .sort((a, b) => new Date(a.date) - new Date(b.date)) || [];
   const nextRaceIndex = sortedRaces.findIndex(r => !r.completed);
   const completedCount = sortedRaces.filter(r => r.completed).length;
+
+  const resolveRoundHistoryRaceId = (roundRace) => {
+    if (!roundRace?.track || !roundRace?.date || !leagueHistory?.length) return null;
+    const targetTs = new Date(roundRace.date).getTime() / 1000;
+    const matching = leagueHistory
+      .filter((h) => h?.setup?.TrackId === roundRace.track && h?.id && h?.start_time)
+      .sort((a, b) => Math.abs(a.start_time - targetTs) - Math.abs(b.start_time - targetTs));
+    return matching[0]?.id || null;
+  };
+
+  const handleRoundClick = (roundRace) => {
+    const raceId = resolveRoundHistoryRaceId(roundRace);
+    if (raceId && onSwitchToSchedule) {
+      onSwitchToSchedule(raceId);
+    }
+  };
 
   return (
     <>
@@ -53,11 +69,17 @@ const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, l
               const trackName = NameMapper.fromTrackApiName(NameMapper.fromTrackId(r.track, lists?.tracks?.list) || '') || `Rd ${i + 1}`;
               // Abbreviate to first word of track name for the dot label
               const shortTrack = trackName.split(' ')[0];
+              const roundRaceId = resolveRoundHistoryRaceId(r);
+              const isClickable = Boolean(roundRaceId && onSwitchToSchedule);
               return (
                 <div
                   key={i}
-                  className={`${styles.roundItem} ${status === 'done' ? styles.done : ''}`}
+                  className={`${styles.roundItem} ${status === 'done' ? styles.done : ''} ${isClickable ? styles.roundItemClickable : ''}`}
                   title={`Round ${i + 1}: ${trackName} \u2014 ${format(new Date(r.date), 'PPP')}`}
+                  role={isClickable ? 'button' : undefined}
+                  tabIndex={isClickable ? 0 : undefined}
+                  onClick={isClickable ? () => handleRoundClick(r) : undefined}
+                  onKeyDown={isClickable ? (e) => e.key === 'Enter' && handleRoundClick(r) : undefined}
                 >
                   <div className={`${styles.roundDot} ${styles[status]}`}>{i + 1}</div>
                   <div className={`${styles.roundTrack} ${styles[status]}`}>{shortTrack}</div>

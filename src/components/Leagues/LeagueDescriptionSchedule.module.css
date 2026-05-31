@@ -16,6 +16,10 @@
   position: relative;
 }
 
+.roundItemClickable {
+  cursor: pointer;
+}
+
 /* Connector line between dots */
 .roundItem:not(:last-child)::after {
   content: '';

@@ -223,7 +223,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                 <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries,lists,leagueHistory, onSwitchToSchedule: handleSwitchToSchedule}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={1}>
-                                <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league, targetRaceId, onClearTarget: () => setTargetRaceId(null)}}/>
+                                <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league, targetRaceId, onClearTarget: () => setTargetRaceId(null), onSwitchToSchedule: handleSwitchToSchedule}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={2}>
                                 <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists,showDetailsSpinner: isDetailsLoading}}/>
