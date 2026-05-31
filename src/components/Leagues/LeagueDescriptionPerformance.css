@@ -172,6 +172,45 @@
   margin-bottom: 7px;
 }
 
+.performance-distribution-hints {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.performance-distribution-hint {
+  flex: 1 1 0;
+  font-size: 0.76rem;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.performance-distribution-hint:last-child {
+  text-align: right;
+}
+
+.performance-distribution-hint.is-visible {
+  opacity: 1;
+}
+
+.performance-distribution-item {
+  flex: 0 0 auto;
+}
+
+.performance-distribution-shell {
+  position: relative;
+}
+
 .perf-dist-label {
   width: 34px;
   font-size: 0.82rem;
@@ -219,6 +258,19 @@
   .perf-chart-sm { height: 110px; }
   .perf-highlights-grid { grid-template-columns: repeat(2, 1fr); }
   .perf-highlight-value { font-size: 1.2rem; }
+
+  .performance-distribution.is-mobile-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px !important;
+  }
+
+  .performance-distribution.is-mobile-scroll .performance-distribution-item {
+    min-width: 44px;
+    scroll-snap-align: start;
+  }
 }
 
 /* Performance distribution */

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Container, Row, Col, Table, Form, Spinner, Badge, Card } from 'react-bootstrap';
 import {
   LineChart, Line,
@@ -20,6 +20,15 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     consistencyRatings: [],
     peakPerformances: {},
     comebackFactors: []
+  });
+  const distributionScrollRef = useRef(null);
+  const [isMobileDistributionView, setIsMobileDistributionView] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 768px)').matches;
+  });
+  const [distributionOverflowInfo, setDistributionOverflowInfo] = useState({
+    hiddenLeftFinishes: 0,
+    hiddenRightFinishes: 0,
   });
   const [chartColors, setChartColors] = useState({
     primary: '#00a8e1',
@@ -555,6 +564,95 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     return { items, maxCount: Math.max(...items.map(e => e.count), 1) };
   }, [allDriverRaces]);
 
+  const fullPositionDistribution = useMemo(
+    () => calculatePositionDistribution(formattedData.peakPerformances, selectedDriver),
+    [formattedData.peakPerformances, selectedDriver]
+  );
+
+  const bestDistributionIndex = useMemo(
+    () => fullPositionDistribution.findIndex((count) => count > 0),
+    [fullPositionDistribution]
+  );
+
+  const updateDistributionOverflowInfo = useCallback(() => {
+    const container = distributionScrollRef.current;
+    if (!container) return;
+
+    const viewportLeft = container.scrollLeft;
+    const viewportRight = viewportLeft + container.clientWidth;
+    let hiddenLeftFinishes = 0;
+    let hiddenRightFinishes = 0;
+
+    Array.from(container.querySelectorAll('[data-position-index]')).forEach((item) => {
+      const positionIndex = Number(item.getAttribute('data-position-index'));
+      const finishCount = fullPositionDistribution[positionIndex] || 0;
+      const itemLeft = item.offsetLeft;
+      const itemRight = itemLeft + item.offsetWidth;
+
+      if (itemRight <= viewportLeft + 1) {
+        hiddenLeftFinishes += finishCount;
+      } else if (itemLeft >= viewportRight - 1) {
+        hiddenRightFinishes += finishCount;
+      }
+    });
+
+    setDistributionOverflowInfo({ hiddenLeftFinishes, hiddenRightFinishes });
+  }, [fullPositionDistribution]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleViewportChange = (event) => {
+      setIsMobileDistributionView(event.matches);
+    };
+
+    setIsMobileDistributionView(mediaQuery.matches);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleViewportChange);
+      return () => mediaQuery.removeEventListener('change', handleViewportChange);
+    }
+
+    mediaQuery.addListener(handleViewportChange);
+    return () => mediaQuery.removeListener(handleViewportChange);
+  }, []);
+
+  useEffect(() => {
+    const container = distributionScrollRef.current;
+    if (!container) return undefined;
+
+    const handleScrollOrResize = () => updateDistributionOverflowInfo();
+    handleScrollOrResize();
+
+    container.addEventListener('scroll', handleScrollOrResize, { passive: true });
+    window.addEventListener('resize', handleScrollOrResize);
+
+    return () => {
+      container.removeEventListener('scroll', handleScrollOrResize);
+      window.removeEventListener('resize', handleScrollOrResize);
+    };
+  }, [updateDistributionOverflowInfo, selectedDriver]);
+
+  useEffect(() => {
+    const container = distributionScrollRef.current;
+    if (!container || !isMobileDistributionView || bestDistributionIndex < 0) {
+      updateDistributionOverflowInfo();
+      return;
+    }
+
+    const targetItem = container.querySelector(`[data-position-index="${bestDistributionIndex}"]`);
+    if (!targetItem) {
+      updateDistributionOverflowInfo();
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      container.scrollTo({ left: targetItem.offsetLeft, behavior: 'auto' });
+      updateDistributionOverflowInfo();
+    });
+  }, [bestDistributionIndex, isMobileDistributionView, selectedDriver, updateDistributionOverflowInfo]);
+
   // Dynamic season highlights — tier-ranked, driver-specific, never shows 0-value stats
   const seasonHighlights = useMemo(() => {
     const highlights = [];
@@ -632,6 +730,8 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
   const finishRatePct = selectedDriverConsistency.finishRate != null
     ? (selectedDriverConsistency.finishRate / 10 * 100).toFixed(1)
     : '—';
+
+  const formatHiddenFinishLabel = (count) => `${count} more ${count === 1 ? 'finish' : 'finishes'}`;
 
   // Render loading state
   if (loading) {
@@ -887,58 +987,72 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                   {positionDistribution.items.length > 0 && (
                     <>
                       <h6 className="mb-3 perf-section-sub-heading">Position Distribution</h6>
-                        <div className="performance-distribution d-flex justify-content-center align-items-end" 
-                            style={{ padding: '20px 10px 10px' }}>
-                          {calculatePositionDistribution(formattedData.peakPerformances, selectedDriver).map((count, position) => {
-                            const barHeight = count > 0 ? Math.max(count * 25, 30) : 0;
-                            const showCountInside = barHeight > 40;
-                            
-                            return (
-                              <div key={position} className="d-flex flex-column align-items-center" style={{ width: '45px' }}>
-                                <div className="position-relative" style={{ height: barHeight + (showCountInside ? 0 : 20), width: '100%' }}>
-                                  {count > 0 && !showCountInside && (
-                                    <div className="position-count" style={{
-                                      position: 'absolute',
-                                      top: '-20px',
-                                      left: '0',
-                                      width: '100%',
-                                      textAlign: 'center',
-                                      fontSize: '0.9rem',
-                                      fontWeight: '500'
-                                    }}>
-                                      {count}
-                                    </div>
-                                  )}
-                                  <div 
-                                    className={`position-bar ${position < 3 ? 'podium' : position < 8 ? 'points' : ''}`}
-                                    style={{ 
-                                      height: `${barHeight}px`,
-                                      width: '20px',
-                                      position: 'absolute',
-                                      bottom: '0',
-                                      left: '50%',
-                                      transform: 'translateX(-50%)'
-                                    }}
-                                  >
-                                    {count > 0 && showCountInside && (
+                        <div className="performance-distribution-shell">
+                          {isMobileDistributionView && (
+                            <div className="performance-distribution-hints">
+                              <div className={`performance-distribution-hint ${distributionOverflowInfo.hiddenLeftFinishes > 0 ? 'is-visible' : ''}`}>
+                                {distributionOverflowInfo.hiddenLeftFinishes > 0 ? `< ${formatHiddenFinishLabel(distributionOverflowInfo.hiddenLeftFinishes)}` : ''}
+                              </div>
+                              <div className={`performance-distribution-hint ${distributionOverflowInfo.hiddenRightFinishes > 0 ? 'is-visible' : ''}`}>
+                                {distributionOverflowInfo.hiddenRightFinishes > 0 ? `${formatHiddenFinishLabel(distributionOverflowInfo.hiddenRightFinishes)} >` : ''}
+                              </div>
+                            </div>
+                          )}
+                          <div
+                            ref={distributionScrollRef}
+                            className={`performance-distribution d-flex align-items-end ${isMobileDistributionView ? 'is-mobile-scroll' : ''}`}
+                            style={{ padding: '20px 10px 10px', justifyContent: isMobileDistributionView ? 'flex-start' : 'center' }}>
+                            {fullPositionDistribution.map((count, position) => {
+                              const barHeight = count > 0 ? Math.max(count * 25, 30) : 0;
+                              const showCountInside = barHeight > 40;
+                              
+                              return (
+                                <div key={position} data-position-index={position} className="performance-distribution-item d-flex flex-column align-items-center" style={{ width: '45px' }}>
+                                  <div className="position-relative" style={{ height: barHeight + (showCountInside ? 0 : 20), width: '100%' }}>
+                                    {count > 0 && !showCountInside && (
                                       <div className="position-count" style={{
                                         position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        fontSize: '0.9rem'
+                                        top: '-20px',
+                                        left: '0',
+                                        width: '100%',
+                                        textAlign: 'center',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '500'
                                       }}>
                                         {count}
                                       </div>
                                     )}
+                                    <div 
+                                      className={`position-bar ${position < 3 ? 'podium' : position < 8 ? 'points' : ''}`}
+                                      style={{ 
+                                        height: `${barHeight}px`,
+                                        width: '20px',
+                                        position: 'absolute',
+                                        bottom: '0',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)'
+                                      }}
+                                    >
+                                      {count > 0 && showCountInside && (
+                                        <div className="position-count" style={{
+                                          position: 'absolute',
+                                          top: '50%',
+                                          left: '50%',
+                                          transform: 'translate(-50%, -50%)',
+                                          color: 'white',
+                                          fontWeight: 'bold',
+                                          fontSize: '0.9rem'
+                                        }}>
+                                          {count}
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
+                                  <div className="position-label mt-1" style={{ textAlign: 'center', width: '100%' }}>P{position + 1}</div>
                                 </div>
-                                <div className="position-label mt-1" style={{ textAlign: 'center', width: '100%' }}>P{position + 1}</div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
                     </>
                   )}
