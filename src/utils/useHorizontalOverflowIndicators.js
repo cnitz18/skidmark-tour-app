@@ -25,7 +25,7 @@ const useHorizontalOverflowIndicators = (getScroller, deps = []) => {
       scroller.removeEventListener('scroll', updateOverflowState);
       window.removeEventListener('resize', updateOverflowState);
     };
-  }, [getScroller, ...deps]);
+  }, [getScroller, deps]);
 
   return { canScrollLeft, canScrollRight };
 };
