@@ -13,6 +13,11 @@ import detectPitStops from "../../utils/detectPitStops";
 import useHorizontalOverflowIndicators from "../../utils/useHorizontalOverflowIndicators";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass, isHistorical }) => {
+  const isDesktopViewport = () => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(min-width: 769px)').matches;
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [eventsData, setEventsData] = useState([]);
   const [selectedRacerName, setSelectedRacerName] = useState("");
@@ -20,7 +25,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   const [showSpinner, setShowSpinner] = useState(true);
   const [minSectors, setMinSectors] = useState({});
   const [activeTab, setActiveTab] = useState("lapLog");
-  const [showLapChart, setShowLapChart] = useState(false);
+  const [showLapChart, setShowLapChart] = useState(isDesktopViewport);
   const [allPlayerEvents, setAllPlayerEvents] = useState([]);
   const [selectedParticipantId,setSelectedParticipantId] = useState(null);
   const [freshEventsData, setFreshEventsData] = useState([]);
@@ -48,7 +53,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     let participant_id = res["participantid"]
     setShowSpinner(true);
     setActiveTab("lapLog");
-    setShowLapChart(false);
+    setShowLapChart(isDesktopViewport());
     setEventsData([]);
     setAllPlayerEvents([]);
     setFreshEventsData([]);
