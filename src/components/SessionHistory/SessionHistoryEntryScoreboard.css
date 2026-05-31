@@ -308,6 +308,38 @@
 }
 
 /* Tab / Pill styling */
+.race-event-modal .race-detail-pills-shell {
+  position: relative;
+}
+
+.race-event-modal .tabs-overflow-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background-color: rgba(247, 168, 0, 0.22);
+  color: var(--color-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(247, 168, 0, 0.35);
+}
+
+.race-event-modal .tabs-overflow-arrow-left {
+  left: 2px;
+}
+
+.race-event-modal .tabs-overflow-arrow-right {
+  right: 2px;
+}
+
 .race-event-modal .race-detail-pills {
   display: flex;
   flex-wrap: nowrap;
