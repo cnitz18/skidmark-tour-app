@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Row } from "react-bootstrap";
 import SessionHistoryEntry from "../SessionHistory/SessionHistoryEntry";
 import NameMapper from "../../utils/Classes/NameMapper";
 import { Table, TableHead, TableBody, TableRow, TableCell, Chip } from "@mui/material";
@@ -109,16 +109,16 @@ const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, l
       </div>
 
       {!showHistorySpinner && leagueHistory?.length ? (
-        <div>
+        <Row className="motion-stagger">
           {[...leagueHistory]
             .sort((a, b) => sortAsc ? a.end_time - b.end_time : b.end_time - a.end_time)
             .map((h, i) => (
-              <div key={i} id={`race-${h.id}`}>
+              <div key={i} id={`race-${h.id}`} className="w-100 px-0" style={{ flex: '0 0 100%' }}>
                 <SessionHistoryEntry data={h} enums={enums} lists={lists} />
               </div>
             ))
           }
-        </div>
+        </Row>
       ) : null}
 
       {showHistorySpinner && (

@@ -31,6 +31,7 @@ function a11yProps(index) {
     return {
       id: `league-tab-${index}`,
       'aria-controls': `league-tabpanel-${index}`,
+      className: 'league-tab',
     };
 }
   
