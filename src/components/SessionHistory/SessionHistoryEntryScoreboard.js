@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Modal, Button, Spinner, Nav, Tab, Badge, Card } from 'react-bootstrap';
 import { Table, TableContainer, Paper } from "@mui/material";
 import msToTime from "../../utils/msToTime";
@@ -10,8 +10,14 @@ import "./SessionHistoryEntryScoreboard.css";
 import { RaceAnalyticsProvider } from "../../utils/RaceAnalyticsContext";
 import getStandardizedEventData from "../../utils/getStandardizedEventData";
 import detectPitStops from "../../utils/detectPitStops";
+import useHorizontalOverflowIndicators from "../../utils/useHorizontalOverflowIndicators";
 
 const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multiclass, isHistorical }) => {
+  const isDesktopViewport = () => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(min-width: 769px)').matches;
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [eventsData, setEventsData] = useState([]);
   const [selectedRacerName, setSelectedRacerName] = useState("");
@@ -19,10 +25,19 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
   const [showSpinner, setShowSpinner] = useState(true);
   const [minSectors, setMinSectors] = useState({});
   const [activeTab, setActiveTab] = useState("lapLog");
-  const [showLapChart, setShowLapChart] = useState(false);
+  const [showLapChart, setShowLapChart] = useState(isDesktopViewport);
   const [allPlayerEvents, setAllPlayerEvents] = useState([]);
   const [selectedParticipantId,setSelectedParticipantId] = useState(null);
   const [freshEventsData, setFreshEventsData] = useState([]);
+  const raceDetailTabsShellRef = useRef(null);
+  const getRaceDetailTabsScroller = useCallback(
+    () => raceDetailTabsShellRef.current?.querySelector('.race-detail-pills'),
+    []
+  );
+  const { canScrollLeft: canScrollRaceDetailTabsLeft, canScrollRight: canScrollRaceDetailTabsRight } = useHorizontalOverflowIndicators(
+    getRaceDetailTabsScroller,
+    [showModal, showSpinner, activeTab, session]
+  );
 
   const handleCloseModal = () => {
     setEventsData([]);
@@ -38,7 +53,7 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
     let participant_id = res["participantid"]
     setShowSpinner(true);
     setActiveTab("lapLog");
-    setShowLapChart(false);
+    setShowLapChart(isDesktopViewport());
     setEventsData([]);
     setAllPlayerEvents([]);
     setFreshEventsData([]);
@@ -327,36 +342,40 @@ const SessionHistoryEntryScoreboard = ({ race, vehicles, winner, session, multic
               </div>
             ) : eventsData && eventsData.length > 0 ? (
               <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
-                <Nav variant="pills" className="mb-3 race-detail-pills">
-                  <Nav.Item>
-                    <Nav.Link eventKey="lapLog" className="d-flex align-items-center justify-content-center">
-                      <i className="bi bi-stopwatch me-2"></i>
-                      Lap Times
-                    </Nav.Link>
-                  </Nav.Item>
-                  { session === "Race" && (
+                <div ref={raceDetailTabsShellRef} className="race-detail-pills-shell mb-3">
+                  {canScrollRaceDetailTabsLeft && <span className="tabs-overflow-arrow tabs-overflow-arrow-left">&lt;</span>}
+                  <Nav variant="pills" className="race-detail-pills">
                     <Nav.Item>
-                      <Nav.Link eventKey="headToHead" className="d-flex align-items-center justify-content-center">
-                        <i className="bi bi-people me-2"></i>
-                        Driver Comparison
+                      <Nav.Link eventKey="lapLog" className="d-flex align-items-center justify-content-center">
+                        <i className="bi bi-stopwatch me-2"></i>
+                        Lap Times
                       </Nav.Link>
                     </Nav.Item>
-                  )}
-                  <Nav.Item>
-                    <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
-                      <i className="bi bi-exclamation-triangle me-2"></i>
-                      {session} Timeline
-                    </Nav.Link>
-                  </Nav.Item>
-                  { session === "Race" && (
+                    { session === "Race" && (
+                      <Nav.Item>
+                        <Nav.Link eventKey="headToHead" className="d-flex align-items-center justify-content-center">
+                          <i className="bi bi-people me-2"></i>
+                          Driver Comparison
+                        </Nav.Link>
+                      </Nav.Item>
+                    )}
                     <Nav.Item>
-                      <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
-                        <i className="bi bi-lightning-charge me-2"></i>
-                        Performance Insights
+                      <Nav.Link eventKey="events" className="d-flex align-items-center justify-content-center">
+                        <i className="bi bi-exclamation-triangle me-2"></i>
+                        {session} Timeline
                       </Nav.Link>
                     </Nav.Item>
-                  )}
-                </Nav>
+                    { session === "Race" && (
+                      <Nav.Item>
+                        <Nav.Link eventKey="performanceInsights" className="d-flex align-items-center justify-content-center">
+                          <i className="bi bi-lightning-charge me-2"></i>
+                          Performance Insights
+                        </Nav.Link>
+                      </Nav.Item>
+                    )}
+                  </Nav>
+                  {canScrollRaceDetailTabsRight && <span className="tabs-overflow-arrow tabs-overflow-arrow-right">&gt;</span>}
+                </div>
                 
                 <Tab.Content>
                   <Tab.Pane eventKey="lapLog">

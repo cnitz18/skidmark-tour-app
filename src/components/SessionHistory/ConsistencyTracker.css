@@ -269,11 +269,21 @@
   .stint-insight-row,
   .stint-insight-metrics {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 
+  .stint-insight-row,
+  .stint-insight-title,
+  .stint-insight-subtitle,
+  .stint-insight-metrics,
   .stint-insight-metric {
-    align-items: flex-start;
+    text-align: center;
+  }
+
+  .stint-insight-row,
+  .stint-insight-metrics,
+  .stint-insight-metric {
+    align-items: center;
   }
 
   .stint-summary-card,

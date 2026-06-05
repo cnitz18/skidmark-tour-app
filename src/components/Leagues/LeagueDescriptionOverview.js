@@ -98,8 +98,8 @@ const LeagueDescriptionOverview = ({ league, standings, lists, leagueHistory, on
       <div key={i} className={styles.standingsRow}>
         <span className={styles.standingsPos}>{posDisplay}</span>
         <span className={styles.standingsName}>{driver.PlayerName}</span>
-        <span className={styles.standingsPoints}>{driver.Points} pts</span>
         {gap && <span className={styles.standingsGap}>{gap}</span>}
+        <span className={styles.standingsPoints}>{driver.Points} pts</span>
       </div>
     );
   };
@@ -149,20 +149,20 @@ const LeagueDescriptionOverview = ({ league, standings, lists, leagueHistory, on
                 different race {uniqueWinners === 1 ? 'winner' : 'winners'}
               </div>
             </div>
-            {winningMargin !== null && (
-              <div className={styles.seasonStat}>
-                <div className={styles.seasonStatValue}>{winningMargin}</div>
-                <div className={styles.seasonStatLabel}>
-                  point{winningMargin === 1 ? '' : 's'} winning margin
-                </div>
-              </div>
-            )}
             <div className={styles.seasonStat}>
               <div className={styles.seasonStatValue}>{driversWhoScored}</div>
               <div className={styles.seasonStatLabel}>
                 {driversWhoScored === 1 ? 'driver' : 'drivers'} scored points
               </div>
             </div>
+            {winningMargin !== null && (
+              <div className={styles.seasonStat}>
+                <div className={styles.seasonStatValue}>{winningMargin}</div>
+                <div className={styles.seasonStatLabel}>
+                  Champion's winning margin
+                </div>
+              </div>
+            )}
             <div
               className={`${styles.seasonStat} ${onSwitchToSchedule && closestFinish ? styles.seasonStatLink : ''}`}
               onClick={onSwitchToSchedule && closestFinish ? () => onSwitchToSchedule(closestFinish.raceId) : undefined}

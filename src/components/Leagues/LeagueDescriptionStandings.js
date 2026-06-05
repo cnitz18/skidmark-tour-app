@@ -159,92 +159,131 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
         }
         {
             (!showDetailsSpinner && league.races?.length && tableSeries?.length > 0) &&
-            <Stack>
-                <div className={styles.chartHeader}>
-                    <div className={styles.chartToggleGroup}>
-                        <button
-                            className={`${styles.chartToggleBtn} ${chartMode === 'points' ? styles.chartToggleBtnActive : ''}`}
-                            onClick={() => setChartMode('points')}
-                        >Points</button>
-                        <button
-                            className={`${styles.chartToggleBtn} ${chartMode === 'gap' ? styles.chartToggleBtnActive : ''}`}
-                            onClick={() => setChartMode('gap')}
-                        >Gap to Leader</button>
-                    </div>
-                    <div className={styles.chartRightControls}>
-                        <button
-                            className={`${styles.chartShowAllBtn} ${legendVisible ? styles.chartShowAllBtnActive : ''}`}
-                            onClick={() => setLegendVisible(v => !v)}
-                            title={legendVisible ? 'Hide legend' : 'Show legend'}
-                        >
-                            Legend
-                        </button>
-                        {tableSeries.length > 6 && (
-                            <button className={styles.chartShowAllBtn} onClick={toggleShowAll}>
-                                {showAll ? 'Top 6 only' : `All ${tableSeries.length}`}
-                            </button>
-                        )}
-                    </div>
-                </div>
-                <LineChart
-                    xAxis={[{
-                        data: xAxisData,
-                        scaleType: 'point',
-                        valueFormatter: (value, context) =>
-                            context.location === 'tick'
-                                ? value.split(' ')[0]
-                                : value
-                    }]}
-                    yAxis={[{
-                        ...yDomain,
-                        valueFormatter: (v) => chartMode === 'gap'
-                            ? `${v > 0 ? '+' : ''}${v} pts`
-                            : `${v} pts`
-                    }]}
-                    series={displaySeries}
-                    height={TABLE_HEIGHT}
-                    margin={{ bottom: 100, right: 0 }}
-                    sx={{
-                        [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
-                            transform: "rotateZ(-45deg) translate(-55px, 0px)"
-                        }
-                    }}
-                    slotProps={{ legend: { hidden: true } }}
-                    colors={CHART_COLORS}
-                    highlightedItem={hoveredSeriesId ? { seriesId: hoveredSeriesId } : null}
-                    className="standings-chart"
-                />
-                {legendVisible && (
-                    <div className={styles.chartLegend}>
-                        {displaySeries.map((s, i) => (
-                            <div
-                                key={s.id}
-                                className={`${styles.chartLegendItem} ${hoveredSeriesId && hoveredSeriesId !== s.id ? styles.chartLegendItemDimmed : ''}`}
-                                onMouseEnter={() => setHoveredSeriesId(s.id)}
-                                onMouseLeave={() => setHoveredSeriesId(null)}
+            <div className={styles.sectionCard}>
+                <div className={styles.sectionTitle}>Championship Trend</div>
+                <Stack className={styles.sectionBody}>
+                    <div className={styles.chartHeader}>
+                        <div className={styles.chartToggleGroup}>
+                            <button
+                                className={`${styles.chartToggleBtn} ${chartMode === 'points' ? styles.chartToggleBtnActive : ''}`}
+                                onClick={() => setChartMode('points')}
+                            >Points</button>
+                            <button
+                                className={`${styles.chartToggleBtn} ${chartMode === 'gap' ? styles.chartToggleBtnActive : ''}`}
+                                onClick={() => setChartMode('gap')}
+                            >Gap to Leader</button>
+                        </div>
+                        <div className={styles.chartRightControls}>
+                            <button
+                                className={`${styles.chartShowAllBtn} ${legendVisible ? styles.chartShowAllBtnActive : ''}`}
+                                onClick={() => setLegendVisible(v => !v)}
+                                title={legendVisible ? 'Hide legend' : 'Show legend'}
                             >
-                                <span
-                                    className={styles.chartLegendDot}
-                                    style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
-                                />
-                                <span className={styles.chartLegendLabel}>{s.label}</span>
-                            </div>
-                        ))}
+                                Legend
+                            </button>
+                            {tableSeries.length > 6 && (
+                                <button className={styles.chartShowAllBtn} onClick={toggleShowAll}>
+                                    {showAll ? 'Top 6 only' : `All ${tableSeries.length}`}
+                                </button>
+                            )}
+                        </div>
                     </div>
-                )}
-            </Stack>
+                    <div className={styles.chartSurface}>
+                        <LineChart
+                            xAxis={[{
+                                data: xAxisData,
+                                scaleType: 'point',
+                                valueFormatter: (value, context) =>
+                                    context.location === 'tick'
+                                        ? value.split(' ')[0]
+                                        : value
+                            }]}
+                            yAxis={[{
+                                ...yDomain,
+                                valueFormatter: (v) => chartMode === 'gap'
+                                    ? `${v > 0 ? '+' : ''}${v} pts`
+                                    : `${v} pts`
+                            }]}
+                            series={displaySeries}
+                            height={TABLE_HEIGHT}
+                            margin={{ bottom: 100, right: 0 }}
+                            sx={{
+                                [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
+                                    transform: "rotateZ(-45deg) translate(-55px, 0px)"
+                                }
+                            }}
+                            slotProps={{ legend: { hidden: true } }}
+                            colors={CHART_COLORS}
+                            highlightedItem={hoveredSeriesId ? { seriesId: hoveredSeriesId } : null}
+                            className={`standings-chart ${styles.chartCanvas}`}
+                        />
+                    </div>
+                    {legendVisible && (
+                        <div className={styles.chartLegend}>
+                            {displaySeries.map((s, i) => (
+                                <div
+                                    key={s.id}
+                                    className={`${styles.chartLegendItem} ${hoveredSeriesId && hoveredSeriesId !== s.id ? styles.chartLegendItemDimmed : ''}`}
+                                    onMouseEnter={() => setHoveredSeriesId(s.id)}
+                                    onMouseLeave={() => setHoveredSeriesId(null)}
+                                >
+                                    <span
+                                        className={styles.chartLegendDot}
+                                        style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
+                                    />
+                                    <span className={styles.chartLegendLabel}>{s.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Stack>
+            </div>
         }
         {
             (!showDetailsSpinner && leagueDetails && leagueDetails?.scoreboard_entries) 
             && 
-            <div className="schedule-table-div standings-table-div">
-                <Table size="sm" sx={{
+            <div className={styles.sectionCard}>
+                <div className={styles.sectionTitle}>Current Standings</div>
+                <div className={styles.tableSurface}>
+                <Table className={styles.standingsTable} size="sm" sx={{
                         '& .MuiTableCell-root': {
                             padding: '12px',
-                            textAlign: 'center'
+                            textAlign: 'center',
+                            borderColor: 'var(--color-divider)',
+                            color: 'var(--color-text)'
+                        },
+                        '& .MuiTableBody-root .MuiTableCell-root:nth-of-type(2)': {
+                            maxWidth: '1px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
                         },
                         '& .MuiTableHead-root': {
-                            backgroundColor: 'var(--color-bg-elevated)'
+                            backgroundColor: 'var(--color-bg)'
+                        },
+                        '@media (max-width: 576px)': {
+                            '& .MuiTableCell-root': {
+                                padding: '9px 6px',
+                                fontSize: '0.82rem'
+                            },
+                            '& .MuiTableHead-root .MuiTableCell-root': {
+                                fontSize: '0.7rem'
+                            },
+                            '& .MuiTableHead-root .MuiTableCell-root:first-of-type, & .MuiTableBody-root .MuiTableCell-root:first-of-type': {
+                                width: '58px',
+                                paddingLeft: '4px',
+                                paddingRight: '4px'
+                            },
+                            '& .MuiTableHead-root .MuiTableCell-root:nth-of-type(3), & .MuiTableBody-root .MuiTableCell-root:nth-of-type(3)': {
+                                width: '60px',
+                                paddingLeft: '4px',
+                                paddingRight: '4px'
+                            },
+                            '& .MuiTableHead-root .MuiTableCell-root:last-child, & .MuiTableBody-root .MuiTableCell-root:last-child': {
+                                width: '52px',
+                                paddingLeft: '2px',
+                                paddingRight: '2px'
+                            }
                         }
                     }}>
                     <TableHead>
@@ -263,6 +302,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                     }
                     </TableBody>
                 </Table>
+                </div>
             </div>
         }
     </>);

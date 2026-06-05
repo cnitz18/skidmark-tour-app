@@ -1,10 +1,11 @@
 import React from 'react'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
 import PageHeader from '../shared/PageHeader';
 import getAPIData from '../../utils/getAPIData';
 import { useLocation, useParams } from "react-router-dom";
 import { Tabs, Tab, Box } from '@mui/material';
+import useHorizontalOverflowIndicators from '../../utils/useHorizontalOverflowIndicators';
 import LeagueDescriptionOverview from './LeagueDescriptionOverview';
 import LeagueDescriptionSchedule from './LeagueDescriptionSchedule';
 import LeagueDescriptionStandings from './LeagueDescriptionStandings';
@@ -31,6 +32,7 @@ function a11yProps(index) {
     return {
       id: `league-tab-${index}`,
       'aria-controls': `league-tabpanel-${index}`,
+      className: 'league-tab',
     };
 }
   
@@ -38,6 +40,11 @@ function a11yProps(index) {
 const LeagueDescription = ({ enums, lists }) => {
     const [tabValue, setTabValue] = React.useState(0);
     const [targetRaceId, setTargetRaceId] = React.useState(null);
+    const tabsShellRef = useRef(null);
+    const getLeagueTabsScroller = useCallback(
+        () => tabsShellRef.current?.querySelector('.MuiTabs-scroller'),
+        []
+    );
 
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
@@ -56,6 +63,10 @@ const LeagueDescription = ({ enums, lists }) => {
     const [tableSeries, setTableSeries] = useState([])
     const { state } = useLocation();
     const { id: routeLeagueId } = useParams();
+    const { canScrollLeft: canScrollLeagueTabsLeft, canScrollRight: canScrollLeagueTabsRight } = useHorizontalOverflowIndicators(
+        getLeagueTabsScroller,
+        [league?.id, isLeagueLoading, tabValue]
+    );
 
     useEffect(() => {
         if( leagueDetails.snapshot && leagueDetails.snapshot.length ){
@@ -156,20 +167,9 @@ const LeagueDescription = ({ enums, lists }) => {
                 ( league &&
                     <Container className="league-desc-container motion-rise-in">
                         <Box sx={{ width: '100%' }}>
-                            <Box sx={{
+                            <Box ref={tabsShellRef} sx={{
                                 position: 'relative',
                                 mb: 0.5,
-                                '&::after': {
-                                    content: '""',
-                                    position: 'absolute',
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0,
-                                    width: '2.5rem',
-                                    background: 'linear-gradient(to right, transparent, var(--color-bg))',
-                                    pointerEvents: 'none',
-                                    zIndex: 1,
-                                }
                             }}>
                                 <Tabs 
                                     value={tabValue} 
@@ -217,12 +217,60 @@ const LeagueDescription = ({ enums, lists }) => {
                                     <Tab label="Driver Stats" {...a11yProps(3)} />
                                     <Tab label="Details" {...a11yProps(4)} />
                                 </Tabs>
+                                {canScrollLeagueTabsLeft && (
+                                    <Box sx={{
+                                        position: 'absolute',
+                                        left: 5,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        zIndex: 2,
+                                        pointerEvents: 'none',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '1.05rem',
+                                        height: '1.05rem',
+                                        borderRadius: '999px',
+                                        backgroundColor: 'rgba(247, 168, 0, 0.22)',
+                                        color: 'var(--color-accent)',
+                                        fontSize: '0.72rem',
+                                        fontWeight: 700,
+                                        lineHeight: 1,
+                                        textShadow: '0 0 8px rgba(247, 168, 0, 0.35)',
+                                    }}>
+                                        {'<'}
+                                    </Box>
+                                )}
+                                {canScrollLeagueTabsRight && (
+                                    <Box sx={{
+                                        position: 'absolute',
+                                        right: 5,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        zIndex: 2,
+                                        pointerEvents: 'none',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '1.05rem',
+                                        height: '1.05rem',
+                                        borderRadius: '999px',
+                                        backgroundColor: 'rgba(247, 168, 0, 0.22)',
+                                        color: 'var(--color-accent)',
+                                        fontSize: '0.72rem',
+                                        fontWeight: 700,
+                                        lineHeight: 1,
+                                        textShadow: '0 0 8px rgba(247, 168, 0, 0.35)',
+                                    }}>
+                                        {'>'}
+                                    </Box>
+                                )}
                             </Box>
                             <LeagueDescriptionTabPanel value={tabValue} index={0}>
                                 <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries,lists,leagueHistory, onSwitchToSchedule: handleSwitchToSchedule}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={1}>
-                                <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league, targetRaceId, onClearTarget: () => setTargetRaceId(null)}}/>
+                                <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league, targetRaceId, onClearTarget: () => setTargetRaceId(null), onSwitchToSchedule: handleSwitchToSchedule}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={2}>
                                 <LeagueDescriptionStandings {...{league,tableSeries,leagueDetails,lists,showDetailsSpinner: isDetailsLoading}}/>
