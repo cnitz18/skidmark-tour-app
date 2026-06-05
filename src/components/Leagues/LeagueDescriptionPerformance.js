@@ -731,6 +731,25 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
     ? (selectedDriverConsistency.finishRate / 10 * 100).toFixed(1)
     : '—';
 
+  // Average positions gained from qualifying grid to race finish
+  const avgGridGain = useMemo(() => {
+    const valid = selectedDriverComebacks.filter(c => !c.isDNF && c.delta != null);
+    if (!valid.length) return null;
+    return parseFloat((valid.reduce((s, c) => s + c.delta, 0) / valid.length).toFixed(1));
+  }, [selectedDriverComebacks]);
+
+  // Best / worst race finish and qualifying positions
+  const bestWorstStats = useMemo(() => {
+    const finishPos = allDriverRaces.filter(r => !r.isDNF && r.position != null).map(r => r.position);
+    const qualiPos  = allDriverRaces.filter(r => r.qualifying != null).map(r => r.qualifying);
+    return {
+      bestFinish:  finishPos.length ? Math.min(...finishPos) : null,
+      worstFinish: finishPos.length ? Math.max(...finishPos) : null,
+      bestQuali:   qualiPos.length  ? Math.min(...qualiPos)  : null,
+      worstQuali:  qualiPos.length  ? Math.max(...qualiPos)  : null,
+    };
+  }, [allDriverRaces]);
+
   const formatHiddenFinishLabel = (count) => `${count} more ${count === 1 ? 'finish' : 'finishes'}`;
 
   // Render loading state
@@ -924,6 +943,18 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
             <Card.Body>
               <div className="perf-stat-grid">
                 <div className="perf-stat-card">
+                  <div className="perf-stat-label">Best Finish</div>
+                  <div className="perf-stat-value">
+                    {bestWorstStats.bestFinish != null ? `P${bestWorstStats.bestFinish}` : '—'}
+                  </div>
+                </div>
+                <div className="perf-stat-card">
+                  <div className="perf-stat-label">Worst Finish</div>
+                  <div className="perf-stat-value">
+                    {bestWorstStats.worstFinish != null ? `P${bestWorstStats.worstFinish}` : '—'}
+                  </div>
+                </div>
+                <div className="perf-stat-card">
                   <div className="perf-stat-label">Avg Finish</div>
                   <div className="perf-stat-value">
                     {selectedDriverConsistency.avgPosition > 0 ? `P${selectedDriverConsistency.avgPosition}` : '—'}
@@ -941,6 +972,22 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                 </div>
                 {hasQualiData && (
                   <div className="perf-stat-card">
+                    <div className="perf-stat-label">Best Qualifying</div>
+                    <div className="perf-stat-value">
+                      {bestWorstStats.bestQuali != null ? `P${bestWorstStats.bestQuali}` : '—'}
+                    </div>
+                  </div>
+                )}
+                {hasQualiData && (
+                  <div className="perf-stat-card">
+                    <div className="perf-stat-label">Worst Qualifying</div>
+                    <div className="perf-stat-value">
+                      {bestWorstStats.worstQuali != null ? `P${bestWorstStats.worstQuali}` : '—'}
+                    </div>
+                  </div>
+                )}
+                {hasQualiData && (
+                  <div className="perf-stat-card">
                     <div className="perf-stat-label">Avg Qualifying</div>
                     <div className="perf-stat-value">
                       {selectedDriverConsistency.qualifying > 0 ? `P${selectedDriverConsistency.qualifying}` : '—'}
@@ -950,16 +997,17 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
                     )}
                   </div>
                 )}
-                <div className="perf-stat-card">
-                  <div className="perf-stat-label">Consistency</div>
-                  <div className="perf-stat-value">
-                    {selectedDriverConsistency.stdDev != null ? `±${selectedDriverConsistency.stdDev.toFixed(1)}` : '—'}
+                {hasQualiData && (
+                  <div className="perf-stat-card">
+                    <div className="perf-stat-label">Grid Gain</div>
+                    <div className="perf-stat-value">
+                      {avgGridGain != null
+                        ? (avgGridGain > 0 ? `+${avgGridGain}` : `${avgGridGain}`)
+                        : '—'}
+                    </div>
+                    <div className="perf-stat-detail">avg positions gained</div>
                   </div>
-                  <div className="perf-stat-detail">positions variance</div>
-                  {fieldRanks.consistency && (
-                    <div className="perf-stat-rank">{fieldRanks.consistency}</div>
-                  )}
-                </div>
+                )}
               </div>
             </Card.Body>
           </Card>

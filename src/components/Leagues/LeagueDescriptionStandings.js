@@ -37,6 +37,7 @@ function StandingsRow(props){
                             aria-label="expand row"
                             size="small"
                             onClick={() => setOpenRow(!openRow)}
+                            sx={{ color: 'var(--color-secondary)' }}
                             >
                             {openRow ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </IconButton>
@@ -247,7 +248,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                 <div className={styles.tableSurface}>
                 <Table className={styles.standingsTable} size="sm" sx={{
                         '& .MuiTableCell-root': {
-                            padding: '12px',
+                            padding: '10px 8px',
                             textAlign: 'center',
                             borderColor: 'var(--color-divider)',
                             color: 'var(--color-text)'
@@ -263,26 +264,26 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                         },
                         '@media (max-width: 576px)': {
                             '& .MuiTableCell-root': {
-                                padding: '9px 6px',
+                                padding: '8px 3px',
                                 fontSize: '0.82rem'
                             },
                             '& .MuiTableHead-root .MuiTableCell-root': {
                                 fontSize: '0.7rem'
                             },
                             '& .MuiTableHead-root .MuiTableCell-root:first-of-type, & .MuiTableBody-root .MuiTableCell-root:first-of-type': {
-                                width: '58px',
+                                width: '52px',
                                 paddingLeft: '4px',
                                 paddingRight: '4px'
                             },
                             '& .MuiTableHead-root .MuiTableCell-root:nth-of-type(3), & .MuiTableBody-root .MuiTableCell-root:nth-of-type(3)': {
-                                width: '60px',
+                                width: '52px',
                                 paddingLeft: '4px',
                                 paddingRight: '4px'
                             },
                             '& .MuiTableHead-root .MuiTableCell-root:last-child, & .MuiTableBody-root .MuiTableCell-root:last-child': {
-                                width: '52px',
-                                paddingLeft: '2px',
-                                paddingRight: '2px'
+                                width: '40px',
+                                paddingLeft: '0',
+                                paddingRight: '4px'
                             }
                         }
                     }}>
