@@ -1,8 +1,8 @@
 .dashboardCard {
   transition: transform 0.2s ease;
-  border: 1px solid var(--color-border);
+  border: none;
   height: 100%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .statsNumber {
@@ -18,7 +18,7 @@
 }
 
 .recentRace:hover {
-  background-color: rgba(0, 168, 225, 0.06);
+  background-color: rgba(0, 168, 225, 0.03);
 }
 
 @media (max-width: 991px) {
@@ -31,13 +31,13 @@
   text-align: center;
 }
 .winnerHighlight {
-  color: var(--color-success);
+  color: #198754;
   font-weight: 500;
 }
 
 .progressWrapper {
   padding: 1rem;
-  background: var(--color-bg-elevated);
+  background: rgba(13, 110, 253, 0.03);
   border-radius: 8px;
 }
 
@@ -71,18 +71,18 @@
 .progressSection {
   text-align: center;
   padding: 1rem;
-  background: var(--color-bg-elevated);
+  background: rgba(13, 110, 253, 0.03);
   border-radius: 8px;
   margin-top: 1rem;
 }
 
 .championCard {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #061525 100%);
-  border: 1px solid rgba(0, 168, 225, 0.2);
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  color: #fff;
+  color: white;
 }
 
 .championName {
@@ -93,13 +93,11 @@
 }
 
 .crownIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 14px;
+  display: inline-block;
+  padding: 15px;
   border-radius: 50%;
   background: rgba(255, 215, 0, 0.1);
+  margin-bottom: 1rem;
 }
 
 .championStats {
@@ -116,383 +114,81 @@
 .statValue {
   font-size: 1.8rem;
   font-weight: bold;
-  color: var(--color-accent);
+  color: #ffd700;
 }
 
 .statLabel {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: #aaa;
   text-transform: uppercase;
 }
 
-/* ─── Next Race Hero (active season) ─── */
-.nextRaceHero {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #061525 100%);
-  border: 1px solid rgba(0, 168, 225, 0.2);
-  border-left: 4px solid var(--color-accent);
-  border-radius: 10px;
-  padding: 1.25rem 1.5rem;
+/* ── Season Calendar strip ── */
+
+.calendarStrip {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #fff;
-  gap: 1rem;
-}
-
-.nextRaceLabel {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--color-accent);
-  margin-bottom: 0.35rem;
-}
-
-.nextRaceTrack {
-  font-size: 1.55rem;
-  font-weight: 700;
-  letter-spacing: -0.4px;
-  color: #fff;
-  line-height: 1.1;
-  margin-bottom: 0.4rem;
-}
-
-.nextRaceMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.countdown {
-  text-align: center;
-  flex-shrink: 0;
-  background: rgba(247, 168, 0, 0.1);
-  border: 1px solid rgba(247, 168, 0, 0.25);
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-}
-
-.countdownNumber {
-  font-size: 2.8rem;
-  font-weight: 800;
-  color: var(--color-accent);
-  line-height: 1;
-}
-
-.countdownLabel {
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.55);
-  margin-top: 0.2rem;
-}
-
-/* ─── Compact standings (both views) ─── */
-.standingsSection {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.standingsHeader {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--color-text-secondary);
-  padding: 0.5rem 1rem;
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.standingsRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 1rem;
-  border-bottom: 1px solid var(--color-divider);
-  font-size: 0.86rem;
-}
-
-.standingsRow:last-child {
-  border-bottom: none;
-}
-
-.standingsPos {
-  flex-shrink: 0;
-  min-width: 2.5rem;
-  font-size: 0.73rem;
-  font-weight: 700;
-  color: var(--color-text-secondary);
-}
-
-.standingsName {
-  flex: 1;
-  font-weight: 500;
-  color: var(--color-text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.standingsPoints {
-  flex-shrink: 0;
-  font-weight: 700;
-  color: var(--color-text);
-  font-size: 0.86rem;
-}
-
-.standingsGap {
-  flex-shrink: 0;
-  min-width: 2.75rem;
-  text-align: right;
-  font-size: 0.73rem;
-  color: var(--color-text-secondary);
-}
-
-.statLeaderCategory {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--color-text-secondary);
-  padding: 0.4rem 1rem 0.2rem;
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-divider);
-  border-top: 1px solid var(--color-divider);
-}
-
-.statLeaderCategory:first-child {
-  border-top: none;
-}
-
-/* ─── Champion hero card (completed) ─── */
-.championCardBody {
-  padding: 1.5rem;
-}
-
-.championHeroInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.5rem;
 }
 
-.championLeft {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.championLabel {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--color-accent);
-  margin-bottom: 0.3rem;
-}
-
-.championNameBig {
-  font-size: 2.1rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: #fff;
-  margin: 0.15rem 0;
-  line-height: 1;
-}
-
-.championPoints {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  margin-top: 0.25rem;
-}
-
-.championStatsRow {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  padding-left: 2rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-  flex-wrap: wrap;
-}
-
-/* ─── Season-in-Numbers pills (completed) ─── */
-.seasonStats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-}
-
-.seasonStat {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
+.calendarRound {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 84px;
+  min-width: 72px;
+  padding: 8px 10px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  cursor: default;
+  transition: transform 0.15s ease;
 }
 
-.seasonStatValue {
-  font-size: 1.55rem;
-  font-weight: 800;
-  color: var(--color-accent);
-  line-height: 1;
-  margin-bottom: 0.3rem;
-  letter-spacing: -0.3px;
+.calendarRound:hover {
+  transform: translateY(-2px);
 }
 
-.seasonStatLabel {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--color-text);
-  line-height: 1.3;
+.calendarRoundDone {
+  background: rgba(76, 175, 80, 0.12);
+  border-color: rgba(76, 175, 80, 0.35);
 }
 
-.seasonStatSub {
+.calendarRoundUpcoming {
+  background: var(--color-bg);
+  opacity: 0.65;
+}
+
+.calendarRoundNum {
   font-size: 0.65rem;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
-  margin-top: 0.2rem;
-  line-height: 1.3;
+  margin-bottom: 3px;
+}
+
+.calendarRoundTrack {
+  font-size: 0.72rem;
+  font-weight: 600;
   text-align: center;
+  color: var(--color-text);
+  line-height: 1.2;
+  margin-bottom: 4px;
 }
 
-.seasonStatLink {
-  cursor: pointer;
-  transition: border-color var(--motion-fast) var(--motion-ease-standard),
-              background var(--motion-fast) var(--motion-ease-standard);
+.calendarRoundWinner {
+  font-size: 0.68rem;
+  color: #4caf50;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 68px;
 }
 
-.seasonStatLink:hover {
-  border-color: var(--color-secondary);
-  background: rgba(0, 168, 225, 0.06);
-}
-
-.standingsSectionLink {
-  cursor: pointer;
-  transition: border-color var(--motion-fast) var(--motion-ease-standard),
-              background var(--motion-fast) var(--motion-ease-standard);
-}
-
-.standingsSectionLink:hover {
-  border-color: var(--color-secondary);
-  background: rgba(0, 168, 225, 0.06);
-}
-
-.standingsHeaderWithLink {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.standingsHeaderArrow {
-  font-size: 1.1rem;
-  font-weight: 400;
-  opacity: 0.5;
-  color: var(--color-secondary);
-  transition: opacity var(--motion-fast) var(--motion-ease-standard),
-              transform var(--motion-fast) var(--motion-ease-standard);
-}
-
-.standingsSectionLink:hover .standingsHeaderArrow {
-  opacity: 1;
-  transform: translateX(2px);
-}
-
-/* ─── Next race hero: left side takes remaining space ─── */
-.nextRaceHero > *:first-child {
-  flex: 1;
-  min-width: 0;
-}
-
-@media (max-width: 768px) {
-  .nextRaceTrack { font-size: 1.2rem; }
-  .countdownNumber { font-size: 2rem; }
-  .championNameBig { font-size: 1.55rem; }
-  .championStatsRow { padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 1rem; }
-  .seasonStats { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 576px) {
-  /* Champion card — stack vertically on small screens */
-  .championCardBody {
-    padding: 1rem;
-  }
-  .championHeroInner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.875rem;
-  }
-  .championLeft {
-    gap: 0.625rem;
-    align-items: center;
-  }
-  .crownIcon {
-    padding: 8px;
-  }
-  .crownIcon svg {
-    width: 28px;
-    height: 28px;
-  }
-  .championNameBig {
-    font-size: 1.25rem;
-  }
-  .championPoints {
-    font-size: 0.85rem;
-  }
-  .championStatsRow {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    padding-left: 0;
-    padding-top: 0.875rem;
-    width: 100%;
-    /* clear flex properties */
-    justify-content: unset;
-    align-items: unset;
-  }
-  .statItem {
-    padding: 0.5rem 0.25rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    text-align: center;
-  }
-  .statValue { font-size: 1.3rem; }
-  .statLabel { font-size: 0.75rem; }
-
-  /* Countdown — stack under track name */
-  .nextRaceHero {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  .countdown {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.6rem;
-    align-self: stretch;
-    padding: 0.5rem 1rem;
-    text-align: left;
-  }
-  .countdownNumber { font-size: 1.6rem; }
-  .countdownLabel {
-    font-size: 0.68rem;
-    margin-top: 0;
-  }
+.calendarRoundDate {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  text-align: center;
 }

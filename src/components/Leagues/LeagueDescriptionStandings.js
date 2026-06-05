@@ -3,17 +3,18 @@ import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { Spinner } from "react-bootstrap";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from "@mui/x-charts";
-import { cheerfulFiestaPalette } from '@mui/x-charts/colorPalettes';
 import NameMapper from "../../utils/Classes/NameMapper";
-import { useState, useMemo, Fragment } from "react";
+import { useState, Fragment } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Typography } from "@mui/material";
 import { BsTrophy, BsFlag, BsStopwatch, BsBarChart, BsAward } from "react-icons/bs";
 import styles from "./LeagueDescriptionStandings.module.css";
 
-const CHART_COLORS = cheerfulFiestaPalette('light');
-const TABLE_HEIGHT = 400;
+const TABLE_HEIGHT = 420;
+const MAX_CHART_DRIVERS = 6;
+// Vivid, distinct colors for top contenders
+const CHART_COLORS = ['#FFD700', '#00A8E1', '#FF6B6B', '#4CAF50', '#FF9800', '#B07FFF'];
 
 function StandingsRow(props){
     const { ent,arr,i } = props;
@@ -49,13 +50,8 @@ function StandingsRow(props){
                             {/* <Typography variant="h6" gutterBottom component="div">
                                 Season Statistics
                             </Typography> */}
-                            <Box className={styles.statsGroup} sx={{ width: '100%', overflow: 'hidden' }}>
-                                <Stack
-                                    direction="row"
-                                    spacing={{ xs: 1.5, sm: 4 }}
-                                    className="mt-2 justify-content-center"
-                                    sx={{ flexWrap: 'wrap', justifyContent: 'center', rowGap: 1 }}
-                                >
+                            <Box className={styles.statsGroup}>
+                                <Stack direction="row" spacing={4} className="mt-2 justify-content-center">
                                     <Box className={styles.statItem}>
                                         <BsTrophy className="text-warning mb-1" />
                                         <Typography variant="h6">{ent.Wins}</Typography>
@@ -90,61 +86,125 @@ function StandingsRow(props){
     );
 }
 
-const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,showDetailsSpinner=false}) => {
-    const [legendVisible, setLegendVisible] = useState(true);
-    const [chartMode, setChartMode] = useState('points'); // 'points' | 'gap'
-    const [showAll, setShowAll] = useState(false);
-    const [hoveredSeriesId, setHoveredSeriesId] = useState(null);
+function RoundPositionMatrix({ league, leagueDetails, lists }) {
+    const snapshot = leagueDetails?.snapshot;
+    const scoreboard = leagueDetails?.scoreboard_entries;
+    const schedule = leagueDetails?.schedule;
 
-    const toggleShowAll = () => {
-        const next = !showAll;
-        setShowAll(next);
-        if (next) setLegendVisible(false); // too many lines — auto-hide
-        else setLegendVisible(true);       // back to top-6 — auto-show
+    if (!snapshot?.length || !scoreboard?.length) return null;
+
+    // Completed rounds only (weeks that appear in snapshot), sorted chronologically
+    const rounds = [...new Set(snapshot.map(s => s.Week))].sort((a, b) => a - b);
+    if (!rounds.length) return null;
+
+    // All human drivers that appear in the snapshot (for correct per-round ranking)
+    const allHumansInSnapshot = [...new Set(
+        snapshot.filter(s => !s.PlayerName.includes('(AI)')).map(s => s.PlayerName)
+    )];
+
+    // Display rows: top 8 human drivers by final standing
+    const displayDrivers = scoreboard
+        .filter(e => !e.PlayerName.includes('(AI)'))
+        .slice(0, 8)
+        .map(e => e.PlayerName);
+
+    if (!displayDrivers.length) return null;
+
+    // Build cumulative points table: cumulative[driver][week] = Points
+    const cumulative = {};
+    snapshot.forEach(s => {
+        if (!cumulative[s.PlayerName]) cumulative[s.PlayerName] = {};
+        cumulative[s.PlayerName][s.Week] = s.Points;
+    });
+
+    // Per-round points delta for all human drivers
+    const delta = {};
+    allHumansInSnapshot.forEach(driver => {
+        delta[driver] = {};
+        rounds.forEach((week, i) => {
+            const curr = cumulative[driver]?.[week] ?? (i > 0 ? (cumulative[driver]?.[rounds[i - 1]] ?? 0) : 0);
+            const prev = i > 0 ? (cumulative[driver]?.[rounds[i - 1]] ?? 0) : 0;
+            delta[driver][week] = curr - prev;
+        });
+    });
+
+    // Rank all human drivers within each round by delta → approximate finishing position
+    const position = {};
+    rounds.forEach(week => {
+        const scored = allHumansInSnapshot.filter(d => (delta[d]?.[week] ?? 0) > 0);
+        scored
+            .sort((a, b) => delta[b][week] - delta[a][week])
+            .forEach((driver, idx) => {
+                if (!position[driver]) position[driver] = {};
+                position[driver][week] = idx + 1;
+            });
+    });
+
+    // Column headers: use schedule sorted by date, index = round - 1
+    const sortedSchedule = [...(schedule || [])].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const trackLabels = rounds.map((week, i) => {
+        const entry = sortedSchedule[i];
+        if (!entry) return `R${week}`;
+        const fullName = NameMapper.fromTrackApiName(entry.track_name) ?? entry.track_name ?? `R${week}`;
+        // Abbreviate: first two meaningful words
+        const parts = fullName.split(' ');
+        return parts.length > 1 ? `${parts[0]} ${parts[1]}` : parts[0];
+    });
+
+    const getCellClass = (pos) => {
+        if (!pos) return styles.matrixCellEmpty;
+        if (pos === 1) return styles.matrixCellP1;
+        if (pos === 2) return styles.matrixCellP2;
+        if (pos === 3) return styles.matrixCellP3;
+        if (pos <= 8) return styles.matrixCellPoints;
+        return styles.matrixCellNoScore;
     };
 
-    const sortedRaces = useMemo(() =>
-        (league.races || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date)),
-        [league.races]
+    return (
+        <div className={styles.matrixWrapper}>
+            <Typography variant="subtitle2" className={styles.chartTitle}>
+                Round-by-Round Results
+            </Typography>
+            <div className={styles.matrixScroll}>
+                <table className={styles.matrixTable}>
+                    <thead>
+                        <tr>
+                            <th className={styles.matrixDriverHeader}></th>
+                            {trackLabels.map((label, i) => (
+                                <th key={i} className={styles.matrixRoundHeader}>
+                                    <span className={styles.matrixRoundLabel}>{label}</span>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {displayDrivers.map((driver, di) => (
+                            <tr key={di} className={styles.matrixRow}>
+                                <td className={styles.matrixDriverCell}>{driver}</td>
+                                {rounds.map((week, ri) => {
+                                    const pos = position[driver]?.[week] ?? null;
+                                    return (
+                                        <td key={ri} className={`${styles.matrixCell} ${getCellClass(pos)}`}>
+                                            {pos ?? '—'}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     );
+}
 
-    const filteredSeries = showAll ? tableSeries : tableSeries.slice(0, 6);
-
-    const displaySeries = useMemo(() => {
-        if (chartMode === 'points' || filteredSeries.length === 0) return filteredSeries;
-        const numRounds = sortedRaces.length;
-        // Leader pts per round from full field so the gap is always correct even when filtering top-6
-        const leaderPts = Array.from({ length: numRounds }, (_, i) =>
-            Math.max(0, ...tableSeries.map(s => s.data[i] ?? 0))
-        );
-        return filteredSeries.map(s => ({
-            ...s,
-            data: s.data.map((pts, i) => pts != null ? (pts ?? 0) - leaderPts[i] : null)
-        }));
-    }, [chartMode, filteredSeries, sortedRaces.length, tableSeries]);
-
-    const yDomain = useMemo(() => {
-        const allVals = displaySeries.flatMap(s => s.data.filter(v => v != null));
-        if (!allVals.length) return {};
-        return chartMode === 'gap'
-            ? { min: Math.min(...allVals), max: 0 }
-            : { min: 0, max: Math.max(...allVals) };
-    }, [displaySeries, chartMode]);
-
-    const xAxisData = useMemo(() => sortedRaces.map((r, idx, races) => {
-        const trackName = NameMapper.fromTrackApiName(
-            NameMapper.fromTrackId(r.track, lists["tracks"]?.list) || ''
-        ) || `Rd ${idx + 1}`;
-        const rDate = new Date(r.date).toDateString();
-        const sameDateTrack = races.filter(race =>
-            new Date(race.date).toDateString() === rDate && race.track === r.track
-        );
-        if (sameDateTrack.length > 1) {
-            const raceNum = sameDateTrack.indexOf(r) + 1;
-            return `${trackName} (${raceNum})`;
-        }
-        return trackName;
-    }), [sortedRaces, lists]);
+const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,showDetailsSpinner=false}) => {
+    // Limit to top contenders to keep the chart legible
+    const chartSeries = (tableSeries || []).slice(0, MAX_CHART_DRIVERS).map((s, i) => ({
+        ...s,
+        showMark: i === 0,   // only the leader gets data-point dots
+    }));
+    const leaderId = chartSeries[0]?.id;
 
     return (<>
         {
@@ -160,78 +220,62 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
         {
             (!showDetailsSpinner && league.races?.length && tableSeries?.length > 0) &&
             <Stack>
-                <div className={styles.chartHeader}>
-                    <div className={styles.chartToggleGroup}>
-                        <button
-                            className={`${styles.chartToggleBtn} ${chartMode === 'points' ? styles.chartToggleBtnActive : ''}`}
-                            onClick={() => setChartMode('points')}
-                        >Points</button>
-                        <button
-                            className={`${styles.chartToggleBtn} ${chartMode === 'gap' ? styles.chartToggleBtnActive : ''}`}
-                            onClick={() => setChartMode('gap')}
-                        >Gap to Leader</button>
-                    </div>
-                    <div className={styles.chartRightControls}>
-                        <button
-                            className={`${styles.chartShowAllBtn} ${legendVisible ? styles.chartShowAllBtnActive : ''}`}
-                            onClick={() => setLegendVisible(v => !v)}
-                            title={legendVisible ? 'Hide legend' : 'Show legend'}
-                        >
-                            Legend
-                        </button>
-                        {tableSeries.length > 6 && (
-                            <button className={styles.chartShowAllBtn} onClick={toggleShowAll}>
-                                {showAll ? 'Top 6 only' : `All ${tableSeries.length}`}
-                            </button>
-                        )}
-                    </div>
-                </div>
+                <Typography variant="subtitle2" className={styles.chartTitle}>
+                    Title Race — Top {Math.min(tableSeries.length, MAX_CHART_DRIVERS)} Drivers
+                </Typography>
                 <LineChart
-                    xAxis={[{
-                        data: xAxisData,
-                        scaleType: 'point',
-                        valueFormatter: (value, context) =>
-                            context.location === 'tick'
-                                ? value.split(' ')[0]
-                                : value
-                    }]}
-                    yAxis={[{
-                        ...yDomain,
-                        valueFormatter: (v) => chartMode === 'gap'
-                            ? `${v > 0 ? '+' : ''}${v} pts`
-                            : `${v} pts`
-                    }]}
-                    series={displaySeries}
-                    height={TABLE_HEIGHT}
-                    margin={{ bottom: 100, right: 0 }}
+                    xAxis={[
+                        { 
+                            data: league.races
+                                    .sort((a,b) => new Date(a.date) - new Date(b.date))
+                                    .map((r, idx, races) => {
+                                        const rawName = NameMapper.fromTrackId(r.track, lists["tracks"]?.list);
+                                        const trackName = NameMapper.fromTrackApiName(rawName) ?? rawName;
+                                        const rDate = new Date(r.date).toDateString();
+                                        const sameDateTrack = races.filter(race => 
+                                            new Date(race.date).toDateString() === rDate && race.track === r.track
+                                        );
+                                        
+                                        if (sameDateTrack.length > 1) {
+                                            const raceNum = sameDateTrack.indexOf(r) + 1;
+                                            return `${trackName} (${raceNum})`;
+                                        }
+                                        return trackName;
+                                    }),
+                            scaleType: 'point',
+                        }
+                    ]}
+                    series={chartSeries}
+                    height={TABLE_HEIGHT + 160}
+                    margin={{ bottom: 180, right: 20 }}
                     sx={{
                         [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
                             transform: "rotateZ(-45deg) translate(-55px, 0px)"
+                        },
+                        // Make the leader's line noticeably thicker
+                        ...(leaderId ? {
+                            [`& .MuiLineElement-series-${CSS.escape(leaderId)}`]: {
+                                strokeWidth: '3px',
+                            }
+                        } : {})
+                    }}
+                    slotProps={{
+                        legend: {
+                            position: {
+                                vertical: 'bottom',
+                                horizontal: 'middle'
+                            },
+                            direction: 'row',
+                            itemMarkWidth: 20,
+                            itemMarkHeight: 2,
+                            markGap: 5,
+                            itemGap: 16,
+                            hidden: false
                         }
                     }}
-                    slotProps={{ legend: { hidden: true } }}
                     colors={CHART_COLORS}
-                    highlightedItem={hoveredSeriesId ? { seriesId: hoveredSeriesId } : null}
                     className="standings-chart"
                 />
-                {legendVisible && (
-                    <div className={styles.chartLegend}>
-                        {displaySeries.map((s, i) => (
-                            <div
-                                key={s.id}
-                                className={`${styles.chartLegendItem} ${hoveredSeriesId && hoveredSeriesId !== s.id ? styles.chartLegendItemDimmed : ''}`}
-                                onMouseEnter={() => setHoveredSeriesId(s.id)}
-                                onMouseLeave={() => setHoveredSeriesId(null)}
-                            >
-                                <span
-                                    className={styles.chartLegendDot}
-                                    style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
-                                />
-                                <span className={styles.chartLegendLabel}>{s.label}</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
             </Stack>
         }
         {
@@ -244,7 +288,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                             textAlign: 'center'
                         },
                         '& .MuiTableHead-root': {
-                            backgroundColor: 'var(--color-bg-elevated)'
+                            backgroundColor: '#f5f5f5'
                         }
                     }}>
                     <TableHead>
@@ -264,6 +308,10 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                     </TableBody>
                 </Table>
             </div>
+        }
+        {
+            (!showDetailsSpinner && leagueDetails?.snapshot?.length > 0) &&
+            <RoundPositionMatrix {...{league, leagueDetails, lists}} />
         }
     </>);
 }
