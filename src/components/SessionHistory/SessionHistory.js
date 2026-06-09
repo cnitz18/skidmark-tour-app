@@ -16,7 +16,7 @@ const SessionHistory = ({ enums, lists }) => {
   const [showErrorPage, setShowErrorPage] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const [showMiniSpinner, setShowMiniSpinner] = useState(false);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('league-only');
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
 
   function handleFilters(e){
