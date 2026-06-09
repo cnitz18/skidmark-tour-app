@@ -109,7 +109,7 @@ const AdminPortal = ({ enums, lists }) => {
   // Show loading while checking session
   if (checkingSession) {
     return (
-      <Container className={styles.container}>
+      <Container className={`${styles.container} motion-fade-in`}>
         <div className={styles.loadingWrapper}>
           <Spinner animation="border" variant="warning" />
         </div>
@@ -120,9 +120,9 @@ const AdminPortal = ({ enums, lists }) => {
   // Show login form if not authenticated
   if (!isAuthenticated) {
     return (
-      <Container className={styles.container}>
-        <div className={styles.loginWrapper}>
-          <Card className={styles.loginCard}>
+      <Container className={`${styles.container} motion-fade-in`}>
+        <div className={`${styles.loginWrapper} motion-rise-in`}>
+          <Card className={`${styles.loginCard} motion-fade-in`}>
             <Card.Header className={styles.loginHeader}>
               <h4 className="mb-0">🔐 Admin Portal</h4>
             </Card.Header>
@@ -174,13 +174,13 @@ const AdminPortal = ({ enums, lists }) => {
 
   // Show admin portal content
   return (
-    <div className={styles.adminContent}>
+    <Container className={`${styles.adminContent} motion-fade-in`}>
       <PageHeader 
         title="Admin Portal" 
         subtitle="Manage your racing league tools and data"
       />
       
-      <Container className={styles.portalContainer}>
+      <div className={`${styles.portalContainer} motion-rise-in`}>
         {/* Tab Navigation */}
         <div className={styles.tabNav}>
           <Nav variant="tabs" className={styles.adminTabs}>
@@ -223,7 +223,7 @@ const AdminPortal = ({ enums, lists }) => {
         </div>
         
         {/* Tab Content */}
-        <div className={styles.tabContent}>
+        <div className={`${styles.tabContent} motion-fade-in`}>
           {activeTab === 'import' && (
             <ScreenshotParser enums={enums} lists={lists} embedded={true} />
           )}
@@ -243,8 +243,8 @@ const AdminPortal = ({ enums, lists }) => {
             />
           )}
         </div>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 

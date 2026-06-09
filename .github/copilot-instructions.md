@@ -84,3 +84,7 @@ npm test      # Run tests (aspirational - minimal coverage currently)
 - Lists may be undefined initially - always use optional chaining: `lists.tracks?.list`
 - API responses often wrapped in `response` property - `getAPIData` handles this automatically
 - Server status polling runs every 60 seconds - be aware of cleanup in useEffect
+
+## Static Assets
+- **Vehicle class images**: `public/vehicle_classes/<ClassName>/<VehicleName>.png` — scraped from automobilista.gg, one folder per class (named by `name` field from `vehicle_classes.json`), tracked in git
+- **Playwright MCP screenshots**: Save to `.playwright-mcp/` directory (git-ignored). Do NOT save to workspace root or `public/` — `/*.png` (root-level PNGs) is git-ignored but `public/**/*.png` is tracked

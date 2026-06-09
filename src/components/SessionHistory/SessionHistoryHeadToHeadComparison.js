@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, Button, Card, Badge, Table, Nav, ButtonGroup } from 'react-bootstrap';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Form, Button, Card, Table, ButtonGroup, Spinner } from 'react-bootstrap';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceDot } from 'recharts';
 import msToTime from '../../utils/msToTime';
 import { useRaceAnalytics } from '../../utils/RaceAnalyticsContext';
 import './SessionHistoryHeadToHeadComparison.css';
@@ -15,15 +15,17 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
   const [primaryDriverData, setPrimaryDriverData] = useState([]);
   const [comparisonDriverData, setComparisonDriverData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [battles, setBattles] = useState([]);
-  const [selectedBattle, setSelectedBattle] = useState(null);
   const [gapData, setGapData] = useState([]);
   const [stats, setStats] = useState({
     primary: { avgLapTime: 0, bestLapTime: 0, consistency: 0 },
     comparison: { avgLapTime: 0, bestLapTime: 0, consistency: 0 }
   });
   const [selectedSector, setSelectedSector] = useState(1);
-  const [analysisMode, setAnalysisMode] = useState('all'); // 'all' or 'clean'
+  const [analysisMode, setAnalysisMode] = useState('clean'); // 'all' or 'clean'
+  const [chartMode, setChartMode] = useState('lapTime'); // 'lapTime' | 'trackGap'
+  const [primaryPitLaps, setPrimaryPitLaps] = useState({ in: [], out: [] });
+  const [comparisonPitLaps, setComparisonPitLaps] = useState({ in: [], out: [] });
+  const [expandedLaps, setExpandedLaps] = useState(new Set());
 
   // Initialize available drivers for comparison
   useEffect(() => {
@@ -55,19 +57,23 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
       processHeadToHeadData();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [primaryDriverData, comparisonDriverData, analysisMode]); // Add analysisMode to dependency array
+  }, [primaryDriverData, comparisonDriverData, analysisMode]);
 
   // Load data for both selected drivers
   const loadDriverData = async () => {
     setIsLoading(true);
-    
+    setPrimaryDriverData([]);
+    setComparisonDriverData([]);
+    setGapData([]);
+
     try {
-      // Fetch data for primary driver
-      const primaryData = await getStandardizedEventData(selectedDriver.stage, selectedDriver.participantid);
+      // Fetch both drivers in parallel to avoid staggered UI updates
+      const [primaryData, comparisonData] = await Promise.all([
+        getStandardizedEventData(selectedDriver.stage, selectedDriver.participantid),
+        getStandardizedEventData(comparisonDriver.stage, comparisonDriver.participantid)
+      ]);
+
       setPrimaryDriverData(primaryData);
-      
-      // Fetch data for comparison driver
-      const comparisonData = await getStandardizedEventData(comparisonDriver.stage, comparisonDriver.participantid);
       setComparisonDriverData(comparisonData);
       
     } catch (error) {
@@ -87,19 +93,21 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     const primaryPitLaps = detectPitStops(primaryDriverData, primaryLaps);
     const comparisonPitLaps = detectPitStops(comparisonDriverData, comparisonLaps);
 
+    // Store pit lap data for table rendering
+    setPrimaryPitLaps(primaryPitLaps);
+    setComparisonPitLaps(comparisonPitLaps);
+
     // Filter laps based on analysis mode
     let filteredPrimaryLaps = primaryLaps;
     let filteredComparisonLaps = comparisonLaps;
 
     if (analysisMode === 'clean') {
       filteredPrimaryLaps = primaryLaps.filter(lap => 
-        lap.attributes_Lap > 1 &&
         !primaryPitLaps.in.includes(lap.attributes_Lap) && 
         !primaryPitLaps.out.includes(lap.attributes_Lap)
       );
       
       filteredComparisonLaps = comparisonLaps.filter(lap => 
-        lap.attributes_Lap > 1 &&
         !comparisonPitLaps.in.includes(lap.attributes_Lap) && 
         !comparisonPitLaps.out.includes(lap.attributes_Lap)
       );
@@ -118,21 +126,42 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     const gapsByLap = generateGapData(filteredPrimaryLaps, filteredComparisonLaps);
     setGapData(gapsByLap);
     
-    // Identify battles (when drivers are within 2 seconds of each other for multiple laps)
-    const battlePeriods = identifyBattles(gapsByLap);
-    setBattles(battlePeriods);
   };
 
   // Calculate statistics for a driver
   const calculateDriverStats = (laps) => {
-    if (!laps.length) return { avgLapTime: 0, bestLapTime: 0, consistency: 0 };
-    var driverData = driverAnalytics[laps[0].participantid];
-    if (!driverData) return { avgLapTime: 0, bestLapTime: 0, consistency: 0 };
+    if (!laps.length) return { avgLapTime: 0, bestLapTime: 0, consistency: 0, lapSpread: 0 };
+
+    const lapTimes = laps
+      .map((lap) => lap.attributes_LapTime)
+      .filter((time) => Number.isFinite(time) && time > 0);
+
+    if (!lapTimes.length) return { avgLapTime: 0, bestLapTime: 0, consistency: 0, lapSpread: 0 };
+
+    const avgLapTime = lapTimes.reduce((sum, time) => sum + time, 0) / lapTimes.length;
+    const bestLapTime = Math.min(...lapTimes);
+
+    const variance = lapTimes.reduce((sum, time) => sum + Math.pow(time - avgLapTime, 2), 0) / lapTimes.length;
+    const stdDev = Math.sqrt(variance);
+    const cv = avgLapTime ? stdDev / avgLapTime : 0;
+    const calculatedConsistency = parseFloat((10 - Math.min(10, cv * 100)).toFixed(1));
+
+    const driverData = driverAnalytics[laps[0].participantid];
+    const consistency = Number.isFinite(parseFloat(driverData?.consistency))
+      ? parseFloat(driverData.consistency)
+      : calculatedConsistency;
+
     return {
-      avgLapTime: driverData.avgLapTimeFullRace,
-      bestLapTime: driverData.bestLapTime,
-      consistency: driverData.consistency
+      avgLapTime,
+      bestLapTime,
+      consistency,
+      lapSpread: avgLapTime - bestLapTime
     };
+  };
+
+  const formatLapTimeSafe = (value) => {
+    if (!Number.isFinite(value) || value <= 0) return '--';
+    return msToTime(Math.round(value));
   };
 
   // Generate gap data between drivers for each lap
@@ -143,6 +172,7 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     );
     
     const gapData = [];
+    let cumulativeGap = 0;
     
     for (let lap = 1; lap <= maxLaps; lap++) {
       const primaryLap = primaryLaps.find(l => l.attributes_Lap === lap);
@@ -156,6 +186,8 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
         const comparisonTime = comparisonLap.attributes_LapTime;
         const timeGap = (primaryTime - comparisonTime) / 1000; // Convert ms to seconds
         
+        cumulativeGap += timeGap;
+
         gapData.push({
           lap,
           timeGap,
@@ -169,7 +201,10 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
           primaryS3: primaryLap.attributes_Sector3Time / 1000,
           comparisonS1: comparisonLap.attributes_Sector1Time / 1000,
           comparisonS2: comparisonLap.attributes_Sector2Time / 1000,
-          comparisonS3: comparisonLap.attributes_Sector3Time / 1000
+          comparisonS3: comparisonLap.attributes_Sector3Time / 1000,
+          cumulativeGap,
+          primaryAheadGap: cumulativeGap <= 0 ? cumulativeGap : null,
+          comparisonAheadGap: cumulativeGap >= 0 ? cumulativeGap : null,
         });
       }
     }
@@ -177,564 +212,534 @@ const SessionHistoryHeadToHeadComparison = ({ race, session, selectedDriver }) =
     return gapData;
   };
 
-  // Identify battles (when drivers are close to each other)
-  const identifyBattles = (gapData) => {
-    const battles = [];
-    let currentBattle = null;
-    
-    gapData.forEach((lap, index) => {
-      // Consider drivers in battle if they're within 2 positions and time gap is under 2 seconds
-      const inBattle = Math.abs(lap.posGap) <= 2 && Math.abs(lap.timeGap) < 2;
-      
-      if (inBattle) {
-        if (!currentBattle) {
-          // Start new battle
-          currentBattle = {
-            startLap: lap.lap,
-            endLap: lap.lap,
-            intensity: Math.abs(lap.timeGap) < 1 ? 'high' : 'medium'
-          };
-        } else {
-          // Continue battle
-          currentBattle.endLap = lap.lap;
-          // Update intensity if gap is very close
-          if (Math.abs(lap.timeGap) < 1) {
-            currentBattle.intensity = 'high';
-          }
-        }
-      } else if (currentBattle) {
-        // Battle ended
-        battles.push(currentBattle);
-        currentBattle = null;
-      }
-    });
-    
-    // Don't forget to add the last battle if it's still ongoing
-    if (currentBattle) {
-      battles.push(currentBattle);
-    }
-    
-    return battles;
-  };
-
   // Handle driver selection change
   const handleDriverChange = (event) => {
     const selectedDriverId = parseInt(event.target.value);
     const driver = drivers.find(d => d.participantid === selectedDriverId);
     setComparisonDriver(driver);
-    setSelectedBattle(null); // Reset selected battle when changing drivers
   };
   
-  // Handle battle selection
-  const handleBattleSelect = (battle) => {
-    setSelectedBattle(battle);
+  const toggleLapExpand = (lapNum) => {
+    setExpandedLaps(prev => {
+      const next = new Set(prev);
+      next.has(lapNum) ? next.delete(lapNum) : next.add(lapNum);
+      return next;
+    });
   };
 
   // Handle sector tab selection
   const handleSectorSelect = (sectorNumber) => {
     setSelectedSector(sectorNumber);
-  };
+  }
 
   // Handle analysis mode change
   const handleAnalysisModeChange = (mode) => {
     setAnalysisMode(mode);
   };
-  
+
+  const handleChartModeChange = (mode) => {
+    setChartMode(mode);
+  };
+
+  const renderStatRow = (label, primaryValue, comparisonValue, formatter, lowerIsBetter = true) => {
+    const primaryWins = lowerIsBetter ? primaryValue <= comparisonValue : primaryValue >= comparisonValue;
+    const delta = Math.abs(primaryValue - comparisonValue);
+
+    return (
+      <div className="h2h-stat-row" key={label}>
+        <div className={`h2h-stat-value ${primaryWins ? 'winner' : 'loser'}`}>
+          <div>{formatter(primaryValue)}</div>
+          {!primaryWins && <small className="h2h-stat-delta">+{formatter(delta)}</small>}
+        </div>
+        <div className="h2h-stat-label">{label}</div>
+        <div className={`h2h-stat-value ${!primaryWins ? 'winner' : 'loser'}`}>
+          <div>{formatter(comparisonValue)}</div>
+          {primaryWins && <small className="h2h-stat-delta">+{formatter(delta)}</small>}
+        </div>
+      </div>
+    );
+  };
+
+  const formatTimeGap = (value) => {
+    if (!Number.isFinite(value)) return '--';
+    return `${value >= 0 ? '+' : ''}${value.toFixed(3)}s`;
+  };
+
+  const getPitIndicator = (lapNum, isPrimaryDriver) => {
+    const pitLaps = isPrimaryDriver ? primaryPitLaps : comparisonPitLaps;
+    if (pitLaps.in.includes(lapNum)) {
+      return <span className="pit-indicator pit-in" style={{ marginLeft: '4px', display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ff4444' }} title="Pit-in lap" />;
+    }
+    if (pitLaps.out.includes(lapNum)) {
+      return <span className="pit-indicator pit-out" style={{ marginLeft: '4px', display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffaa00' }} title="Pit-out lap" />;
+    }
+    return null;
+  };
+
+  const lapTimeTooltipFormatter = (value, name, entry) => {
+    if (name === selectedDriver?.name || name === comparisonDriver?.name) {
+      return [msToTime(Math.round(value * 1000)), name];
+    }
+
+    if (name === 'Gap') {
+      const gap = entry?.payload?.timeGap;
+      const fasterDriver = gap <= 0 ? selectedDriver?.name : comparisonDriver?.name;
+      return [`${formatTimeGap(gap)} (${fasterDriver} faster)`, name];
+    }
+
+    return [value, name];
+  };
+
+  const renderChartLegend = (props) => {
+    const { payload } = props;
+    const hasPitIn = primaryPitLaps.in.length > 0 || comparisonPitLaps.in.length > 0;
+    const hasPitOut = primaryPitLaps.out.length > 0 || comparisonPitLaps.out.length > 0;
+    const showPitLegend = analysisMode === 'all' && (hasPitIn || hasPitOut);
+
+    return (
+      <ul style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', margin: 0, padding: 0, listStyle: 'none', fontSize: '0.85rem' }}>
+        {chartMode === 'trackGap' ? (
+          <>
+            <li style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ display: 'inline-block', width: 16, height: 3, background: '#00a8e1', borderRadius: 2 }} />
+              {selectedDriver?.name} ahead
+            </li>
+            <li style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ display: 'inline-block', width: 16, height: 3, background: '#f7a800', borderRadius: 2 }} />
+              {comparisonDriver?.name} ahead
+            </li>
+          </>
+        ) : (
+          payload
+            .filter(entry => entry.value !== 'Gap')
+            .map((entry, i) => (
+              <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ display: 'inline-block', width: 16, height: 3, background: entry.color, borderRadius: 2 }} />
+                {entry.value}
+              </li>
+            ))
+        )}
+        {showPitLegend && hasPitIn && (
+          <li style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ display: 'inline-block', width: 10, height: 10, background: '#ff4444', borderRadius: '50%' }} />
+            Pit-in
+          </li>
+        )}
+        {showPitLegend && hasPitOut && (
+          <li style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ display: 'inline-block', width: 10, height: 10, background: '#ffaa00', borderRadius: '50%' }} />
+            Pit-out
+          </li>
+        )}
+      </ul>
+    );
+  };
+
+  const gapTooltipFormatter = (value, name) => {
+    if (value === null || value === undefined) return null;
+    if (value === 0) return ['Even', 'Track Gap'];
+    const formatted = value > 0 ? `+${value.toFixed(3)}s` : `${value.toFixed(3)}s`;
+    return [formatted, 'Track Gap'];
+  };
+
+  // Chart data for track gap mode: inserts interpolated crossing points so the
+  // blue/yellow segments share a y=0 endpoint and the line stays continuous.
+  const chartGapData = useMemo(() => {
+    if (!gapData.length) return [];
+    const result = [];
+    for (let i = 0; i < gapData.length; i++) {
+      const d = gapData[i];
+      const prev = gapData[i - 1];
+      if (prev && prev.cumulativeGap * d.cumulativeGap < 0) {
+        const t = Math.abs(prev.cumulativeGap) / (Math.abs(prev.cumulativeGap) + Math.abs(d.cumulativeGap));
+        result.push({
+          lap: prev.lap + t,
+          cumulativeGap: 0,
+          primaryAheadGap: 0,
+          comparisonAheadGap: 0,
+        });
+      }
+      result.push({
+        ...d,
+        primaryAheadGap: d.cumulativeGap <= 0 ? d.cumulativeGap : null,
+        comparisonAheadGap: d.cumulativeGap >= 0 ? d.cumulativeGap : null,
+      });
+    }
+    return result;
+  }, [gapData]);
+
   return (
     <div className="head-to-head-comparison mb-4">
-      <div className="driver-selector mb-4">
-        <Row className="align-items-end">
-          <Col md={6} className="mb-3 mb-md-0">
-            <h5 className="text-primary">Base Driver</h5>
-            <div className="driver-card p-3 border rounded">
-              <h6>{selectedDriver?.name}</h6>
-              <div className="text-muted small">
-                Finished P{selectedDriver?.RacePosition} • Best Lap: {msToTime(selectedDriver?.FastestLapTime)}
-              </div>
-            </div>
-          </Col>
-          <Col md={6}>
-            <Form.Group>
-              <h5 className="text-secondary">Comparison Driver</h5>
-              <div className="d-flex">
-                <Form.Select 
-                  value={comparisonDriver?.participantid || ""}
-                  onChange={handleDriverChange}
-                  className="me-2"
-                >
-                  {drivers.map(driver => (
-                    <option key={driver.participantid} value={driver.participantid}>
-                      {driver.name} (P{driver.RacePosition})
-                    </option>
-                  ))}
-                </Form.Select>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={loadDriverData}
-                  disabled={isLoading || !comparisonDriver}
-                >
-                  {isLoading ? 'Loading...' : 'Compare'}
-                </Button>
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
+
+      <div className="h2h-tab-toolbar d-flex">
+        <ButtonGroup size="sm" className="h2h-segmented">
+          <Button
+            variant="light"
+            className={`h2h-segmented-btn ${analysisMode === 'all' ? 'active' : ''}`}
+            onClick={() => handleAnalysisModeChange('all')}
+          >
+            All Laps
+          </Button>
+          <Button
+            variant="light"
+            className={`h2h-segmented-btn ${analysisMode === 'clean' ? 'active' : ''}`}
+            onClick={() => handleAnalysisModeChange('clean')}
+          >
+            Exclude Pits
+          </Button>
+        </ButtonGroup>
       </div>
 
-      {/* Performance comparison statistics */}
-      {primaryDriverData.length > 0 && comparisonDriverData.length > 0 && (
+      {isLoading && (
+        <Card className="mb-4">
+          <Card.Body className="text-center py-5">
+            <Spinner animation="border" role="status" variant="primary" />
+            <div className="mt-3 text-muted">Loading comparison data...</div>
+          </Card.Body>
+        </Card>
+      )}
+
+      {!isLoading && primaryDriverData.length > 0 && comparisonDriverData.length > 0 && (
         <>
           <Card className="mb-4 comparison-stats-card">
-            <Card.Header>
-              <h5 className="mb-0">Driver Performance Comparison</h5>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                <Col md={6} className="stats-column primary-stats border-end">
-                  <h6 className="text-primary">{selectedDriver?.name}</h6>
-                  <Table borderless size="sm" className="stats-table">
-                    <tbody>
-                      <tr>
-                        <td>Best Lap:</td>
-                        <td className="text-end fw-bold">{msToTime(stats.primary.bestLapTime)}</td>
-                        <td>
-                          {stats.primary.bestLapTime <= stats.comparison.bestLapTime ? 
-                            <Badge bg="success">Faster</Badge> : 
-                            <Badge bg="danger">+{msToTime(stats.primary.bestLapTime - stats.comparison.bestLapTime)}</Badge>
-                          }
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Avg Lap:</td>
-                        <td className="text-end fw-bold">{msToTime(stats.primary.avgLapTime)}</td>
-                        <td>
-                          {stats.primary.avgLapTime <= stats.comparison.avgLapTime ? 
-                            <Badge bg="success">Faster</Badge> : 
-                            <Badge bg="danger">+{msToTime(stats.primary.avgLapTime - stats.comparison.avgLapTime)}</Badge>
-                          }
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Consistency:</td>
-                        <td className="text-end fw-bold">{stats.primary.consistency}/10</td>
-                        <td>
-                          {stats.primary.consistency >= stats.comparison.consistency ? 
-                            <Badge bg="success">Better</Badge> : 
-                            <Badge bg="danger">Lower</Badge>
-                          }
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Col>
-                
-                <Col md={6} className="stats-column comparison-stats">
-                  <h6 className="text-secondary">{comparisonDriver?.name}</h6>
-                  <Table borderless size="sm" className="stats-table">
-                    <tbody>
-                      <tr>
-                        <td>Best Lap:</td>
-                        <td className="text-end fw-bold">{msToTime(stats.comparison.bestLapTime)}</td>
-                        <td>
-                          {stats.comparison.bestLapTime <= stats.primary.bestLapTime ? 
-                            <Badge bg="success">Faster</Badge> : 
-                            <Badge bg="danger">+{msToTime(stats.comparison.bestLapTime - stats.primary.bestLapTime)}</Badge>
-                          }
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Avg Lap:</td>
-                        <td className="text-end fw-bold">{msToTime(stats.comparison.avgLapTime)}</td>
-                        <td>
-                          {stats.comparison.avgLapTime <= stats.primary.avgLapTime ? 
-                            <Badge bg="success">Faster</Badge> : 
-                            <Badge bg="danger">+{msToTime(stats.comparison.avgLapTime - stats.primary.avgLapTime)}</Badge>
-                          }
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Consistency:</td>
-                        <td className="text-end fw-bold">{stats.comparison.consistency}/10</td>
-                        <td>
-                          {stats.comparison.consistency >= stats.primary.consistency ? 
-                            <Badge bg="success">Better</Badge> : 
-                            <Badge bg="danger">Lower</Badge>
-                          }
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-
-          <Card className="mb-4">
-            <Card.Body className="d-flex flex-wrap justify-content-between align-items-center py-2">
-              <div className="mb-2 mb-md-0">
-                <h6 className="mb-0">Graph Settings</h6>
-              </div>
-              <div className="d-flex align-items-center">
-                <div className="mode-selector">
-                  <ButtonGroup size="sm">
-                    <Button
-                      variant={analysisMode === 'all' ? 'primary' : 'outline-primary'}
-                      onClick={() => handleAnalysisModeChange('all')}
+            <Card.Body className="p-0">
+              <div className="h2h-stat-grid">
+                <div className="h2h-stat-row h2h-header-row">
+                  <div className="h2h-stat-value h2h-col-header">
+                    <div className="h2h-col-label">Primary</div>
+                    <strong className="h2h-col-name">{selectedDriver?.name}</strong>
+                  </div>
+                  <div className="h2h-stat-label" />
+                  <div className="h2h-stat-value h2h-col-header">
+                    <div className="h2h-col-label">Compare with</div>
+                    <Form.Select
+                      size="sm"
+                      value={comparisonDriver?.participantid || ""}
+                      onChange={handleDriverChange}
+                      className="compare-driver-select"
                     >
-                      All Laps
-                    </Button>
-                    <Button
-                      variant={analysisMode === 'clean' ? 'primary' : 'outline-primary'}
-                      onClick={() => handleAnalysisModeChange('clean')}
-                    >
-                      Exclude Pits
-                    </Button>
-                  </ButtonGroup>
+                      {drivers.map(driver => (
+                        <option key={driver.participantid} value={driver.participantid}>
+                          {driver.name} (P{driver.RacePosition})
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </div>
                 </div>
+                {renderStatRow('Fastest Lap', stats.primary.bestLapTime, stats.comparison.bestLapTime, formatLapTimeSafe)}
+                {renderStatRow('Avg Lap', stats.primary.avgLapTime, stats.comparison.avgLapTime, formatLapTimeSafe)}
+                {renderStatRow('Pace Spread', stats.primary.lapSpread, stats.comparison.lapSpread, formatLapTimeSafe)}
+              </div>
+              <div className="h2h-stat-footnote text-muted small">
+                Pace Spread = average lap time minus best lap time. Lower values indicate more repeatable pace.
               </div>
             </Card.Body>
           </Card>
 
-          {/* Lap time comparison chart */}
           <Card className="mb-4">
-            <Card.Header>
+            <Card.Header className="d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Lap Time Comparison</h5>
+              <span className="d-none d-md-flex">
+                <ButtonGroup size="sm" className="h2h-segmented">
+                  <Button
+                    variant="light"
+                    className={`h2h-segmented-btn ${chartMode === 'lapTime' ? 'active' : ''}`}
+                    onClick={() => handleChartModeChange('lapTime')}
+                  >
+                    Lap Time
+                  </Button>
+                  <Button
+                    variant="light"
+                    className={`h2h-segmented-btn ${chartMode === 'trackGap' ? 'active' : ''}`}
+                    onClick={() => handleChartModeChange('trackGap')}
+                  >
+                    On-Track Gap
+                  </Button>
+                </ButtonGroup>
+              </span>
             </Card.Header>
-            <Card.Body>
-              <div style={{ height: "350px" }}>
+            <Card.Body className="p-0">
+              <div className="lap-chart-area d-none d-md-block">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={gapData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+                    data={chartMode === 'trackGap' ? chartGapData : gapData}
+                    margin={{ top: 5, right: 24, left: 8, bottom: 18 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                    <YAxis 
-                      label={{ value: 'Lap Time (sec)', angle: -90, position: 'insideLeft' }}
-                      domain={['dataMin - 0.5', 'dataMax + 0.5']}
+                    <XAxis
+                      dataKey="lap"
+                      type="number"
+                      domain={['dataMin', 'dataMax']}
+                      ticks={gapData.map(d => d.lap)}
+                      allowDecimals={false}
                     />
-                    <Tooltip formatter={(value) => msToTime(value * 1000)} />
-                    <Legend />
-                    
-                    <Line 
-                      type="monotone" 
-                      dataKey="primaryTime" 
-                      stroke="#007bff" 
-                      name={`${selectedDriver?.name}`} 
-                      dot={{ r: 3 }} 
-                      strokeWidth={2}
-                      activeDot={{ r: 6 }}
+                    <YAxis
+                      yAxisId="lapAxis"
+                      width={70}
+                      hide={chartMode !== 'lapTime'}
+                      domain={[
+                        (dataMin) => dataMin - 0.25,
+                        (dataMax) => dataMax + 0.25
+                      ]}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="comparisonTime" 
-                      stroke="#6f42c1" 
-                      name={`${comparisonDriver?.name}`} 
-                      dot={{ r: 3 }} 
-                      strokeWidth={2}
-                      activeDot={{ r: 6 }}
+                    <YAxis
+                      yAxisId="gapAxis"
+                      width={70}
+                      hide={chartMode !== 'trackGap'}
+                      tickFormatter={(v) => `${v >= 0 ? '+' : ''}${v.toFixed(1)}s`}
+                      domain={['auto', 'auto']}
                     />
-                    
-                    {/* Show reference lines for battles */}
-                    {battles.map((battle, idx) => (
-                      <React.Fragment key={idx}>
-                        <ReferenceLine 
-                          x={battle.startLap} 
-                          stroke="#ffc107" 
-                          strokeDasharray="3 3" 
-                          strokeWidth={battle.intensity === 'high' ? 2 : 1}
-                        />
-                        <ReferenceLine 
-                          x={battle.endLap} 
-                          stroke="#ffc107" 
-                          strokeDasharray="3 3" 
-                          strokeWidth={battle.intensity === 'high' ? 2 : 1}
-                        />
-                      </React.Fragment>
-                    ))}
-                    
-                    {/* Highlight selected battle */}
-                    {selectedBattle && (
-                      <rect 
-                        x={selectedBattle.startLap} 
-                        y="0%" 
-                        width={selectedBattle.endLap - selectedBattle.startLap} 
-                        height="100%" 
-                        fill="yellow" 
-                        fillOpacity="0.1"
-                      />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload?.length || !Number.isInteger(Number(label))) return null;
+                        if (chartMode === 'lapTime') {
+                          const driverEntries = payload.filter(e => e.name !== 'Gap' && e.value != null);
+                          if (!driverEntries.length) return null;
+                          const gapValue = payload.find(e => e.name === 'Gap')?.payload?.timeGap;
+                          return (
+                            <div className="custom-tooltip card p-2">
+                              <p className="mb-1 fw-bold small">Lap {label}</p>
+                              {driverEntries.map((entry, i) => {
+                                const [val] = lapTimeTooltipFormatter(entry.value, entry.name, entry);
+                                return <p key={i} className="mb-0 small" style={{ color: entry.color }}>{entry.name}: {val}</p>;
+                              })}
+                              {gapValue != null && (
+                                <p className="mb-0 small" style={{ color: gapValue <= 0 ? '#00a8e1' : '#f7a800' }}>
+                                  {formatTimeGap(gapValue)}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        }
+                        const entries = payload.filter(e => e.value !== null && e.value !== undefined);
+                        if (!entries.length) return null;
+                        return (
+                          <div className="custom-tooltip card p-2">
+                            <p className="mb-1 fw-bold small">Lap {label}</p>
+                            {entries.map((entry, i) => {
+                              const result = gapTooltipFormatter(entry.value, entry.name);
+                              if (!result) return null;
+                              const [val, name] = Array.isArray(result) ? result : [result, entry.name];
+                              return <p key={i} className="mb-0 small" style={{ color: entry.color }}>{name}: {val}</p>;
+                            })}
+                          </div>
+                        );
+                      }}
+                    />
+                    <Legend content={renderChartLegend} />
+                    {chartMode === 'lapTime' && (
+                      <>
+                        <Line type="monotone" dataKey="primaryTime" yAxisId="lapAxis" stroke="#00a8e1" name={selectedDriver?.name} dot={false} strokeWidth={2} activeDot={{ r: 4 }} />
+                        <Line type="monotone" dataKey="comparisonTime" yAxisId="lapAxis" stroke="#f7a800" name={comparisonDriver?.name} dot={false} strokeWidth={2} activeDot={{ r: 4 }} />
+                        <Line type="monotone" dataKey="timeGap" yAxisId="gapAxis" stroke="transparent" name="Gap" dot={false} activeDot={false} />
+                        {primaryPitLaps.in.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`primary-pit-in-${lapNum}`} x={lapNum} y={lapData.primaryTime} yAxisId="lapAxis" r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null; })}
+                        {primaryPitLaps.out.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`primary-pit-out-${lapNum}`} x={lapNum} y={lapData.primaryTime} yAxisId="lapAxis" r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null; })}
+                        {comparisonPitLaps.in.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`comparison-pit-in-${lapNum}`} x={lapNum} y={lapData.comparisonTime} yAxisId="lapAxis" r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null; })}
+                        {comparisonPitLaps.out.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`comparison-pit-out-${lapNum}`} x={lapNum} y={lapData.comparisonTime} yAxisId="lapAxis" r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null; })}
+                      </>
+                    )}
+                    {chartMode === 'trackGap' && (
+                      <>
+                        <Line type="monotone" dataKey="primaryAheadGap" yAxisId="gapAxis" stroke="#00a8e1" name={selectedDriver?.name} dot={false} strokeWidth={2} activeDot={{ r: 4 }} connectNulls={false} />
+                        <Line type="monotone" dataKey="comparisonAheadGap" yAxisId="gapAxis" stroke="#f7a800" name={comparisonDriver?.name} dot={false} strokeWidth={2} activeDot={{ r: 4 }} connectNulls={false} />
+                        <ReferenceLine yAxisId="gapAxis" y={0} stroke="#ffffff" strokeWidth={3} strokeOpacity={0.95} ifOverflow="visible" />
+                        {primaryPitLaps.in.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`primary-pit-in-${lapNum}`} x={lapNum} y={lapData.cumulativeGap} yAxisId="gapAxis" r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null; })}
+                        {primaryPitLaps.out.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`primary-pit-out-${lapNum}`} x={lapNum} y={lapData.cumulativeGap} yAxisId="gapAxis" r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null; })}
+                        {comparisonPitLaps.in.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`comparison-pit-in-${lapNum}`} x={lapNum} y={lapData.cumulativeGap} yAxisId="gapAxis" r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null; })}
+                        {comparisonPitLaps.out.map((lapNum) => { const lapData = gapData.find(d => d.lap === lapNum); return lapData ? <ReferenceDot key={`comparison-pit-out-${lapNum}`} x={lapNum} y={lapData.cumulativeGap} yAxisId="gapAxis" r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null; })}
+                      </>
                     )}
                   </LineChart>
                 </ResponsiveContainer>
               </div>
+              <div className="lap-table-wrapper">
+                <Table size="sm" className="lap-comparison-table mb-0">
+                  <thead>
+                    <tr>
+                      <th>Lap</th>
+                      <th className="d-none d-md-table-cell">{selectedDriver?.name}</th>
+                      <th className="d-none d-md-table-cell">{comparisonDriver?.name}</th>
+                      <th>Lap Δ</th>
+                      <th>Track Gap</th>
+                      <th className="d-none d-md-table-cell">Pos.</th>
+                      <th className="lap-expand-col d-none d-md-table-cell" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gapData.map((lap) => {
+                      const isExpanded = expandedLaps.has(lap.lap);
+                      return (
+                        <React.Fragment key={lap.lap}>
+                          <tr className={`lap-table-row${isExpanded ? ' expanded' : ''}`} onClick={() => toggleLapExpand(lap.lap)}>
+                            <td>{lap.lap}</td>
+                            <td className="d-none d-md-table-cell">{msToTime(Math.round(lap.primaryTime * 1000))}{getPitIndicator(lap.lap, true)}</td>
+                            <td className="d-none d-md-table-cell">{msToTime(Math.round(lap.comparisonTime * 1000))}{getPitIndicator(lap.lap, false)}</td>
+                            <td className={lap.timeGap > 0 ? 'text-danger' : 'text-success'}>{formatTimeGap(lap.timeGap)}</td>
+                            <td className={lap.cumulativeGap > 0 ? 'text-danger' : 'text-success'}>{formatTimeGap(lap.cumulativeGap)}</td>
+                            <td className="text-muted small d-none d-md-table-cell">P{lap.primaryPos} / P{lap.comparisonPos}</td>
+                            <td className="lap-expand-col d-none d-md-table-cell">
+                              <span className="lap-expand-chevron">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="14" height="14" style={{ transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>
+                                  <path fill="none" stroke="#00a8e1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 5l6 6 6-6"/>
+                                </svg>
+                              </span>
+                            </td>
+                          </tr>
+                          {isExpanded && (
+                            <tr className="sector-expand-row">
+                              <td colSpan={7}>
+                                <div className="sector-expand-inner">
+                                  {[1, 2, 3].map(s => {
+                                    const pTime = lap[`primaryS${s}`];
+                                    const cTime = lap[`comparisonS${s}`];
+                                    const pWins = pTime != null && cTime != null && pTime < cTime;
+                                    const cWins = pTime != null && cTime != null && cTime < pTime;
+                                    return (
+                                      <div key={s} className="sector-expand-item">
+                                        <span className="sector-expand-label">S{s}</span>
+                                        <span style={{ color: '#00a8e1', fontWeight: pWins ? 700 : 400 }}>
+                                          {pTime != null ? msToTime(Math.round(pTime * 1000)) : '—'}
+                                        </span>
+                                        <span className="sector-expand-sep">vs</span>
+                                        <span style={{ color: '#f7a800', fontWeight: cWins ? 700 : 400 }}>
+                                          {cTime != null ? msToTime(Math.round(cTime * 1000)) : '—'}
+                                        </span>
+                                        {pTime != null && cTime != null && (
+                                          <span className="sector-expand-delta" style={{ color: (pTime - cTime) <= 0 ? '#00a8e1' : '#f7a800' }}>
+                                            ({formatTimeGap(pTime - cTime)})
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </div>
             </Card.Body>
           </Card>
 
-          {/* Gap visualization */}
           <Card className="mb-4">
+            <p className="d-md-none text-muted small text-center py-2 mb-0 px-3">
+              <b>Full lap charts and sector analysis available on desktop</b>
+            </p>
+          </Card>
+
+          <Card className="mb-4 d-none d-md-block">
             <Card.Header className="d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">Performance Gap</h5>
-              <div className="legend small text-muted">
-                <span className="me-3">
-                  <span className="color-dot positive-dot"></span> {selectedDriver?.name} faster
-                </span>
-                <span>
-                  <span className="color-dot negative-dot"></span> {comparisonDriver?.name} faster
-                </span>
-              </div>
+              <h5 className="mb-0">Sector Time Comparison</h5>
+              <ButtonGroup size="sm" className="h2h-segmented">
+                <Button
+                  variant="light"
+                  className={`h2h-segmented-btn ${selectedSector === 1 ? 'active' : ''}`}
+                  onClick={() => handleSectorSelect(1)}
+                >
+                  S1
+                </Button>
+                <Button
+                  variant="light"
+                  className={`h2h-segmented-btn ${selectedSector === 2 ? 'active' : ''}`}
+                  onClick={() => handleSectorSelect(2)}
+                >
+                  S2
+                </Button>
+                <Button
+                  variant="light"
+                  className={`h2h-segmented-btn ${selectedSector === 3 ? 'active' : ''}`}
+                  onClick={() => handleSectorSelect(3)}
+                >
+                  S3
+                </Button>
+              </ButtonGroup>
             </Card.Header>
             <Card.Body>
-              <div style={{ height: "250px" }}>
+              <div className="sector-analysis" style={{ height: '250px' }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={gapData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+                    margin={{ top: 5, right: 24, left: 8, bottom: 18 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                    <YAxis 
-                      label={{ value: 'Time Gap (sec)', angle: -90, position: 'insideLeft' }}
+                    <XAxis dataKey="lap" />
+                    <YAxis
+                      width={64}
                       domain={[
-                        dataMin => Math.min(-0.5, Math.floor(dataMin)),
-                        dataMax => Math.max(0.5, Math.ceil(dataMax))
+                        (dataMin) => dataMin - 0.1,
+                        (dataMax) => dataMax + 0.1
                       ]}
-                      labelFormatter={(label) => `Lap ${label}`}
                     />
-                    <Tooltip 
-                      formatter={(value, name) => {
-                        if (name === "Time Gap") {
-                          return [
-                            (value > 0 
-                              ? `+` : ``) +  `${value.toFixed(3)}s`,
-                            "Gap"
-                          ];
-                        }
-                        return [value, name];
-                      }}
-                      labelFormatter={(label) => `Lap ${label}`}
-                    />
-                    <Legend />
-                    <ReferenceLine y={0} stroke="#666" strokeWidth={1} />
-                    <Line 
-                      type="monotone" 
-                      dataKey="timeGap" 
-                      name="Time Gap" 
-                      stroke="#ff7300" 
-                      dot={(props) => {
-                        const { cx, cy, payload } = props;
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        const primaryEntry = payload.find(e => e.name === selectedDriver?.name);
+                        const comparisonEntry = payload.find(e => e.name === comparisonDriver?.name);
+                        if (!primaryEntry && !comparisonEntry) return null;
+                        const delta = primaryEntry?.value != null && comparisonEntry?.value != null
+                          ? primaryEntry.value - comparisonEntry.value
+                          : null;
                         return (
-                          <circle 
-                            key={`dot-${payload.lap}`}
-                            cx={cx} 
-                            cy={cy} 
-                            r={3} 
-                            fill={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
-                            stroke={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
-                          />
+                          <div className="custom-tooltip card p-2">
+                            <p className="mb-1 fw-bold small">Lap {label}</p>
+                            {primaryEntry?.value != null && (
+                              <p className="mb-0 small" style={{ color: '#00a8e1' }}>{primaryEntry.name}: {msToTime(Math.round(primaryEntry.value * 1000))}</p>
+                            )}
+                            {comparisonEntry?.value != null && (
+                              <p className="mb-0 small" style={{ color: '#f7a800' }}>{comparisonEntry.name}: {msToTime(Math.round(comparisonEntry.value * 1000))}</p>
+                            )}
+                            {delta != null && (
+                              <p className="mb-0 small" style={{ color: delta <= 0 ? '#00a8e1' : '#f7a800' }}>
+                                {formatTimeGap(delta)}
+                              </p>
+                            )}
+                          </div>
                         );
                       }}
+                    />
+                    <Legend content={renderChartLegend} />
+                    <Line
+                      type="monotone"
+                      dataKey={`primaryS${selectedSector}`}
+                      stroke="#00a8e1"
+                      name={selectedDriver?.name}
+                      dot={false}
                       strokeWidth={2}
-                      activeDot={(props) => {
-                        const { cx, cy, payload } = props;
-                        return (
-                          <circle 
-                            cx={cx} 
-                            cy={cy} 
-                            r={6} 
-                            fill={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
-                            stroke={payload.timeGap <= 0 ? "#28a745" : "#dc3545"} 
-                          />
-                        );
-                      }}
                     />
+                    <Line
+                      type="monotone"
+                      dataKey={`comparisonS${selectedSector}`}
+                      stroke="#f7a800"
+                      name={comparisonDriver?.name}
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                    {primaryPitLaps.in.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-primary-pit-in-${lapNum}`} x={lapNum} y={lapData[`primaryS${selectedSector}`]} r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null;
+                    })}
+                    {primaryPitLaps.out.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-primary-pit-out-${lapNum}`} x={lapNum} y={lapData[`primaryS${selectedSector}`]} r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null;
+                    })}
+                    {comparisonPitLaps.in.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-comparison-pit-in-${lapNum}`} x={lapNum} y={lapData[`comparisonS${selectedSector}`]} r={5} fill="#ff4444" stroke="#cc0000" ifOverflow="visible" /> : null;
+                    })}
+                    {comparisonPitLaps.out.map((lapNum) => {
+                      const lapData = gapData.find(d => d.lap === lapNum);
+                      return lapData ? <ReferenceDot key={`s-comparison-pit-out-${lapNum}`} x={lapNum} y={lapData[`comparisonS${selectedSector}`]} r={5} fill="#ffaa00" stroke="#ff8800" ifOverflow="visible" /> : null;
+                    })}
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             </Card.Body>
           </Card>
 
-          {/* Sector comparison */}
-          <Card className="mb-4">
-            <Card.Header>
-              <h5 className="mb-0">Sector Analysis</h5>
-            </Card.Header>
-            <Card.Body>
-              <Nav variant="tabs" className="mb-3">
-                <Nav.Item>
-                  <Nav.Link 
-                    active={selectedSector === 1} 
-                    onClick={() => handleSectorSelect(1)}
-                  >
-                    Sector 1
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link 
-                    active={selectedSector === 2} 
-                    onClick={() => handleSectorSelect(2)}
-                  >
-                    Sector 2
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link 
-                    active={selectedSector === 3} 
-                    onClick={() => handleSectorSelect(3)}
-                  >
-                    Sector 3
-                  </Nav.Link>
-                </Nav.Item>
-              </Nav>
-              
-              <div className="sector-analysis">
-                {selectedSector === 1 && (
-                  <div style={{ height: "250px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={gapData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                        <YAxis 
-                          label={{ value: 'Sector 1 Time (sec)', angle: -90, position: 'insideLeft' }} 
-                          domain={['dataMin - 0.5', 'dataMax + 0.5']}/>
-                        <Tooltip 
-                          labelFormatter={(label) => `Lap ${label}`}
-                          formatter={(value) => msToTime(value * 1000)} />
-                        <Legend />
-                        <Line type="monotone" dataKey="primaryS1" stroke="#007bff" name={selectedDriver?.name} />
-                        <Line type="monotone" dataKey="comparisonS1" stroke="#6f42c1" name={comparisonDriver?.name} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-
-                {selectedSector === 2 && (
-                  <div style={{ height: "250px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={gapData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                        <YAxis 
-                          label={{ value: 'Sector 2 Time (sec)', angle: -90, position: 'insideLeft' }} 
-                          domain={['dataMin - 0.5', 'dataMax + 0.5']}/>
-                        <Tooltip 
-                          labelFormatter={(label) => `Lap ${label}`}
-                          formatter={(value) => msToTime(value * 1000)} />
-                        <Legend />
-                        <Line type="monotone" dataKey="primaryS2" stroke="#007bff" name={selectedDriver?.name} />
-                        <Line type="monotone" dataKey="comparisonS2" stroke="#6f42c1" name={comparisonDriver?.name} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-
-                {selectedSector === 3 && (
-                  <div style={{ height: "250px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={gapData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="lap" label={{ value: 'Lap Number', position: 'insideBottomRight', offset: -10 }} />
-                        <YAxis 
-                          label={{ value: 'Sector 3 Time (sec)', angle: -90, position: 'insideLeft' }} 
-                          domain={['dataMin - 0.5', 'dataMax + 0.5']}/>
-                        <Tooltip 
-                          labelFormatter={(label) => `Lap ${label}`}
-                          formatter={(value) => msToTime(value * 1000)} />
-                        <Legend />
-                        <Line type="monotone" dataKey="primaryS3" stroke="#007bff" name={selectedDriver?.name} />
-                        <Line type="monotone" dataKey="comparisonS3" stroke="#6f42c1" name={comparisonDriver?.name} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-              </div>
-            </Card.Body>
-          </Card>
-
-          
-          {/* Battle timeline */}
-          {battles.length > 0 && (
-            <Card className="mb-4 battle-card">
-              <Card.Header>
-                <h5 className="mb-0">Battle Timeline</h5>
-              </Card.Header>
-              <Card.Body>
-                <div className="battles-container">
-                  {battles.map((battle, idx) => (
-                    <Button
-                      key={idx}
-                      variant={selectedBattle === battle ? "primary" : "outline-primary"}
-                      className={`battle-btn mb-2 me-2 ${battle.intensity === 'high' ? 'high-intensity' : ''}`}
-                      onClick={() => handleBattleSelect(battle)}
-                    >
-                      Laps {battle.startLap}-{battle.endLap}
-                      {battle.intensity === 'high' && (
-                        <Badge bg="danger" className="ms-2">Intense</Badge>
-                      )}
-                    </Button>
-                  ))}
-                  
-                  {selectedBattle && (
-                    <div className="battle-details mt-3 p-3 border rounded">
-                      <h6>Battle Analysis: Laps {selectedBattle.startLap}-{selectedBattle.endLap}</h6>
-                      <p className="mb-2">
-                        <strong>Duration:</strong> {selectedBattle.endLap - selectedBattle.startLap + 1} laps
-                        <span className="ms-2">
-                          <Badge bg={selectedBattle.intensity === 'high' ? "danger" : "warning"}>
-                            {selectedBattle.intensity === 'high' ? 'High Intensity' : 'Medium Intensity'}
-                          </Badge>
-                        </span>
-                      </p>
-                      <div className="battle-laps">
-                        <Table size="sm" className="mb-0">
-                          <thead>
-                            <tr>
-                              <th>Lap</th>
-                              <th>{selectedDriver?.name}</th>
-                              <th>{comparisonDriver?.name}</th>
-                              <th>Gap</th>
-                              <th>Positions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {gapData
-                              .filter(lap => lap.lap >= selectedBattle.startLap && lap.lap <= selectedBattle.endLap)
-                              .map(lap => (
-                                <tr key={lap.lap}>
-                                  <td>{lap.lap}</td>
-                                  <td>{msToTime(lap.primaryTime * 1000)}</td>
-                                  <td>{msToTime(lap.comparisonTime * 1000)}</td>
-                                  <td className={lap.timeGap > 0 ? 'text-danger' : 'text-success'}>
-                                    {lap.timeGap > 0 ? '+' : ''}{lap.timeGap.toFixed(3)}s
-                                  </td>
-                                  <td>
-                                    P{lap.primaryPos} vs P{lap.comparisonPos}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </Table>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {battles.length > 0 && !selectedBattle && (
-                    <div className="text-muted mt-2">
-                      Select a battle to see detailed comparison
-                    </div>
-                  )}
-                </div>
-              </Card.Body>
-            </Card>
-          )}
         </>
       )}
     </div>

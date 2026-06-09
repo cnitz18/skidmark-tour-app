@@ -1,7 +1,7 @@
 .container {
   min-height: calc(100vh - 120px);
   padding-top: 100px;
-  background: linear-gradient(to bottom, #f8f9fa, #fff);
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));
 }
 
 .loadingWrapper {
@@ -19,7 +19,7 @@
 }
 
 .loginCard {
-  background-color: #fff;
+  background-color: var(--color-bg-elevated);
   border: none;
   border-radius: 12px;
   width: 100%;
@@ -29,39 +29,39 @@
 }
 
 .loginHeader {
-  background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1a1a1a 100%);
   border-bottom: none;
   border-radius: 0 !important;
-  color: #ffc107;
+  color: var(--color-accent);
   text-align: center;
   padding: 1.5rem;
 }
 
 .loginDescription {
-  color: #6c757d;
+  color: var(--color-text-secondary);
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
 .formLabel {
-  color: #495057;
+  color: var(--color-text);
   font-weight: 500;
 }
 
 .formControl {
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  color: #212529;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   padding: 0.75rem;
   border-radius: 6px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .formControl:focus {
-  background-color: #fff;
-  border-color: #ffc107;
-  color: #212529;
-  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+  box-shadow: 0 0 0 0.25rem rgba(247, 168, 0, 0.25);
 }
 
 .formControl::placeholder {
@@ -74,9 +74,9 @@
 
 .submitButton {
   width: 100%;
-  background-color: #ffc107;
+  background-color: var(--color-accent);
   border: none;
-  color: #212529;
+  color: var(--color-primary);
   font-weight: 600;
   padding: 0.75rem;
   border-radius: 6px;
@@ -84,21 +84,21 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #e0a800;
-  color: #212529;
+  background-color: var(--color-button-primary-hover);
+  color: var(--color-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  box-shadow: 0 4px 12px rgba(247, 168, 0, 0.3);
 }
 
 .submitButton:disabled {
-  background-color: #e9ecef;
-  color: #6c757d;
+  background-color: var(--color-border);
+  color: var(--color-text-secondary);
 }
 
 /* Admin portal content styles */
 .adminContent {
   min-height: calc(100vh - 60px);
-  background: linear-gradient(to bottom, #f8f9fa, #fff);
+  background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-elevated));
 }
 
 .portalContainer {
@@ -111,7 +111,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--color-border);
   padding-bottom: 0;
 }
 
@@ -120,7 +120,7 @@
 }
 
 .tabLink {
-  color: #495057;
+  color: var(--color-text-secondary);
   font-weight: 500;
   padding: 0.75rem 1.25rem;
   border-radius: 8px 8px 0 0 !important;
@@ -128,19 +128,19 @@
 }
 
 .tabLink:hover {
-  color: #212529;
-  background-color: #f8f9fa;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
 .tabLink:global(.active) {
-  color: #212529 !important;
-  background-color: #fff !important;
-  border-color: #dee2e6 #dee2e6 #fff !important;
+  color: var(--color-accent) !important;
+  background-color: var(--color-bg-elevated) !important;
+  border-color: var(--color-border) var(--color-border) var(--color-bg-elevated) !important;
   font-weight: 600;
 }
 
 .tabContent {
-  background-color: #fff;
+  background-color: var(--color-bg-elevated);
   border-radius: 0 8px 8px 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);

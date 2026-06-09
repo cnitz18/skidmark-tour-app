@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
-import { useState } from "react";
-import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useEffect } from "react";
+import { Route, Routes, BrowserRouter as Router, Navigate, useLocation, Link } from 'react-router-dom'
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
 import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
-import logo from "../assets/skidmark-placeholder.png";
+import logo from "../assets/Skidmark_Logo_Title.png";
 import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
 import ServerStatus from './ServerStatus/ServerStatus';
@@ -21,58 +21,83 @@ const navLinks = [
   { name: 'Server', href: '/server' },
 ]
 
+function TitleUpdater() {
+  const location = useLocation();
 
-export default function NavBar({ enums, lists }) {
-  const [selectedRoute, setSelectedRoute] = useState(window.location.pathname);
+  useEffect(() => {
+    const titleMap = {
+      '/': 'The Skidmark Tour',
+      '/history': 'Race History | The Skidmark Tour',
+      '/leagues': 'Leagues | The Skidmark Tour',
+      '/trophyroom': 'Trophy Room | The Skidmark Tour',
+      '/server': 'Server Status | The Skidmark Tour',
+      '/admin': 'Admin Portal | The Skidmark Tour',
+      '/leagueadmin': 'League Admin | The Skidmark Tour',
+    };
 
-  function onSelectRoute(e) {
-    setSelectedRoute(e.currentTarget.getAttribute('href'));
-  }
+    // Check if it's a league detail page
+    if (location.pathname.startsWith('/league/')) {
+      document.title = 'League Details | The Skidmark Tour';
+    } else {
+      document.title = titleMap[location.pathname] || 'The Skidmark Tour';
+    }
+  }, [location]);
+
+  return null;
+}
+
+function NavigationContent({ enums, lists }) {
+  const location = useLocation();
+  const routeKey = `${location.pathname}${location.search}`;
+  const [navExpanded, setNavExpanded] = useState(false);
 
   return (
-    <Router>
-      <div className={styles.mainContent}>
-        <Navbar 
-          expand="lg" 
-          className={styles.navbar}
-          fixed="top"
-        >
-          <Container>
-            <Navbar.Brand href="/" className={styles.brand}>
-              <img 
-                src={logo} 
-                alt="Logo" 
-                className={styles.logo}
-              />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className={styles.navLinks}>
-                {
-                  navLinks.map((nLink,i) => (
-                    <Nav.Link 
-                      key={i}
-                      value={nLink.href}
-                      href={nLink.href} 
-                      active={selectedRoute === nLink.href}
-                      onClick={onSelectRoute}
-                      className={`nav-link ${selectedRoute === nLink.href ? styles.active : ''}`}>
-                        {nLink.name}
-                      </Nav.Link>
-                  ))
-                }
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
+    <div className={styles.mainContent}>
+      <Navbar 
+        expand="lg" 
+        className={styles.navbar}
+        fixed="top"
+        expanded={navExpanded}
+        onToggle={(expanded) => setNavExpanded(expanded)}
+      >
+        <Container>
+          <Navbar.Brand as={Link} to="/" className={styles.brand} onClick={() => setNavExpanded(false)}>
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className={styles.logo}
+            />
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className={styles.navLinks}>
+              {
+                navLinks.map((nLink,i) => (
+                  <Nav.Link 
+                    key={i}
+                    as={Link}
+                    to={nLink.href}
+                    active={location.pathname === nLink.href}
+                    className={`nav-link ${location.pathname === nLink.href ? styles.active : ''}`}
+                    onClick={() => setNavExpanded(false)}>
+                      {nLink.name}
+                    </Nav.Link>
+                ))
+              }
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <TitleUpdater />
+      <div key={routeKey} className={styles.routeTransition}>
         <Routes>
           {/* Specific hardcoded redirect from /leagues/winter25 to /league/29 */}
           <Route path="/league/winter25" element={<Navigate to="/league/29" replace />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home lists={lists} />} />
           <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
-          <Route path="/trophyroom" element={<TrophyRoomBasic/>}/>
+          <Route path="/trophyroom" element={<TrophyRoomBasic lists={lists}/>}/>
           <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
           <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
           <Route
@@ -82,6 +107,15 @@ export default function NavBar({ enums, lists }) {
           />
         </Routes>
       </div>
+    </div>
+  );
+}
+
+
+export default function NavBar({ enums, lists }) {
+  return (
+    <Router>
+      <NavigationContent enums={enums} lists={lists} />
     </Router>
   )
 }

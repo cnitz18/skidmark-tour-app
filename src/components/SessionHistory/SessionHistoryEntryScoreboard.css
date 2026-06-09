@@ -7,7 +7,7 @@
 }
 
 .race-event-modal .modal-header {
-  background-color: #f8f9fa;
+  background-color: var(--color-bg);
 }
 
 /* Lap time table styling */
@@ -18,21 +18,137 @@
 
 .lap-time-table .MuiTable-root th {
   font-weight: 600;
-  color: #495057;
-  background-color: #f8f9fa;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg);
   padding: 6px 10px;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--color-border);
   font-size: 14px;
 }
 
 .lap-time-table .MuiTable-root td {
   padding: 4px 10px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
   font-size: 14px;
 }
 
-.lap-time-table .MuiTable-root tr.even-row {
-  background-color: #f8f9fa;
+.lap-time-value {
+  font-size: 1.04rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.sector-time-value {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.lap-intelligence-panel {
+  padding: 0;
+}
+
+.lap-intelligence-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summary-item {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-elevated);
+}
+
+.summary-label {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.summary-value {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.summary-gain {
+  color: var(--color-success);
+}
+
+.lap-intelligence-insights {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lap-table-toggle-wrap {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+
+.lap-mini-chart {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.lap-mini-chart-canvas {
+  width: 100%;
+  height: 220px;
+}
+
+.lap-mini-tooltip {
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-width: 130px;
+}
+
+.lap-mini-tooltip-title {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.lap-mini-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.insight-chip {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  padding: 8px 10px;
+}
+
+.insight-chip-title {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.insight-chip-value {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.insight-chip-detail {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  margin-top: 4px;
+  line-height: 1.25;
 }
 
 /* Position indicator */
@@ -42,8 +158,8 @@
 
 .position-badge {
   display: inline-block;
-  background: #e9ecef;
-  color: #495057;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 600;
@@ -51,13 +167,20 @@
 }
 
 .position-badge.position-1 {
-  background: #ffd700;
-  color: #856404;
+  background: #d4af37;
+  color: #3a2f08;
 }
 
 .position-badge.position-2 {
   background: #c0c0c0;
   color: #495057;
+}
+
+@media screen and (max-width: 768px) {
+  .session-score th,
+  .session-score td {
+    text-align: center;
+  }
 }
 
 .position-badge.position-3 {
@@ -68,8 +191,8 @@
 /* Best time highlights */
 .race-fastest-lap-highlight {
   background-color: rgba(128, 0, 128, 0.08) !important;
-  color: #5a189a;
-  font-weight: 600;
+  color: #ffffff;
+  /* font-weight: 600; */
   position: relative;
 }
 
@@ -101,7 +224,7 @@
 }
 
 .personal-fastest-sector-highlight {
-  background-color: rgba(255, 193, 7, 0.08) !important;
+  background-color: rgba(255, 193, 7, 0.12) !important;
   color: #856404;
   font-weight: 600;
   position: relative;
@@ -121,7 +244,7 @@
   display: inline-flex;
   align-items: center;
   font-size: 13px;
-  color: #6c757d;
+  color: var(--color-text-secondary);
 }
 
 .color-box {
@@ -184,25 +307,128 @@
   min-width: 80px;
 }
 
-/* Tab styling */
-.nav-tabs .nav-link {
-  color: #495057;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  padding: 10px 15px;
+/* Tab / Pill styling */
+.race-event-modal .race-detail-pills-shell {
+  position: relative;
+}
+
+.race-event-modal .tabs-overflow-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background-color: rgba(247, 168, 0, 0.22);
+  color: var(--color-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(247, 168, 0, 0.35);
+}
+
+.race-event-modal .tabs-overflow-arrow-left {
+  left: 2px;
+}
+
+.race-event-modal .tabs-overflow-arrow-right {
+  right: 2px;
+}
+
+.race-event-modal .race-detail-pills {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 6px;
+  padding-bottom: 4px;
+  border-bottom: none;
+  /* Hide scrollbar but keep scrollable */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.race-event-modal .race-detail-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.race-event-modal .race-detail-pills .nav-item {
+  flex-shrink: 0;
+}
+
+.race-event-modal .race-detail-pills .nav-link {
+  color: var(--color-text-secondary);
+  font-family: var(--font-primary);
+  background-color: transparent;
+  border-radius: 20px;
+  padding: 6px 16px;
   font-weight: 500;
-  border: 1px solid transparent;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.nav-tabs .nav-link:hover {
-  background-color: #f8f9fa;
-  border-color: transparent;
+.race-event-modal .race-detail-pills .nav-link:hover:not(.active) {
+  background-color: rgba(247, 168, 0, 0.12);
+  border-color: var(--color-accent);
+  color: var(--color-text);
 }
 
-.nav-tabs .nav-link.active {
-  color: #007bff;
-  background-color: white;
-  border-color: #dee2e6 #dee2e6 white;
+.race-event-modal .race-detail-pills .nav-link.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #0d2240;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .position-badge.position-1 {
+  background: #b99222;
+  color: #f5e7bf;
+}
+
+[data-theme="dark"] .position-badge.position-2 {
+  background: #7e8690;
+  color: #f2f4f7;
+}
+
+[data-theme="dark"] .position-badge.position-3 {
+  background: #8e5f34;
+  color: #f5e9db;
+}
+
+[data-theme="dark"] .personal-fastest-lap-highlight {
+  background-color: rgba(40, 167, 69, 0.22) !important;
+  color: #d9ffe3;
+}
+
+[data-theme="dark"] .personal-fastest-lap-highlight::before {
+  background-color: #45d36e;
+}
+
+[data-theme="dark"] .personal-fastest-sector-highlight {
+  background-color: rgba(255, 193, 7, 0.26) !important;
+  color: #fff2c2;
+}
+
+[data-theme="dark"] .personal-fastest-sector-highlight::before {
+  background-color: #ffd766;
+}
+
+[data-theme="dark"] .sector-time-value {
+  color: #c2c9d4;
+}
+
+[data-theme="dark"] .personal-fastest-lap-legend .color-box {
+  background-color: rgba(69, 211, 110, 0.35);
+}
+
+[data-theme="dark"] .personal-fastest-sector-legend .color-box {
+  background-color: rgba(255, 215, 102, 0.42);
 }
 .event-card .card-body {
   padding: 0;
@@ -210,6 +436,11 @@
 
 /* Mobile responsive styling */
 @media (max-width: 768px) {
+  .lap-intelligence-summary,
+  .lap-intelligence-insights {
+    grid-template-columns: 1fr;
+  }
+
   .lap-time-table {
     overflow-x: auto !important;
   }

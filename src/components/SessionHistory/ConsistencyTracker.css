@@ -1,31 +1,176 @@
 /* Add to your existing CSS file or create ConsistencyTracker.css */
 
 .consistency-tracker {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  font-family: var(--font-primary);
 }
 
 .consistency-card, .improvement-card, .sector-analysis-card {
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.consistency-card:hover, .improvement-card:hover, .sector-analysis-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-.consistency-rating .rating-value {
-  font-size: 1.5rem;
+.consistency-std-value {
+  font-size: 2rem;
   font-weight: 700;
-  color: #343a40;
+  color: var(--color-text);
+  line-height: 1;
+  display: block;
+  text-align: center;
 }
 
-.consistency-rating .rating-label {
+.consistency-std-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.consistency-std-label-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.consistency-tight { background: rgba(40, 167, 69, 0.15); color: var(--color-success); }
+.consistency-good { background: rgba(0, 168, 225, 0.15); color: var(--color-secondary); }
+.consistency-moderate { background: rgba(247, 168, 0, 0.15); color: var(--color-accent); }
+.consistency-scattered { background: rgba(220, 53, 69, 0.15); color: var(--color-danger); }
+.consistency-high { background: rgba(220, 53, 69, 0.25); color: var(--color-danger); }
+.consistency-unknown { background: var(--color-bg); color: var(--color-text-secondary); }
+
+.pace-window-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pace-window-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--color-bg-elevated);
+}
+
+.pace-window-label {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.pace-window-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.pace-window-value.is-positive {
+  color: var(--color-success);
+}
+
+.pace-window-value.is-neutral {
+  color: var(--color-accent);
+}
+
+.pace-window-value.is-negative {
+  color: var(--color-danger);
+}
+
+.pace-window-detail {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.stint-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stint-summary-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--color-bg-elevated);
+}
+
+.stint-summary-label {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.stint-summary-value {
   font-size: 1rem;
-  font-weight: 500;
-  color: #495057;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.stint-insights-list {
+  display: grid;
+  gap: 10px;
+}
+
+.stint-insight-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-elevated);
+}
+
+.stint-insight-title {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.stint-insight-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.stint-insight-metrics {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.stint-insight-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.8rem;
+  min-width: 4.75rem;
+}
+
+.stint-insight-metric strong {
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.stint-delta {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.stint-delta.is-stable {
+  color: var(--color-success);
+}
+
+.stint-delta.is-manageable {
+  color: var(--color-accent);
+}
+
+.stint-delta.is-fading {
+  color: var(--color-danger);
 }
 
 .detail-row {
@@ -33,13 +178,8 @@
 }
 
 .sector-card {
-  background-color: #f8f9fa;
-  border: 1px solid rgba(0,0,0,0.05);
-  transition: background-color 0.2s ease;
-}
-
-.sector-card:hover {
-  background-color: #f1f3f5;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
 }
 
 .sector-badge {
@@ -53,7 +193,7 @@
 }
 
 .focus-area {
-  border-left: 4px solid #007bff;
+  border-left: 4px solid var(--color-secondary);
 }
 
 /* Add to your CSS file */
@@ -71,9 +211,85 @@
   background-color: rgba(142, 68, 173, 0.05);
 }
 
+.sector-mobile-summary {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-elevated);
+  padding: 10px 12px;
+}
+
+.sector-mobile-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.sector-mobile-summary-row:last-of-type {
+  margin-bottom: 8px;
+}
+
+.sector-mobile-holders {
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.mobile-toggle-btn {
+  border-radius: 999px;
+  font-size: 0.78rem;
+  padding: 2px 10px;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .sector-card {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .sector-card,
+  .pace-window-card,
+  .stint-summary-card,
+  .stint-insight-row {
+    padding: 10px;
+  }
+
+  .consistency-std-value {
+    font-size: 1.6rem;
+  }
+
+  .pace-window-grid,
+  .stint-summary-grid,
+  .stint-insight-row,
+  .stint-insight-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .stint-insight-row,
+  .stint-insight-metrics {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stint-insight-row,
+  .stint-insight-title,
+  .stint-insight-subtitle,
+  .stint-insight-metrics,
+  .stint-insight-metric {
+    text-align: center;
+  }
+
+  .stint-insight-row,
+  .stint-insight-metrics,
+  .stint-insight-metric {
+    align-items: center;
+  }
+
+  .stint-summary-card,
+  .stint-summary-label,
+  .stint-summary-value,
+  .stint-summary-card .pace-window-detail {
+    text-align: center;
   }
 }

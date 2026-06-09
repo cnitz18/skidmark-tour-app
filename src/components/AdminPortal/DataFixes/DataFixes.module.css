@@ -5,12 +5,12 @@
 /* Sub-navigation */
 .subNav {
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 1rem;
 }
 
 .subNavLink {
-  color: #495057;
+  color: var(--color-text-secondary);
   border-radius: 6px !important;
   padding: 0.5rem 1rem;
   margin-right: 0.5rem;
@@ -18,13 +18,13 @@
 }
 
 .subNavLink:hover {
-  color: #212529;
-  background-color: #f8f9fa;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
 .subNavLink:global(.active) {
-  background-color: #0d6efd !important;
-  color: #fff !important;
+  background-color: var(--color-secondary) !important;
+  color: var(--color-white) !important;
 }
 
 /* Cards */
@@ -35,21 +35,21 @@
 }
 
 .cardHeader {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
   font-weight: 600;
-  color: #212529;
+  color: var(--color-text);
 }
 
 .description {
-  color: #6c757d;
+  color: var(--color-text-secondary);
   margin-bottom: 1.5rem;
 }
 
 /* Form elements */
 .formLabel {
   font-weight: 500;
-  color: #495057;
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 }
 
@@ -58,8 +58,8 @@
 }
 
 .formControl:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 0.2rem rgba(0, 168, 225, 0.15);
 }
 
 .actionButton {

@@ -1,48 +1,37 @@
-.trophy-room {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: #f8f9fa;
-    min-height: 100vh;
-}
-
-.canvas-container {
-    width: 100%;
-    height: 600px;
-    background-color: #f0f0f0;
-    position: relative;
-    overflow: hidden;
-}
+/* ===== TROPHY ROOM ===== */
 
 .section-header {
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 10px;
-  margin-bottom: 30px;
+  border-bottom: 2px solid var(--color-accent);
+  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
 }
 
 .section-icon {
-  font-size: 2rem;
+  font-size: 1.75rem;
+  color: var(--color-accent);
 }
 
-/* Trophy Cards Styling */
+/* Trophy Cards */
 .trophy-card {
-  border: none;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--color-bg-elevated);
+  box-shadow: 0 4px 15px rgba(0, 168, 225, 0.08);
+  transition: transform var(--motion-base) var(--motion-ease-standard),
+              box-shadow var(--motion-base) var(--motion-ease-standard);
 }
 
 .trophy-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 168, 225, 0.18);
 }
 
-.trophy-icon, .champion-crown {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  width: 60px;
-  height: 60px;
+.trophy-icon,
+.champion-crown {
+  font-size: 1.5rem;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,174 +40,191 @@
 }
 
 .trophy-icon {
-  background-color: rgba(25, 135, 84, 0.1);
-  color: #198754;
+  background-color: rgba(76, 175, 80, 0.12);
+  color: var(--color-success);
 }
 
 .champion-crown {
-  background-color: rgba(255, 193, 7, 0.1);
-  color: #ffc107;
+  background-color: rgba(247, 168, 0, 0.12);
+  color: var(--color-accent);
 }
 
-.trophy-title, .champion-name {
-  font-weight: 700;
+.champion-car-image-wrap {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
+  background-color: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.champion-car-image-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: linear-gradient(to bottom, transparent, var(--color-bg-elevated));
+  pointer-events: none;
+}
+
+.champion-car-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.trophy-title,
+.champion-name {
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.3px;
   text-align: center;
-  margin-bottom: 0.75rem;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
 }
 
 .achievement-position {
-  font-weight: 600;
-  color: #198754;
+  font-weight: 700;
+  color: var(--color-success);
   text-align: center;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  margin-bottom: 0.75rem;
 }
 
 .trophy-details {
-  border-top: 1px solid #e9ecef;
-  border-bottom: 1px solid #e9ecef;
-  padding: 0.75rem 0;
-  margin: 1rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.6rem 0;
+  margin: 0.75rem 0;
   width: 100%;
-  text-align: center;
 }
 
 .trophy-details p {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
 }
 
-.highlight-box {
-  background-color: #f8f9fa;
-  border-left: 3px solid #ffc107;
-  padding: 0.75rem;
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
+.trophy-details p:last-child {
+  margin-bottom: 0;
 }
 
-.highlight-icon {
-  color: #ffc107;
-  margin-right: 0.5rem;
-  flex-shrink: 0;
-}
-
-/* Champion cards styling */
+/* Champion cards */
 .champion-card {
   text-align: center;
-  padding: 0.5rem;
 }
 
 .champion-season {
-  color: #6c757d;
-  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
   margin-bottom: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.35rem;
 }
 
 .champion-championship {
   font-weight: 600;
-  color: #0d6efd;
+  color: var(--color-secondary);
   margin-bottom: 0.75rem;
+  font-size: 0.9rem;
 }
 
 .champion-stats {
-  font-size: 0.9rem;
-  color: #6c757d;
-  background-color: rgba(13, 110, 253, 0.05);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 50px;
-  padding: 0.4rem 1rem;
+  padding: 0.3rem 0.85rem;
   display: inline-block;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .section-icon {
-    margin-bottom: 10px;
-  }
-}
-
-/* Add to TrophyRoom.css */
+/* Members box */
 .members-box {
-  margin-top: 15px;
-  background-color: #f8f9fa;
+  margin-top: 0.85rem;
+  background-color: var(--color-bg);
   border-radius: 8px;
-  padding: 10px 15px;
-  border-left: 3px solid #0d6efd;
-  text-align: center; /* Center the content */
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-secondary);
+  text-align: center;
 }
 
 .members-header {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center the header */
-  font-weight: 500;
-  color: #495057;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  gap: 0.4rem;
 }
 
 .members-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center; /* Center the badges */
+  gap: 6px;
+  justify-content: center;
 }
 
 .member-badge {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  border: 1px solid #dee2e6;
+  padding: 4px 10px;
   font-weight: 400;
+  border-radius: 50px;
+  font-size: 0.78rem;
 }
 
 .member-icon {
-  margin-right: 5px;
-  opacity: 0.7;
+  margin-right: 4px;
+  opacity: 0.6;
 }
 
-/* Add this to center the Special Event descriptions */
 .trophy-card .card-body {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  background-color: var(--color-bg-elevated);
 }
 
-/* Make sure descriptions are centered */
 .trophy-card .card-text {
   text-align: center;
   width: 100%;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
 }
 
-/* Add to TrophyRoom.css */
+/* Champion link wrapper */
 .champion-link {
   display: block;
   height: 100%;
   color: inherit;
-  transition: transform 0.2s ease;
+  text-decoration: none;
 }
 
 .champion-link:hover {
-  transform: translateY(-5px);
   color: inherit;
+  text-decoration: none;
 }
 
-.champion-link:hover .trophy-card {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
+/* Responsive */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.champion-link .trophy-card {
-  transition: box-shadow 0.2s ease;
-  cursor: pointer;
+  .section-icon {
+    margin-bottom: 0.4rem;
+  }
 }

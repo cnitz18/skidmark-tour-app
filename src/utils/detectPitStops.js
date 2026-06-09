@@ -4,7 +4,7 @@
       in : [],
       out: []
     };
-    for (let i = 1; i < laps.length; i++) {
+    for (let i = 0; i < laps.length; i++) {
       const currentLap = laps[i];
       const lapEvents = eventsData.filter(e => e.attributes_Lap === currentLap.attributes_Lap)
       const pittedIn = lapEvents.some(e => e.event_name === "State" && e.attributes_NewState === "EnteringPits");

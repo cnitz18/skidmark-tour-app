@@ -1,0 +1,218 @@
+/* ─── Round strip ─── */
+.roundStrip {
+  display: flex;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding: 0.75rem 0 0.5rem;
+  position: relative;
+}
+
+.roundItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 56px;
+  position: relative;
+}
+
+.roundItemClickable {
+  cursor: pointer;
+}
+
+/* Connector line between dots */
+.roundItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+.roundItem.done:not(:last-child)::after {
+  background: var(--color-success);
+}
+
+.roundDot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  z-index: 1;
+  position: relative;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: transform var(--motion-fast) var(--motion-ease-standard);
+}
+
+.roundDot.done {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #fff;
+}
+
+.roundDot.next {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: #fff;
+}
+
+.roundTrack {
+  font-size: 0.6rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: 0.3rem;
+  max-width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.roundTrack.done {
+  color: var(--color-text);
+}
+
+.roundTrack.next {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+/* ─── Strip header row ─── */
+.stripHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.stripLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+.toggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-style: italic;
+  font-family: inherit;
+}
+
+.toggleBtn:hover {
+  opacity: 0.75;
+}
+
+/* ─── Collapsible calendar ─── */
+.calendarCollapse {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height var(--motion-slow) var(--motion-ease-standard);
+}
+
+.calendarCollapse.open {
+  max-height: 3000px;
+}
+
+/* ─── Race results section header ─── */
+.resultsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent);
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+.sortToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-style: italic;
+  padding: 0;
+  opacity: 0.75;
+  transition: opacity var(--motion-fast) var(--motion-ease-standard);
+}
+
+.sortToggle:hover {
+  opacity: 1;
+  color: var(--color-secondary);
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 576px) {
+  /* Keep horizontal scroll — no wrap — so connector lines stay intact */
+  .roundStrip {
+    flex-wrap: nowrap;
+    padding-bottom: 0.75rem; /* space for scrollbar */
+  }
+
+  .roundItem {
+    flex: 0 0 auto;
+    min-width: 44px;
+  }
+
+  /* Smaller dot so more rounds fit before scrolling */
+  .roundDot {
+    width: 24px;
+    height: 24px;
+    font-size: 0.6rem;
+  }
+
+  /* Adjust line to center of 24px dot */
+  .roundItem:not(:last-child)::after {
+    top: 12px;
+  }
+
+  .roundTrack {
+    max-width: 44px;
+    font-size: 0.55rem;
+  }
+}
+
+@keyframes raceFlash {
+  0%   { background: rgba(0, 168, 225, 0.18); }
+  60%  { background: rgba(0, 168, 225, 0.08); }
+  100% { background: transparent; }
+}
+
+.raceHighlight {
+  animation: raceFlash 2s var(--motion-ease-standard) forwards;
+  border-radius: 8px;
+}

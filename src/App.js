@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import getAPIData from "./utils/getAPIData";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
-import './index.css';
+import { ThemeProvider } from "./contexts/ThemeContext";
+import styles from './App.module.css';
 
 const App = () => {
   const [enums, setEnums] = useState({});
@@ -33,11 +34,13 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <NavBar enums={enums} lists={lists}/>
-      <Footer/>
-    </>
-
+    <ThemeProvider>
+      <div className={styles.appWrapper}>
+        <NavBar enums={enums} lists={lists}/>
+        <main className={styles.mainContent}></main>
+        <Footer/>
+      </div>
+    </ThemeProvider>
   );
 };
 

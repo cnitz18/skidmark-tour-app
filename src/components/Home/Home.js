@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Carousel, Image, Col } from 'react-bootstrap';
-import PageHeader from '../shared/PageHeader'
+import { Container, Row, Carousel, Col, Spinner } from 'react-bootstrap';
 import { FaYoutube, FaTwitch } from "react-icons/fa";
 import styles from './Home.module.css';
 import { getLiveStreams } from '../../utils/twitchApi';
 import LiveStreams from './LiveStreams';
+import getAPIData from '../../utils/getAPIData';
+import fullLogo from "../../assets/Skidmark_Logo_1.png";
+import FeaturedLeagueCard from '../shared/FeaturedLeagueCard';
 
 const imageInfo = [
     {
-        url: "homepage/kartgrid.jpg",
-        caption: "Karting Fall '24"
-    },
-    {
         url: "homepage/monza-sprint-finish.jpg",
-        caption: "Nailbiter Finish @ Monza '71",
+        caption: "Low Key Last Lap With The Boys (link)",
         href: "https://www.youtube.com/watch?v=xwN_Ch8Hexo"
     },
     {
@@ -21,22 +19,22 @@ const imageInfo = [
         caption: "Karting Fall '24"
     },
     {
+        url: "homepage/skidmarkvsopalas.jpg",
+        caption: "2025 Winter Season Highlights (link)",
+        href: "https://www.youtube.com/watch?v=LGmDh31O4Rc"
+    },
+    {
+        url: "homepage/karting-fall-25.jpg",
+        caption: "Karting Fall '25",
+    },
+    {
         url: "homepage/arccamaros.jpg",
         caption: "Door Banging @ Yahuarcocha (link)",
         href: "https://www.youtube.com/watch?v=4KDvMUHPLDw"
     },
     {
-        url: "homepage/irl.jpg",
+        url: "homepage/kartgrid.jpg",
         caption: "Karting Fall '24"
-    },
-    {
-        url: "homepage/formulajuniors.jpg",
-        caption: "Formula Juniors @ Spa-Francorchamps 1970 (link)",
-        href: "https://youtu.be/yMqXIcBbhxo?si=5iHQGi5Mn_rXBd3v"
-    },
-    {
-        url: "homepage/karting-fall-25.jpg",
-        caption: "Karting Fall '25",
     }
 ]
 
@@ -73,8 +71,12 @@ const socialInfo = [
     }
 ]
 
-export default function Home() {
+export default function Home({ lists }) {
     const [liveStreams, setLiveStreams] = useState([]);
+    const [league, setLeague] = useState(null);
+    const [leagueData, setLeagueData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [activeSlide, setActiveSlide] = useState(0);
     
     useEffect(() => {
         const twitchUsernames = socialInfo
@@ -86,68 +88,119 @@ export default function Home() {
             });
     }, []);
 
+    useEffect(() => {
+        // Fetch all leagues and get the latest one
+        getAPIData('/leagues/get/')
+            .then(leagues => {
+                if (leagues && leagues.length > 0) {
+                    // Sort by ID descending to get the newest/most recent league
+                    const sortedLeagues = [...leagues].sort((a, b) => b.id - a.id);
+                    const latestLeague = sortedLeagues[0];
+                    const latestLeagueId = latestLeague.id;
+                    setLeague(latestLeague);
+                    
+                    // Now fetch stats for the latest league
+                    return getAPIData(`/leagues/get/stats/?id=${latestLeagueId}`);
+                }
+            })
+            .then(data => {
+                if (data) {
+                    setLeagueData(data);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Error fetching league data:', err);
+                setLoading(false);
+            });
+    }, []);
+
     return (
         <div className={styles.homePage}>
-            <div className={styles.heroSection}>
-                <Container fluid>
-                    <Row>
-                        {process.env.REACT_APP_ENV === "Skidmark Tour" && (
-                            <PageHeader 
-                                title="Home of The Skidmark Tour"
+            <div className={`${styles.heroSection} motion-rise-in`}>
+                {/* Integrated Header + Carousel — full bleed, no container */}
+                <div className={styles.carouselWrapper}>
+                        <Carousel fade className={styles.carousel} onSelect={(index) => setActiveSlide(index)}>
+                            {imageInfo.map((img,i) => (
+                                <Carousel.Item key={i} interval={3000}>
+                                    {img.href ? (
+                                        <a href={img.href} className={styles.carouselLink} target="_blank" rel='noopener noreferrer'>
+                                            <img src={img.url} alt={img.caption} className={styles.carouselImage} />
+                                            <div className={styles.overlay}></div>
+                                        </a>
+                                    ) : (
+                                        <>
+                                            <img src={img.url} alt={img.caption} className={styles.carouselImage} />
+                                            <div className={styles.overlay}></div>
+                                        </>
+                                    )}
+                                </Carousel.Item>
+                            ))}
+                        </Carousel>
+                        
+                        {/* Caption positioned at wrapper bottom, tracks active slide */}
+                        <div className={styles.caption}>
+                            <h3>{imageInfo[activeSlide]?.caption}</h3>
+                        </div>
+                        
+                        {/* Header Overlay */}
+                        <div className={styles.headerOverlay}>
+                            <div className={styles.headerContent}>
+                                <div className={styles.headerText}>
+                                    <h1>Home of The Skidmark Tour</h1>
+                                </div>
+                                <img src={fullLogo} alt="Skidmark Logo" className={styles.overlayLogo} />
+                            </div>
+                        </div>
+                </div>
+
+                {/* League standings, socials — inside a proper container for mobile centering */}
+                <Container>
+                    {/* League Standings Section */}
+                    <div className={`${styles.leagueSection} motion-fade-in`}>
+                    {loading ? (
+                        <Row className='justify-content-center py-5'>
+                            <Col className='text-center'>
+                                <Spinner animation="border" variant="info" />
+                            </Col>
+                        </Row>
+                    ) : league ? (
+                        <>
+                            <Row>
+                                <Col>
+                                    <h2 className={styles.sectionTitle}>Current League</h2>
+                                </Col>
+                            </Row>
+                            <FeaturedLeagueCard
+                                league={league}
+                                standings={leagueData}
+                                tracksList={lists?.tracks?.list}
+                                compact
                             />
-                        )}
-                    </Row>
-                    <Row className='justify-content-center'>
-                        <Col md={10} lg={8}>
-                            <Carousel fade className={styles.carousel}>
-                                {imageInfo.map((img,i) => (
-                                    <Carousel.Item key={i} interval={3000}>
-                                        {img.href ? (
-                                            <a href={img.href} className={styles.carouselLink} target="_blank" rel='noopener noreferrer'>
-                                                <Image src={img.url} fluid/>
-                                                <div className={styles.overlay}></div>
-                                            </a>
-                                        ) : (
-                                            <>
-                                                <Image src={img.url} fluid/>
-                                                <div className={styles.overlay}></div>
-                                            </>
-                                        )}
-                                        <Carousel.Caption className={styles.caption}>
-                                            <h3>{img.caption}</h3>
-                                        </Carousel.Caption>
-                                    </Carousel.Item>
-                                ))}
-                            </Carousel>
-                        </Col>
-                    </Row>
+                        </>
+                    ) : null}
+                    </div>
+                    <div className={`${styles.socialsSection} motion-fade-in`}>
+                        <h2>Our Socials</h2>
+                        <div className={styles.socialsContainer}>
+                            {socialInfo.map((soc,i) => (
+                                <a 
+                                    key={i}
+                                    href={soc.link}
+                                    className={`${styles.socialLink} ${styles[soc.platform]}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
+                                    <span>{soc.name}</span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    <LiveStreams streams={liveStreams} />
                 </Container>
             </div>
-            
-            <Container>
-                <LiveStreams streams={liveStreams} />
-            </Container>
-
-            <Container className={styles.socialsSection}>
-                <Row className="text-center mb-4">
-                    <h2>Connect With Us</h2>
-                </Row>
-                <Row lg="auto" className='justify-content-center'>
-                    {socialInfo.map((soc,i) => (
-                        <Col key={i}>
-                            <a 
-                                href={soc.link}
-                                className={`${styles.socialLink} ${styles[soc.platform]}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {soc.platform === "twitch" ? <FaTwitch/> : <FaYoutube/>}
-                                <span>{soc.name}</span>
-                            </a>
-                        </Col>
-                    ))}
-                </Row>
-            </Container>
         </div>
     );
 }

@@ -2435,6 +2435,18 @@ textarea.form-control-lg {
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+
+[data-theme="dark"] .form-select {
+  color: var(--color-text);
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-border);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b0b0b0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+[data-theme="dark"] .form-select:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 0.25rem rgba(0, 168, 225, 0.25);
+}
 .form-select[multiple], .form-select[size]:not([size="1"]) {
   padding-right: 0.75rem;
   background-image: none;
@@ -11313,6 +11325,50 @@ textarea.form-control-lg {
   max-width: 800px;
   align-self: center;
 }
+
+/* Dark mode chart styling */
+[data-theme="dark"] .standings-chart {
+  /* Chart axes text color */
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .standings-chart text {
+  fill: var(--color-text) !important;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .standings-chart .MuiChartsAxis-bottom text,
+[data-theme="dark"] .standings-chart .MuiChartsAxis-left text,
+[data-theme="dark"] .standings-chart .MuiChartsAxis-right text {
+  fill: var(--color-text) !important;
+}
+
+/* Chart legend text in dark mode */
+[data-theme="dark"] .standings-chart .MuiChartsLegend-root text {
+  fill: var(--color-text) !important;
+}
+
+/* Chart tooltip styling - darker background with light text */
+[data-theme="dark"] .MuiChartsTooltip-root {
+  background-color: var(--color-bg-elevated) !important;
+}
+
+[data-theme="dark"] .MuiChartsTooltip-root text {
+  fill: var(--color-text) !important;
+}
+
+/* Tooltip container background */
+[data-theme="dark"] .MuiChartsTooltip-paper {
+  background-color: var(--color-bg-elevated) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* Axis lines in dark mode */
+[data-theme="dark"] .standings-chart line {
+  stroke: var(--color-border) !important;
+}
+
 .legend-checkbox {
   justify-content: right;
 }
@@ -11321,6 +11377,16 @@ textarea.form-control-lg {
   justify-content: center;
   margin-top: 1vh;
 }
+
+/* Table expand/collapse icons in dark mode */
+[data-theme="dark"] .standings-table-div .MuiIconButton-root svg {
+  color: var(--color-text) !important;
+}
+
+[data-theme="dark"] .standings-table-div .MuiIconButton-root {
+  color: var(--color-text) !important;
+}
+
 .standings-header {
   margin-bottom: 0;
   text-align: center;

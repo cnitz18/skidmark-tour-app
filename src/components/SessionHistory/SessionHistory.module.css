@@ -1,0 +1,72 @@
+.filterToggle {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.filterToggle summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border, rgba(128,128,128,0.25));
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  user-select: none;
+}
+
+.filterToggle summary::-webkit-details-marker {
+  display: none;
+}
+
+.filterToggle summary::after {
+  content: '▾';
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.filterToggle[open] summary::after {
+  transform: rotate(-180deg);
+}
+
+.filterToggle .filterRowInner {
+  padding-top: 0.75rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filterToggle .filterRowInner > * {
+  flex: 1 1 220px;
+}
+
+@media (max-width: 767px) {
+  .filterToggle {
+    margin-bottom: 0.5rem;
+  }
+
+  .filterToggle summary {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .filterToggle .filterRowInner {
+    padding-top: 0.75rem;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
+  }
+
+  .filterToggle .filterRowInner > * {
+    flex: 1;
+  }
+
+  /* Hide the Form.Label text on mobile — select placeholders are sufficient */
+  .filterToggle .filterRowInner label {
+    display: none;
+  }
+}

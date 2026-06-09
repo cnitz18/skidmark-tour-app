@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import getAPIData from "../../utils/getAPIData";
 import SessionHistoryEntry from "./SessionHistoryEntry";
 import PageHeader from "../shared/PageHeader";
-import { Spinner, ToggleButton, ToggleButtonGroup, Container, Row, Col, Form, Pagination, Accordion } from "react-bootstrap";
+import { Spinner, Container, Row, Col, Form, Pagination } from "react-bootstrap";
 import LoadingOverlay from 'react-loading-overlay-ts';
-import UnavailablePage from "../NewServerSetup/NewServerUnavailablePage";
+import UnavailablePage from "./ServerUnavailablePage";
+import styles from './SessionHistory.module.css';
 
 const SessionHistory = ({ enums, lists }) => {
   const [history, setHistory] = useState([]);
@@ -15,13 +16,8 @@ const SessionHistory = ({ enums, lists }) => {
   const [showErrorPage, setShowErrorPage] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const [showMiniSpinner, setShowMiniSpinner] = useState(false);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('league-only');
   const [sortOptionSelected,setSortOptionSelected] = useState('dateDesc')
-
-  const radios = [
-    { name: 'All', filter: 'all', variant: 'outline-warning' },
-    { name: 'League', filter: 'league-only', variant: 'outline-info' },
-  ];
 
   function handleFilters(e){
     setCurPage(1)
@@ -115,14 +111,14 @@ const SessionHistory = ({ enums, lists }) => {
   },[pageCount,curPage])
 
   return (
-    <>
+    <Container>
       <PageHeader 
         title="Race History" 
         subtitle="All of our weekly Automobilista 2 races."
         />
       {showSpinner ? (
 
-                <div className="text-center mt-4">
+                <div className="text-center mt-4" style={{ color: 'var(--color-text)' }}>
                     <Spinner animation="border" role="status"/>
                       <div>
                         One moment please...
@@ -130,46 +126,32 @@ const SessionHistory = ({ enums, lists }) => {
                 </div>
             ) : 
             (
-              <Container>
-                <Row>
-                  <Col sm>
-                    Order By:
-                    <Form.Select aria-label="Default select example" onChange={handleSort}>
-                      <option value="dateDesc">Date Descending</option>
-                      <option value="dateAsc">Date Ascending</option>
-                    </Form.Select>
-                  </Col>
-                  <Col></Col>
-                  <Col sm>
-                    <Accordion>
-                      <Accordion.Item eventKey="0">
-                        <Accordion.Header>Filters</Accordion.Header>
-                        <Accordion.Body>
-                          <ToggleButtonGroup type="radio" name="options" value={filter}>
-                            {filter && radios.map((radio, idx) => (
-                              <ToggleButton
-                                key={idx}
-                                id={`radio-${idx}`}
-                                variant={radio.variant}
-                                value={radio.filter}
-                                onChange={handleFilters}
-                                className="text-nowrap"
-                              >
-                                {radio.name + ( filter === radio.filter ? " Races" : "" )}
-                              </ToggleButton>
-                            ))}
-                          </ToggleButtonGroup>
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    </Accordion>
-                  </Col>
-                </Row>
+              <>
+                <details className={styles.filterToggle}>
+                  <summary>Filters</summary>
+                  <div className={styles.filterRowInner}>
+                    <Form.Group>
+                      <Form.Label className="mb-2">Order By:</Form.Label>
+                      <Form.Select value={sortOptionSelected} onChange={handleSort}>
+                        <option value="dateDesc">Date Descending</option>
+                        <option value="dateAsc">Date Ascending</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label className="mb-2">Filter By:</Form.Label>
+                      <Form.Select value={filter} onChange={handleFilters}>
+                        <option value="all">All Races</option>
+                        <option value="league-only">League Races</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </div>
+                </details>
                 {/* History List */}
                 <LoadingOverlay
                   active={showMiniSpinner}
                   spinner
                   text='Loading...'>  
-                  <Row>
+                  <Row className="motion-stagger">
                     {
                       history
                       .map((h, i) => 
@@ -188,14 +170,13 @@ const SessionHistory = ({ enums, lists }) => {
                   </Col>
                   <Col></Col>
                 </Row>
-              </Container>
-
+              </>
             )
       }
       {
         showErrorPage && <UnavailablePage/>
       }
-    </>
+    </Container>
   );
 };
 export default SessionHistory;

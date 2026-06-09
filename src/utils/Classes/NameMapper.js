@@ -1,3 +1,5 @@
+import apiNameMappings from '../apiNameMappings.json';
+
 class NameMapper {
     static fromTrackId( trackId, tracklist ) {
         return tracklist?.find((t) => t.id === trackId)?.name;
@@ -30,6 +32,17 @@ class NameMapper {
     static fromVehicleId( vehicleId, vehicleList ){
         return vehicleList?.find((v) => v.id === vehicleId)?.name ?? "N/A";
     }
+    /**
+     * Returns the public path to the vehicle's image, e.g.
+     *   /vehicle_classes/GT3_Gen2/BMW%20M4%20GT3.png
+     * Returns null if the vehicle is not found or has no class.
+     */
+    static vehicleImagePath( vehicleId, vehicleList ){
+        const vehicle = vehicleList?.find((v) => v.id === vehicleId);
+        if (!vehicle?.class || !vehicle?.name) return null;
+        const safeName = vehicle.name.replace(/[<>:"/\\|?*]/g, '_').trim();
+        return `/vehicle_classes/${encodeURIComponent(vehicle.class)}/${encodeURIComponent(safeName)}.png`;
+    }
     static fromVehicleClassId( vehicleClassId, classList, customMessage = "<undefined>" ){
         return classList?.find((v) => v.value === vehicleClassId)?.name ?? customMessage;
         // .replaceAll('Cat','Caterham')
@@ -60,6 +73,19 @@ class NameMapper {
     static fromWeatherSlot(slot, enums){
         let weatherList = enums.weather?.list;
         return weatherList?.find((w) => w.value === slot)?.name;
+    }
+    
+    // API name string-based lookups (e.g., "Opala86" -> "Opala 86")
+    static fromVehicleApiName(apiName) {
+        return apiNameMappings.vehicles?.[apiName] ?? apiName;
+    }
+
+    static fromVehicleClassApiName(apiName) {
+        return apiNameMappings.vehicleClasses?.[apiName] ?? apiName;
+    }
+    
+    static fromTrackApiName(apiName) {
+        return apiNameMappings.tracks?.[apiName] ?? apiName;
     }
 }
 export default NameMapper;

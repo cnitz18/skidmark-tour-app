@@ -1,0 +1,108 @@
+/* Skidmark Tour Brand Colors & Theme System */
+
+:root {
+  /* ===== FONT FAMILY ===== */
+  --font-primary: 'Chakra Petch', sans-serif;
+  /* ===== BRAND COLORS ===== */
+  --color-primary: #0d2240;           /* National Flag Blue */
+  --color-secondary: #00a8e1;         /* Process Blue */
+  --color-accent: #f7a800;            /* Mustard */
+  --color-white: #ffffff;
+
+  /* ===== LIGHT MODE ===== */
+  --color-bg: #f8f9fa;
+  --color-bg-elevated: #ffffff;
+  --color-text: #0d2240;
+  --color-text-secondary: #666666;
+  --color-border: #e0e0e0;
+  --color-border-light: rgba(13, 34, 64, 0.1);
+  --color-divider: #f0f0f0;
+
+  /* ===== SEMANTIC COLORS (Light Mode) ===== */
+  --color-success: #4caf50;
+  --color-danger: #d32f2f;
+  --color-warning: #ff9800;
+  --color-info: #00a8e1;
+
+  /* ===== COMPONENT DEFAULTS ===== */
+  --color-button-primary: var(--color-accent);
+  --color-button-primary-hover: #e09800;
+  --color-button-secondary: var(--color-secondary);
+  --color-button-secondary-hover: #0089b8;
+
+  --color-navbar-bg: rgba(13, 34, 64, 0.95);
+  --color-navbar-text: #ffffff;
+  --color-navbar-hover: rgba(255, 255, 255, 0.1);
+
+  --color-footer-bg: rgba(13, 34, 64, 0.95);
+  --color-footer-text: rgba(255, 255, 255, 0.8);
+
+  /* ===== MOTION TOKENS ===== */
+  --motion-fast: 100ms;
+  --motion-base: 170ms;
+  --motion-slow: 260ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --motion-distance-sm: 6px;
+  --motion-distance-md: 12px;
+
+  /* ===== LEGACY TRANSITION TOKEN ===== */
+  --transition-color: var(--motion-base) var(--motion-ease-standard);
+  
+  /* ===== FONT APPLICATION ===== */
+  font-family: var(--font-primary);
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] {
+  --color-bg: #1a1a1a;
+  --color-bg-elevated: #2d2d2d;
+  --color-text: #e8e8e8;
+  --color-text-secondary: #b0b0b0;
+  --color-border: #3d3d3d;
+  --color-border-light: rgba(0, 168, 225, 0.2);
+  --color-divider: #333333;
+
+  /* ===== SEMANTIC COLORS (Dark Mode) ===== */
+  --color-success: #66bb6a;
+  --color-danger: #ef5350;
+  --color-warning: #ffa726;
+  --color-info: #29b6f6;
+
+  /* ===== COMPONENT DEFAULTS (Dark) ===== */
+  --color-button-primary: var(--color-accent);
+  --color-button-primary-hover: #f7b820;
+  --color-button-secondary: var(--color-secondary);
+  --color-button-secondary-hover: #1bc4f0;
+
+  --color-navbar-bg: rgba(13, 34, 64, 0.98);
+  --color-navbar-text: #ffffff;
+  --color-navbar-hover: rgba(0, 168, 225, 0.15);
+
+  --color-footer-bg: rgba(13, 34, 64, 0.98);
+  --color-footer-text: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== SMOOTH THEME TRANSITIONS ===== */
+* {
+  transition: background-color var(--transition-color), 
+              color var(--transition-color),
+              border-color var(--transition-color);
+}
+
+/* Respect reduced-motion users globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prevent transition on page load */
+html.no-transition * {
+  transition: none !important;
+}

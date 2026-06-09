@@ -88,6 +88,7 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
           const consistencyS3 = calculateStandardDeviation(sector3Times,avgSector3Time)[2];
 
           analytics[driver.participantid] = {
+            name: driver.name,
             avgLapTimeFullRace,
             bestLapTime,
             avgLapTime,
@@ -109,6 +110,7 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
             avgSector3Time,
             bestSector3Time,
             spread,
+            paceSpread: avgLapTime - bestLapTime,
           };
         }
       });
@@ -135,11 +137,13 @@ export const RaceAnalyticsProvider = ({ children, raceData, eventsData }) => {
 
       // Calculate field comparison values
       const fieldConsistencyAvg = Object.values(analytics).reduce((sum, val) => sum + parseFloat(val.consistency), 0) / Object.values(analytics).length;
+      const fieldAvgPaceSpread = Object.values(analytics).reduce((sum, val) => sum + (val.paceSpread || 0), 0) / Object.values(analytics).length;
       for (const participantid in analytics) {
         var d = analytics[participantid];  // Consistency vs Field avg
         var meVsField = parseFloat(d.consistency) / fieldConsistencyAvg;
         var fieldComparison = (meVsField - 1) * 100;
         analytics[participantid].fieldComparison = fieldComparison;
+        analytics[participantid].fieldAvgPaceSpread = fieldAvgPaceSpread;
       }
       // console.log('analytics', analytics);
       

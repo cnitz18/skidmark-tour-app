@@ -4,9 +4,7 @@ import PageHeader from "../shared/PageHeader";
 const ServerLanding = ({ enums, lists }) => {
     return (
         <Container>
-            <Row>
-                <PageHeader title="Dedicated Server"/>
-            </Row>
+            <PageHeader title="Dedicated Server"/>
             {/* <Row>
                 <p className='text-center'>
                     Lorem Ipsum something informative here...

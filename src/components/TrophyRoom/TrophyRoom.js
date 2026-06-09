@@ -1,6 +1,7 @@
 import React from 'react';
 import './TrophyRoom.css';
 import PageHeader from '../shared/PageHeader';
+import { Container } from 'react-bootstrap';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -96,13 +97,13 @@ const TrophyRoom = () => {
     }, []);
 
     return (
-        <div className="trophy-room">
+        <Container>
             <PageHeader 
                 title="Trophy Room (under construction)" 
                 subtitle="Our team iRacing achievements and AMS2 championship winners."
             />
             <div ref={refContainer} className="canvas-container" id="trophyCanvas"></div>
-        </div>
+        </Container>
     );
 };
 

@@ -25,13 +25,16 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
   const [isHistorical, setIsHistorical] = useState(false);
   const [isFeature, setIsFeature] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isPracticeLoading, setIsPracticeLoading] = useState(false);
+  const [isQualiLoading, setIsQualiLoading] = useState(false);
 
   useEffect(() => {
-    if( raceOne && !raceOne.results?.length ){
+    if (raceOne && !raceOne.results?.length) {
       getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceOne.id}`)
-      .then((res) => setRaceOne({...raceOne, results: res}))
-      .catch((err) => console.log(err));
+        .then((res) => setRaceOne({ ...raceOne, results: res }))
+        .catch((err) => console.log(err));
     }
+
     if (raceOne && raceOne?.results?.length) {
       setFirstPlace({
         ...raceOne?.results?.find((m) => m?.RacePosition === 1),
@@ -42,36 +45,22 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
       setThirdPlace({
         ...raceOne?.results?.find((m) => m?.RacePosition === 3),
       });
-    }
-    else{
+    } else {
       setFirstPlace("");
       setSecondPlace("");
       setThirdPlace();
     }
-  },[raceOne]);
+  }, [raceOne]);
 
   useEffect(() => {
-    if( qualiOne && !qualiOne?.results?.length ){
-      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiOne.id}`)
-      .then((res) => setQualiOne({...qualiOne, results: res}))
-      .catch((err) => console.log(err));
-    }
-    else if( qualiOne && qualiOne.results?.length ){
+    if (qualiOne && qualiOne.results?.length) {
       setPolePosition({
         ...qualiOne?.results?.find((m) => m?.RacePosition === 1),
       });
-    }else{
-      setPolePosition("")
+    } else {
+      setPolePosition("");
     }
-  },[qualiOne]);
-
-  useEffect(() => {
-    if( practiceOne && !practiceOne?.results?.length ){
-      getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${practiceOne.id}`)
-      .then((res) => setPracticeOne({...practiceOne, results: res}))
-      .catch((err) => console.log(err));
-    } 
-  },[practiceOne]);
+  }, [qualiOne]);
 
   useEffect(() => {
     setStartTime(new Date(data.start_time * 1000));
@@ -107,43 +96,164 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
       setSessionLength(raceSetup.RaceLength);
     }
   }, [data]);
+
+  async function loadPracticeResults() {
+    if (!practiceOne || practiceOne?.results?.length || isPracticeLoading) {
+      return;
+    }
+
+    try {
+      setIsPracticeLoading(true);
+      const res = await getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${practiceOne.id}`);
+      setPracticeOne({ ...practiceOne, results: res });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsPracticeLoading(false);
+    }
+  }
+
+  async function loadQualiResults() {
+    if (!qualiOne || qualiOne?.results?.length || isQualiLoading) {
+      return;
+    }
+
+    try {
+      setIsQualiLoading(true);
+      const res = await getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiOne.id}`);
+      setQualiOne({ ...qualiOne, results: res });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsQualiLoading(false);
+    }
+  }
+
+  const trackDisplayName =
+    lists?.tracks?.list
+      ? (NameMapper.fromTrackApiName(NameMapper.fromTrackId(data?.setup?.TrackId, lists?.tracks?.list)) || "Unknown Track")
+      : "Loading track...";
+
+  const vehicleClassDisplayName =
+    lists?.vehicle_classes?.list
+      ? (
+          NameMapper.fromVehicleClassApiName(
+            NameMapper.fromVehicleClassId(data?.setup?.VehicleClassId, lists?.vehicle_classes?.list, "")
+          ) || "Unknown Vehicle Class"
+        )
+      : "Loading class...";
+
+  const firstPlaceName = firstPlace?.name || "";
+  const secondPlaceName = secondPlace?.name || "";
+  const thirdPlaceName = thirdPlace?.name || "";
+
   return (
-    <Accordion>
+    <Accordion className="race-details-accordion">
         <Container className={`history-entry ${leagueId ? "league-entry" : ""} ${isFeature ? "feature-entry" : ""}`}>
-        <Row className="history-entry-data">
+        {/* ── Mobile card layout (< md) ── */}
+        <div className="d-md-none mobile-history-entry">
+          <div className="mobile-entry-header">
+            <div className="mobile-entry-title">
+              <h5 className="mobile-track-name">
+                {trackDisplayName}
+                {isFeature && <Badge className="ms-2 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
+              </h5>
+              <span className="mobile-car-class">{vehicleClassDisplayName}</span>
+            </div>
+          </div>
+
+          <div className="mobile-podium">
+            <div className="mobile-podium-winner">
+              <ImTrophy color="gold" size={22} className="trophy" />
+              <span className={`mobile-winner-name ${firstPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                {firstPlaceName || "\u00A0"}
+              </span>
+            </div>
+            <div className="mobile-podium-rest">
+              <span className={`mobile-place-name ${secondPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                <ImTrophy color="silver" size={14} className="trophy" />
+                {secondPlaceName || "\u00A0"}
+              </span>
+              <span className={`mobile-place-name ${thirdPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                <ImTrophy color="tan" size={14} className="trophy" />
+                {thirdPlaceName || "\u00A0"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mobile-entry-footer">
+            <span className="mobile-session-length">
+              {sessionLength}&thinsp;{timedSession ? "min" : "laps"}
+            </span>
+            <span className="mobile-entry-dot">·</span>
+            <span className="mobile-entry-date">
+              {startTime.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+            </span>
+            <span className="mobile-entry-dot">·</span>
+            {!data.finished && <Badge bg="warning" text="dark" className="me-1" style={{fontSize:'0.65em'}}>Incomplete</Badge>}
+            <span className="mobile-entry-actions">
+              {isHistorical ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip {...props}>
+                      Manually entered from historical screenshots. May not be fully accurate.
+                    </Tooltip>
+                  )}
+                >
+                  <span><IoInformationCircleOutline color="red" /></span>
+                </OverlayTrigger>
+              ) : (
+                <Link onClick={() => setShowModal(true)}>
+                  <Badge bg="secondary" className="session-details-badge" style={{fontSize:'0.65em'}}>Details</Badge>
+                </Link>
+              )}
+              {leagueId && showLeagueInfo && (
+                <Link to={`/league/${leagueId}`} state={{ leagueId }}>
+                  <Badge bg="info" className="league-badge" style={{fontSize:'0.65em'}}>League</Badge>
+                </Link>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* ── Desktop layout (≥ md) ── */}
+        <Row className="history-entry-data d-none d-md-flex">
           <Col lg="4" className="history-entry-data-title">
-            {lists["tracks"] ? (
-              <>
-                <h5>
-                  {NameMapper.fromVehicleClassId(data.setup.VehicleClassId,lists["vehicle_classes"]?.list)}
-                  {isFeature && <Badge bg="warning" text="dark" className="ms-2" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
-                </h5>
-                <p>
-                  {NameMapper.fromTrackId(data.setup.TrackId,lists["tracks"]?.list)}
-                </p>
-              </>
-            ) : (
-              <></>
-            )}
+            <>
+              <h5>
+                {trackDisplayName}
+                {isFeature && <Badge className="ms-3 feature-badge" style={{fontSize: '0.6em', verticalAlign: 'middle'}}>Feature</Badge>}
+              </h5>
+              <p>
+                {vehicleClassDisplayName}
+              </p>
+            </>
           </Col>
           <Col className="text-center">
             <Row className="lessVerticalPadding">
-              <label>
+              <label className="podium-label podium-label-main">
                 <ImTrophy color="gold" className="trophy" size={40}/>
-                <span className="firstPlace">{firstPlace?.name}</span>
+                <span className={`podium-name firstPlace ${firstPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                  {firstPlaceName || "\u00A0"}
+                </span>
               </label>{" "}
             </Row>
             <Row className="justify-content-md-center lessVerticalPadding">
               <Col md="auto">
-                <label>
+                <label className="podium-label">
                   <ImTrophy color="silver" className="trophy" size={20} />
-                  <small>{secondPlace?.name}</small>
+                  <small className={`podium-name podium-name-sm ${secondPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                    {secondPlaceName || "\u00A0"}
+                  </small>
                 </label>
               </Col>
               <Col md="auto">
-                <label>
+                <label className="podium-label">
                   <ImTrophy color="tan" className="trophy" size={20} />
-                  <small>{thirdPlace?.name}</small>
+                  <small className={`podium-name podium-name-sm ${thirdPlaceName ? "is-loaded" : "is-placeholder"}`}>
+                    {thirdPlaceName || "\u00A0"}
+                  </small>
                 </label>
               </Col>
             </Row>
@@ -167,7 +277,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
             <small>{startTime.toLocaleString("en",{timeStyle:'short'})}</small>
           </Col>
           <Col lg="2">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', top: '10px', right: '10px' }}>
+            <div className="d-flex flex-row flex-md-column gap-2 align-items-center align-items-md-end justify-content-between justify-content-lg-end w-100">
               {isHistorical ? (
                 <OverlayTrigger 
                   placement="top"
@@ -208,16 +318,18 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
         {
           practiceOne && (
             <Accordion.Item eventKey={data.index + '_prac1'}>
-              <Accordion.Header>Practice Details:</Accordion.Header>
+              <Accordion.Header onClick={loadPracticeResults}>Practice Details:</Accordion.Header>
               <Accordion.Body>
                 {/* 
                             add some more details about the server/race here
                             */}
+                {isPracticeLoading && <div className="text-center py-2">Loading practice results...</div>}
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
                     race={practiceOne}
                     vehicles={lists["vehicles"].list}
                     session="Practice"
+                    isHistorical={isHistorical}
                   />
                 ) : (
                   <></>
@@ -229,17 +341,19 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
         {
           qualiOne && (
             <Accordion.Item eventKey={data.index + '_qual1'}>
-              <Accordion.Header>Qualifying Details:</Accordion.Header>
+              <Accordion.Header onClick={loadQualiResults}>Qualifying Details:</Accordion.Header>
               <Accordion.Body>
                 {/* 
                             add some more details about the server/race here
                             */}
+                {isQualiLoading && <div className="text-center py-2">Loading qualifying results...</div>}
                 {lists["vehicles"] ? (
                   <SessionHistoryEntryScoreboard
                     race={qualiOne}
                     vehicles={lists["vehicles"].list}
                     winner={polePosition}
                     session="Qualifying"
+                    isHistorical={isHistorical}
                   />
                 ) : (
                   <></>
@@ -260,6 +374,7 @@ const SessionHistoryEntry = ({ data, enums, lists, showLeagueInfo }) => {
                 winner={firstPlace}
                 vehicles={lists["vehicles"].list}
                 session="Race"
+                isHistorical={isHistorical}
               />
             ) : (
               <></>

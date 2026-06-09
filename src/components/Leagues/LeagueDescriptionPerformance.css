@@ -1,191 +1,302 @@
-/* Performance Analytics Styles */
-
-.performance-analytics {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+/* ── Driver Summary Strip ── */
+.perf-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.perf-summary-stat { text-align: center; }
+.perf-summary-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.perf-summary-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.1;
 }
 
-/* Stats list styling */
-.stats-list {
-  margin-bottom: 15px;
+/* ── Performance Stats Grid ── */
+.perf-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.perf-stat-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--color-bg-elevated);
+}
+.perf-stat-label {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.perf-stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+.perf-stat-detail {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+.perf-stat-rank {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--color-border);
 }
 
-.stats-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
+/* ── Charts ── */
+.perf-chart-wrap { height: 240px; }
+.perf-chart-sm { height: 140px; }
 
-.stats-item:last-child {
-  border-bottom: none;
+/* ── Tables ── */
+.perf-results-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
-
-.stats-label {
-  color: #666;
+.perf-results-table th {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  border-color: var(--color-border);
 }
-
-.stats-value {
-  font-weight: 500;
+.perf-results-table td {
+  font-size: 0.88rem;
+  border-color: var(--color-border);
+  vertical-align: middle;
 }
+.perf-rnd-cell { width: 3rem; font-size: 0.8rem; }
 
-/* Position badges */
-.position-badge {
+/* ── Position Badges ── */
+.perf-position-badge {
   display: inline-block;
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
-  text-align: center;
-  border-radius: 50%;
-  margin-right: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.perf-position-badge.pos-win { background: var(--color-accent); color: #fff; }
+.perf-position-badge.pos-podium { background: var(--color-secondary); color: #fff; }
+.perf-position-badge.pos-points { background: rgba(0, 168, 225, 0.1); color: var(--color-secondary); }
+.perf-position-text { color: var(--color-text-secondary); font-size: 0.85rem; }
+.perf-dnf-badge { font-size: 0.75rem; padding: 2px 6px; }
+
+/* ── vs Avg Indicator ── */
+.perf-vs-avg { font-size: 0.82rem; font-weight: 600; }
+.perf-vs-avg.better { color: var(--color-success); }
+.perf-vs-avg.worse { color: var(--color-danger); }
+
+/* ── Section Sub Heading ── */
+.perf-section-sub-heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
 }
 
-.position-badge.podium {
-  background-color: rgba(255, 215, 0, 0.2);
-  color: #D4AF37;
+/* ── Season Highlights Grid ── */
+.perf-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
 }
 
-.position-badge.points {
-  background-color: rgba(33, 150, 243, 0.1);
-  color: #2196F3;
-}
-
-.position-badge.outside-points {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #666;
-}
-
-/* Position highlight */
-.position-highlight {
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.position-highlight.podium {
-  background-color: rgba(255, 215, 0, 0.2);
-  color: #D4AF37;
-}
-
-.position-highlight.points {
-  background-color: rgba(33, 150, 243, 0.1);
-  color: #2196F3;
-}
-
-/* Recent races list */
-.race-list {
-  overflow-y: auto;
-}
-
-.race-item {
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.race-item:last-child {
-  border-bottom: none;
-}
-
-.race-track {
-  color: #666;
-}
-
-.race-result {
-  font-weight: 600;
-}
-
-.race-result.podium {
-  color: #D4AF37;
-}
-
-.race-result.points {
-  color: #2196F3;
-}
-
-/* Consistency score circle */
-.consistency-score-container {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-}
-
-.score-circle {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.score-inner {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  background: white;
-  border-radius: 50%;
+.perf-highlight-card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
+}
+
+.perf-highlight-card.tier-1 {
+  border-color: var(--color-accent);
+  border-left-width: 3px;
+}
+
+.perf-highlight-card.tier-2 {
+  border-color: var(--color-secondary);
+  border-left-width: 3px;
+}
+
+.perf-highlight-label {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.perf-highlight-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.15;
+}
+
+.perf-highlight-sub {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Position Distribution (CSS horizontal bars) ── */
+.perf-distribution {
+  padding: 4px 0;
+}
+
+.perf-dist-row {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  margin-bottom: 7px;
 }
 
-.score-inner span {
-  font-size: 2.5rem;
-  font-weight: 600;
-  line-height: 1;
+.performance-distribution-hints {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
 }
 
-.score-inner small {
-  color: #666;
-  margin-top: 5px;
+.performance-distribution-hint {
+  flex: 1 1 0;
+  font-size: 0.76rem;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.score-explanation {
+.performance-distribution-hint:last-child {
+  text-align: right;
+}
+
+.performance-distribution-hint.is-visible {
+  opacity: 1;
+}
+
+.performance-distribution-item {
+  flex: 0 0 auto;
+}
+
+.performance-distribution-shell {
+  position: relative;
+}
+
+.perf-dist-label {
+  width: 34px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.perf-dist-bar-track {
   flex: 1;
-  margin-left: 25px;
+  height: 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
 }
 
-/* Track performance */
-.track-performances {
-  overflow-y: auto;
-  max-height: 500px;
+.perf-dist-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-border);
+  transition: width 0.35s ease;
+  min-width: 0;
 }
 
-/* Specialist tracks */
-.track-card {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.02);
-  border-left: 4px solid #2196F3;
+.perf-dist-bar-fill.win    { background: var(--color-accent); }
+.perf-dist-bar-fill.podium { background: var(--color-warning); }
+.perf-dist-bar-fill.points { background: var(--color-secondary); }
+
+.perf-dist-count {
+  width: 18px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  text-align: left;
+  flex-shrink: 0;
 }
 
-.track-position {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #2196F3;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  margin-right: 12px;
-}
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .perf-summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .perf-summary-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .perf-summary-value { font-size: 1.1rem; }
+  .perf-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .perf-stat-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .perf-stat-value { font-size: 1.1rem; }
+  .perf-chart-wrap { height: 180px; }
+  .perf-chart-sm { height: 110px; }
+  .perf-highlights-grid {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+  }
+  .perf-highlight-card {
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+  .perf-highlights-grid > .perf-highlight-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: 320px;
+  }
+  .perf-highlight-value { font-size: 1.2rem; }
 
-.track-name {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
+  .performance-distribution.is-mobile-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px !important;
+  }
 
-.track-stats {
-  font-size: 0.85rem;
-  color: #666;
+  .performance-distribution.is-mobile-scroll .performance-distribution-item {
+    min-width: 44px;
+    scroll-snap-align: start;
+  }
 }
 
 /* Performance distribution */
@@ -223,73 +334,4 @@
 .position-count {
   font-size: 0.85rem;
   color: #666;
-}
-
-/* Comeback factor */
-.comeback-score-container {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.comeback-score {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.comeback-score.positive {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: #4CAF50;
-}
-
-.comeback-score.negative {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #F44336;
-}
-
-.comeback-score span {
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.comeback-score small {
-  margin-top: 5px;
-  font-size: 0.8rem;
-}
-
-/* Best comeback */
-.comeback-highlight {
-  width: 80px;
-  height: 80px;
-  background-color: rgba(76, 175, 80, 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.positions-gained {
-  color: #4CAF50;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.qualifying-position {
-  color: #FF9800;
-  font-weight: 500;
-}
-
-.finish-position {
-  color: #4CAF50;
-  font-weight: 500;
 }

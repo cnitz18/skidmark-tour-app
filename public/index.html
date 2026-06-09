@@ -7,10 +7,23 @@
         <meta name="author" content="Casey Nitz" />
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link rel="preload" href="%PUBLIC_URL%/fonts/TAMWORTH.TTF" as="font" type="font/ttf" crossorigin />
+        <style>
+          @font-face {
+            font-family: 'Tamworth';
+            src: local('Tamworth'), url('%PUBLIC_URL%/fonts/TAMWORTH.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+          }
+        </style>
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/skidmark-icon.jpeg" />
-        <link rel="icon" href="%PUBLIC_URL%/skidmark-icon.png" />
+        <link rel="apple-touch-icon" href="%PUBLIC_URL%/Skidmark_Logo_Shield.png" />
+        <link rel="icon" href="%PUBLIC_URL%/Skidmark_Logo_Shield.png" />
         <!--
         manifest.json provides metadata used when your web app is installed on a
         user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -18,6 +31,18 @@
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     </head>
     <body>
+        <script>
+          // Apply theme immediately before React renders to prevent flash
+          (function() {
+            const savedTheme = localStorage.getItem('skidmark-theme');
+            const theme = savedTheme || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f8f9fa';
+            document.documentElement.style.color = theme === 'dark' ? '#e8e8e8' : '#0d2240';
+            document.body.style.backgroundColor = theme === 'dark' ? '#1a1a1a' : '#f8f9fa';
+            document.body.style.color = theme === 'dark' ? '#e8e8e8' : '#0d2240';
+          })();
+        </script>
         <div id="root"></div>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
