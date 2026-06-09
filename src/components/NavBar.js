@@ -7,7 +7,6 @@ import Home from './Home/Home'
 import SessionHistory from './SessionHistory/SessionHistory'
 import Leagues from './Leagues/Leagues'
 import LeagueDescription from './Leagues/LeagueDescription';
-import CreateLeague from './Leagues/CreateLeague/CreateLeague';
 import logo from "../assets/Skidmark_Logo_Title.png";
 import styles from './NavBar.module.css';
 import TrophyRoomBasic from './TrophyRoom/TrophyRoomBasic';
@@ -34,7 +33,6 @@ function TitleUpdater() {
       '/server': 'Server Status | The Skidmark Tour',
       '/admin': 'Admin Portal | The Skidmark Tour',
       '/leagueadmin': 'League Admin | The Skidmark Tour',
-      '/leagueadmin/create': 'Create League | The Skidmark Tour',
     };
 
     // Check if it's a league detail page
@@ -99,7 +97,6 @@ function NavigationContent({ enums, lists }) {
           <Route path="/history" element={<SessionHistory enums={enums} lists={lists}/>} />
           <Route path="/leagues" element={<Leagues enums={enums} lists={lists}/>}/>
           <Route path="/leagueadmin" element={<Leagues enums={enums} lists={lists} showAdmin={true}/>}/>
-          <Route path="/leagueadmin/create" element={<CreateLeague lists={lists}/>}/>
           <Route path="/trophyroom" element={<TrophyRoomBasic lists={lists}/>}/>
           <Route path="/server" element={<ServerStatus enums={enums} lists={lists}/>} />
           <Route path="/admin" element={<AdminPortal enums={enums} lists={lists}/>} />
