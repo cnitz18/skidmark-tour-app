@@ -4,7 +4,7 @@ import { Spinner } from "react-bootstrap";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from "@mui/x-charts";
 import NameMapper from "../../utils/Classes/NameMapper";
-import { useState, useMemo, Fragment } from "react";
+import { useState, Fragment } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Typography } from "@mui/material";
@@ -347,6 +347,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                     }
                     </TableBody>
                 </Table>
+                </div>
             </div>
         }
         {

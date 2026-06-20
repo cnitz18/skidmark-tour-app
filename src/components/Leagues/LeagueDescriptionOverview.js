@@ -1,4 +1,4 @@
-import { Row, Col, ProgressBar, Spinner } from 'react-bootstrap';
+import { Row, Col, ProgressBar, Spinner, Card, Badge, Container } from 'react-bootstrap';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import NameMapper from '../../utils/Classes/NameMapper';
@@ -11,6 +11,20 @@ import { BarChart, Bar, XAxis, YAxis, Cell, ResponsiveContainer, Tooltip } from 
 import styles from './LeagueDescriptionOverview.module.css';
 
 const CHART_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32', '#00A8E1', '#4CAF50', '#B07FFF'];
+
+const RACE_TYPE_COLORS = {
+    standard:  'var(--color-secondary)',
+    feature:   'var(--color-accent)',
+    sprint:    'var(--color-success)',
+    endurance: 'var(--color-danger)',
+};
+
+const RACE_TYPE_LABELS = {
+    standard:  'Standard',
+    feature:   'Feature',
+    sprint:    'Sprint',
+    endurance: 'Endurance',
+};
 
 const LeagueDescriptionOverview = ({league, standings, lists, leagueHistory, schedule}) => {
     const [completedRaces, setCompletedRaces] = useState([]);
@@ -280,38 +294,61 @@ const LeagueDescriptionOverview = ({league, standings, lists, leagueHistory, sch
                                 if (!sortedSchedule.length) return (
                                     <p className="text-muted small mt-2">Schedule not available</p>
                                 );
+
+                                // Determine which race types are actually in the schedule for the legend
+                                const presentTypes = [...new Set(
+                                    sortedSchedule.map(r => r.race_type).filter(Boolean)
+                                )].filter(t => RACE_TYPE_LABELS[t]);
+
                                 return (
-                                    <div className={styles.calendarStrip}>
-                                        {sortedSchedule.map((race, i) => {
-                                            const histEntry = sortedCompleted[i];
-                                            const winner = histEntry ? raceResults[histEntry.id]?.find(r => r.RacePosition === 1)?.name : null;
-                                            const isDone = !!histEntry;
-                                            const rawName = race.track_name ?? NameMapper.fromTrackId(race.track, lists["tracks"]?.list);
-                                            const displayName = NameMapper.fromTrackApiName(rawName) ?? rawName ?? `R${i + 1}`;
-                                            const shortName = displayName.split(' ').slice(0, 2).join(' ');
-                                            return (
-                                                <div
-                                                    key={i}
-                                                    className={`${styles.calendarRound} ${isDone ? styles.calendarRoundDone : styles.calendarRoundUpcoming}`}
-                                                    title={displayName}
-                                                >
-                                                    <div className={styles.calendarRoundNum}>R{i + 1}</div>
-                                                    <div className={styles.calendarRoundTrack}>{shortName}</div>
-                                                    {isDone && winner && (
-                                                        <div className={styles.calendarRoundWinner}>{winner}</div>
-                                                    )}
-                                                    {isDone && !winner && (
-                                                        <div className={styles.calendarRoundWinner}>—</div>
-                                                    )}
-                                                    {!isDone && (
-                                                        <div className={styles.calendarRoundDate}>
-                                                            {format(new Date(race.date), 'MMM d')}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
+                                    <>
+                                        {presentTypes.length > 1 && (
+                                            <div className={styles.calendarLegend}>
+                                                {presentTypes.map(t => (
+                                                    <span key={t} className={styles.calendarLegendItem}>
+                                                        <span
+                                                            className={styles.calendarLegendDot}
+                                                            style={{ background: RACE_TYPE_COLORS[t] }}
+                                                        />
+                                                        {RACE_TYPE_LABELS[t]}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <div className={styles.calendarStrip}>
+                                            {sortedSchedule.map((race, i) => {
+                                                const histEntry = sortedCompleted[i];
+                                                const winner = histEntry ? raceResults[histEntry.id]?.find(r => r.RacePosition === 1)?.name : null;
+                                                const isDone = !!histEntry;
+                                                const rawName = race.track_name ?? NameMapper.fromTrackId(race.track, lists["tracks"]?.list);
+                                                const displayName = NameMapper.fromTrackApiName(rawName) ?? rawName ?? `R${i + 1}`;
+                                                const shortName = displayName.split(' ').slice(0, 2).join(' ');
+                                                const typeColor = RACE_TYPE_COLORS[race.race_type] ?? 'var(--color-border)';
+                                                return (
+                                                    <div
+                                                        key={i}
+                                                        className={`${styles.calendarRound} ${isDone ? styles.calendarRoundDone : styles.calendarRoundUpcoming}`}
+                                                        style={{ borderLeft: `3px solid ${typeColor}` }}
+                                                        title={`${displayName}${race.race_type ? ` · ${RACE_TYPE_LABELS[race.race_type] ?? race.race_type}` : ''}`}
+                                                    >
+                                                        <div className={styles.calendarRoundNum}>R{i + 1}</div>
+                                                        <div className={styles.calendarRoundTrack}>{shortName}</div>
+                                                        {isDone && winner && (
+                                                            <div className={styles.calendarRoundWinner}>{winner}</div>
+                                                        )}
+                                                        {isDone && !winner && (
+                                                            <div className={styles.calendarRoundWinner}>—</div>
+                                                        )}
+                                                        {!isDone && (
+                                                            <div className={styles.calendarRoundDate}>
+                                                                {format(new Date(race.date), 'MMM d')}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
                                 );
                             })()}
                         </Card.Body>

@@ -7,6 +7,27 @@ import { format } from 'date-fns';
 import { BsChevronDown, BsChevronUp, BsArrowUp, BsArrowDown } from "react-icons/bs";
 import styles from './LeagueDescriptionSchedule.module.css';
 
+const TYPE_COLORS = {
+  standard:  'var(--color-secondary)',
+  feature:   'var(--color-accent)',
+  sprint:    'var(--color-success)',
+  endurance: 'var(--color-danger)',
+};
+
+const TYPE_LABELS = {
+  standard:  'Standard',
+  feature:   'Feature',
+  sprint:    'Sprint',
+  endurance: 'Endurance',
+};
+
+const TYPE_MUI_COLORS = {
+  standard:  'info',
+  feature:   'warning',
+  sprint:    'success',
+  endurance: 'error',
+};
+
 const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, lists, league, targetRaceId, onClearTarget, onSwitchToSchedule }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
@@ -71,17 +92,21 @@ const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, l
               const shortTrack = trackName.split(' ')[0];
               const roundRaceId = resolveRoundHistoryRaceId(r);
               const isClickable = Boolean(roundRaceId && onSwitchToSchedule);
+              const typeColor = TYPE_COLORS[r.race_type] ?? 'var(--color-border)';
               return (
                 <div
                   key={i}
                   className={`${styles.roundItem} ${status === 'done' ? styles.done : ''} ${isClickable ? styles.roundItemClickable : ''}`}
-                  title={`Round ${i + 1}: ${trackName} \u2014 ${format(new Date(r.date), 'PPP')}`}
+                  title={`Round ${i + 1}: ${trackName} (${TYPE_LABELS[r.race_type] ?? r.race_type ?? 'Race'}) \u2014 ${format(new Date(r.date), 'PPP')}`}
                   role={isClickable ? 'button' : undefined}
                   tabIndex={isClickable ? 0 : undefined}
                   onClick={isClickable ? () => handleRoundClick(r) : undefined}
                   onKeyDown={isClickable ? (e) => e.key === 'Enter' && handleRoundClick(r) : undefined}
                 >
-                  <div className={`${styles.roundDot} ${styles[status]}`}>{i + 1}</div>
+                  <div
+                    className={`${styles.roundDot} ${styles[status]}`}
+                    style={{ boxShadow: `0 0 0 3px ${typeColor}` }}
+                  >{i + 1}</div>
                   <div className={`${styles.roundTrack} ${styles[status]}`}>{shortTrack}</div>
                 </div>
               );
@@ -96,6 +121,7 @@ const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, l
                     <TableCell sx={{ textAlign: 'center', fontWeight: 700 }}>Rd</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Track</TableCell>
+                    <TableCell sx={{ textAlign: 'center', fontWeight: 700 }}>Type</TableCell>
                     <TableCell sx={{ textAlign: 'center', fontWeight: 700 }}>Status</TableCell>
                   </TableRow>
                 </TableHead>
@@ -105,6 +131,11 @@ const LeagueDescriptionSchedule = ({ showHistorySpinner, leagueHistory, enums, l
                       <TableCell sx={{ textAlign: 'center' }}>{i + 1}</TableCell>
                       <TableCell>{format(new Date(r.date), 'PPp')}</TableCell>
                       <TableCell>{NameMapper.fromTrackApiName(NameMapper.fromTrackId(r.track, lists?.tracks?.list) || '') || '—'}</TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        {r.race_type
+                          ? <Chip size="small" label={TYPE_LABELS[r.race_type] ?? r.race_type} color={TYPE_MUI_COLORS[r.race_type] ?? 'default'} variant="outlined" />
+                          : <Chip size="small" label="Race" color="default" variant="outlined" />}
+                      </TableCell>
                       <TableCell sx={{ textAlign: 'center' }}>
                         {r.completed
                           ? <Chip size="small" label="Done" color="success" variant="outlined" />
