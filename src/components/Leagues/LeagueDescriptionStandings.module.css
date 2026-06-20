@@ -40,181 +40,109 @@
     transform: translateY(-2px);
 }
 
-/* ─── Chart controls ─── */
-.chartHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-    padding: 0;
-}
-
-.chartSurface {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: 0.5rem 0.75rem 0 0.25rem;
-}
-
-.chartCanvas {
-    width: 100%;
-    max-width: 100%;
-    align-self: center;
-}
-
-.chartToggleGroup {
-    display: flex;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    overflow: hidden;
-    background: var(--color-bg);
-}
-
-.chartToggleBtn {
-    padding: 0.3rem 0.85rem;
-    font-size: 0.72rem;
+.chartTitle {
+    font-size: 0.8rem;
     font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    background: none;
-    border: none;
-    cursor: pointer;
     color: var(--color-text-secondary);
-    font-family: inherit;
-    font-style: italic;
-    transition: background var(--motion-fast) var(--motion-ease-standard),
-                color var(--motion-fast) var(--motion-ease-standard);
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    opacity: 0.75;
 }
 
-.chartToggleBtn + .chartToggleBtn {
-    border-left: 1px solid var(--color-border);
+/* ── Round-by-round position matrix ── */
+
+.matrixWrapper {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
 }
 
-.chartToggleBtnActive {
-    background: var(--color-secondary);
-    color: #fff;
-}
-
-.chartShowAllBtn {
-    font-size: 0.68rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    color: var(--color-secondary);
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    font-style: italic;
-    padding: 0.35rem 0.65rem;
-    opacity: 0.8;
-    transition: opacity var(--motion-fast) var(--motion-ease-standard);
-}
-
-.chartShowAllBtn:hover {
-    opacity: 1;
-}
-
-.chartShowAllBtnActive {
-    opacity: 1;
-    color: var(--color-accent);
-}
-
-.chartRightControls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* ─── Custom legend ─── */
-.chartLegend {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.4rem 1rem;
-    padding: 0.9rem 0.25rem 0.1rem;
-}
-
-.chartLegendItem {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-}
-
-.chartLegendItemDimmed {
-    opacity: 0.3;
-}
-
-.chartLegendDot {
-    display: inline-block;
-    flex-shrink: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.chartLegendLabel {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--color-text);
-    white-space: nowrap;
-}
-
-.tableSurface {
-    padding: 1rem;
+.matrixScroll {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
-.standingsTable {
+.matrixTable {
+    border-collapse: separate;
+    border-spacing: 3px;
     width: 100%;
-    max-width: 480px;
-    min-width: 280px;
-    margin: 0 auto;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    overflow: hidden;
 }
 
-/* ─── Mobile ─── */
-@media (max-width: 576px) {
-    .sectionBody,
-    .tableSurface {
-        padding: 0.85rem;
-    }
+.matrixDriverHeader {
+    min-width: 120px;
+}
 
-    /* Stack chart controls vertically so all 4 buttons fit */
-    .chartHeader {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.4rem;
-    }
+.matrixRoundHeader {
+    height: 90px;
+    width: 44px;
+    min-width: 44px;
+    vertical-align: bottom;
+    padding: 2px 0;
+    text-align: center;
+}
 
-    /* Points / Gap to Leader toggle fills the row */
-    .chartToggleGroup {
-        display: flex;
-        width: 100%;
-    }
+.matrixRoundLabel {
+    display: block;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.68rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    max-height: 88px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-bottom: 4px;
+}
 
-    .chartToggleBtn {
-        flex: 1;
-        text-align: center;
-        padding: 0.35rem 0.25rem;
-        font-size: 0.68rem;
-    }
+.matrixRow:hover .matrixDriverCell {
+    color: var(--color-primary);
+}
 
-    /* Legend + All N on a second row, spread apart */
-    .chartRightControls {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 0.1rem;
-    }
+.matrixDriverCell {
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 5px 10px 5px 4px;
+    white-space: nowrap;
+    color: var(--color-text);
+}
 
-    .chartSurface {
-        padding: 0.35rem 0.5rem 0 0;
-    }
+.matrixCell {
+    text-align: center;
+    padding: 5px 2px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 4px;
+    min-width: 36px;
+    width: 40px;
+}
+
+.matrixCellP1 {
+    background-color: rgba(255, 215, 0, 0.25);
+    color: #c8960a;
+}
+
+.matrixCellP2 {
+    background-color: rgba(180, 180, 180, 0.25);
+    color: #888;
+}
+
+.matrixCellP3 {
+    background-color: rgba(185, 105, 40, 0.2);
+    color: #a0622a;
+}
+
+.matrixCellPoints {
+    background-color: rgba(76, 175, 80, 0.18);
+    color: var(--color-success, #4caf50);
+}
+
+.matrixCellNoScore {
+    color: var(--color-text-secondary);
+    opacity: 0.45;
+}
+
+.matrixCellEmpty {
+    color: var(--color-text-secondary);
+    opacity: 0.2;
 }

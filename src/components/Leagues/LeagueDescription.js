@@ -267,7 +267,7 @@ const LeagueDescription = ({ enums, lists }) => {
                                 )}
                             </Box>
                             <LeagueDescriptionTabPanel value={tabValue} index={0}>
-                                <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries,lists,leagueHistory, onSwitchToSchedule: handleSwitchToSchedule}}/>
+                                <LeagueDescriptionOverview {...{league, standings: leagueDetails.scoreboard_entries, lists, leagueHistory, schedule: leagueDetails.schedule}}/>
                             </LeagueDescriptionTabPanel>
                             <LeagueDescriptionTabPanel value={tabValue} index={1}>
                                 <LeagueDescriptionSchedule {...{showHistorySpinner,leagueHistory,enums,lists,league, targetRaceId, onClearTarget: () => setTargetRaceId(null), onSwitchToSchedule: handleSwitchToSchedule}}/>
