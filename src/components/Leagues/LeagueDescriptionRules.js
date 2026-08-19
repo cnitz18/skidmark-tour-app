@@ -35,7 +35,13 @@ const LeagueDescriptionRules = ({ league, lists }) => {
     );
 
     // Fastest-lap bonus display
-    const flTypes = league.fastestLapRaceTypes;  // null = legacy
+    // fastestLapRaceTypes may be a JSON array, a comma-separated string, or null (legacy)
+    const _rawFlTypes = league.fastestLapRaceTypes;
+    const flTypes = Array.isArray(_rawFlTypes)
+        ? _rawFlTypes
+        : (typeof _rawFlTypes === 'string' && _rawFlTypes.length > 0
+            ? _rawFlTypes.split(',').map(s => s.trim()).filter(Boolean)
+            : null);
     const flText = (() => {
         if (!league.extraPointForFastestLap) return 'No bonus point for fastest lap';
         if (flTypes && flTypes.length > 0) {
