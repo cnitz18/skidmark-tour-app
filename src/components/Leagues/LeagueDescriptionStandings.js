@@ -212,6 +212,27 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
     }));
     const leaderId = chartSeries[0]?.id;
 
+    // Build x-axis labels: sort without mutating state, then number any track that appears
+    // more than once across the whole schedule (handles both same-day and different-day revisits).
+    const sortedRaces = [...(league.races || [])].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const TRACK_FALLBACKS = { 0: 'Circuit of the Americas' };
+    const trackTotal = {};
+    sortedRaces.forEach(r => {
+        const raw = NameMapper.fromTrackId(r.track, lists["tracks"]?.list);
+        const name = NameMapper.fromTrackApiName(raw) ?? raw ?? TRACK_FALLBACKS[r.track] ?? String(r.track);
+        trackTotal[name] = (trackTotal[name] || 0) + 1;
+    });
+    const trackIdx = {};
+    const xAxisLabels = sortedRaces.map(r => {
+        const raw = NameMapper.fromTrackId(r.track, lists["tracks"]?.list);
+        const name = NameMapper.fromTrackApiName(raw) ?? raw ?? TRACK_FALLBACKS[r.track] ?? String(r.track);
+        if (trackTotal[name] > 1) {
+            trackIdx[name] = (trackIdx[name] || 0) + 1;
+            return `${name} (${trackIdx[name]})`;
+        }
+        return name;
+    });
+
     return (<>
         {
             showDetailsSpinner && (
@@ -232,22 +253,7 @@ const LeagueDescriptionStandings = ({league,tableSeries,leagueDetails,lists,show
                 <LineChart
                     xAxis={[
                         { 
-                            data: league.races
-                                    .sort((a,b) => new Date(a.date) - new Date(b.date))
-                                    .map((r, idx, races) => {
-                                        const rawName = NameMapper.fromTrackId(r.track, lists["tracks"]?.list);
-                                        const trackName = NameMapper.fromTrackApiName(rawName) ?? rawName;
-                                        const rDate = new Date(r.date).toDateString();
-                                        const sameDateTrack = races.filter(race => 
-                                            new Date(race.date).toDateString() === rDate && race.track === r.track
-                                        );
-                                        
-                                        if (sameDateTrack.length > 1) {
-                                            const raceNum = sameDateTrack.indexOf(r) + 1;
-                                            return `${trackName} (${raceNum})`;
-                                        }
-                                        return trackName;
-                                    }),
+                            data: xAxisLabels,
                             scaleType: 'point',
                         }
                     ]}

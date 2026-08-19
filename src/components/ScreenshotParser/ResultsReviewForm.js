@@ -68,6 +68,15 @@ const ResultsReviewForm = ({ formData, setFormData, lists, onGenerateSQL, onBack
     }));
   }, [setFormData]);
 
+  // Override the session type for a session (Race / Qualifying / Practice)
+  const updateSessionType = useCallback((sessionIndex, newType) => {
+    setFormData(prev => {
+      const newSessions = [...prev.sessions];
+      newSessions[sessionIndex] = { ...newSessions[sessionIndex], sessionType: newType };
+      return { ...prev, sessions: newSessions };
+    });
+  }, [setFormData]);
+
   // Update a result in a session
   const updateResult = useCallback((sessionIndex, resultIndex, field, value) => {
     setFormData(prev => {
@@ -77,9 +86,63 @@ const ResultsReviewForm = ({ formData, setFormData, lists, onGenerateSQL, onBack
         ...newResults[resultIndex],
         [field]: value
       };
-      newSessions[sessionIndex] = {
+      const updatedSession = {
         ...newSessions[sessionIndex],
         results: newResults
+      };
+      // Keep humanPlayerCount in sync when isAI changes
+      if (field === 'isAI') {
+        updatedSession.humanPlayerCount = newResults.filter(r => !r.isAI).length;
+      }
+      newSessions[sessionIndex] = updatedSession;
+      return { ...prev, sessions: newSessions };
+    });
+  }, [setFormData]);
+
+  // Add a blank result row to a session
+  const addResult = useCallback((sessionIndex) => {
+    setFormData(prev => {
+      const newSessions = [...prev.sessions];
+      const session = newSessions[sessionIndex];
+      const newResults = [...(session.results || []), {
+        position: (session.results?.length || 0) + 1,
+        driverName: '',
+        isAI: false,
+        bestLapMs: null,
+        bestLapStr: '',
+        totalTimeMs: null,
+        totalTimeStr: '',
+        sector1Ms: null, sector1Str: null,
+        sector2Ms: null, sector2Str: null,
+        sector3Ms: null, sector3Str: null,
+        pitStops: null,
+        gapMs: null,
+        gapStr: null,
+        confidence: 1.0
+      }];
+      newSessions[sessionIndex] = {
+        ...session,
+        results: newResults,
+        gridSize: newResults.length,
+        humanPlayerCount: newResults.filter(r => !r.isAI).length
+      };
+      return { ...prev, sessions: newSessions };
+    });
+  }, [setFormData]);
+
+  // Delete a result row from a session
+  const deleteResult = useCallback((sessionIndex, resultIndex) => {
+    setFormData(prev => {
+      const newSessions = [...prev.sessions];
+      const session = newSessions[sessionIndex];
+      const newResults = session.results
+        .filter((_, i) => i !== resultIndex)
+        .map((r, i) => ({ ...r, position: i + 1 }));
+      newSessions[sessionIndex] = {
+        ...session,
+        results: newResults,
+        gridSize: newResults.length,
+        humanPlayerCount: newResults.filter(r => !r.isAI).length
       };
       return { ...prev, sessions: newSessions };
     });
@@ -385,6 +448,27 @@ const ResultsReviewForm = ({ formData, setFormData, lists, onGenerateSQL, onBack
             </div>
           )}
 
+          {/* Session type override — lets the user fix a wrong OCR detection */}
+          {currentSession && (
+            <Row className="mb-3 align-items-center">
+              <Col xs="auto">
+                <small style={{ color: '#aaa' }}>Session type:</small>
+              </Col>
+              <Col xs="auto" className="ms-2">
+                <Form.Select
+                  size="sm"
+                  value={currentSession.sessionType}
+                  onChange={(e) => updateSessionType(activeSession, e.target.value)}
+                  style={{ width: 'auto', display: 'inline-block' }}
+                >
+                  <option value="Race">Race</option>
+                  <option value="Qualifying">Qualifying</option>
+                  <option value="Practice">Practice</option>
+                </Form.Select>
+              </Col>
+            </Row>
+          )}
+
           {/* Results Table */}
           {currentSession && (
             <div className={styles.resultsTable}>
@@ -398,6 +482,7 @@ const ResultsReviewForm = ({ formData, setFormData, lists, onGenerateSQL, onBack
                     <th style={{ width: '80px' }}>AI?</th>
                     <th style={{ width: '100px' }}>Confidence</th>
                     <th style={{ width: '150px' }}>Player Match</th>
+                    <th style={{ width: '40px' }}></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -470,6 +555,17 @@ const ResultsReviewForm = ({ formData, setFormData, lists, onGenerateSQL, onBack
                             <span className={styles.playerNoMatch}>⚠ No match</span>
                           )}
                         </td>
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => deleteResult(activeSession, index)}
+                            title="Delete row"
+                            style={{
+                              background: 'none', border: 'none', cursor: 'pointer',
+                              color: '#dc3545', fontSize: '16px', lineHeight: 1, padding: '2px 4px'
+                            }}
+                          >×</button>
+                        </td>
                       </tr>
                     );
                   })}
@@ -478,14 +574,27 @@ const ResultsReviewForm = ({ formData, setFormData, lists, onGenerateSQL, onBack
             </div>
           )}
 
+          {/* Add Row */}
+          {currentSession && (
+            <div className="mt-2 mb-3">
+              <Button
+                variant="outline-warning"
+                size="sm"
+                onClick={() => addResult(activeSession)}
+              >
+                + Add Row
+              </Button>
+            </div>
+          )}
+
           {/* Summary */}
           {currentSession && (
-            <Row className="mt-3">
+            <Row className="mt-1">
               <Col>
                 <small style={{ color: '#888' }}>
-                  <strong>Grid Size:</strong> {currentSession.gridSize} | 
-                  <strong> Human Players:</strong> {currentSession.humanPlayerCount} | 
-                  <strong> AI Drivers:</strong> {currentSession.gridSize - currentSession.humanPlayerCount}
+                  <strong>Grid Size:</strong> {currentSession.results?.length || 0} | 
+                  <strong> Human Players:</strong> {currentSession.results?.filter(r => !r.isAI).length || 0} | 
+                  <strong> AI Drivers:</strong> {currentSession.results?.filter(r => r.isAI).length || 0}
                 </small>
               </Col>
             </Row>
