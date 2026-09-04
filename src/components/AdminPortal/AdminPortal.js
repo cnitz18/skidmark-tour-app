@@ -4,6 +4,7 @@ import PageHeader from "../shared/PageHeader";
 import ScreenshotParser from "../ScreenshotParser";
 import ChorleyConsole from "./ChorleyConsole";
 import DataFixes from "./DataFixes";
+import CacheManager from "./CacheManager";
 import styles from "./AdminPortal.module.css";
 
 const API_BASE = process.env.REACT_APP_AMS2API;
@@ -211,6 +212,15 @@ const AdminPortal = ({ enums, lists }) => {
                 🤖 Chorley Bot
               </Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+              <Nav.Link 
+                active={activeTab === 'cache'} 
+                className={styles.tabLink}
+                onClick={() => setActiveTab('cache')}
+              >
+                🗄️ Cache
+              </Nav.Link>
+            </Nav.Item>
           </Nav>
           <Button 
             variant="outline-secondary" 
@@ -242,6 +252,7 @@ const AdminPortal = ({ enums, lists }) => {
               onRefreshRaces={fetchRecentRaces}
             />
           )}
+          {activeTab === 'cache' && <CacheManager />}
         </div>
       </div>
     </Container>
