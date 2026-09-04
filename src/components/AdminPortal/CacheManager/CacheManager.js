@@ -28,7 +28,7 @@ const CacheManager = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE}/api/batchupload/cache/keys/`, {
+      const response = await fetch(`${API_BASE}/api/cache/keys/`, {
         headers: getAdminHeaders()
       });
       if (!response.ok) {
@@ -55,7 +55,7 @@ const CacheManager = () => {
     setClearing(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE}/api/batchupload/cache/clear/`, {
+      const response = await fetch(`${API_BASE}/api/cache/clear/`, {
         method: 'POST',
         headers: getAdminHeaders()
       });
