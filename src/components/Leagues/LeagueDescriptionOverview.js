@@ -39,17 +39,14 @@ const LeagueDescriptionOverview = ({ league, standings, lists, leagueHistory, on
   useEffect(() => {
     const racesWithStage = recentRaces?.filter(r => r.stages?.race1?.id && r.finished !== false);
     if (!racesWithStage?.length) return;
-    Promise.all(
-      racesWithStage.map(race =>
-        getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${race.stages.race1.id}`)
-          .then(res => ({ raceId: race.id, results: res }))
-          .catch(() => ({ raceId: race.id, results: null }))
-      )
-    ).then(arr => {
-      const obj = {};
-      arr.forEach(item => { obj[item.raceId] = item.results; });
-      setRecentRaceResults(obj);
-    });
+    const stageIds = racesWithStage.map(race => race.stages.race1.id);
+    getAPIData(`/api/batchupload/sms_stats_data/results/bulk/?stage_ids=${stageIds.join(',')}`)
+      .then(resultsByStage => {
+        const obj = {};
+        racesWithStage.forEach(race => { obj[race.id] = resultsByStage?.[race.stages.race1.id] || null; });
+        setRecentRaceResults(obj);
+      })
+      .catch(() => setRecentRaceResults({}));
   }, [recentRaces]);
 
   // Closest finish: loads independently, only for completed seasons
@@ -61,31 +58,30 @@ const LeagueDescriptionOverview = ({ league, standings, lists, leagueHistory, on
     const racesWithId = leagueHistory.filter(h => h.stages?.race1?.id && h.finished !== false);
     if (!racesWithId.length) { setClosestFinishLoading(false); return; }
 
-    Promise.all(
-      racesWithId.map(h =>
-        getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${h.stages.race1.id}`)
-          .then(results => {
-            const p1 = results?.find(r => r.RacePosition === 1);
-            const p2 = results?.find(r => r.RacePosition === 2);
-            if (!p1?.TotalTime || !p2?.TotalTime) return null;
-            const gap = p2.TotalTime - p1.TotalTime;
-            // Exclude lapped cars (gap > 2 min) and invalid data
-            if (gap <= 0 || gap > 120000) return null;
-            return {
-              gapMs: gap,
-              trackName: NameMapper.fromTrackApiName(NameMapper.fromTrackId(h.setup?.TrackId, lists?.tracks?.list)) || 'Unknown Track',
-              raceId: h.id
-            };
-          })
-          .catch(() => null)
-      )
-    ).then(results => {
-      const valid = results.filter(Boolean);
-      if (valid.length) {
-        setClosestFinish(valid.reduce((min, cur) => cur.gapMs < min.gapMs ? cur : min));
-      }
-      setClosestFinishLoading(false);
-    });
+    const stageIds = racesWithId.map(h => h.stages.race1.id);
+    getAPIData(`/api/batchupload/sms_stats_data/results/bulk/?stage_ids=${stageIds.join(',')}`)
+      .then(resultsByStage => {
+        const results = racesWithId.map(h => {
+          const stageResults = resultsByStage?.[h.stages.race1.id];
+          const p1 = stageResults?.find(r => r.RacePosition === 1);
+          const p2 = stageResults?.find(r => r.RacePosition === 2);
+          if (!p1?.TotalTime || !p2?.TotalTime) return null;
+          const gap = p2.TotalTime - p1.TotalTime;
+          // Exclude lapped cars (gap > 2 min) and invalid data
+          if (gap <= 0 || gap > 120000) return null;
+          return {
+            gapMs: gap,
+            trackName: NameMapper.fromTrackApiName(NameMapper.fromTrackId(h.setup?.TrackId, lists?.tracks?.list)) || 'Unknown Track',
+            raceId: h.id
+          };
+        });
+        const valid = results.filter(Boolean);
+        if (valid.length) {
+          setClosestFinish(valid.reduce((min, cur) => cur.gapMs < min.gapMs ? cur : min));
+        }
+        setClosestFinishLoading(false);
+      })
+      .catch(() => setClosestFinishLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [league?.completed, leagueHistory]);
 

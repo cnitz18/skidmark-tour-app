@@ -67,47 +67,49 @@ const LeagueDescriptionPerformance = ({ showHistorySpinner, league, leagueHistor
           setSelectedDriver(drivers[0]);
         }
 
-        var fetchRacesArray = [];
-        var racesObj = {}, qualiObj = {};
+        // Collect every race/quali stage id up front so we can fetch them all
+        // in a single bulk request instead of 2 requests per race.
+        var raceEntries = [];
+        var stageIds = [];
         leagueHistory.map((hist) => [hist.stages?.race1?.id, hist.stages?.qualifying1?.id, hist.finished])
         .forEach(([raceId, qualiId, finished], i) => {
           if( raceId && finished !== false ){
-            fetchRacesArray.push(
-              getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${raceId}`)
-              .then((raceRes) => {
-                if (!raceRes) return null;
-                raceRes = raceRes.map((e) => {
-                  e.RaceWeek = leagueHistory.length - i;
-                  return e;
-                });
-                if( qualiId ){
-                  return getAPIData(`/api/batchupload/sms_stats_data/results/?stage_id=${qualiId}`)
-                  .then((qualiRes) => {
-                    if (!qualiRes) return raceRes;
-                    var stageId = qualiRes[0]?.stage;
-                    qualiObj[stageId] = qualiRes.map((e) => { e.RaceWeek = leagueHistory.length - i; return e; });
-                    raceRes = raceRes.map((r) => {
-                      var qualiPerformance = qualiRes.find(q => q.name === r.name);
-                      if( qualiPerformance ){
-                        r.QualifyingPosition = qualiPerformance.RacePosition;
-                      }
-                      return r;
-                    })
-                    return raceRes;
-                  });
-                }
-                return raceRes;
-              })
-            )
+            raceEntries.push({ raceId, qualiId, raceWeek: leagueHistory.length - i });
+            stageIds.push(raceId);
+            if (qualiId) stageIds.push(qualiId);
           }
         });
 
-        Promise.all(fetchRacesArray).then((raceRes) => {
-          raceRes.forEach((res) => {
-            if (!res) return;
-            var stageId = res[0]?.stage;
-            racesObj[stageId] = res;
-          })
+        if (stageIds.length === 0) {
+          setRaceResultsObject({});
+          setQualiResultsObject({});
+          setLoading(false);
+          return;
+        }
+
+        getAPIData(`/api/batchupload/sms_stats_data/results/bulk/?stage_ids=${stageIds.join(',')}`)
+        .then((resultsByStage) => {
+          var racesObj = {}, qualiObj = {};
+          raceEntries.forEach(({ raceId, qualiId, raceWeek }) => {
+            var raceRes = resultsByStage?.[raceId];
+            if (!raceRes) return;
+            raceRes = raceRes.map((e) => ({ ...e, RaceWeek: raceWeek }));
+
+            var qualiRes = qualiId ? resultsByStage?.[qualiId] : null;
+            if (qualiRes) {
+              qualiRes = qualiRes.map((e) => ({ ...e, RaceWeek: raceWeek }));
+              qualiObj[qualiId] = qualiRes;
+              raceRes = raceRes.map((r) => {
+                var qualiPerformance = qualiRes.find(q => q.name === r.name);
+                if( qualiPerformance ){
+                  r.QualifyingPosition = qualiPerformance.RacePosition;
+                }
+                return r;
+              });
+            }
+
+            racesObj[raceId] = raceRes;
+          });
           setRaceResultsObject(racesObj);
           setQualiResultsObject(qualiObj);
         });
